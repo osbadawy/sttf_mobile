@@ -5,6 +5,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import * as Sentry from '@sentry/react-native';
 
 export default function HomeScreen() {
   return (
@@ -19,7 +20,7 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title" className="bg-red-500">Welcome!</ThemedText>
         <HelloWave />
-        <Button title='Try!' onPress={ () => { throw new Error('First error')}}/>
+        <Button title='Try!' onPress={ () => { Sentry.captureException( Error('First error'))}}/>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
