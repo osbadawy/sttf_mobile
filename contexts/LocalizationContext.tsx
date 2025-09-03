@@ -1,10 +1,14 @@
-import i18n, { changeLanguage, getCurrentLanguage } from '@/i18n';
+import i18n, { changeLanguage, getCurrentLanguage, resources } from '@/i18n';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface LocalizationContextType {
   currentLanguage: string;
   switchLanguage: (language: string) => void;
+  t: (key: string, options?: any) => string;
+}
+
+interface NamespacedLocalizationType {
   t: (key: string, options?: any) => string;
 }
 
@@ -15,7 +19,7 @@ interface LocalizationProviderProps {
 }
 
 export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ children }) => {
-  const { t } = useTranslation(['common', 'home', 'explore', 'language']);
+  const { t } = useTranslation(Object.keys(resources[getCurrentLanguage() as keyof typeof resources]));
   const [currentLanguage, setCurrentLanguage] = useState(getCurrentLanguage());
 
   const switchLanguage = async (language: string) => {
@@ -57,10 +61,17 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
   );
 };
 
-export const useLocalization = (): LocalizationContextType => {
+export const useLocalization = (namespace?: string): LocalizationContextType | NamespacedLocalizationType => {
   const context = useContext(LocalizationContext);
   if (context === undefined) {
     throw new Error('useLocalization must be used within a LocalizationProvider');
   }
+  
+  if (namespace) {
+    return {
+      t: (key: string, options?: any) => context.t(key, { ...options, ns: namespace })
+    };
+  }
+  
   return context;
 };

@@ -13,7 +13,7 @@ import enExplore from '../locales/en/explore.json';
 import enIndex from '../locales/en/index.json';
 import enLanguage from '../locales/en/language.json';
 
-const resources = {
+export const resources = {
   en: {
     common: enCommon,
     home: enIndex,
@@ -40,7 +40,7 @@ i18n
     lng: deviceLocale,
     fallbackLng: 'en',
     defaultNS: 'common',
-    ns: ['common', 'home', 'explore', 'language'],
+    ns: Object.keys(resources[deviceLocale as keyof typeof resources]),
     
     interpolation: {
       escapeValue: false, // React already does escaping
