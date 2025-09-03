@@ -31,11 +31,7 @@ const resources = {
 // Get device locale
 const deviceLocale = Localization.getLocales()[0]?.languageCode || 'en';
 
-// Determine if the locale is RTL
-const isRTL = (locale: string) => {
-  const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
-  return rtlLanguages.includes(locale);
-};
+
 
 i18n
   .use(initReactI18next)
@@ -57,7 +53,6 @@ i18n
 
 // Export helper functions
 export const getCurrentLanguage = () => i18n.language;
-export const isCurrentLanguageRTL = () => isRTL(i18n.language);
 export const changeLanguage = (language: string) => i18n.changeLanguage(language);
 
 export default i18n;

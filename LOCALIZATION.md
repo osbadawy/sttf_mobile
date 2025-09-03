@@ -5,7 +5,6 @@ This document describes the localization implementation for the STTF Mobile app,
 ## Features
 
 - ✅ English and Arabic language support
-- ✅ Right-to-Left (RTL) layout support for Arabic
 - ✅ Language switcher component
 - ✅ Automatic device language detection
 - ✅ Context-based translation management
@@ -114,13 +113,7 @@ export default function MyComponent() {
 - `language.english` - English language name
 - `language.arabic` - Arabic language name
 
-## RTL Support
 
-The app automatically detects RTL languages and applies appropriate layout changes:
-
-- Arabic (`ar`) is automatically detected as RTL
-- Layout direction changes when switching to Arabic
-- App restart is required for RTL changes to take full effect
 
 ## Adding New Translations
 
@@ -145,6 +138,4 @@ The app automatically detects the device's language using `expo-localization` an
 
 ## Notes
 
-- RTL layout changes require an app restart to take full effect
-- The language switcher shows an alert when switching to Arabic to inform users about the restart requirement
 - All text content has been moved to translation files for easy maintenance

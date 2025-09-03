@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import React from 'react';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 export const LanguageSwitcher: React.FC = () => {
   const { currentLanguage, switchLanguage, t } = useLocalization();
@@ -16,14 +16,6 @@ export const LanguageSwitcher: React.FC = () => {
     console.log('Switching language from', currentLanguage, 'to', newLanguage);
     
     switchLanguage(newLanguage);
-    
-    if (newLanguage === 'ar') {
-      Alert.alert(
-        'Restart Required',
-        'Please restart the app to apply RTL layout changes.',
-        [{ text: 'OK' }]
-      );
-    }
   };
 
   return (

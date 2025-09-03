@@ -11,7 +11,7 @@ import '@/i18n'; // Initialize i18n
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
-  dsn: 'https://f01e0944526039dd601e638e7ad52993@o4508665249923072.ingest.de.sentry.io/4509949709451344',
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
   // Adds more context data to events (IP address, cookies, user, etc.)
   // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
