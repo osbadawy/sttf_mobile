@@ -1,0 +1,59 @@
+{
+  "common": {
+    "welcome": "Welcome!",
+    "try": "Try!",
+    "home": "Home",
+    "explore": "Explore",
+    "learnMore": "Learn more"
+  },
+  "home": {
+    "title": "Welcome!",
+    "step1": {
+      "title": "Step 1: Try it",
+      "description": "Edit {{file}} to see changes. Press {{shortcut}} to open developer tools."
+    },
+    "step2": {
+      "title": "Step 2: Explore",
+      "description": "Tap the Explore tab to learn more about what's included in this starter app."
+    },
+    "step3": {
+      "title": "Step 3: Get a fresh start",
+      "description": "When you're ready, run {{command}} to get a fresh {{directory}} directory. This will move the current {{directory}} to {{exampleDirectory}}."
+    }
+  },
+  "explore": {
+    "title": "Explore",
+    "description": "This app includes example code to help you get started.",
+    "fileBasedRouting": {
+      "title": "File-based routing",
+      "description": "This app has two screens: {{file1}} and {{file2}}",
+      "layoutDescription": "The layout file in {{file}} sets up the tab navigator."
+    },
+    "platformSupport": {
+      "title": "Android, iOS, and web support",
+      "description": "You can open this project on Android, iOS, and the web. To open the web version, press {{key}} in the terminal running this project."
+    },
+    "images": {
+      "title": "Images",
+      "description": "For static images, you can use the {{suffix1}} and {{suffix2}} suffixes to provide files for different screen densities"
+    },
+    "customFonts": {
+      "title": "Custom fonts",
+      "description": "Open {{file}} to see how to load custom fonts such as this one."
+    },
+    "themes": {
+      "title": "Light and dark mode components",
+      "description": "This template has light and dark mode support. The {{hook}} hook lets you inspect what the user's current color scheme is, and so you can adjust UI colors accordingly."
+    },
+    "animations": {
+      "title": "Animations",
+      "description": "This template includes an example of an animated component. The {{component}} component uses the powerful {{library}} library to create a waving hand animation.",
+      "iosDescription": "The {{component}} component provides a parallax effect for the header image."
+    }
+  },
+  "language": {
+    "switch": "Switch Language",
+    "english": "English",
+    "arabic": "العربية"
+  }
+}

@@ -5,7 +5,9 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { LocalizationProvider } from '@/contexts/LocalizationContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import '@/i18n'; // Initialize i18n
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
@@ -36,12 +38,14 @@ export default Sentry.wrap(function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <LocalizationProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 });
