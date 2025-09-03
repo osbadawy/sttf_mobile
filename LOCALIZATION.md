@@ -15,8 +15,16 @@ This document describes the localization implementation for the STTF Mobile app,
 
 ```
 ├── locales/
-│   ├── en.json          # English translations
-│   └── ar.json          # Arabic translations
+│   ├── en/              # English translations
+│   │   ├── common.json  # Common translations (welcome, buttons, etc.)
+│   │   ├── index.json   # Home page translations
+│   │   ├── explore.json # Explore page translations
+│   │   └── language.json # Language switcher translations
+│   └── ar/              # Arabic translations
+│       ├── common.json  # Common translations (welcome, buttons, etc.)
+│       ├── index.json   # Home page translations
+│       ├── explore.json # Explore page translations
+│       └── language.json # Language switcher translations
 ├── i18n/
 │   └── index.ts         # i18n configuration
 ├── contexts/
@@ -116,9 +124,14 @@ The app automatically detects RTL languages and applies appropriate layout chang
 
 ## Adding New Translations
 
-1. Add the new key to both `locales/en.json` and `locales/ar.json`
+1. Add the new key to the appropriate file in both `locales/en/` and `locales/ar/` folders:
+   - `common.json` - for shared translations (buttons, labels, etc.)
+   - `index.json` - for home page specific translations
+   - `explore.json` - for explore page specific translations
+   - `language.json` - for language switcher translations
 2. Use the key in your component with `t('your.new.key')`
 3. For interpolation, use `t('your.key', { variable: 'value' })`
+4. If adding a new page, create corresponding `pagename.json` files in both language folders and update the i18n configuration
 
 ## Language Detection
 

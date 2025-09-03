@@ -17,7 +17,7 @@ interface LocalizationProviderProps {
 }
 
 export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ children }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'home', 'explore', 'language']);
   const [currentLanguage, setCurrentLanguage] = useState(getCurrentLanguage());
   const [isRTL, setIsRTL] = useState(isCurrentLanguageRTL());
 

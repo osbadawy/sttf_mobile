@@ -22,15 +22,15 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title" className="bg-red-500">{t('home.title')}</ThemedText>
+        <ThemedText type="title" className="bg-red-500">{t('title', { ns: 'home' })}</ThemedText>
         <HelloWave />
-        <Button title={t('common.try')} onPress={ () => { Sentry.captureException( Error('First error'))}}/>
+        <Button title={t('try', { ns: 'common' })} onPress={ () => { Sentry.captureException( Error('First error'))}}/>
         <LanguageSwitcher />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">{t('home.step1.title')}</ThemedText>
+        <ThemedText type="subtitle">{t('step1.title', { ns: 'home' })}</ThemedText>
         <ThemedText>
-          {t('home.step1.description', {
+          {t('step1.description', { ns: 'home',
             file: 'app/(tabs)/index.tsx',
             shortcut: Platform.select({
               ios: 'cmd + d',
@@ -41,15 +41,15 @@ export default function HomeScreen() {
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">{t('home.step2.title')}</ThemedText>
+        <ThemedText type="subtitle">{t('step2.title', { ns: 'home' })}</ThemedText>
         <ThemedText>
-          {t('home.step2.description')}
+          {t('step2.description', { ns: 'home' })}
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">{t('home.step3.title')}</ThemedText>
+        <ThemedText type="subtitle">{t('step3.title', { ns: 'home' })}</ThemedText>
         <ThemedText>
-          {t('home.step3.description', {
+          {t('step3.description', { ns: 'home',
             command: 'npm run reset-project',
             directory: 'app',
             exampleDirectory: 'app-example'

@@ -24,61 +24,61 @@ export default function TabTwoScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">{t('explore.title')}</ThemedText>
+        <ThemedText type="title">{t('title', { ns: 'explore' })}</ThemedText>
       </ThemedView>
-      <ThemedText>{t('explore.description')}</ThemedText>
-      <Collapsible title={t('explore.fileBasedRouting.title')}>
+      <ThemedText>{t('description', { ns: 'explore' })}</ThemedText>
+      <Collapsible title={t('fileBasedRouting.title', { ns: 'explore' })}>
         <ThemedText>
-          {t('explore.fileBasedRouting.description', {
+          {t('fileBasedRouting.description', { ns: 'explore',
             file1: 'app/(tabs)/index.tsx',
             file2: 'app/(tabs)/explore.tsx'
           })}
         </ThemedText>
         <ThemedText>
-          {t('explore.fileBasedRouting.layoutDescription', {
+          {t('fileBasedRouting.layoutDescription', { ns: 'explore',
             file: 'app/(tabs)/_layout.tsx'
           })}
         </ThemedText>
         <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">{t('common.learnMore')}</ThemedText>
+          <ThemedText type="link">{t('learnMore', { ns: 'common' })}</ThemedText>
         </ExternalLink>
       </Collapsible>
-      <Collapsible title={t('explore.platformSupport.title')}>
+      <Collapsible title={t('platformSupport.title', { ns: 'explore' })}>
         <ThemedText>
-          {t('explore.platformSupport.description', { key: 'w' })}
+          {t('platformSupport.description', { ns: 'explore', key: 'w' })}
         </ThemedText>
       </Collapsible>
-      <Collapsible title={t('explore.images.title')}>
+      <Collapsible title={t('images.title', { ns: 'explore' })}>
         <ThemedText>
-          {t('explore.images.description', {
+          {t('images.description', { ns: 'explore',
             suffix1: '@2x',
             suffix2: '@3x'
           })}
         </ThemedText>
         <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
         <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">{t('common.learnMore')}</ThemedText>
+          <ThemedText type="link">{t('learnMore', { ns: 'common' })}</ThemedText>
         </ExternalLink>
       </Collapsible>
-      <Collapsible title={t('explore.customFonts.title')}>
+      <Collapsible title={t('customFonts.title', { ns: 'explore' })}>
         <ThemedText>
-          {t('explore.customFonts.description', { file: 'app/_layout.tsx' })}
+          {t('customFonts.description', { ns: 'explore', file: 'app/_layout.tsx' })}
         </ThemedText>
         <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">{t('common.learnMore')}</ThemedText>
+          <ThemedText type="link">{t('learnMore', { ns: 'common' })}</ThemedText>
         </ExternalLink>
       </Collapsible>
-      <Collapsible title={t('explore.themes.title')}>
+      <Collapsible title={t('themes.title', { ns: 'explore' })}>
         <ThemedText>
-          {t('explore.themes.description', { hook: 'useColorScheme()' })}
+          {t('themes.description', { ns: 'explore', hook: 'useColorScheme()' })}
         </ThemedText>
         <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">{t('common.learnMore')}</ThemedText>
+          <ThemedText type="link">{t('learnMore', { ns: 'common' })}</ThemedText>
         </ExternalLink>
       </Collapsible>
-      <Collapsible title={t('explore.animations.title')}>
+      <Collapsible title={t('animations.title', { ns: 'explore' })}>
         <ThemedText>
-          {t('explore.animations.description', {
+          {t('animations.description', { ns: 'explore',
             component: 'components/HelloWave.tsx',
             library: 'react-native-reanimated'
           })}
@@ -86,7 +86,7 @@ export default function TabTwoScreen() {
         {Platform.select({
           ios: (
             <ThemedText>
-              {t('explore.animations.iosDescription', {
+              {t('animations.iosDescription', { ns: 'explore',
                 component: 'components/ParallaxScrollView.tsx'
               })}
             </ThemedText>

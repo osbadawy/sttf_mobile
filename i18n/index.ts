@@ -2,15 +2,29 @@ import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import ar from '../locales/ar.json';
-import en from '../locales/en.json';
+// Import individual translation files
+import arCommon from '../locales/ar/common.json';
+import arExplore from '../locales/ar/explore.json';
+import arIndex from '../locales/ar/index.json';
+import arLanguage from '../locales/ar/language.json';
+
+import enCommon from '../locales/en/common.json';
+import enExplore from '../locales/en/explore.json';
+import enIndex from '../locales/en/index.json';
+import enLanguage from '../locales/en/language.json';
 
 const resources = {
   en: {
-    translation: en,
+    common: enCommon,
+    home: enIndex,
+    explore: enExplore,
+    language: enLanguage,
   },
   ar: {
-    translation: ar,
+    common: arCommon,
+    home: arIndex,
+    explore: arExplore,
+    language: arLanguage,
   },
 };
 
@@ -29,6 +43,8 @@ i18n
     resources,
     lng: deviceLocale,
     fallbackLng: 'en',
+    defaultNS: 'common',
+    ns: ['common', 'home', 'explore', 'language'],
     
     interpolation: {
       escapeValue: false, // React already does escaping

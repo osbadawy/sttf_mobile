@@ -30,7 +30,7 @@ export const LanguageSwitcher: React.FC = () => {
     <ThemedView style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={handleLanguageSwitch}>
         <ThemedText style={styles.buttonText}>
-          {currentLanguage === 'en' ? 'العربية' : 'English'}
+          {currentLanguage === 'en' ? t('arabic', { ns: 'language' }) : t('english', { ns: 'language' })}
         </ThemedText>
       </TouchableOpacity>
     </ThemedView>
