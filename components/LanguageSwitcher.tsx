@@ -1,8 +1,6 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const LanguageSwitcher: React.FC = () => {
   const { currentLanguage, switchLanguage, t } = useLocalization();
@@ -19,13 +17,13 @@ export const LanguageSwitcher: React.FC = () => {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={handleLanguageSwitch}>
-        <ThemedText style={styles.buttonText}>
+        <Text style={styles.buttonText}>
           {currentLanguage === 'en' ? t('arabic', { ns: 'language' }) : t('english', { ns: 'language' })}
-        </ThemedText>
+        </Text>
       </TouchableOpacity>
-    </ThemedView>
+    </View>
   );
 };
 

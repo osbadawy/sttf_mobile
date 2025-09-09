@@ -4,27 +4,36 @@ import { initReactI18next } from 'react-i18next';
 
 // Import individual translation files
 import arCommon from '../locales/ar/common.json';
-import arExplore from '../locales/ar/explore.json';
-import arIndex from '../locales/ar/index.json';
-import arLanguage from '../locales/ar/language.json';
+// import arExplore from '../locales/ar/explore.json';
+// import arIndex from '../locales/ar/index.json';
+// import arLanguage from '../locales/ar/language.json';
 
 import enCommon from '../locales/en/common.json';
-import enExplore from '../locales/en/explore.json';
-import enIndex from '../locales/en/index.json';
-import enLanguage from '../locales/en/language.json';
+// import enExplore from '../locales/en/explore.json';
+// import enIndex from '../locales/en/index.json';
+// import enLanguage from '../locales/en/language.json';
+
+// export const resources = {
+//   en: {
+//     common: enCommon,
+//     home: enIndex,
+//     explore: enExplore,
+//     language: enLanguage,
+//   },
+//   ar: {
+//     common: arCommon,
+//     home: arIndex,
+//     explore: arExplore,
+//     language: arLanguage,
+//   },
+// };
 
 export const resources = {
   en: {
     common: enCommon,
-    home: enIndex,
-    explore: enExplore,
-    language: enLanguage,
   },
   ar: {
     common: arCommon,
-    home: arIndex,
-    explore: arExplore,
-    language: arLanguage,
   },
 };
 

@@ -1,12 +1,10 @@
 import '@/global.css';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { LocalizationProvider } from '@/contexts/LocalizationContext';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import '@/i18n'; // Initialize i18n
 import * as Sentry from '@sentry/react-native';
 
@@ -27,7 +25,6 @@ Sentry.init({
 });
 
 export default Sentry.wrap(function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -39,13 +36,11 @@ export default Sentry.wrap(function RootLayout() {
 
   return (
     <LocalizationProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
     </LocalizationProvider>
   );
 });
