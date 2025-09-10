@@ -1,5 +1,6 @@
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useEffect, useRef } from "react";
-import { Animated, Dimensions, Image, StyleSheet, Text, View } from "react-native";
+import { Animated, Dimensions, Image, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -35,16 +36,23 @@ const ProgressCircle = ({ percentage, color, radiusOffset, animatedValue, cx }: 
   );
 };
 
-const ProgressLabel = ({label, offset, iconSource}: {label: string, offset: number, iconSource: any}) => {
+const ProgressLabel = ({label, value, offset, iconSource}: {label: string, value: number, offset: number, iconSource: any}) => {
+  let containerClassName = "items-center flex-1"
+  if (offset !== 0) {
+    containerClassName += " transform -translate-y-[21px]"
+  }
   return (
-    <View style={styles.labelContainer}>
-      <Image source={iconSource} style={styles.icon} />
-      <Text style={styles.label}>{label}</Text>
+    <View className={containerClassName}>
+      <Image source={iconSource} className="w-[24px] h-[24px] mb-[8px]" style={{resizeMode: 'center'}} />
+      <Text className="text-black font-extrabold text-4xl">{value}%</Text>
+      <Text className="text-black font-light text-sx">{label}</Text>
     </View>
   );
 };
 
-export default function WellbeingChart({performance, stress, strain}: {performance: number, stress: number, strain: number}) {
+export default function WellbeingSection({performance, stress, strain}: {performance: number, stress: number, strain: number}) {
+  const { t } = useLocalization('components.wellbeingSection');
+
   const windowWidth = Dimensions.get("window").width;
   // Create animated values for each progress circle
   const progress1 = useRef(new Animated.Value(0)).current;
@@ -56,7 +64,7 @@ export default function WellbeingChart({performance, stress, strain}: {performan
   useEffect(() => {
     // Start animations with a slight delay between each circle
     const animateProgress = () => {
-      Animated.sequence([
+      Animated.parallel([
         Animated.timing(progress1, {
           toValue: performance,
           duration: 1500,
@@ -82,7 +90,7 @@ export default function WellbeingChart({performance, stress, strain}: {performan
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 items-center">
       <Svg width={windowWidth} height={600}>
         {/* Background Circles */}
         <Circle
@@ -156,46 +164,11 @@ export default function WellbeingChart({performance, stress, strain}: {performan
         />
       </Svg>
 
-       <View style={styles.labels}>
-         <ProgressLabel label="Performance" offset={-21} iconSource={require("../../assets/icons/Performance.svg")} />
-         <ProgressLabel label="Stress" offset={0} iconSource={require("../../assets/icons/stress.svg")} />
-         <ProgressLabel label="Strain" offset={-21} iconSource={require("../../assets/icons/strain.svg")} />
+       <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
+         <ProgressLabel label={t('performance')} value={performance} offset={-21} iconSource={require("../../assets/icons/Performance.png")} />
+         <ProgressLabel label={t('strain')} value={strain} offset={0} iconSource={require("../../assets/icons/Strain.png")} />
+         <ProgressLabel label={t('stress')} value={stress} offset={-21} iconSource={require("../../assets/icons/Stress.png")} />
        </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  labels: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    alignItems: "center",
-    marginTop: 20,
-    position: "absolute",
-    top: 380,
-  },
-  labelContainer: {
-    alignItems: "center",
-    flex: 1,
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginBottom: 4,
-  },
-  label: {
-    fontSize: 16,
-    marginVertical: 4,
-    textAlign: "center",
-    color: "#000",
-  },
-  labelOffset: {
-    transform: [{ translateY: -21 }],
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

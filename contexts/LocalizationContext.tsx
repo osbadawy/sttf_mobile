@@ -68,9 +68,21 @@ export const useLocalization = (namespace?: string): LocalizationContextType | N
   }
   
   if (namespace) {
-    return {
-      t: (key: string, options?: any) => context.t(key, { ...options, ns: namespace })
-    };
+    // Handle nested namespace access (e.g., 'components.wellbeingSection')
+    if (namespace.includes('.')) {
+      const [rootNamespace, ...nestedKeys] = namespace.split('.');
+      return {
+        t: (key: string, options?: any) => {
+          // For nested namespaces, we need to access the nested object
+          const nestedPath = nestedKeys.join('.');
+          return context.t(`${nestedPath}.${key}`, { ...options, ns: rootNamespace });
+        }
+      };
+    } else {
+      return {
+        t: (key: string, options?: any) => context.t(key, { ...options, ns: namespace })
+      };
+    }
   }
   
   return context;

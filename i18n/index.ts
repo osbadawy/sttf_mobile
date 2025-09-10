@@ -4,10 +4,12 @@ import { initReactI18next } from 'react-i18next';
 
 // Import individual translation files
 import arCommon from '../locales/ar/common.json';
+import arWellbeingSection from '../locales/ar/components/WellbeingSection.json';
 import arIndex from '../locales/ar/index.json';
 import arLanguage from '../locales/ar/language.json';
 
 import enCommon from '../locales/en/common.json';
+import enWellbeingSection from '../locales/en/components/WellbeingSection.json';
 import enIndex from '../locales/en/index.json';
 import enLanguage from '../locales/en/language.json';
 
@@ -16,11 +18,17 @@ export const resources = {
     common: enCommon,
     home: enIndex,
     language: enLanguage,
+    components: {
+      wellbeingSection: enWellbeingSection
+    }
   },
   ar: {
     common: arCommon,
     home: arIndex,
     language: arLanguage,
+    components: {
+      wellbeingSection: arWellbeingSection
+    }
   },
 };
 
