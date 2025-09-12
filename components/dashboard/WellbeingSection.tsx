@@ -1,6 +1,8 @@
+import colors from "@/colors.js";
+import { PerformanceIcon, StrainIcon, StressIcon } from "@/components/icons";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useEffect, useRef } from "react";
-import { Animated, Dimensions, Image, Text, View } from "react-native";
+import { Animated, Dimensions, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -36,14 +38,14 @@ const ProgressCircle = ({ percentage, color, radiusOffset, animatedValue, cx }: 
   );
 };
 
-const ProgressLabel = ({label, value, offset, iconSource}: {label: string, value: number, offset: number, iconSource: any}) => {
+const ProgressLabel = ({label, value, offset, icon}: {label: string, value: number, offset: number, icon: React.ReactNode}) => {
   let containerClassName = "items-center flex-1"
   if (offset !== 0) {
     containerClassName += " transform -translate-y-[21px]"
   }
   return (
     <View className={containerClassName}>
-      <Image source={iconSource} className="w-[24px] h-[24px] mb-[8px]" style={{resizeMode: 'center'}} />
+      {icon}
       <Text className="text-black font-extrabold text-4xl">{value}%</Text>
       <Text className="text-black font-light text-sx">{label}</Text>
     </View>
@@ -97,7 +99,7 @@ export default function WellbeingSection({performance, stress, strain}: {perform
           cx={center}
           cy="200"
           r={CIRCLE_RADIUS}
-          stroke="#CDEDDD"
+          stroke={colors.performanceLight}
           strokeWidth={STROKE_WIDTH}
           fill="none"
         />
@@ -105,7 +107,7 @@ export default function WellbeingSection({performance, stress, strain}: {perform
           cx={center}
           cy="200"
           r={CIRCLE_RADIUS - 28}
-          stroke="#E5F5F5"
+          stroke={colors.strainLight}
           strokeWidth={STROKE_WIDTH}
           fill="none"
         />
@@ -113,7 +115,7 @@ export default function WellbeingSection({performance, stress, strain}: {perform
           cx={center}
           cy="200"
           r={CIRCLE_RADIUS - 56}
-          stroke="#FFEBDF"
+          stroke={colors.stressLight}
           strokeWidth={STROKE_WIDTH}
           fill="none"
         />
@@ -143,21 +145,21 @@ export default function WellbeingSection({performance, stress, strain}: {perform
         {/* Foreground Progress - Animated */}
         <ProgressCircle 
           percentage={performance} 
-          color="#22c55e" 
+          color={colors.performance} 
           radiusOffset={0} 
           animatedValue={progress1}
           cx={center}
         />
         <ProgressCircle 
-          percentage={stress} 
-          color="#06b6d4" 
+          percentage={strain} 
+          color={colors.strain} 
           radiusOffset={28} 
           animatedValue={progress2}
           cx={center}
         />
         <ProgressCircle 
-          percentage={strain} 
-          color="#f97316" 
+          percentage={stress} 
+          color={colors.stress} 
           radiusOffset={56} 
           animatedValue={progress3}
           cx={center}
@@ -165,9 +167,9 @@ export default function WellbeingSection({performance, stress, strain}: {perform
       </Svg>
 
        <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
-         <ProgressLabel label={t('performance')} value={performance} offset={-21} iconSource={require("../../assets/icons/Performance.png")} />
-         <ProgressLabel label={t('strain')} value={strain} offset={0} iconSource={require("../../assets/icons/Strain.png")} />
-         <ProgressLabel label={t('stress')} value={stress} offset={-21} iconSource={require("../../assets/icons/Stress.png")} />
+         <ProgressLabel label={t('performance')} value={performance} offset={-21} icon={<PerformanceIcon />} />
+         <ProgressLabel label={t('strain')} value={strain} offset={0} icon={<StrainIcon />} />
+         <ProgressLabel label={t('stress')} value={stress} offset={-21} icon={<StressIcon />} />
        </View>
     </View>
   );
