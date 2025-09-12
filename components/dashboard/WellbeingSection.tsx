@@ -93,6 +93,9 @@ export default function WellbeingSection({performance, stress, strain}: {perform
 
   return (
     <View className="flex-1 items-center">
+      <View className="w-full">
+        <Text className="w-full" >{t('title')}</Text>
+      </View>
       <Svg width={windowWidth} height={600}>
         {/* Background Circles */}
         <Circle

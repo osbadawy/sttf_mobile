@@ -1,9 +1,10 @@
+import type { LocalizationContextType } from '@/contexts/LocalizationContext';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const LanguageSwitcher: React.FC = () => {
-  const { currentLanguage, switchLanguage, t } = useLocalization();
+  const { currentLanguage, switchLanguage, t } = useLocalization() as LocalizationContextType;
 
   console.log('LanguageSwitcher: Current language:', currentLanguage);
 

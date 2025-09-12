@@ -2,7 +2,7 @@ import i18n, { changeLanguage, getCurrentLanguage, resources } from '@/i18n';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface LocalizationContextType {
+export interface LocalizationContextType {
   currentLanguage: string;
   switchLanguage: (language: string) => void;
   t: (key: string, options?: any) => string;
