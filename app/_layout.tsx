@@ -2,7 +2,7 @@ import '@/global.css';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { LocalizationProvider } from '@/contexts/LocalizationContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -37,12 +37,14 @@ export default Sentry.wrap(function RootLayout() {
   }
 
   return (
-    <LocalizationProvider>
+    <SafeAreaProvider>
+      <LocalizationProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
-    </LocalizationProvider>
+      </LocalizationProvider>
+    </SafeAreaProvider>
   );
 });
