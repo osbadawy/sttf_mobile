@@ -1,7 +1,7 @@
 import { SleepIcon } from '@/components/icons';
 import TitleWithIcon from '@/components/TitleWithIcon';
 import { useLocalization } from '@/contexts/LocalizationContext';
-import { View } from 'react-native';
+import { Animated, Text, View } from 'react-native';
 
 
 interface SleepSectionProps {
@@ -22,14 +22,40 @@ export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeede
   const sleepDuration = milliToHoursAndMins(sleepDurationMilli);
   const sleepNeeded = milliToHoursAndMins(sleepNeededMilli);
 
-
   return (
     <View 
-      className="bg-white w-full px-6 py-7"
+      className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl"
     >
-      <TitleWithIcon title={t('title')} icon={<SleepIcon />} titleColor="text-black" isRTL={isRTL} />
+      <TitleWithIcon title={t('title')} icon={<SleepIcon />} titleColor="text-sleep" isRTL={isRTL} arrow={false} />
 
-      
+      <View className="flex-row justify-between pt-10 pb-4 mx-5">
+        <Text>
+          <Text className="text-3xl font-semibold">{sleepDuration.hours}</Text>
+          <Text className="font-light">{"h "}</Text>
+          <Text className="text-3xl font-semibold">{sleepDuration.minutes}</Text>
+          <Text className="font-light">min</Text>
+        </Text>
+
+        <Text>
+          <Text className="text-xl">{sleepNeeded.hours}</Text>
+          <Text className="font-light">{"h "}</Text>
+          <Text className="text-xl">{sleepNeeded.minutes}</Text>
+          <Text className="font-light">min</Text>
+        </Text>
+      </View>
+
+      <View className="relative mx-5">
+        <View className="absolute top-0 left-0 w-full bg-sleep opacity-15 h-1 rounded-sm"/>
+        <View className="absolute top-0 left-0 w-full overflow-hidden">
+          <Animated.View 
+            className="bg-sleep h-1 rounded-sm"
+            style={{ 
+              width: `${Math.round(sleepScore * 100)}%`
+            }}
+          />
+        </View>
+      </View>
+
     </View>
   );
 }

@@ -52,7 +52,7 @@ const ProgressLabel = ({label, value, offset, icon}: {label: string, value: numb
   );
 };
 
-export default function WellbeingSection({performance, strain, stress}: {performance: number, stress: number, strain: number}) {
+export default function WellbeingSection({performance, strain, stress, animationDuration}: {performance: number, stress: number, strain: number, animationDuration: number}) {
   const { t, isRTL } = useLocalization('components.dashboard.wellbeingSection');
 
   const windowWidth = Dimensions.get("window").width;
@@ -69,17 +69,17 @@ export default function WellbeingSection({performance, strain, stress}: {perform
       Animated.parallel([
         Animated.timing(performanceRef, {
           toValue: performance,
-          duration: 1500,
+          duration: animationDuration,
           useNativeDriver: false,
         }),
         Animated.timing(strainRef, {
           toValue: strain,
-          duration: 1500,
+          duration: animationDuration,
           useNativeDriver: false,
         }),
         Animated.timing(stressRef, {
           toValue: stress,
-          duration: 1500,
+          duration: animationDuration,
           useNativeDriver: false,
         }),
       ]).start();
