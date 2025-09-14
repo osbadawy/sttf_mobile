@@ -30,17 +30,17 @@ export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeede
 
       <View className="flex-row justify-between pt-10 pb-4 mx-5">
         <Text>
-          <Text className="text-3xl font-semibold">{sleepDuration.hours}</Text>
-          <Text className="font-light">{"h "}</Text>
-          <Text className="text-3xl font-semibold">{sleepDuration.minutes}</Text>
-          <Text className="font-light">min</Text>
+          <Text className="text-3xl effra-semibold">{sleepDuration.hours}</Text>
+          <Text className="effra-light">{"h "}</Text>
+          <Text className="text-3xl effra-semibold">{sleepDuration.minutes}</Text>
+          <Text className="effra-light">min</Text>
         </Text>
 
         <Text>
-          <Text className="text-xl">{sleepNeeded.hours}</Text>
-          <Text className="font-light">{"h "}</Text>
-          <Text className="text-xl">{sleepNeeded.minutes}</Text>
-          <Text className="font-light">min</Text>
+          <Text className="text-xl effra-normal">{sleepNeeded.hours}</Text>
+          <Text className="effra-light">{"h "}</Text>
+          <Text className="text-xl effra-normal">{sleepNeeded.minutes}</Text>
+          <Text className="effra-light">min</Text>
         </Text>
       </View>
 

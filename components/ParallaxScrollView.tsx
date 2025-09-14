@@ -1,32 +1,14 @@
 import type { PropsWithChildren } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-
-const HEADER_HEIGHT = 100;
+import { ScrollView, View } from 'react-native';
 
 export default function ParallaxScrollView({
   children,
 }: PropsWithChildren) {
   return (
-    <View style={styles.container}>
+    <View className="flex-1">
       <ScrollView scrollEventThrottle={16}>
-        <View style={styles.content}>{children}</View>
+        <View className="flex-1 p-4 gap-4 overflow-hidden">{children}</View>
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    height: HEADER_HEIGHT,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
-  },
-});

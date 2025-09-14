@@ -46,8 +46,11 @@ const ProgressLabel = ({label, value, offset, icon}: {label: string, value: numb
   return (
     <View className={containerClassName}>
       {icon}
-      <Text className="text-black font-extrabold text-4xl">{value}%</Text>
-      <Text className="text-black font-light text-sx">{label}</Text>
+      <Text>
+        <Text className="text-black text-4xl effra-semibold">{value}</Text>
+        <Text className="text-black effra-normal">%</Text>
+      </Text>
+      <Text className="text-black text-xs effra-light">{label}</Text>
     </View>
   );
 };

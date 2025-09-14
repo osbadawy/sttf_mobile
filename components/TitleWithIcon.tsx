@@ -15,13 +15,13 @@ export default function TitleWithIcon({ title, titleColor,  icon, isRTL, arrow=t
       {isRTL ? (
         <>
           {arrow && <ArrowRight className="transform rotate-180" />}
-          <Text className={`text-2xl font-bold pl-1 pr-2 ${titleColor}`}>{title}</Text>
+          <Text className={`text-2xl effra-medium pl-1 pr-2 ${titleColor}`}>{title}</Text>
           {icon}
         </>
       ) : (
         <>
           {icon}
-          <Text className={`text-2xl font-bold pl-2 pr-1 ${titleColor}`}>{title}</Text>
+          <Text className={`text-2xl effra-medium pl-2 pr-1 ${titleColor}`}>{title}</Text>
           {arrow && <ArrowRight />}
         </>
       )}

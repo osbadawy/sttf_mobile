@@ -4,12 +4,14 @@ import { initReactI18next } from 'react-i18next';
 
 // Import individual translation files
 import arCommon from '../locales/ar/common.json';
+import arHeartSection from '../locales/ar/components/dashboard/HeartSection.json';
 import arSleepSection from '../locales/ar/components/dashboard/SleepSection.json';
 import arWellbeingSection from '../locales/ar/components/dashboard/WellbeingSection.json';
 import arIndex from '../locales/ar/index.json';
 import arLanguage from '../locales/ar/language.json';
 
 import enCommon from '../locales/en/common.json';
+import enHeartSection from '../locales/en/components/dashboard/HeartSection.json';
 import enSleepSection from '../locales/en/components/dashboard/SleepSection.json';
 import enWellbeingSection from '../locales/en/components/dashboard/WellbeingSection.json';
 import enIndex from '../locales/en/index.json';
@@ -23,7 +25,8 @@ export const resources = {
     components: {
       dashboard: {
         wellbeingSection: enWellbeingSection,
-        sleepSection: enSleepSection
+        sleepSection: enSleepSection,
+        heartSection: enHeartSection
       }
     }
   },
@@ -34,7 +37,8 @@ export const resources = {
     components: {
       dashboard: {
         wellbeingSection: arWellbeingSection,
-        sleepSection: arSleepSection
+        sleepSection: arSleepSection,
+        heartSection: arHeartSection
       }
     }
   },
