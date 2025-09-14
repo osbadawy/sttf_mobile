@@ -9,15 +9,14 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const CIRCLE_RADIUS = 108;
 const STROKE_WIDTH = 20;
-const CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
-const ProgressCircle = ({ percentage, color, radiusOffset, animatedValue, cx }: { 
-  percentage: number, 
+const ProgressCircle = ({ color, radiusOffset, animatedValue, cx }: { 
   color: string, 
   radiusOffset: number,
   animatedValue: Animated.Value,
   cx: number
 }) => {
+  const circumference = 2 * Math.PI * (CIRCLE_RADIUS - radiusOffset);
   return (
     <AnimatedCircle
       stroke={color}
@@ -26,10 +25,10 @@ const ProgressCircle = ({ percentage, color, radiusOffset, animatedValue, cx }: 
       cy="200"
       r={CIRCLE_RADIUS - radiusOffset}
       strokeWidth={STROKE_WIDTH}
-      strokeDasharray={CIRCUMFERENCE}
+      strokeDasharray={circumference}
       strokeDashoffset={animatedValue.interpolate({
-        inputRange: [0, 100],
-        outputRange: [CIRCUMFERENCE, CIRCUMFERENCE - (CIRCUMFERENCE * percentage) / 100],
+        inputRange: [0, 1],
+        outputRange: [circumference, 0],
         extrapolate: 'clamp',
       })}
       strokeLinecap="round"
@@ -52,14 +51,14 @@ const ProgressLabel = ({label, value, offset, icon}: {label: string, value: numb
   );
 };
 
-export default function WellbeingSection({performance, stress, strain}: {performance: number, stress: number, strain: number}) {
+export default function WellbeingSection({performance, strain, stress}: {performance: number, stress: number, strain: number}) {
   const { t } = useLocalization('components.wellbeingSection');
 
   const windowWidth = Dimensions.get("window").width;
   // Create animated values for each progress circle
-  const progress1 = useRef(new Animated.Value(0)).current;
-  const progress2 = useRef(new Animated.Value(0)).current;
-  const progress3 = useRef(new Animated.Value(0)).current;
+  const performanceRef = useRef(new Animated.Value(0)).current;
+  const strainRef = useRef(new Animated.Value(0)).current;
+  const stressRef = useRef(new Animated.Value(0)).current;
 
   const center = windowWidth / 2;
 
@@ -67,18 +66,18 @@ export default function WellbeingSection({performance, stress, strain}: {perform
     // Start animations with a slight delay between each circle
     const animateProgress = () => {
       Animated.parallel([
-        Animated.timing(progress1, {
+        Animated.timing(performanceRef, {
           toValue: performance,
           duration: 1500,
           useNativeDriver: false,
         }),
-        Animated.timing(progress2, {
-          toValue: stress,
+        Animated.timing(strainRef, {
+          toValue: strain,
           duration: 1500,
           useNativeDriver: false,
         }),
-        Animated.timing(progress3, {
-          toValue: strain,
+        Animated.timing(stressRef, {
+          toValue: stress,
           duration: 1500,
           useNativeDriver: false,
         }),
@@ -89,7 +88,7 @@ export default function WellbeingSection({performance, stress, strain}: {perform
     const timer = setTimeout(animateProgress, 300);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [ performance, strain, stress ]);
 
   return (
     <View className="flex-1 items-center">
@@ -147,32 +146,29 @@ export default function WellbeingSection({performance, stress, strain}: {perform
 
         {/* Foreground Progress - Animated */}
         <ProgressCircle 
-          percentage={performance} 
           color={colors.performance} 
           radiusOffset={0} 
-          animatedValue={progress1}
+          animatedValue={performanceRef}
           cx={center}
         />
         <ProgressCircle 
-          percentage={strain} 
           color={colors.strain} 
           radiusOffset={28} 
-          animatedValue={progress2}
+          animatedValue={strainRef}
           cx={center}
         />
         <ProgressCircle 
-          percentage={stress} 
           color={colors.stress} 
           radiusOffset={56} 
-          animatedValue={progress3}
+          animatedValue={stressRef}
           cx={center}
         />
       </Svg>
 
        <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
-         <ProgressLabel label={t('performance')} value={performance} offset={-21} icon={<PerformanceIcon />} />
-         <ProgressLabel label={t('strain')} value={strain} offset={0} icon={<StrainIcon />} />
-         <ProgressLabel label={t('stress')} value={stress} offset={-21} icon={<StressIcon />} />
+         <ProgressLabel label={t('performance')} value={Math.round(performance * 100)} offset={-21} icon={<PerformanceIcon />} />
+         <ProgressLabel label={t('strain')} value={Math.round(strain * 100)} offset={0} icon={<StrainIcon />} />
+         <ProgressLabel label={t('stress')} value={Math.round(stress * 100)} offset={-21} icon={<StressIcon />} />
        </View>
     </View>
   );

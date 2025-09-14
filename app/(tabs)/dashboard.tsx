@@ -5,8 +5,7 @@ export default function Dashboard() {
 
     return (
         <ParallaxScrollView>
-            {/* <Wellness performance={0.8} stress={0.7} strain={0.6} /> */}
-            <WellbeingSection performance={80} stress={70} strain={60} />
+            <WellbeingSection performance={0.5} strain={0.5} stress={0.5} />
             {/* <ProgressRing /> */}
         </ParallaxScrollView>
     );
