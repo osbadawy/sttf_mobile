@@ -1,5 +1,6 @@
 import colors from "@/colors.js";
-import { PerformanceIcon, StrainIcon, StressIcon } from "@/components/icons";
+import { PerformanceIcon, StrainIcon, StressIcon, WellnessIcon } from "@/components/icons";
+import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useEffect, useRef } from "react";
 import { Animated, Dimensions, Text, View } from "react-native";
@@ -52,7 +53,7 @@ const ProgressLabel = ({label, value, offset, icon}: {label: string, value: numb
 };
 
 export default function WellbeingSection({performance, strain, stress}: {performance: number, stress: number, strain: number}) {
-  const { t } = useLocalization('components.wellbeingSection');
+  const { t, isRTL } = useLocalization('components.wellbeingSection');
 
   const windowWidth = Dimensions.get("window").width;
   // Create animated values for each progress circle
@@ -93,7 +94,7 @@ export default function WellbeingSection({performance, strain, stress}: {perform
   return (
     <View className="flex-1 items-center">
       <View className="w-full">
-        <Text className="w-full" >{t('title')}</Text>
+        <TitleWithIcon title={t('title')} titleColor="text-black" icon={<WellnessIcon />} isRTL={isRTL} />
       </View>
       <Svg width={windowWidth} height={600}>
         {/* Background Circles */}
