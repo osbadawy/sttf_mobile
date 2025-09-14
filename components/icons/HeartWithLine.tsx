@@ -1,6 +1,6 @@
 import Svg, { Defs, G, Path } from "react-native-svg"
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
-const HeartIcon = (props: any) => (
+const HeartWithLine = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={30}
@@ -22,4 +22,4 @@ const HeartIcon = (props: any) => (
     <Defs></Defs>
   </Svg>
 )
-export default HeartIcon
+export default HeartWithLine
