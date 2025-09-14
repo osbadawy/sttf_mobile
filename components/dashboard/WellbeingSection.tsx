@@ -53,7 +53,7 @@ const ProgressLabel = ({label, value, offset, icon}: {label: string, value: numb
 };
 
 export default function WellbeingSection({performance, strain, stress}: {performance: number, stress: number, strain: number}) {
-  const { t, isRTL } = useLocalization('components.wellbeingSection');
+  const { t, isRTL } = useLocalization('components.dashboard.wellbeingSection');
 
   const windowWidth = Dimensions.get("window").width;
   // Create animated values for each progress circle
@@ -96,7 +96,7 @@ export default function WellbeingSection({performance, strain, stress}: {perform
       <View className="w-full">
         <TitleWithIcon title={t('title')} titleColor="text-black" icon={<WellnessIcon />} isRTL={isRTL} />
       </View>
-      <Svg width={windowWidth} height={600}>
+      <Svg width={windowWidth} height={440}>
         {/* Background Circles */}
         <Circle
           cx={center}
@@ -133,17 +133,21 @@ export default function WellbeingSection({performance, strain, stress}: {perform
           // dashes
           strokeDasharray={8}
         />
-
-        <Circle
-          cx={center}
-          cy="200"
-          r={300}
-          stroke="#797979"
-          strokeWidth={1}
-          fill="none"
-          // dashes
-          strokeDasharray={8}
-        />
+        
+        <View style={{ position: 'absolute', zIndex: -1 }}>
+          <Svg width={windowWidth} height={600}>
+            <Circle
+              cx={center}
+              cy="200"
+              r={300}
+              stroke="#797979"
+              strokeWidth={1}
+              fill="none"
+              // dashes
+              strokeDasharray={8}
+            />
+          </Svg>
+        </View>
 
         {/* Foreground Progress - Animated */}
         <ProgressCircle 

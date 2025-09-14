@@ -4,12 +4,14 @@ import { initReactI18next } from 'react-i18next';
 
 // Import individual translation files
 import arCommon from '../locales/ar/common.json';
-import arWellbeingSection from '../locales/ar/components/WellbeingSection.json';
+import arSleepSection from '../locales/ar/components/dashboard/SleepSection.json';
+import arWellbeingSection from '../locales/ar/components/dashboard/WellbeingSection.json';
 import arIndex from '../locales/ar/index.json';
 import arLanguage from '../locales/ar/language.json';
 
 import enCommon from '../locales/en/common.json';
-import enWellbeingSection from '../locales/en/components/WellbeingSection.json';
+import enSleepSection from '../locales/en/components/dashboard/SleepSection.json';
+import enWellbeingSection from '../locales/en/components/dashboard/WellbeingSection.json';
 import enIndex from '../locales/en/index.json';
 import enLanguage from '../locales/en/language.json';
 
@@ -19,7 +21,10 @@ export const resources = {
     home: enIndex,
     language: enLanguage,
     components: {
-      wellbeingSection: enWellbeingSection
+      dashboard: {
+        wellbeingSection: enWellbeingSection,
+        sleepSection: enSleepSection
+      }
     }
   },
   ar: {
@@ -27,7 +32,10 @@ export const resources = {
     home: arIndex,
     language: arLanguage,
     components: {
-      wellbeingSection: arWellbeingSection
+      dashboard: {
+        wellbeingSection: arWellbeingSection,
+        sleepSection: arSleepSection
+      }
     }
   },
 };

@@ -7,6 +7,7 @@ const colors = {
     stress: "#F47B37",
     stressLight: "#FFEBDF",
     background: "#F8F9F2",
+    sleep: "#28C5C6",
 }
 
 export default colors;
