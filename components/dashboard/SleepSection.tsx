@@ -1,3 +1,4 @@
+import Card from '@/components/Card';
 import { SleepIcon } from '@/components/icons';
 import TitleWithIcon from '@/components/TitleWithIcon';
 import { useLocalization } from '@/contexts/LocalizationContext';
@@ -23,7 +24,7 @@ export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeede
   const sleepNeeded = milliToHoursAndMins(sleepNeededMilli);
 
   return (
-    <View 
+    <Card 
       className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl"
     >
       <TitleWithIcon title={t('title')} icon={<SleepIcon />} titleColor="text-sleep" isRTL={isRTL} arrow={false} />
@@ -56,6 +57,6 @@ export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeede
         </View>
       </View>
 
-    </View>
+    </Card>
   );
 }
