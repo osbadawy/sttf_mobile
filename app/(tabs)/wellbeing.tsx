@@ -19,7 +19,7 @@ export default function WellbeingPage() {
                 <Text className="effra-medium text-2xl">{t('title')}</Text>
                 {isRTL ? <ClickableArrow isRTL={isRTL}/> : <View/>}
             </View>
-            <StrainSection strainToday={19.2} strain14Days={15.5} />
+            <StrainSection strainToday={12} strain14Days={15.5} />
         </ParallaxScrollView>
     );
 }
