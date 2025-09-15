@@ -46,6 +46,26 @@ export default Sentry.wrap(function RootLayout() {
     'Effra-800-italic': require('../assets/fonts/effra-trial-cufonfonts/Effra_Trial_XBdIt.ttf'),
     'Effra-900': require('../assets/fonts/effra-trial-cufonfonts/Effra_Trial_Blk.ttf'),
     'Effra-900-italic': require('../assets/fonts/effra-trial-cufonfonts/Effra_Trial_BlkIt.ttf'),
+    // Inter fonts - using the same pattern as Effra
+    'Inter': require('../assets/fonts/inter/Inter_18pt-Regular.ttf'),
+    'Inter-100': require('../assets/fonts/inter/Inter_18pt-Thin.ttf'),
+    'Inter-100-italic': require('../assets/fonts/inter/Inter_18pt-ThinItalic.ttf'),
+    'Inter-200': require('../assets/fonts/inter/Inter_18pt-ExtraLight.ttf'),
+    'Inter-200-italic': require('../assets/fonts/inter/Inter_18pt-ExtraLightItalic.ttf'),
+    'Inter-300': require('../assets/fonts/inter/Inter_18pt-Light.ttf'),
+    'Inter-300-italic': require('../assets/fonts/inter/Inter_18pt-LightItalic.ttf'),
+    'Inter-400': require('../assets/fonts/inter/Inter_18pt-Regular.ttf'),
+    'Inter-400-italic': require('../assets/fonts/inter/Inter_18pt-Italic.ttf'),
+    'Inter-500': require('../assets/fonts/inter/Inter_18pt-Medium.ttf'),
+    'Inter-500-italic': require('../assets/fonts/inter/Inter_18pt-MediumItalic.ttf'),
+    'Inter-600': require('../assets/fonts/inter/Inter_18pt-SemiBold.ttf'),
+    'Inter-600-italic': require('../assets/fonts/inter/Inter_18pt-SemiBoldItalic.ttf'),
+    'Inter-700': require('../assets/fonts/inter/Inter_18pt-Bold.ttf'),
+    'Inter-700-italic': require('../assets/fonts/inter/Inter_18pt-BoldItalic.ttf'),
+    'Inter-800': require('../assets/fonts/inter/Inter_18pt-ExtraBold.ttf'),
+    'Inter-800-italic': require('../assets/fonts/inter/Inter_18pt-ExtraBoldItalic.ttf'),
+    'Inter-900': require('../assets/fonts/inter/Inter_18pt-Black.ttf'),
+    'Inter-900-italic': require('../assets/fonts/inter/Inter_18pt-BlackItalic.ttf'),
   });
 
   if (!loaded) {

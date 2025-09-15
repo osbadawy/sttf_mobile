@@ -9,6 +9,7 @@ import arSleepSection from '../locales/ar/components/dashboard/SleepSection.json
 import arWellbeingSection from '../locales/ar/components/dashboard/WellbeingSection.json';
 import arIndex from '../locales/ar/index.json';
 import arLanguage from '../locales/ar/language.json';
+import arStats from '../locales/ar/stats.json';
 
 import enCommon from '../locales/en/common.json';
 import enHeartSection from '../locales/en/components/dashboard/HeartSection.json';
@@ -16,12 +17,14 @@ import enSleepSection from '../locales/en/components/dashboard/SleepSection.json
 import enWellbeingSection from '../locales/en/components/dashboard/WellbeingSection.json';
 import enIndex from '../locales/en/index.json';
 import enLanguage from '../locales/en/language.json';
+import enStats from '../locales/en/stats.json';
 
 export const resources = {
   en: {
     common: enCommon,
     home: enIndex,
     language: enLanguage,
+    stats: enStats,
     components: {
       dashboard: {
         wellbeingSection: enWellbeingSection,
@@ -34,6 +37,7 @@ export const resources = {
     common: arCommon,
     home: arIndex,
     language: arLanguage,
+    stats: arStats,
     components: {
       dashboard: {
         wellbeingSection: arWellbeingSection,

@@ -38,6 +38,28 @@ export default {
         'effra-bold-italic': ['Effra-700-italic', 'system-ui', 'sans-serif'],
         'effra-extrabold-italic': ['Effra-800-italic', 'system-ui', 'sans-serif'],
         'effra-black-italic': ['Effra-900-italic', 'system-ui', 'sans-serif'],
+        // Inter font family - using the same pattern as Effra
+        'inter': ['Inter-400', 'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        // Inter weight-specific classes that map directly to font files
+        'inter-thin': ['Inter-100', 'system-ui', 'sans-serif'],
+        'inter-extralight': ['Inter-200', 'system-ui', 'sans-serif'],
+        'inter-light': ['Inter-300', 'system-ui', 'sans-serif'],
+        'inter-regular': ['Inter-400', 'system-ui', 'sans-serif'],
+        'inter-medium': ['Inter-500', 'system-ui', 'sans-serif'],
+        'inter-semibold': ['Inter-600', 'system-ui', 'sans-serif'],
+        'inter-bold': ['Inter-700', 'system-ui', 'sans-serif'],
+        'inter-extrabold': ['Inter-800', 'system-ui', 'sans-serif'],
+        'inter-black': ['Inter-900', 'system-ui', 'sans-serif'],
+        // Inter italic variants
+        'inter-thin-italic': ['Inter-100-italic', 'system-ui', 'sans-serif'],
+        'inter-extralight-italic': ['Inter-200-italic', 'system-ui', 'sans-serif'],
+        'inter-light-italic': ['Inter-300-italic', 'system-ui', 'sans-serif'],
+        'inter-regular-italic': ['Inter-400-italic', 'system-ui', 'sans-serif'],
+        'inter-medium-italic': ['Inter-500-italic', 'system-ui', 'sans-serif'],
+        'inter-semibold-italic': ['Inter-600-italic', 'system-ui', 'sans-serif'],
+        'inter-bold-italic': ['Inter-700-italic', 'system-ui', 'sans-serif'],
+        'inter-extrabold-italic': ['Inter-800-italic', 'system-ui', 'sans-serif'],
+        'inter-black-italic': ['Inter-900-italic', 'system-ui', 'sans-serif'],
       },
       fontWeight: {
         // Map Tailwind font weights to Effra variants

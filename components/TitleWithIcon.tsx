@@ -5,11 +5,11 @@ interface TitleWithIconProps {
   title: string;
   titleColor: string;
   icon: React.ReactNode;
-  isRTL: boolean;
+  isRTL?: boolean;
   arrow?: boolean;
 }
 
-export default function TitleWithIcon({ title, titleColor,  icon, isRTL, arrow=true }: TitleWithIconProps) {
+export default function TitleWithIcon({ title, titleColor,  icon, isRTL=false, arrow=true }: TitleWithIconProps) {
   return (
     <View className={`flex-row w-full items-center ${isRTL ? 'justify-end' : 'justify-start'}`}>
       {isRTL ? (

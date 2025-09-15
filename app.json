@@ -48,7 +48,25 @@
             "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Blk.ttf",
             "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_BlkIt.ttf",
             "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_Wght.ttf",
-            "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_WghtItal.ttf"
+            "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_WghtItal.ttf",
+            "./assets/fonts/inter/Inter_18pt-Regular.ttf",
+            "./assets/fonts/inter/Inter_18pt-Italic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Thin.ttf",
+            "./assets/fonts/inter/Inter_18pt-ThinItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraLight.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraLightItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Light.ttf",
+            "./assets/fonts/inter/Inter_18pt-LightItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Medium.ttf",
+            "./assets/fonts/inter/Inter_18pt-MediumItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-SemiBold.ttf",
+            "./assets/fonts/inter/Inter_18pt-SemiBoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Bold.ttf",
+            "./assets/fonts/inter/Inter_18pt-BoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraBold.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraBoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Black.ttf",
+            "./assets/fonts/inter/Inter_18pt-BlackItalic.ttf"
           ]
         }
       ],
