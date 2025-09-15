@@ -30,6 +30,12 @@ export default function TabLayout() {
           title: tCommon('dashboard'),
         }}
       />
+      <Tabs.Screen
+        name="wellbeing"
+        options={{
+          title: tCommon('wellbeing'),
+        }}
+      />
     </Tabs>
   );
 }

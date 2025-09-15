@@ -2,8 +2,9 @@ import colors from "@/colors.js";
 import { PerformanceIcon, StrainIcon, StressIcon, WellnessIcon } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { RelativePathString, router } from "expo-router";
 import { useEffect, useRef } from "react";
-import { Animated, Dimensions, Text, View } from "react-native";
+import { Animated, Dimensions, Text, TouchableOpacity, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -95,7 +96,7 @@ export default function WellbeingSection({performance, strain, stress, animation
   }, [ performance, strain, stress ]);
 
   return (
-    <View className="flex-1 items-center">
+    <TouchableOpacity className="flex-1 items-center" onPress={() => router.push('wellbeing' as RelativePathString)}>
       <View className="w-full">
         <TitleWithIcon title={t('title')} titleColor="text-black" icon={<WellnessIcon />} isRTL={isRTL} />
       </View>
@@ -178,6 +179,6 @@ export default function WellbeingSection({performance, strain, stress, animation
          <ProgressLabel label={t('strain')} value={Math.round(strain * 100)} offset={0} icon={<StrainIcon />} />
          <ProgressLabel label={t('stress')} value={Math.round(stress * 100)} offset={-21} icon={<StressIcon />} />
        </View>
-    </View>
+    </TouchableOpacity>
   );
 }
