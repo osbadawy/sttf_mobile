@@ -12,6 +12,10 @@ const colors = {
     stressLight: "#FFEBDF",
     background: "#F8F9F2",
     sleep: "#28C5C6",
+    sleepRem: "#8871FF",
+    sleepSws: "#2A74E3",
+    sleepLight: "#70D7FF",
+    sleepAwake: "#35B3AF",
 }
 
 export default colors;

@@ -1,5 +1,6 @@
 import { ArrowRight } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import SleepSection from "@/components/wellbeing/SleepSection";
 import StrainSection from "@/components/wellbeing/StrainSection";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString, router } from "expo-router";
@@ -20,6 +21,7 @@ export default function WellbeingPage() {
                 {isRTL ? <ClickableArrow isRTL={isRTL}/> : <View/>}
             </View>
             <StrainSection strainToday={12} strain14Days={15.5} />
+            <SleepSection rem={12} sws={15.5} light={18} awake={21} score={0.8} />
         </ParallaxScrollView>
     );
 }
