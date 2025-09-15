@@ -16,21 +16,21 @@ export default function StrainSection({strainToday, strain14Days}: StrainSection
     const todaysDate = new Date().toLocaleDateString('en-US', { day: '2-digit', month: '2-digit' }).replace('/', '.');
 
     return (
-        <CardWithTitle title={tWellbeing('strain')} icon={<StrainIcon />} titleColor="text-black" arrow={false}>
+        <CardWithTitle title={tWellbeing('strain')} icon={<StrainIcon />} titleColor="text-black" arrow={false} isRTL={isRTL}>
            <View className="flex-row justify-between">
             <Text>
-                <Text className="font-inter-semibold text-lg">
-                    {strainToday}
+                <Text className="font-inter-semibold text-3xl">
+                    {strainToday + " "}
                 </Text>
-                <Text className="font-inter-regular text-sm text-gray-600">
+                <Text className="font-inter-light text-xs text-[#4B4B4B]">
                     {todaysDate}
                 </Text>
             </Text>
             <Text>
-                <Text className="font-inter-semibold text-lg">
-                    {strain14Days}
+                <Text className="font-inter-semibold text-3xl text-[#757575]">
+                    {strain14Days + " "}
                 </Text>
-                <Text className="font-inter-regular text-sm text-gray-600">
+                <Text className="font-inter-light text-xs text-[#969696]">
                     {tStats('14DayAvg')}
                 </Text>
             </Text>
