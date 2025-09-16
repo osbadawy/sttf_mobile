@@ -17,6 +17,8 @@ const colors = {
     sleepSws: "#2A74E3",
     sleepLight: "#70D7FF",
     sleepAwake: "#35B3AF",
+    heart: "#FF4141",
+    heartLight: "#FFA0A0",
 }
 
 export default colors;
