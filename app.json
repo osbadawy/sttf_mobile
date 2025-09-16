@@ -26,6 +26,51 @@
     "plugins": [
       "expo-router",
       [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Hair.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_HairIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Th.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_ThIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Lt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_LtIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Rg.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_It.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Md.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_MdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_SBd.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_SBdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Bd.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_BdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_XBd.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_XBdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Blk.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_BlkIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_Wght.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_WghtItal.ttf",
+            "./assets/fonts/inter/Inter_18pt-Regular.ttf",
+            "./assets/fonts/inter/Inter_18pt-Italic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Thin.ttf",
+            "./assets/fonts/inter/Inter_18pt-ThinItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraLight.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraLightItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Light.ttf",
+            "./assets/fonts/inter/Inter_18pt-LightItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Medium.ttf",
+            "./assets/fonts/inter/Inter_18pt-MediumItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-SemiBold.ttf",
+            "./assets/fonts/inter/Inter_18pt-SemiBoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Bold.ttf",
+            "./assets/fonts/inter/Inter_18pt-BoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraBold.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraBoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Black.ttf",
+            "./assets/fonts/inter/Inter_18pt-BlackItalic.ttf"
+          ]
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",

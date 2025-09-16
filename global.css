@@ -6,3 +6,58 @@
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
+
+/* Effra Font Configuration - React Native Web Compatible */
+/* Note: Font loading is handled by React Native's useFonts hook */
+/* CSS @font-face declarations with local URLs are not supported in React Native Web */
+
+/* Custom Effra font classes for explicit use */
+.effra-font {
+  font-family: 'Effra-400', 'Effra', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.effra-hairline {
+  font-family: 'Effra-100', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-thin {
+  font-family: 'Effra-200', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-light {
+  font-family: 'Effra-300', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-normal {
+  font-family: 'Effra-400', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-medium {
+  font-family: 'Effra-500', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-semibold {
+  font-family: 'Effra-600', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-bold {
+  font-family: 'Effra-700', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-extrabold {
+  font-family: 'Effra-800', 'Effra', system-ui, sans-serif !important;
+}
+
+.effra-black {
+  font-family: 'Effra-900', 'Effra', system-ui, sans-serif !important;
+}
+
+/* Set Effra Normal as default font with higher specificity */
+html, body, #root, #__next {
+  font-family: 'Effra-400', 'Effra', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Universal selector as fallback - Effra Normal */
+* {
+  font-family: 'Effra-400', 'Effra', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}

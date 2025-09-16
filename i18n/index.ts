@@ -4,33 +4,69 @@ import { initReactI18next } from 'react-i18next';
 
 // Import individual translation files
 import arCommon from '../locales/ar/common.json';
-import arExplore from '../locales/ar/explore.json';
+import arHeartSection from '../locales/ar/components/dashboard/HeartSection.json';
+import arSleepSection from '../locales/ar/components/dashboard/SleepSection.json';
+import arWellbeingSection from '../locales/ar/components/dashboard/WellbeingSection.json';
+import arHeart from '../locales/ar/components/heart/index.json';
+import arWellbeingSleep from '../locales/ar/components/wellbeing/sleep.json';
 import arIndex from '../locales/ar/index.json';
 import arLanguage from '../locales/ar/language.json';
+import arStats from '../locales/ar/stats.json';
 
 import enCommon from '../locales/en/common.json';
-import enExplore from '../locales/en/explore.json';
+import enHeartSection from '../locales/en/components/dashboard/HeartSection.json';
+import enSleepSection from '../locales/en/components/dashboard/SleepSection.json';
+import enWellbeingSection from '../locales/en/components/dashboard/WellbeingSection.json';
+import enHeart from '../locales/en/components/heart/index.json';
+import enWellbeingSleep from '../locales/en/components/wellbeing/sleep.json';
 import enIndex from '../locales/en/index.json';
 import enLanguage from '../locales/en/language.json';
+import enStats from '../locales/en/stats.json';
 
 export const resources = {
   en: {
     common: enCommon,
     home: enIndex,
-    explore: enExplore,
     language: enLanguage,
+    stats: enStats,
+    components: {
+      dashboard: {
+        wellbeingSection: enWellbeingSection,
+        sleepSection: enSleepSection,
+        heartSection: enHeartSection
+      },
+      wellbeing: {
+        sleep: enWellbeingSleep
+      },
+      heart: enHeart
+    }
   },
   ar: {
     common: arCommon,
     home: arIndex,
-    explore: arExplore,
     language: arLanguage,
+    stats: arStats,
+    components: {
+      dashboard: {
+        wellbeingSection: arWellbeingSection,
+        sleepSection: arSleepSection,
+        heartSection: arHeartSection
+      },
+      wellbeing: {
+        sleep: arWellbeingSleep
+      },
+      heart: arHeart
+    }
   },
 };
 
 // Get device locale
 const deviceLocale = Localization.getLocales()[0]?.languageCode || 'en';
 
+const isRTL = (locale: string) => {
+  const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
+  return rtlLanguages.includes(locale);
+};
 
 
 i18n
@@ -53,6 +89,7 @@ i18n
 
 // Export helper functions
 export const getCurrentLanguage = () => i18n.language;
+export const isCurrentLanguageRTL = () => isRTL(i18n.language);
 export const changeLanguage = (language: string) => i18n.changeLanguage(language);
 
 export default i18n;
