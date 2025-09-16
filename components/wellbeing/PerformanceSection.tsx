@@ -5,7 +5,7 @@ import { PerformanceIcon } from "../icons";
 
 interface PerformanceSectionProps {
     performance: number;
-    performance14DaysHistory: Array<number>;
+    performance14DaysHistory: number[];
 }
 
 export default function PerformanceSection({performance, performance14DaysHistory}: PerformanceSectionProps) {

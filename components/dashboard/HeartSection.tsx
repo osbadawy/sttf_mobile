@@ -2,7 +2,8 @@ import Card from "@/components/Card";
 import { HeartBg, HeartWithLine } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { Text, View } from "react-native";
+import { RelativePathString, router } from "expo-router";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface HeartSectionProps {
     dailyAvg: number;
@@ -14,7 +15,7 @@ export default function HeartSection({dailyAvg, max, resting}: HeartSectionProps
     const { t, isRTL } = useLocalization('components.dashboard.heartSection');
 
     return (
-        <View className="mt-11">
+        <TouchableOpacity className="mt-11" onPress={() => router.push('heart' as RelativePathString)}>
             <TitleWithIcon title={t('title')} icon={<HeartWithLine />} titleColor="text-black" isRTL={isRTL}/>
             <View className="flex-row w-full mt-6 relative justify-center">
                 <Card className="relative mr-3 z-10 p-4" style={{ flex: 3 }}>
@@ -41,6 +42,6 @@ export default function HeartSection({dailyAvg, max, resting}: HeartSectionProps
                 </Card>
                 <Card className="absolute top-7 w-[80vw] h-full"/>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }

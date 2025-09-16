@@ -2,14 +2,15 @@ import Card from '@/components/Card';
 import { SleepIcon } from '@/components/icons';
 import TitleWithIcon from '@/components/TitleWithIcon';
 import { useLocalization } from '@/contexts/LocalizationContext';
-import { Animated, Text, View } from 'react-native';
+import { RelativePathString, router } from 'expo-router';
+import { Animated, Text, TouchableOpacity, View } from 'react-native';
 
 
 interface SleepSectionProps {
     sleepScore: number;
     sleepDurationMilli: number;
     sleepNeededMilli: number;
-}
+} 
 
 export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeededMilli}: SleepSectionProps) {
   const { t, isRTL } = useLocalization('components.dashboard.sleepSection');
@@ -27,6 +28,7 @@ export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeede
     <Card 
       className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl"
     >
+      <TouchableOpacity onPress={() => router.push('wellbeing' as RelativePathString)}>
       <TitleWithIcon title={t('title')} icon={<SleepIcon />} titleColor="text-sleep" isRTL={isRTL} arrow={false} />
 
       <View className="flex-row justify-between pt-10 pb-4 mx-5">
@@ -56,7 +58,7 @@ export default function SleepSection({sleepScore, sleepDurationMilli, sleepNeede
           />
         </View>
       </View>
-
+      </TouchableOpacity>
     </Card>
   );
 }
