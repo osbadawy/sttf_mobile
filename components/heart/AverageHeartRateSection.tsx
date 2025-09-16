@@ -18,7 +18,7 @@ interface AverageHeartRateProps {
     averageHRV: number;
 }
 
-export default function AverageHeartRate({ averageHeartRate, averageHeartRateHistory, HRV, averageHRV }: AverageHeartRateProps) {
+export default function AverageHeartRateSection({ averageHeartRate, averageHeartRateHistory, HRV, averageHRV }: AverageHeartRateProps) {
     const { t: tHeart } = useLocalization('components.heart.avg');
     const { t, isRTL } = useLocalization('stats');
     const [containerWidth, setContainerWidth] = useState(300); // Default fallback width

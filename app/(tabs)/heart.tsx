@@ -1,4 +1,4 @@
-import AverageHeartRate from "@/components/heart/AverageHeartRate";
+import AverageHeartRateSection from "@/components/heart/AverageHeartRateSection";
 import PageWithArrow from "@/components/PageWithArrow";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString } from "expo-router";
@@ -20,7 +20,7 @@ export default function HeartPage() {
 
     return (
         <PageWithArrow title={t('title')} backLink={"dashboard" as RelativePathString} isRTL={isRTL}>
-            <AverageHeartRate averageHeartRate={80} averageHeartRateHistory={averageHeartRateHistory} HRV={823} averageHRV={875} />
+            <AverageHeartRateSection averageHeartRate={80} averageHeartRateHistory={averageHeartRateHistory} HRV={823} averageHRV={875} />
         </PageWithArrow>
     );
 }
