@@ -1,5 +1,5 @@
 import Card from "@/components/Card";
-import { HeartBg, HeartWithLine } from "@/components/icons";
+import { HeartBg, HeartLine2 } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString, router } from "expo-router";
@@ -16,7 +16,7 @@ export default function HeartSection({dailyAvg, max, resting}: HeartSectionProps
 
     return (
         <TouchableOpacity className="mt-11" onPress={() => router.push('heart' as RelativePathString)}>
-            <TitleWithIcon title={t('title')} icon={<HeartWithLine />} titleColor="text-black" isRTL={isRTL}/>
+            <TitleWithIcon title={t('title')} icon={<HeartLine2 />} titleColor="text-black" isRTL={isRTL}/>
             <View className="flex-row w-full mt-6 relative justify-center">
                 <Card className="relative mr-3 z-10 p-4" style={{ flex: 3 }}>
                     <Text className="effra-normal">{t('dailyAvg')}</Text>

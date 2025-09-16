@@ -1,5 +1,5 @@
 import colors from "@/colors.js";
-import { PerformanceIcon, StrainIcon, StressIcon, WellnessIcon } from "@/components/icons";
+import { HeartLine1, PerformanceIcon, StrainIcon, StressIcon } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString, router } from "expo-router";
@@ -98,7 +98,7 @@ export default function WellbeingSection({performance, strain, stress, animation
   return (
     <TouchableOpacity className="flex-1 items-center" onPress={() => router.push('wellbeing' as RelativePathString)}>
       <View className="w-full">
-        <TitleWithIcon title={t('title')} titleColor="text-black" icon={<WellnessIcon />} isRTL={isRTL} />
+        <TitleWithIcon title={t('title')} titleColor="text-black" icon={<HeartLine1 />} isRTL={isRTL} />
       </View>
       <Svg width={windowWidth} height={440}>
         {/* Background Circles */}

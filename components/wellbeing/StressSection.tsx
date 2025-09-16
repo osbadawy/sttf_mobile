@@ -113,7 +113,7 @@ export default function StressSection({stress, stress14Days}: StressSectionProps
                          alignItems: 'center',
                          justifyContent: 'center'
                      }}>
-                         <Text className="font-inter-semibold text-2xl text-center text-[#969696]">{stress14Days.toFixed(1)}</Text>
+                         <Text className="font-inter-semibold text-2xl text-center text-[#424242]">{stress14Days.toFixed(1)}</Text>
                          <Text className="font-inter-light text-base text-center text-[#969696]">{t('avg')}</Text>
                      </View>
                 </Svg>

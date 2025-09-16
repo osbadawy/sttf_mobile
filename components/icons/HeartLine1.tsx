@@ -1,6 +1,6 @@
 import Svg, { Defs, G, LinearGradient, Path, Stop } from "react-native-svg"
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
-const WellnessIcon = (props: any) => (
+const HeartLine1 = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={30}
@@ -46,4 +46,4 @@ const WellnessIcon = (props: any) => (
     </Defs>
   </Svg>
 )
-export default WellnessIcon
+export default HeartLine1

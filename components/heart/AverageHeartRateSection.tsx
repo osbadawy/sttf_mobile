@@ -1,6 +1,6 @@
 import colors from "@/colors";
 import CardWithTitle from "@/components/CardWithTitle";
-import { HeartWithLine } from "@/components/icons";
+import { HeartLine2 } from "@/components/icons";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -19,7 +19,7 @@ interface AverageHeartRateProps {
 }
 
 export default function AverageHeartRateSection({ averageHeartRate, averageHeartRateHistory, HRV, averageHRV }: AverageHeartRateProps) {
-    const { t: tHeart } = useLocalization('components.heart.avg');
+    const { t: tHeart } = useLocalization('components.heart');
     const { t, isRTL } = useLocalization('stats');
     const [containerWidth, setContainerWidth] = useState(300); // Default fallback width
 
@@ -36,20 +36,18 @@ export default function AverageHeartRateSection({ averageHeartRate, averageHeart
     const averageHeartRate14Days = averageHeartRateHistory.reduce((acc, curr) => acc + curr.heartRate, 0) / averageHeartRateHistory.length;
 
     const xValues = chartData.map(d => d.x);
-
-    console.log(averageHeartRateHistory);
-
+    
     return (
-        <CardWithTitle title={tHeart('title')} icon={<HeartWithLine />} titleColor="text-black" arrow={false} isRTL={isRTL} onLayout={(event) => {
+        <CardWithTitle title={tHeart('avgTitle')} icon={<HeartLine2 />} titleColor="text-black" arrow={false} isRTL={isRTL} onLayout={(event) => {
             const { width } = event.nativeEvent.layout;
             setContainerWidth(width);
         }}>
-            <View className="flex-row justify-between mb-4">
-                <Text>
+            <View className="flex-row justify-start mb-4">
+                <Text style={{ width: "50%" }}>
                     <Text className="font-inter-semibold text-3xl">{Math.round(averageHeartRate) + " "}</Text>
                     <Text className="font-inter-light text-xs text-[#4B4B4B]">bpm</Text>
                 </Text>
-                <Text>
+                <Text style={{ width: "50%" }}>
                     <Text className="font-inter-semibold text-3xl text-[#757575]">{Math.round(averageHeartRate14Days) + " "}</Text>
                     <Text className="font-inter-light text-xs text-[#969696]">{t('14DayAvg')}</Text>
                 </Text>
@@ -109,14 +107,14 @@ export default function AverageHeartRateSection({ averageHeartRate, averageHeart
                  />
             </VictoryChart>
 
-            <View className="flex-row justify-between px-6 pt-8">
-                <View>
+            <View className="flex-row justify-start pt-8">
+                <View style={{ width: "50%" }}>
                     <Text className="effra-medium text-base pb-3">{tHeart('hrv')}</Text>
                     <Text className="font-inter-semibold text-3xl">{HRV + " "}
                         <Text className="font-inter-light text-base text-[#4B4B4B]">ms</Text>
                     </Text>
                 </View>
-                <View>
+                <View style={{ width: "50%" }}>
                     <Text className="effra-medium text-base pb-3">{tHeart('hrv') + " "}
                         <Text className="effra-light text-base">{t('14DayAvg')}</Text>
                     </Text>

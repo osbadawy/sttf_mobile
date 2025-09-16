@@ -1,6 +1,6 @@
 import Svg, { Defs, G, Path } from "react-native-svg"
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
-const HeartWithLine = (props: any) => (
+const HeartLine3 = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={30}
@@ -17,9 +17,13 @@ const HeartWithLine = (props: any) => (
       d="M18.592 7.83c-.893.314-1.79 1.081-2.524 2.444-.103.21-.26.388-.464.515-.58.36-1.32.144-1.652-.482-.733-1.373-1.65-2.155-2.569-2.473a3.005 3.005 0 0 0-1.77-.07h-.004a2.933 2.933 0 0 0-1.416.87c-.467.518-.76 1.23-.76 2.055 0 2.552 1.724 5.237 4.444 7.803a30.47 30.47 0 0 0 1.782 1.548c.425.344.87.688 1.308 1.008 2.121-1.714 3.993-3.43 5.355-5.146 1.397-1.757 2.246-3.5 2.246-5.213 0-.8-.3-1.507-.774-2.033a3.04 3.04 0 0 0-1.433-.888 2.942 2.942 0 0 0-1.769.063Z"
     />
     <G filter="url(#a)">
-      <Path stroke="#fff" strokeLinecap="round" d="M8 14h3l2-4 4 8 2-4h3" />
+      <Path
+        stroke="#fff"
+        strokeLinecap="round"
+        d="m11 16 3.293-3.293a1 1 0 0 1 1.414 0L19 16"
+      />
     </G>
     <Defs></Defs>
   </Svg>
 )
-export default HeartWithLine
+export default HeartLine3
