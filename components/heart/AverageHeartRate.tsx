@@ -33,6 +33,10 @@ export default function AverageHeartRate({ averageHeartRate, averageHeartRateHis
         };
     });
 
+    const averageHeartRate14Days = averageHeartRateHistory.reduce((acc, curr) => acc + curr.heartRate, 0) / averageHeartRateHistory.length;
+
+    const xValues = chartData.map(d => d.x);
+
     console.log(averageHeartRateHistory);
 
     return (
@@ -40,51 +44,85 @@ export default function AverageHeartRate({ averageHeartRate, averageHeartRateHis
             const { width } = event.nativeEvent.layout;
             setContainerWidth(width);
         }}>
-            <View className="mb-4">
-                <Text className="text-2xl font-bold text-center mb-2">{averageHeartRate} BPM</Text>
-                <Text className="text-sm text-gray-600 text-center">Average Heart Rate</Text>
+            <View className="flex-row justify-between mb-4">
+                <Text>
+                    <Text className="font-inter-semibold text-3xl">{Math.round(averageHeartRate) + " "}</Text>
+                    <Text className="font-inter-light text-xs text-[#4B4B4B]">bpm</Text>
+                </Text>
+                <Text>
+                    <Text className="font-inter-semibold text-3xl text-[#757575]">{Math.round(averageHeartRate14Days) + " "}</Text>
+                    <Text className="font-inter-light text-xs text-[#969696]">{t('14DayAvg')}</Text>
+                </Text>
             </View>
 
-            <View className="relative h-[200px]">
-                <View style={{ left: 0, position: 'absolute' }} accessibilityLabel="Heart rate chart">
-                    <VictoryChart
-                        theme={VictoryTheme.material}
-                        domainPadding={{ x: 20, y: 30 }}
-                        height={200}
-                        width={containerWidth}
-                        >
-                        <VictoryAxis
-                        dependentAxis
-                        style={{ 
-                            axis: { stroke: 'none' },
-                            ticks: { stroke: 'none' },
-                            tickLabels: { opacity: 0.5 },
-                            grid: { stroke: '#e0e0e0', strokeWidth: 1, strokeDasharray: '2,2' }
-                        }}
-                    />
-                    <VictoryAxis
-                    style={{ 
-                        axis: { stroke: 'none' },
-                        ticks: { stroke: 'none' },
-                        tickLabels: { opacity: 0.5 },
-                        grid: { stroke: '#e0e0e0', strokeWidth: 1 }
-                    }}
-                    tickFormat={(t) => {
-                        const hours = Math.floor(t / 60);
-                        const minutes = t % 60;
-                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            <VictoryChart
+                theme={VictoryTheme.material}
+                domainPadding={{ x: 20, y: 30 }}
+                padding={{ left: 40, right: 40, top: 10, bottom: 40 }}
+                width={containerWidth}
+                style={{
+                    parent: {
+                        borderTopWidth: 1,
+                        borderTopColor: '#e0e0e0',
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#e0e0e0',
+                    }
+                }}
+                >
+                <VictoryAxis
+                dependentAxis
+                style={{ 
+                    axis: { stroke: 'none' },
+                    ticks: { stroke: 'none' },
+                    tickLabels: { opacity: 0.5 },
+                    grid: { stroke: '#e0e0e0', strokeWidth: 1, strokeDasharray: '2,2' }
                     }}
                 />
-                        <VictoryLine
-                            data={chartData}
-                            style={{ data: { stroke: colors.heartLight, strokeWidth: 3 } }}
-                        />
-                        <VictoryScatter
-                            data={chartData}
-                            style={{ data: { fill: "#FFFFFF", stroke: colors.heart, strokeWidth: 3 } }}
-                            size={8}
-                        />
-                    </VictoryChart>
+                <VictoryAxis
+                style={{ 
+                    axis: { stroke: 'none' },
+                    ticks: { stroke: 'none' },
+                    tickLabels: { opacity: 0.5 },
+                    grid: { stroke: '#e0e0e0', strokeWidth: 1 }
+                }}
+                tickFormat={(t) => {
+                    const hours = Math.floor(t / 60);
+                    const minutes = t % 60;
+                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                }}
+                />
+                 <VictoryLine
+                     data={chartData}
+                     style={{ data: { stroke: colors.heartLight, strokeWidth: 3 } }}
+                 />
+                 <VictoryLine
+                     data={[
+                         { x: Math.min(...xValues), y: averageHeartRate },
+                         { x: Math.max(...xValues), y: averageHeartRate }
+                     ]}
+                     style={{ data: { stroke: colors.heart, strokeWidth: 2, strokeDasharray: '5,5', strokeLinecap: 'round', opacity: 0.2 } }}
+                 />
+                 <VictoryScatter
+                     data={chartData}
+                     style={{ data: { fill: "#FFFFFF", stroke: colors.heart, strokeWidth: 3 } }}
+                     size={8}
+                 />
+            </VictoryChart>
+
+            <View className="flex-row justify-between px-6 pt-8">
+                <View>
+                    <Text className="effra-medium text-base pb-3">{tHeart('hrv')}</Text>
+                    <Text className="font-inter-semibold text-3xl">{HRV + " "}
+                        <Text className="font-inter-light text-base text-[#4B4B4B]">ms</Text>
+                    </Text>
+                </View>
+                <View>
+                    <Text className="effra-medium text-base pb-3">{tHeart('hrv') + " "}
+                        <Text className="effra-light text-base">{t('14DayAvg')}</Text>
+                    </Text>
+                    <Text className="font-inter-semibold text-3xl text-[#757575]">{averageHRV + " "}
+                        <Text className="font-inter-light text-base text-[#969696]">ms</Text>
+                    </Text>
                 </View>
             </View>
         </CardWithTitle>

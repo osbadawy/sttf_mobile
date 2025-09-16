@@ -14,13 +14,13 @@ export default function HeartPage() {
         const time = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
         return {
             time: time,
-            heartRate: Math.floor(Math.random() * 100) + 60
+            heartRate: Math.floor(Math.random() * 100) + 20
         };
     }).sort((a, b) => a.time.localeCompare(b.time));
 
     return (
         <PageWithArrow title={t('title')} backLink={"dashboard" as RelativePathString} isRTL={isRTL}>
-            <AverageHeartRate averageHeartRate={80} averageHeartRateHistory={averageHeartRateHistory} HRV={100} averageHRV={100} />
+            <AverageHeartRate averageHeartRate={80} averageHeartRateHistory={averageHeartRateHistory} HRV={823} averageHRV={875} />
         </PageWithArrow>
     );
 }
