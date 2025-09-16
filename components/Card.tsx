@@ -1,5 +1,12 @@
 import { View } from "react-native";
-export default function Card({ children, className = "", style }: { children: React.ReactNode, className?: string, style?: any }) {
+
+interface CardProps {
+    children?: React.ReactNode;
+    className?: string;
+    style?: any;
+}
+
+export default function Card({ children = "", className = "", style }: CardProps) {
     return (
         <View className={`bg-white rounded-3xl ${className}`} style={{
             shadowColor: '#000000',

@@ -39,7 +39,7 @@ export default function HeartSection({dailyAvg, max, resting}: HeartSectionProps
                         <Text className="effra-normal">bpm</Text>
                     </Text>
                 </Card>
-                <Card children={""} className="absolute top-7 w-[80vw] h-full"/>
+                <Card className="absolute top-7 w-[80vw] h-full"/>
             </View>
         </View>
     );
