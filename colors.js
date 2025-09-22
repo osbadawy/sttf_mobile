@@ -1,5 +1,7 @@
 const colors = {
     primary: '#008C46',
+    primaryDark: "#017A3E",
+    primaryLight: "#00B35A",
     performance: "#03A454",
     performanceLight: "#CDEDDD",
     strain: "#009FA0",

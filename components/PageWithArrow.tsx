@@ -1,4 +1,4 @@
-import { ArrowRight } from "@/components/icons";
+import { Arrow } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { RelativePathString, router } from "expo-router";
 import { Text, View } from "react-native";
@@ -13,7 +13,7 @@ interface PageWithArrowProps {
 export default function PageWithArrow({title, backLink, isRTL, children}: PageWithArrowProps) {
 
     const ClickableArrow = ({isRTL}: {isRTL: boolean}) => {
-        return <ArrowRight className={isRTL ? '' : 'transform rotate-180'} onPress={() => router.push(backLink as RelativePathString)}/>
+        return <Arrow direction={isRTL ? 'right' : 'left'} svgProps={{onPress: () => router.push(backLink as RelativePathString)}}/>
     }
 
     if (!backLink) {
