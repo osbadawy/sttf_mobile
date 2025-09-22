@@ -22,7 +22,7 @@ export default function LoginPage() {
   // Redirect to dashboard once logged in
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)/dashboard");
+      router.replace("/whoop-login");
     }
   }, [user]);
 

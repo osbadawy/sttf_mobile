@@ -11,6 +11,7 @@ import arHeart from '../locales/ar/components/heart/index.json';
 import arWellbeingSleep from '../locales/ar/components/wellbeing/sleep.json';
 import arIndex from '../locales/ar/index.json';
 import arLanguage from '../locales/ar/language.json';
+import arLogin from '../locales/ar/login.json';
 import arStats from '../locales/ar/stats.json';
 
 import enCommon from '../locales/en/common.json';
@@ -21,6 +22,7 @@ import enHeart from '../locales/en/components/heart/index.json';
 import enWellbeingSleep from '../locales/en/components/wellbeing/sleep.json';
 import enIndex from '../locales/en/index.json';
 import enLanguage from '../locales/en/language.json';
+import enLogin from '../locales/en/login.json';
 import enStats from '../locales/en/stats.json';
 
 export const resources = {
@@ -38,7 +40,8 @@ export const resources = {
       wellbeing: {
         sleep: enWellbeingSleep
       },
-      heart: enHeart
+      heart: enHeart,
+      login: enLogin
     }
   },
   ar: {
@@ -55,7 +58,8 @@ export const resources = {
       wellbeing: {
         sleep: arWellbeingSleep
       },
-      heart: arHeart
+      heart: arHeart,
+      login: arLogin
     }
   },
 };

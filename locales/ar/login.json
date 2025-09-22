@@ -1,0 +1,12 @@
+{
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "next": "التالي",
+    "notice": "هذه الخدمة متاحة فقط تحت الدعم",
+    "changePassword": "تغيير كلمة المرور",
+    "newPassword": "كلمة المرور الجديدة",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "whoopTitle": "توصيل مع Whoop",
+    "Connect": "توصيل"
+}

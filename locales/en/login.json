@@ -1,0 +1,12 @@
+{
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "next": "Next",
+    "notice": "This service is accessible only under invitation",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "whoopTitle": "Connect to Whoop",
+    "Connect": "Connect"
+}
