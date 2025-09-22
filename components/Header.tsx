@@ -5,7 +5,7 @@ import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
-import { Arrow } from "./icons";
+import { Arrow, ArrowBig } from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
 
 
@@ -18,6 +18,7 @@ export interface HeaderNotification {
     title: string;
     message: string;
     path: RelativePathString;
+    icon?: React.ReactNode;
 }
 
 export interface HeaderProps {
@@ -113,13 +114,28 @@ export default function Header({ title, name, profilePicture, showDateSelector, 
                 </View>
 
                 {showDateSelector && (
-                    <HeaderDateSelector 
+                    <HeaderDateSelector
                         selectedDate={date}
                         onDateSelect={setDate}
                         color={color}
                     />
                 )}
             </View>
+            {
+                notification && <View className={`items-center justify-between mx-10 my-7 ${isRTL ? 'flex-row-reverse' : "flex-row"}`}>
+                    {notification.icon ?
+                        <View className="w-[45px] h-[45px] rounded-full bg-white items-center justify-center">
+                            {notification.icon}</View>
+                        : <></>}
+                    <View>
+                        <Text className="effra-medium text-base text-white">{notification.title}</Text>
+                        <Text className="effra-light text-sm text-white">{notification.message}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => router.push(notification.path as RelativePathString)}>
+                        <ArrowBig direction={isRTL ? 'left' : 'right'} />
+                    </TouchableOpacity>
+                </View>
+            }
         </ParentContainer>
     );
 }
