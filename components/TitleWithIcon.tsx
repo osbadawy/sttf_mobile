@@ -1,4 +1,4 @@
-import { ArrowRight } from "@/components/icons";
+import { Arrow } from "@/components/icons";
 import { Text, View } from "react-native";
 
 interface TitleWithIconProps {
@@ -14,7 +14,7 @@ export default function TitleWithIcon({ title, titleColor,  icon, isRTL=false, a
     <View className={`flex-row w-full items-center ${isRTL ? 'justify-end' : 'justify-start'}`}>
       {isRTL ? (
         <>
-          {arrow && <ArrowRight className="transform rotate-180" />}
+          {arrow && <Arrow direction="left" />}
           <Text className={`text-2xl effra-medium pl-1 pr-2 ${titleColor}`}>{title}</Text>
           {icon}
         </>
@@ -22,7 +22,7 @@ export default function TitleWithIcon({ title, titleColor,  icon, isRTL=false, a
         <>
           {icon}
           <Text className={`text-2xl effra-medium pl-2 pr-1 ${titleColor}`}>{title}</Text>
-          {arrow && <ArrowRight />}
+          {arrow && <Arrow direction="right" />}
         </>
       )}
     </View>
