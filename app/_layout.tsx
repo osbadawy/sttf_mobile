@@ -1,3 +1,4 @@
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import '@/global.css';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -10,19 +11,25 @@ import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-
-  // Adds more context data to events (IP address, cookies, user, etc.)
-  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
   sendDefaultPii: true,
-
-  // Configure Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
   integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
-
-  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: __DEV__,
 });
+
+function AppNavigator() {
+  const { user } = useAuth();
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {user ? (
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="login" />
+      )}
+    </Stack>
+  );
+}
 
 export default Sentry.wrap(function RootLayout() {
   const [loaded] = useFonts({
@@ -46,7 +53,6 @@ export default Sentry.wrap(function RootLayout() {
     'Effra-800-italic': require('../assets/fonts/effra-trial-cufonfonts/Effra_Trial_XBdIt.ttf'),
     'Effra-900': require('../assets/fonts/effra-trial-cufonfonts/Effra_Trial_Blk.ttf'),
     'Effra-900-italic': require('../assets/fonts/effra-trial-cufonfonts/Effra_Trial_BlkIt.ttf'),
-    // Inter fonts - using the same pattern as Effra
     'Inter': require('../assets/fonts/inter/Inter_18pt-Regular.ttf'),
     'Inter-100': require('../assets/fonts/inter/Inter_18pt-Thin.ttf'),
     'Inter-100-italic': require('../assets/fonts/inter/Inter_18pt-ThinItalic.ttf'),
@@ -69,19 +75,17 @@ export default Sentry.wrap(function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
   return (
-    <SafeAreaProvider>
-      <LocalizationProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </LocalizationProvider>
-    </SafeAreaProvider>
+    <AuthProvider>
+      <SafeAreaProvider>
+        <LocalizationProvider>
+          <AppNavigator />
+          <StatusBar style="auto" />
+        </LocalizationProvider>
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 });
