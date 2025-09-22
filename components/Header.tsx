@@ -5,7 +5,7 @@ import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
-import { Arrow, ArrowBig } from "./icons";
+import { Arrow, ArrowBig, HeaderBgIcon } from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
 
 
@@ -83,7 +83,8 @@ export default function Header({ title, name, profilePicture, showDateSelector, 
 
     return (
         <ParentContainer>
-            <View>
+            <HeaderBgIcon svgProps={{ style: { position: 'absolute', top: -50, left: -50, zIndex: 50, filter: 'blur(4px)', opacity: color == HeaderColor.primary ? 1 : 0.4 } }} />
+            <View style={{ zIndex: 50 }}>
                 <View className={`flex justify-center ${isRTL ? 'flex-row-reverse' : "flex-row"}`}>
                     {backLink && (
                         <TouchableOpacity className="flex mx-4 items-center justify-center" onPress={() => router.push(backLink as RelativePathString)}>
@@ -122,7 +123,7 @@ export default function Header({ title, name, profilePicture, showDateSelector, 
                 )}
             </View>
             {
-                notification && <View className={`items-center justify-between mx-10 my-7 ${isRTL ? 'flex-row-reverse' : "flex-row"}`}>
+                notification && <View style={{ zIndex: 50 }} className={`items-center justify-between mx-10 my-7 ${isRTL ? 'flex-row-reverse' : "flex-row"}`}>
                     {notification.icon ?
                         <View className="w-[45px] h-[45px] rounded-full bg-white items-center justify-center">
                             {notification.icon}</View>
