@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import HeaderDateSelector from "./HeaderDateSelector";
 import { Arrow } from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
 
@@ -23,7 +24,7 @@ export interface HeaderProps {
     title?: string;
     name?: string;
     profilePicture?: string;
-    showWeekSelector?: boolean;
+    showDateSelector?: boolean;
     backLink?: RelativePathString;
     color?: HeaderColor;
     notification?: HeaderNotification;
@@ -31,7 +32,7 @@ export interface HeaderProps {
 
 
 
-export default function Header({title, name, profilePicture, showWeekSelector, backLink, color=HeaderColor.BG, notification}: HeaderProps) {
+export default function Header({ title, name, profilePicture, showDateSelector, backLink, color = HeaderColor.BG, notification }: HeaderProps) {
     /**
      * Header is on Z-index 50 and 60
      * 
@@ -46,19 +47,19 @@ export default function Header({title, name, profilePicture, showWeekSelector, b
 
     const textColor = color === HeaderColor.primary ? 'text-white' : 'text-black';
 
-    const ParentContainer = ({children}: {children: React.ReactNode}) =>  {
+    const ParentContainer = ({ children }: { children: React.ReactNode }) => {
         const className = "z-50 rounded-b-[72px] overflow-hidden";
-        
+
         if (color === HeaderColor.primary) {
             return (
                 <View className={className}>
-                <LinearGradient
-                    colors={[colors.primaryDark, colors.primaryDark, colors.primaryLight]}
-                    locations={[0, 0.65, 1]}
-                    className="pt-16 px-4"
-                >
-                    {children}
-                </LinearGradient>
+                    <LinearGradient
+                        colors={[colors.primaryDark, colors.primaryDark, colors.primaryLight]}
+                        locations={[0, 0.65, 1]}
+                        className="pt-16 px-4"
+                    >
+                        {children}
+                    </LinearGradient>
                 </View>
             );
         }
@@ -69,7 +70,7 @@ export default function Header({title, name, profilePicture, showWeekSelector, b
         );
     }
 
-    const DateText = ({className=""}: {className?: string}) => {
+    const DateText = ({ className = "" }: { className?: string }) => {
         return (
             <Text className={`${className} effra-regular text-base opacity-80 ${textColor}`}>
                 {isToday ? t("today") : date.toLocaleDateString(`${isRTL ? "ar" : "en-US"}`, { weekday: "short" })}
@@ -78,38 +79,46 @@ export default function Header({title, name, profilePicture, showWeekSelector, b
             </Text>
         );
     }
-    
+
     return (
         <ParentContainer>
-            <View className="min-h-[270px]">
-             <View className={`flex justify-center ${isRTL ? 'flex-row-reverse' : "flex-row"}`}>
-                {backLink && (
-                <TouchableOpacity onPress={() => router.push(backLink as RelativePathString)}>
-                    <Arrow direction={isRTL ? 'right' : 'left'} stroke={color == HeaderColor.primary ? 'white' : 'black'} />
-                </TouchableOpacity>
+            <View>
+                <View className={`flex justify-center ${isRTL ? 'flex-row-reverse' : "flex-row"}`}>
+                    {backLink && (
+                        <TouchableOpacity className="flex mx-4 items-center justify-center" onPress={() => router.push(backLink as RelativePathString)}>
+                            <Arrow direction={isRTL ? 'right' : 'left'} stroke={color == HeaderColor.primary ? 'white' : 'black'} />
+                        </TouchableOpacity>
+                    )}
+                    <View className="flex-1 justify-center">
+                        {title ?
+                            <>
+                                <Text className={`effra-medium text-2xl text-center ${textColor}`}>{title}</Text>
+                                <DateText className="text-center" />
+                            </>
+                            :
+                            <>
+                                <View className="flex-row items-center">
+                                    {profilePicture && <Image source={{ uri: profilePicture }} className="w-[40px] h-[40px] rounded-full mx-4" />}
+                                    <View>
+                                        <Text className={`effra-medium text-2xl text-start ${textColor}`}>{name}</Text>
+                                        <DateText className="text-start" />
+                                    </View>
+                                </View>
+                            </>
+                        }
+                    </View>
+                    <View className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4">
+                        <CalendarIcon />
+                    </View>
+                </View>
+
+                {showDateSelector && (
+                    <HeaderDateSelector 
+                        selectedDate={date}
+                        onDateSelect={setDate}
+                        color={color}
+                    />
                 )}
-                <View className="flex-1 justify-center">
-                    {title ? 
-                        <>
-                        <Text className={`effra-medium text-2xl text-center ${textColor}`}>{title}</Text>
-                        <DateText className="text-center" />
-                        </>
-                    :
-                        <>
-                        <View className="flex-row items-center">
-                            {profilePicture &&  <Image source={{uri: profilePicture}} className="w-[40px] h-[40px] rounded-full mx-4" />}
-                            <View>
-                                <Text className={`effra-medium text-2xl text-start ${textColor}`}>{name}</Text>
-                                <DateText className="text-start" />
-                            </View>
-                        </View>
-                        </>
-                    }
-                </View>
-                <View className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4">
-                    <CalendarIcon />
-                </View>
-            </View>
             </View>
         </ParentContainer>
     );
