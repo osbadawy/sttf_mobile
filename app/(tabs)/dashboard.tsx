@@ -21,9 +21,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
 
   const [name, setName] = useState("User");
   // TODO: Handle Default Profile Picture properly
-  const [profilePicture, setProfilePicture] = useState(
-    "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
-  );
+  const [profilePicture, setProfilePicture] = useState<string>("");
 
   const [stress, setStress] = useState(0);
   const [strain, setStrain] = useState(0);
@@ -135,7 +133,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
               `${data.whoop_user.first_name} ${data.whoop_user.last_name}`,
             );
           }
-          if (data.whoop_user && data.avatar_url) {
+          if (data.avatar_url) {
             setProfilePicture(data.avatar_url);
           }
         } catch (error) {

@@ -4,7 +4,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
-import { Arrow, ArrowBig, HeaderBgIcon } from "./icons";
+import {
+  Arrow,
+  ArrowBig,
+  HeaderBgIcon,
+  ProfilePictureDefaultIcon,
+} from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
 
 export enum HeaderColor {
@@ -54,6 +59,8 @@ export default function Header({
   const { t, isRTL } = useLocalization("common");
 
   const textColor = color === HeaderColor.primary ? "text-white" : "text-black";
+
+  console.log("Profile Picture", profilePicture);
 
   const ParentContainer = ({ children }: { children: React.ReactNode }) => {
     const className = "z-50 rounded-b-[72px] overflow-hidden";
@@ -136,13 +143,20 @@ export default function Header({
               </>
             ) : (
               <>
-                <View className="flex-row items-center">
-                  {profilePicture && (
-                    <Image
-                      source={{ uri: profilePicture }}
-                      className="w-[40px] h-[40px] rounded-full mx-4"
-                    />
-                  )}
+                <View
+                  className={`flex-row items-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  {profilePicture !== undefined &&
+                    (profilePicture !== "" ? (
+                      <Image
+                        source={{ uri: profilePicture }}
+                        className="w-[40px] h-[40px] rounded-full mx-4"
+                      />
+                    ) : (
+                      <View className="w-[40px] h-[40px] rounded-full mx-4 items-center justify-center bg-[#E5E5E5]">
+                        <ProfilePictureDefaultIcon />
+                      </View>
+                    ))}
                   <View>
                     <Text
                       className={`effra-medium text-2xl text-start ${textColor}`}
