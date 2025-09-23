@@ -6,6 +6,7 @@ import HeartLine1 from "./HeartLine1";
 import HeartLine2 from "./HeartLine2";
 import HeartLine3 from "./HeartLine3";
 import PerformanceIcon from "./Performance";
+import ProfilePictureDefaultIcon from "./ProfilePictureDefault";
 import SleepIcon from "./Sleep";
 import StrainIcon from "./Strain";
 import StressIcon from "./Stress";
@@ -20,6 +21,7 @@ export {
   HeartLine2,
   HeartLine3,
   PerformanceIcon,
+  ProfilePictureDefaultIcon,
   SleepIcon,
   StrainIcon,
   StressIcon,
