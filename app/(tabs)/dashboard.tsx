@@ -4,40 +4,167 @@ import {
   WellbeingSection,
 } from "@/components/dashboard";
 import { HeaderColor } from "@/components/Header";
-import { HeartLine1 } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { RelativePathString } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
+import Constants from "expo-constants";
+import { useEffect, useState } from "react";
 
-export default function Dashboard() {
+interface DashboardProps {
+  user_id?: string;
+}
+
+export default function Dashboard({ user_id }: DashboardProps) {
+  const { user } = useAuth();
+
+  const useDateState = useState(new Date());
+  const [date, setDate] = useDateState;
+
+  const [name, setName] = useState("User");
+  // TODO: Handle Default Profile Picture properly
+  const [profilePicture, setProfilePicture] = useState(
+    "https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+  );
+
+  const [stress, setStress] = useState(0);
+  const [strain, setStrain] = useState(0);
+  const [performance, setPerformance] = useState(0);
+
+  const [sleepScore, setSleepScore] = useState(0);
+  const [sleepDurationMilli, setSleepDurationMilli] = useState(0);
+  const [sleepNeededMilli, setSleepNeededMilli] = useState(0);
+
+  const [restingHeartRate, setRestingHeartRate] = useState(0);
+  const [maxHeartRate, setMaxHeartRate] = useState(0);
+  const [dailyAvgHeartRate, setDailyAvgHeartRate] = useState(0);
+
+  function extractFromData(data: any) {
+    const cycles = data.whoop_user.cycles;
+    const newestCycle = cycles.sort(
+      (a: any, b: any) =>
+        new Date(b.start).getTime() - new Date(a.start).getTime(),
+    )[0];
+
+    let _performance = 0;
+    let _stress = 0;
+    let _strain = 0;
+    let _sleepScore = 0;
+    let _sleepDurationMilli = 0;
+    let _sleepNeededMilli = 0;
+    let _restingHeartRate = 0;
+    let _maxHeartRate = 0;
+    let _dailyAvgHeartRate = 0;
+
+    if (newestCycle) {
+      _strain = newestCycle.score.strain / 21;
+      _dailyAvgHeartRate = newestCycle.score.average_heart_rate;
+      _maxHeartRate = newestCycle.score.max_heart_rate;
+
+      if (newestCycle.recoveries.length > 0) {
+        _stress = (100 - newestCycle.recoveries[0].score.recovery_score) / 100;
+        _restingHeartRate = newestCycle.recoveries[0].score.resting_heart_rate;
+      }
+
+      if (newestCycle.sleeps.length > 0) {
+        // Choose the sleep which lasts the longest (stop-start) and nap is false
+        const longestSleep = newestCycle.sleeps
+          .filter((sleep: any) => !sleep.nap) // Filter out naps
+          .sort((a: any, b: any) => {
+            const durationA =
+              new Date(a.end).getTime() - new Date(a.start).getTime();
+            const durationB =
+              new Date(b.end).getTime() - new Date(b.start).getTime();
+            return durationB - durationA; // Sort by duration descending
+          })[0];
+
+        _sleepScore = longestSleep.score.sleep_performance_percentage / 100;
+        _sleepDurationMilli =
+          longestSleep.score.stage_summary.total_in_bed_time_;
+        _sleepNeededMilli = longestSleep.score.sleep_needed.baseline_milli;
+      }
+    }
+
+    //TODO: Better performance metric
+    if (_stress && _strain) {
+      _performance = 1 - (_stress + _strain) / 2;
+    }
+
+    setPerformance(_performance);
+    setStress(_stress);
+    setStrain(_strain);
+    setSleepScore(_sleepScore);
+    setSleepDurationMilli(_sleepDurationMilli);
+    setSleepNeededMilli(_sleepNeededMilli);
+    setRestingHeartRate(_restingHeartRate);
+    setMaxHeartRate(_maxHeartRate);
+    setDailyAvgHeartRate(_dailyAvgHeartRate);
+  }
+
   const props = {
-    // title: "Dashboard",
-    name: "Person",
-    // profilePicture: "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
-    color: HeaderColor.primary,
-    // backLink: "wellness" as RelativePathString,
+    name: name,
+    profilePicture: profilePicture,
+    color: HeaderColor.BG,
     showDateSelector: true,
-    notification: {
-      title: "Assess detected activity",
-      message: "12 minutes ago * Table Tennis",
-      path: "wellbeing" as RelativePathString,
-      icon: <HeartLine1 />,
-    },
+    useDateState: useDateState,
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        try {
+          const params = new URLSearchParams({
+            firebase_id: user_id || user.uid,
+            day: date.toISOString(),
+          });
+          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/day?${params}`;
+
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${await user.getIdToken()}`,
+            },
+          });
+          const data = await response.json();
+          extractFromData(data);
+
+          if (
+            data.whoop_user &&
+            data.whoop_user.first_name &&
+            data.whoop_user.last_name
+          ) {
+            setName(
+              `${data.whoop_user.first_name} ${data.whoop_user.last_name}`,
+            );
+          }
+          if (data.whoop_user && data.avatar_url) {
+            setProfilePicture(data.avatar_url);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [date, user]);
 
   return (
     <ParallaxScrollView headerProps={props}>
       <WellbeingSection
-        performance={0.4}
-        strain={0.5}
-        stress={0.5}
+        performance={performance}
+        strain={strain}
+        stress={stress}
         animationDuration={1000}
       />
       <SleepSection
-        sleepScore={0.8}
-        sleepDurationMilli={27360000}
-        sleepNeededMilli={30240000}
+        sleepScore={sleepScore}
+        sleepDurationMilli={sleepDurationMilli}
+        sleepNeededMilli={sleepNeededMilli}
       />
-      <HeartSection dailyAvg={86} max={145} resting={48} />
+      <HeartSection
+        dailyAvg={dailyAvgHeartRate}
+        max={maxHeartRate}
+        resting={restingHeartRate}
+      />
     </ParallaxScrollView>
   );
 }

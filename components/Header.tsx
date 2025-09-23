@@ -2,7 +2,6 @@ import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
-import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
 import { Arrow, ArrowBig, HeaderBgIcon } from "./icons";
@@ -28,6 +27,7 @@ export interface HeaderProps {
   backLink?: RelativePathString;
   color?: HeaderColor;
   notification?: HeaderNotification;
+  useDateState: [Date, (date: Date) => void];
 }
 
 export default function Header({
@@ -38,6 +38,7 @@ export default function Header({
   backLink,
   color = HeaderColor.BG,
   notification,
+  useDateState,
 }: HeaderProps) {
   /**
    * Header is on Z-index 50 and 60
@@ -47,7 +48,7 @@ export default function Header({
   if (!!title === !!name)
     throw new Error("Exactly one of 'title' or 'name' must be provided");
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useDateState;
   // const isToday = date.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
   const isToday = false;
   const { t, isRTL } = useLocalization("common");
@@ -104,7 +105,7 @@ export default function Header({
             left: -50,
             zIndex: 50,
             filter: "blur(4px)",
-            opacity: color == HeaderColor.primary ? 1 : 0.4,
+            opacity: color === HeaderColor.primary ? 1 : 0.4,
           },
         }}
       />
@@ -119,7 +120,7 @@ export default function Header({
             >
               <Arrow
                 direction={isRTL ? "right" : "left"}
-                stroke={color == HeaderColor.primary ? "white" : "black"}
+                stroke={color === HeaderColor.primary ? "white" : "black"}
               />
             </TouchableOpacity>
           )}
