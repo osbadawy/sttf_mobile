@@ -1,4 +1,4 @@
-import Svg, { Defs, G, LinearGradient, Path, Stop } from "react-native-svg"
+import Svg, { Defs, G, LinearGradient, Path, Stop } from "react-native-svg";
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
 const HeartLine1 = (props: any) => (
   <Svg
@@ -45,5 +45,5 @@ const HeartLine1 = (props: any) => (
       </LinearGradient>
     </Defs>
   </Svg>
-)
-export default HeartLine1
+);
+export default HeartLine1;

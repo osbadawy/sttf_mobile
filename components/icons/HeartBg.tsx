@@ -1,4 +1,4 @@
-import Svg, { Path } from "react-native-svg"
+import Svg, { Path } from "react-native-svg";
 const HeartBg = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -12,5 +12,5 @@ const HeartBg = (props: any) => (
       d="M39.968 16.032c-8.128-.432-16.28 2.288-22.28 8.288C5.68 36.352 6.936 56.544 19.784 69.408l4.104 4.104 37.296 37.328a4.002 4.002 0 0 0 5.648 0l37.28-37.328 4.104-4.104c12.848-12.864 14.096-33.056 2.08-45.08-12.008-12.024-32.16-10.744-45 2.112L64 27.736l-1.296-1.296c-6.424-6.44-14.6-9.976-22.736-10.408Z"
     />
   </Svg>
-)
-export default HeartBg
+);
+export default HeartBg;

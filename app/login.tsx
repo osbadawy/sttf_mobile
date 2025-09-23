@@ -3,7 +3,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function LoginPage() {
   const { login, user } = useAuth();
@@ -45,7 +52,7 @@ export default function LoginPage() {
 
         {/* Email */}
         <TextInput
-          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? 'text-right' : 'text-left'}`}
+          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? "text-right" : "text-left"}`}
           placeholder={t("email")}
           placeholderTextColor="#888"
           value={email}
@@ -55,7 +62,7 @@ export default function LoginPage() {
 
         {/* Password */}
         <TextInput
-          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? 'text-right' : 'text-left'}`}
+          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? "text-right" : "text-left"}`}
           placeholder={t("password")}
           placeholderTextColor="#888"
           value={password}
@@ -75,14 +82,22 @@ export default function LoginPage() {
 
         {/* Language Switch */}
         <View className="flex-row justify-between w-1/2 mb-5">
-          <TouchableOpacity className="p-2 bg-black/30 rounded-lg" onPress={() => switchLanguage("en")} activeOpacity={1}>
+          <TouchableOpacity
+            className="p-2 bg-black/30 rounded-lg"
+            onPress={() => switchLanguage("en")}
+            activeOpacity={1}
+          >
             <Image
               source={require("@/assets/images/english.png")}
               className="w-10 h-10"
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <TouchableOpacity className="p-2 bg-black/30 rounded-lg" onPress={() => switchLanguage("ar")} activeOpacity={1}>
+          <TouchableOpacity
+            className="p-2 bg-black/30 rounded-lg"
+            onPress={() => switchLanguage("ar")}
+            activeOpacity={1}
+          >
             <Image
               source={require("@/assets/images/arabic.png")}
               className="w-10 h-10"
@@ -97,7 +112,11 @@ export default function LoginPage() {
         </Text>
 
         {/* Login Button */}
-        <Button title={t("Connect")} onPress={handleLogin} color={ButtonColor.primary} />
+        <Button
+          title={t("Connect")}
+          onPress={handleLogin}
+          color={ButtonColor.primary}
+        />
       </View>
     </ImageBackground>
   );

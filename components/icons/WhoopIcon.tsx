@@ -1,4 +1,12 @@
-import Svg, { Defs, G, Image, Mask, Path, Pattern, Use } from "react-native-svg"
+import Svg, {
+  Defs,
+  G,
+  Image,
+  Mask,
+  Path,
+  Pattern,
+  Use,
+} from "react-native-svg";
 const WhoopIcon = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -42,5 +50,5 @@ const WhoopIcon = (props: any) => (
       />
     </Defs>
   </Svg>
-)
-export default WhoopIcon
+);
+export default WhoopIcon;

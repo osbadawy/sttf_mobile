@@ -3,20 +3,23 @@
  * This provides a way to get the correct font family name based on weight and style
  */
 
-export const getEffraFontFamily = (weight: number, italic: boolean = false): string => {
+export const getEffraFontFamily = (
+  weight: number,
+  italic: boolean = false,
+): string => {
   const weightMap: Record<number, string> = {
-    100: 'Effra-100',
-    200: 'Effra-200', 
-    300: 'Effra-300',
-    400: 'Effra-400',
-    500: 'Effra-500',
-    600: 'Effra-600',
-    700: 'Effra-700',
-    800: 'Effra-800',
-    900: 'Effra-900',
+    100: "Effra-100",
+    200: "Effra-200",
+    300: "Effra-300",
+    400: "Effra-400",
+    500: "Effra-500",
+    600: "Effra-600",
+    700: "Effra-700",
+    800: "Effra-800",
+    900: "Effra-900",
   };
 
-  const baseFont = weightMap[weight] || 'Effra-400';
+  const baseFont = weightMap[weight] || "Effra-400";
   return italic ? `${baseFont}-italic` : baseFont;
 };
 

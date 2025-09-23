@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { HeaderColor } from './Header';
-import { Arrow } from './icons';
+import { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { HeaderColor } from "./Header";
+import { Arrow } from "./icons";
 
 interface DateSelectorProps {
   selectedDate?: Date;
@@ -9,8 +9,8 @@ interface DateSelectorProps {
   color?: HeaderColor;
 }
 
-export default function HeaderDateSelector({ 
-  selectedDate = new Date(), 
+export default function HeaderDateSelector({
+  selectedDate = new Date(),
   onDateSelect,
   color = HeaderColor.BG,
 }: DateSelectorProps) {
@@ -40,9 +40,9 @@ export default function HeaderDateSelector({
 
   const weekStart = getWeekStart(currentWeek);
   const weekDays = getWeekDays(weekStart);
-  
-  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  
+
+  const dayLabels = ["M", "T", "W", "T", "F", "S", "S"];
+
   const isSelectedDate = (date: Date) => {
     return date.toDateString() === selectedDate.toDateString();
   };
@@ -59,9 +59,9 @@ export default function HeaderDateSelector({
     }
   };
 
-  const navigateWeek = (direction: 'prev' | 'next') => {
+  const navigateWeek = (direction: "prev" | "next") => {
     const newWeek = new Date(currentWeek);
-    newWeek.setDate(currentWeek.getDate() + (direction === 'next' ? 7 : -7));
+    newWeek.setDate(currentWeek.getDate() + (direction === "next" ? 7 : -7));
     setCurrentWeek(newWeek);
   };
 
@@ -69,14 +69,17 @@ export default function HeaderDateSelector({
   const isCurrentWeek = () => {
     const today = new Date();
     const currentWeekStart = getWeekStart(today);
-    const displayedWeekStart = getWeekStart(currentWeek);    
-    return currentWeekStart.setHours(0, 0, 0, 0) === displayedWeekStart.setHours(0, 0, 0, 0);
+    const displayedWeekStart = getWeekStart(currentWeek);
+    return (
+      currentWeekStart.setHours(0, 0, 0, 0) ===
+      displayedWeekStart.setHours(0, 0, 0, 0)
+    );
   };
   return (
     <View className={`flex-row items-center justify-between py-4 `}>
       {/* Previous week arrow */}
-      <TouchableOpacity 
-        onPress={() => navigateWeek('prev')}
+      <TouchableOpacity
+        onPress={() => navigateWeek("prev")}
         activeOpacity={1}
         className="w-8 h-8 items-center justify-center"
       >
@@ -88,37 +91,47 @@ export default function HeaderDateSelector({
         {weekDays.map((date, index) => {
           const isSelected = isSelectedDate(date);
           const isFuture = isFutureDate(date);
-          const dayNumber = date.getDate().toString().padStart(2, '0');
-          
+          const dayNumber = date.getDate().toString().padStart(2, "0");
+
           return (
             <View key={index} className="items-center">
               {/* Day label */}
-              <Text className={`effra-light text-base ${textColor} mb-3`} style={{opacity: isFuture ? 0.3 : 0.8}}>
+              <Text
+                className={`effra-light text-base ${textColor} mb-3`}
+                style={{ opacity: isFuture ? 0.3 : 0.8 }}
+              >
                 {dayLabels[index]}
               </Text>
-              
+
               {/* Date circle */}
               <TouchableOpacity
                 onPress={() => handleDatePress(date)}
                 disabled={isFuture}
                 className={`w-10 h-10 rounded-full items-center justify-center ${
-                  isSelected 
-                    ? 'bg-primaryVeryDark shadow-lg' 
-                    : isFuture 
-                    ? 'bg-gray-300' 
-                    : 'bg-white'
+                  isSelected
+                    ? "bg-primaryVeryDark shadow-lg"
+                    : isFuture
+                      ? "bg-gray-300"
+                      : "bg-white"
                 }`}
                 style={{
-                  shadowColor: isSelected ? '#000' : 'transparent',
+                  shadowColor: isSelected ? "#000" : "transparent",
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: isSelected ? 0.25 : 0,
                   shadowRadius: isSelected ? 4 : 0,
                   elevation: isSelected ? 4 : 0,
                 }}
               >
-                <Text className={`effra-redular text-base ${
-                  isSelected ? "text-white" : isFuture ? "text-gray-500" : "text-black"
-                }`} style={{opacity: isSelected ? 1 : isFuture ? 0.5 : 0.6}}>
+                <Text
+                  className={`effra-redular text-base ${
+                    isSelected
+                      ? "text-white"
+                      : isFuture
+                        ? "text-gray-500"
+                        : "text-black"
+                  }`}
+                  style={{ opacity: isSelected ? 1 : isFuture ? 0.5 : 0.6 }}
+                >
                   {dayNumber}
                 </Text>
               </TouchableOpacity>
@@ -128,9 +141,11 @@ export default function HeaderDateSelector({
       </View>
 
       {/* Next week arrow - only show if not on current week */}
-      {isCurrentWeek() ? <View className="w-8 h-8" /> : (
-        <TouchableOpacity 
-          onPress={() => navigateWeek('next')}
+      {isCurrentWeek() ? (
+        <View className="w-8 h-8" />
+      ) : (
+        <TouchableOpacity
+          onPress={() => navigateWeek("next")}
           activeOpacity={1}
           className="w-8 h-8 items-center justify-center"
         >

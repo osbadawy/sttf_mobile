@@ -1,4 +1,4 @@
-import Svg, { ClipPath, Defs, G, Path } from "react-native-svg"
+import Svg, { ClipPath, Defs, G, Path } from "react-native-svg";
 const SleepIcon = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -21,5 +21,5 @@ const SleepIcon = (props: any) => (
       </ClipPath>
     </Defs>
   </Svg>
-)
-export default SleepIcon
+);
+export default SleepIcon;

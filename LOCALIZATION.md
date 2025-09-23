@@ -37,14 +37,12 @@ This document describes the localization implementation for the STTF Mobile app,
 ### Using Translations in Components
 
 ```tsx
-import { useLocalization } from '@/contexts/LocalizationContext';
+import { useLocalization } from "@/contexts/LocalizationContext";
 
 export default function MyComponent() {
   const { t } = useLocalization();
-  
-  return (
-    <ThemedText>{t('common.welcome')}</ThemedText>
-  );
+
+  return <ThemedText>{t("common.welcome")}</ThemedText>;
 }
 ```
 
@@ -55,34 +53,33 @@ const { t } = useLocalization();
 
 // With variables
 <ThemedText>
-  {t('home.step1.description', {
-    file: 'app/(tabs)/index.tsx',
-    shortcut: 'cmd + d'
+  {t("home.step1.description", {
+    file: "app/(tabs)/index.tsx",
+    shortcut: "cmd + d",
   })}
-</ThemedText>
+</ThemedText>;
 ```
 
 ### Switching Languages
 
 ```tsx
-import { useLocalization } from '@/contexts/LocalizationContext';
+import { useLocalization } from "@/contexts/LocalizationContext";
 
 export default function MyComponent() {
   const { switchLanguage } = useLocalization();
-  
+
   const handleLanguageChange = () => {
-    switchLanguage('ar'); // Switch to Arabic
+    switchLanguage("ar"); // Switch to Arabic
   };
-  
-  return (
-    <Button title="Switch to Arabic" onPress={handleLanguageChange} />
-  );
+
+  return <Button title="Switch to Arabic" onPress={handleLanguageChange} />;
 }
 ```
 
 ## Translation Keys Structure
 
 ### Common Keys
+
 - `common.welcome` - Welcome message
 - `common.try` - Try button text
 - `common.home` - Home tab title
@@ -90,6 +87,7 @@ export default function MyComponent() {
 - `common.learnMore` - Learn more link text
 
 ### Home Screen Keys
+
 - `home.title` - Home screen title
 - `home.step1.title` - Step 1 title
 - `home.step1.description` - Step 1 description with interpolation
@@ -99,6 +97,7 @@ export default function MyComponent() {
 - `home.step3.description` - Step 3 description with interpolation
 
 ### Explore Screen Keys
+
 - `explore.title` - Explore screen title
 - `explore.description` - Explore screen description
 - `explore.fileBasedRouting.*` - File-based routing section
@@ -109,11 +108,10 @@ export default function MyComponent() {
 - `explore.animations.*` - Animations section
 
 ### Language Switcher Keys
+
 - `language.switch` - Language switch button text
 - `language.english` - English language name
 - `language.arabic` - Arabic language name
-
-
 
 ## Adding New Translations
 
