@@ -31,6 +31,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
     restingHeartRate: [],
     maxHeartRate: [],
     dailyAvgHeartRate: [],
+    hrv: [],
   });
 
   useEffect(() => {
@@ -71,11 +72,6 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
   const currentSleepScore = metrics.sleepScore[0] || 0;
 
   // Calculate averages for 14 days
-  const avgPerformance =
-    metrics.performance.length > 0
-      ? metrics.performance.reduce((sum, val) => sum + val.value, 0) /
-        metrics.performance.length
-      : 0;
   const avgStrain =
     metrics.strain.length > 0
       ? metrics.strain.reduce((sum, val) => sum + val, 0) /

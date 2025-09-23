@@ -1,27 +1,95 @@
+import PageWithArrow from "@/components/PageWithArrow";
 import AverageHeartRateSection from "@/components/heart/AverageHeartRateSection";
 import MaxAndRestingHeartRateSection from "@/components/heart/MaxAndRestingHeartRateSection";
-import PageWithArrow from "@/components/PageWithArrow";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import {
+  extractMultiDayMetricsFromData,
+  MultiDayMetrics,
+} from "@/utils/whoopMetrics";
+import Constants from "expo-constants";
 import { RelativePathString } from "expo-router";
+import { useEffect, useState } from "react";
+import { Text } from "react-native";
 
-export default function HeartPage() {
+interface HeartPageProps {
+  user_id?: string;
+}
+
+export default function HeartPage({ user_id }: HeartPageProps) {
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
+  const { user } = useAuth();
 
-  //5 random timestamps withing the past 24 hours
-  const averageHeartRateHistory = Array.from({ length: 5 }, () => {
-    const date = new Date();
-    date.setHours(date.getHours() - Math.floor(Math.random() * 24));
-    date.setMinutes(Math.floor(Math.random() * 60));
-    const time = date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-    return {
-      time: time,
-      heartRate: Math.floor(Math.random() * 100) + 20,
+  const [metrics, setMetrics] = useState<MultiDayMetrics>({
+    performance: [],
+    stress: [],
+    strain: [],
+    sleepScore: [],
+    sleepDurationMilli: [],
+    sleepNeededMilli: [],
+    restingHeartRate: [],
+    maxHeartRate: [],
+    dailyAvgHeartRate: [],
+    hrv: [],
+  });
+
+  // const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        try {
+          const params = new URLSearchParams({
+            firebase_id: user_id || user.uid,
+            days: "14",
+          });
+          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;
+
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${await user.getIdToken()}`,
+            },
+          });
+          const data = await response.json();
+
+          // Extract metrics from all cycles
+          const extractedMetrics = extractMultiDayMetricsFromData(data);
+          console.log('Extracted metrics:', extractedMetrics);
+          setMetrics(extractedMetrics);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
     };
-  }).sort((a, b) => a.time.localeCompare(b.time));
+
+    fetchData();
+  }, [user]);
+
+  // Calculate current values (most recent cycle)
+  const currentDailyAvgHeartRate = metrics.dailyAvgHeartRate.length > 0 ? metrics.dailyAvgHeartRate[0] : 0;
+
+  // Create history data for MaxAndRestingHeartRateSection
+  const heartRateHistory = metrics.restingHeartRate.length > 0 
+    ? metrics.restingHeartRate.map((resting, index) => ({
+        resting: Math.round(resting || 0),
+        max: Math.round(metrics.maxHeartRate[index] || 0),
+      }))
+    : [{resting: 0, max: 0}];
+
+  // Create average heart rate history for AverageHeartRateSection
+  const averageHeartRateHistory = metrics.dailyAvgHeartRate.length > 0
+    ? metrics.dailyAvgHeartRate.map((rate, index) => ({
+        time: metrics.performance[index]?.date || `${index + 1}`,
+        heartRate: Math.round(rate || 0),
+      }))
+    : [{time: "1", heartRate: 0}];
+
+  console.log('All metrics:', metrics)
+  console.log('Daily avg heart rate:', metrics.dailyAvgHeartRate)
+  console.log('Resting heart rate:', metrics.restingHeartRate)
+  console.log('Max heart rate:', metrics.maxHeartRate)
+  // console.log('HRV data:', metrics.hrv)
 
   return (
     <PageWithArrow
@@ -30,29 +98,16 @@ export default function HeartPage() {
       isRTL={isRTL}
     >
       <AverageHeartRateSection
-        averageHeartRate={80}
+        averageHeartRate={Math.round(currentDailyAvgHeartRate)}
         averageHeartRateHistory={averageHeartRateHistory}
-        HRV={823}
-        averageHRV={875}
+        HRV={metrics.hrv.length > 0 ? Math.round(metrics.hrv[0]) : 0}
+        averageHRV={metrics.hrv.length > 0 ? Math.round(metrics.hrv.reduce((sum, val) => sum + (val || 0), 0) / metrics.hrv.length) : 0}
       />
       <MaxAndRestingHeartRateSection
-        history={[
-          { resting: 58, max: 95 },
-          { resting: 72, max: 128 },
-          { resting: 65, max: 112 },
-          { resting: 61, max: 98 },
-          { resting: 69, max: 125 },
-          { resting: 55, max: 88 },
-          { resting: 78, max: 135 },
-          { resting: 63, max: 108 },
-          { resting: 71, max: 122 },
-          { resting: 59, max: 92 },
-          { resting: 76, max: 130 },
-          { resting: 67, max: 115 },
-          { resting: 73, max: 127 },
-          { resting: 62, max: 105 },
-        ]}
+        history={heartRateHistory}
       />
+
+      <Text>Heart</Text> 
     </PageWithArrow>
   );
 }

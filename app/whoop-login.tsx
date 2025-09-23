@@ -60,7 +60,6 @@ export default function WhoopLoginPage() {
         preferEphemeralSession: true,
       });
 
-      console.log(result.type);
     } catch (error) {
       console.error("Error during Whoop authentication:", error);
     }

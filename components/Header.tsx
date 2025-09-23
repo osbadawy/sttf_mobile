@@ -60,7 +60,6 @@ export default function Header({
 
   const textColor = color === HeaderColor.primary ? "text-white" : "text-black";
 
-  console.log("Profile Picture", profilePicture);
 
   const ParentContainer = ({ children }: { children: React.ReactNode }) => {
     const className = "z-50 rounded-b-[72px] overflow-hidden";

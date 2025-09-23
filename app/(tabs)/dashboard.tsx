@@ -37,6 +37,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
     restingHeartRate: 0,
     maxHeartRate: 0,
     dailyAvgHeartRate: 0,
+    hrv: 0,
   });
 
   const props = {

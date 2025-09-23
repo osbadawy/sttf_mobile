@@ -13,6 +13,7 @@ export interface MultiDayMetrics {
   restingHeartRate: number[];
   maxHeartRate: number[];
   dailyAvgHeartRate: number[];
+  hrv: number[];
 }
 
 export interface SingleDayMetrics {
@@ -25,6 +26,7 @@ export interface SingleDayMetrics {
   restingHeartRate: number;
   maxHeartRate: number;
   dailyAvgHeartRate: number;
+  hrv: number;
 }
 
 /**
@@ -40,6 +42,7 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
   let restingHeartRate = 0;
   let maxHeartRate = 0;
   let dailyAvgHeartRate = 0;
+  let hrv = 0;
 
   if (cycle) {
     strain = cycle.score.strain / 21;
@@ -49,6 +52,7 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
     if (cycle.recoveries.length > 0) {
       stress = (100 - cycle.recoveries[0].score.recovery_score) / 100;
       restingHeartRate = cycle.recoveries[0].score.resting_heart_rate;
+      hrv = cycle.recoveries[0].score.hrv_rmssd_milli || 0;
     }
 
     if (cycle.sleeps.length > 0) {
@@ -87,6 +91,7 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
     restingHeartRate,
     maxHeartRate,
     dailyAvgHeartRate,
+    hrv,
   };
 }
 
@@ -95,7 +100,9 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
  * Returns metrics for multiple days with performance data points
  */
 export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
+  console.log('Extracting metrics from data:', data);
   const cycles = data.whoop_user.cycles;
+  console.log('Number of cycles:', cycles?.length);
 
   // Sort cycles by start date (newest first)
   const sortedCycles = cycles.sort(
@@ -112,9 +119,11 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
   const restingHeartRate: number[] = [];
   const maxHeartRate: number[] = [];
   const dailyAvgHeartRate: number[] = [];
+  const hrv: number[] = [];
 
-  sortedCycles.forEach((cycle: any) => {
+  sortedCycles.forEach((cycle: any, index: number) => {
     const metrics = extractSingleDayMetrics(cycle);
+    console.log(`Cycle ${index} metrics:`, metrics);
 
     performance.push({
       date: new Date(cycle.start).toLocaleDateString("en-US", {
@@ -130,9 +139,10 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
     restingHeartRate.push(metrics.restingHeartRate);
     maxHeartRate.push(metrics.maxHeartRate);
     dailyAvgHeartRate.push(metrics.dailyAvgHeartRate);
+    hrv.push(metrics.hrv);
   });
 
-  return {
+  const result = {
     performance,
     stress,
     strain,
@@ -142,7 +152,11 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
     restingHeartRate,
     maxHeartRate,
     dailyAvgHeartRate,
+    hrv,
   };
+  
+  console.log('Final extracted metrics:', result);
+  return result;
 }
 
 /**

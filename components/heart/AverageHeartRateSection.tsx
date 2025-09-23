@@ -34,12 +34,19 @@ export default function AverageHeartRateSection({
   const { t, isRTL } = useLocalization("stats");
   const [containerWidth, setContainerWidth] = useState(300); // Default fallback width
 
-  const chartData = averageHeartRateHistory.map((item) => {
-    // Convert time string to minutes since midnight for proper x-axis scaling
-    const [hours, minutes] = item.time.split(":").map(Number);
-    const minutesSinceMidnight = hours * 60 + minutes;
+  const chartData = averageHeartRateHistory.map((item, index) => {
+    // Handle different time formats - if it's a date or number string, use index
+    let xValue: number;
+    if (item.time.includes(":")) {
+      // Time format like "14:30"
+      const [hours, minutes] = item.time.split(":").map(Number);
+      xValue = hours * 60 + minutes;
+    } else {
+      // For date strings or numeric strings, use index for x-axis
+      xValue = index;
+    }
     return {
-      x: minutesSinceMidnight,
+      x: xValue,
       y: item.heartRate,
     };
   });
@@ -110,9 +117,16 @@ export default function AverageHeartRateSection({
             grid: { stroke: "#e0e0e0", strokeWidth: 1 },
           }}
           tickFormat={(t) => {
-            const hours = Math.floor(t / 60);
-            const minutes = t % 60;
-            return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+            // Check if this is a time-based value (has colon in original data)
+            const hasTimeFormat = averageHeartRateHistory.some(item => item.time.includes(":"));
+            if (hasTimeFormat) {
+              const hours = Math.floor(t / 60);
+              const minutes = t % 60;
+              return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+            } else {
+              // For non-time data, show day numbers
+              return `Day ${Math.round(t + 1)}`;
+            }
           }}
         />
         <VictoryLine
