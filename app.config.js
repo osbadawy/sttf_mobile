@@ -2,9 +2,97 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: "your-app-name",
-    slug: "your-app-slug",
+    name: "sttf_mobile",
+    slug: "sttf_mobile",
     version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/images/icon.png",
+    scheme: "sttfmobile",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
+    ios: {
+      supportsTablet: true
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/adaptive-icon.png",
+        backgroundColor: "#ffffff"
+      },
+      edgeToEdgeEnabled: true
+    },
+    web: {
+      bundler: "metro",
+      output: "static",
+      favicon: "./assets/images/favicon.png"
+    },
+    plugins: [
+      "expo-router",
+      [
+        "expo-font",
+        {
+          fonts: [
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Hair.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_HairIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Th.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_ThIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Lt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_LtIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Rg.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_It.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Md.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_MdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_SBd.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_SBdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Bd.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_BdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_XBd.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_XBdIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_Blk.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/Effra_Trial_BlkIt.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_Wght.ttf",
+            "./assets/fonts/effra-trial-cufonfonts/EffraVF_Trial_WghtItal.ttf",
+            "./assets/fonts/inter/Inter_18pt-Regular.ttf",
+            "./assets/fonts/inter/Inter_18pt-Italic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Thin.ttf",
+            "./assets/fonts/inter/Inter_18pt-ThinItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraLight.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraLightItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Light.ttf",
+            "./assets/fonts/inter/Inter_18pt-LightItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Medium.ttf",
+            "./assets/fonts/inter/Inter_18pt-MediumItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-SemiBold.ttf",
+            "./assets/fonts/inter/Inter_18pt-SemiBoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Bold.ttf",
+            "./assets/fonts/inter/Inter_18pt-BoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraBold.ttf",
+            "./assets/fonts/inter/Inter_18pt-ExtraBoldItalic.ttf",
+            "./assets/fonts/inter/Inter_18pt-Black.ttf",
+            "./assets/fonts/inter/Inter_18pt-BlackItalic.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          image: "./assets/images/splash-icon.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          backgroundColor: "#ffffff"
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          url: "https://sentry.io/",
+          project: "react-native",
+          organization: "covelant"
+        }
+      ]
+    ],
+    experiments: {
+      typedRoutes: true
+    },
     extra: {
       FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
