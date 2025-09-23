@@ -8,9 +8,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LocalizationProvider } from '@/contexts/LocalizationContext';
 import '@/i18n'; // Initialize i18n
 import * as Sentry from '@sentry/react-native';
+import Constants from "expo-constants";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: Constants.expoConfig?.extra?.SENTRY_DSN,
   sendDefaultPii: true,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,

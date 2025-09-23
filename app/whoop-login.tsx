@@ -2,6 +2,7 @@ import Button, { ButtonColor } from "@/components/Button";
 import { WhoopIcon } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { RelativePathString, router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
@@ -21,7 +22,7 @@ export default function WhoopLoginPage() {
           const token = await user.getIdToken();
           setAccessToken(token);
 
-          const url = "https://nonextendible-kenzie-unfatalistic.ngrok-free.dev/whoop/auth"
+          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`
           const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -52,7 +53,7 @@ export default function WhoopLoginPage() {
       }
 
       const redirectURL = Linking.createURL("(tabs)/dashboard");
-      const url = `https://nonextendible-kenzie-unfatalistic.ngrok-free.dev/whoop/auth/start?access_token=${accessToken}&redirect_url=${redirectURL}`;
+      const url = `${Constants.expoConfig?.extra?.API_URL}/whoop/auth/start?access_token=${accessToken}&redirect_url=${redirectURL}`;
             
       const result = await WebBrowser.openAuthSessionAsync(
         url, 

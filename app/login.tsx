@@ -1,3 +1,4 @@
+import Button, { ButtonColor } from "@/components/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useRouter } from "expo-router";
@@ -96,12 +97,7 @@ export default function LoginPage() {
         </Text>
 
         {/* Login Button */}
-        <TouchableOpacity
-          className="bg-green-700 rounded-lg py-4 px-12"
-          onPress={handleLogin}
-        >
-          <Text className="text-white text-lg font-bold">{t("next")}</Text>
-        </TouchableOpacity>
+        <Button title={t("Connect")} onPress={handleLogin} color={ButtonColor.primary} />
       </View>
     </ImageBackground>
   );
