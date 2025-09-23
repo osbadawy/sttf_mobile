@@ -6,6 +6,10 @@ import {
 import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  extractSingleDayMetricsFromData,
+  SingleDayMetrics,
+} from "@/utils/whoopMetrics";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 
@@ -23,79 +27,17 @@ export default function Dashboard({ user_id }: DashboardProps) {
   // TODO: Handle Default Profile Picture properly
   const [profilePicture, setProfilePicture] = useState<string>("");
 
-  const [stress, setStress] = useState(0);
-  const [strain, setStrain] = useState(0);
-  const [performance, setPerformance] = useState(0);
-
-  const [sleepScore, setSleepScore] = useState(0);
-  const [sleepDurationMilli, setSleepDurationMilli] = useState(0);
-  const [sleepNeededMilli, setSleepNeededMilli] = useState(0);
-
-  const [restingHeartRate, setRestingHeartRate] = useState(0);
-  const [maxHeartRate, setMaxHeartRate] = useState(0);
-  const [dailyAvgHeartRate, setDailyAvgHeartRate] = useState(0);
-
-  function extractFromData(data: any) {
-    const cycles = data.whoop_user.cycles;
-    const newestCycle = cycles.sort(
-      (a: any, b: any) =>
-        new Date(b.start).getTime() - new Date(a.start).getTime(),
-    )[0];
-
-    let _performance = 0;
-    let _stress = 0;
-    let _strain = 0;
-    let _sleepScore = 0;
-    let _sleepDurationMilli = 0;
-    let _sleepNeededMilli = 0;
-    let _restingHeartRate = 0;
-    let _maxHeartRate = 0;
-    let _dailyAvgHeartRate = 0;
-
-    if (newestCycle) {
-      _strain = newestCycle.score.strain / 21;
-      _dailyAvgHeartRate = newestCycle.score.average_heart_rate;
-      _maxHeartRate = newestCycle.score.max_heart_rate;
-
-      if (newestCycle.recoveries.length > 0) {
-        _stress = (100 - newestCycle.recoveries[0].score.recovery_score) / 100;
-        _restingHeartRate = newestCycle.recoveries[0].score.resting_heart_rate;
-      }
-
-      if (newestCycle.sleeps.length > 0) {
-        // Choose the sleep which lasts the longest (stop-start) and nap is false
-        const longestSleep = newestCycle.sleeps
-          .filter((sleep: any) => !sleep.nap) // Filter out naps
-          .sort((a: any, b: any) => {
-            const durationA =
-              new Date(a.end).getTime() - new Date(a.start).getTime();
-            const durationB =
-              new Date(b.end).getTime() - new Date(b.start).getTime();
-            return durationB - durationA; // Sort by duration descending
-          })[0];
-
-        _sleepScore = longestSleep.score.sleep_performance_percentage / 100;
-        _sleepDurationMilli =
-          longestSleep.score.stage_summary.total_in_bed_time_;
-        _sleepNeededMilli = longestSleep.score.sleep_needed.baseline_milli;
-      }
-    }
-
-    //TODO: Better performance metric
-    if (_stress && _strain) {
-      _performance = 1 - (_stress + _strain) / 2;
-    }
-
-    setPerformance(_performance);
-    setStress(_stress);
-    setStrain(_strain);
-    setSleepScore(_sleepScore);
-    setSleepDurationMilli(_sleepDurationMilli);
-    setSleepNeededMilli(_sleepNeededMilli);
-    setRestingHeartRate(_restingHeartRate);
-    setMaxHeartRate(_maxHeartRate);
-    setDailyAvgHeartRate(_dailyAvgHeartRate);
-  }
+  const [metrics, setMetrics] = useState<SingleDayMetrics>({
+    performance: 0,
+    stress: 0,
+    strain: 0,
+    sleepScore: 0,
+    sleepDurationMilli: 0,
+    sleepNeededMilli: 0,
+    restingHeartRate: 0,
+    maxHeartRate: 0,
+    dailyAvgHeartRate: 0,
+  });
 
   const props = {
     name: name,
@@ -122,7 +64,8 @@ export default function Dashboard({ user_id }: DashboardProps) {
             },
           });
           const data = await response.json();
-          extractFromData(data);
+          const extractedMetrics = extractSingleDayMetricsFromData(data);
+          setMetrics(extractedMetrics);
 
           if (
             data.whoop_user &&
@@ -148,20 +91,20 @@ export default function Dashboard({ user_id }: DashboardProps) {
   return (
     <ParallaxScrollView headerProps={props}>
       <WellbeingSection
-        performance={performance}
-        strain={strain}
-        stress={stress}
+        performance={metrics.performance}
+        strain={metrics.strain}
+        stress={metrics.stress}
         animationDuration={1000}
       />
       <SleepSection
-        sleepScore={sleepScore}
-        sleepDurationMilli={sleepDurationMilli}
-        sleepNeededMilli={sleepNeededMilli}
+        sleepScore={metrics.sleepScore}
+        sleepDurationMilli={metrics.sleepDurationMilli}
+        sleepNeededMilli={metrics.sleepNeededMilli}
       />
       <HeartSection
-        dailyAvg={dailyAvgHeartRate}
-        max={maxHeartRate}
-        resting={restingHeartRate}
+        dailyAvg={metrics.dailyAvgHeartRate}
+        max={metrics.maxHeartRate}
+        resting={metrics.restingHeartRate}
       />
     </ParallaxScrollView>
   );
