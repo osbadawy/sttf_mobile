@@ -1,14 +1,20 @@
 import { View } from "react-native";
 import Svg, { Path, SvgProps } from "react-native-svg";
 
-interface ArrowProps { 
+interface ArrowProps {
   className?: string;
   svgProps?: SvgProps;
   stroke?: string;
   strokeWidth?: number;
   direction?: "left" | "right";
 }
-export default function Arrow({className, stroke="#000", strokeWidth=2, svgProps, direction="right"}: ArrowProps) {
+export default function Arrow({
+  className,
+  stroke = "#000",
+  strokeWidth = 2,
+  svgProps,
+  direction = "right",
+}: ArrowProps) {
   return (
     <View className={className}>
       <Svg
@@ -30,5 +36,5 @@ export default function Arrow({className, stroke="#000", strokeWidth=2, svgProps
         />
       </Svg>
     </View>
-  )
+  );
 }

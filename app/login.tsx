@@ -1,7 +1,16 @@
+import Button, { ButtonColor } from "@/components/Button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, ImageBackground, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function LoginPage() {
   const { login, user } = useAuth();
@@ -9,6 +18,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { t, switchLanguage, isRTL } = useLocalization("login");
 
   const handleLogin = async () => {
     try {
@@ -22,7 +32,7 @@ export default function LoginPage() {
   // Redirect to dashboard once logged in
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)/dashboard");
+      router.replace("/whoop-login");
     }
   }, [user]);
 
@@ -42,8 +52,8 @@ export default function LoginPage() {
 
         {/* Email */}
         <TextInput
-          className="w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base"
-          placeholder="Email"
+          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? "text-right" : "text-left"}`}
+          placeholder={t("email")}
           placeholderTextColor="#888"
           value={email}
           onChangeText={setEmail}
@@ -52,8 +62,8 @@ export default function LoginPage() {
 
         {/* Password */}
         <TextInput
-          className="w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base"
-          placeholder="Password"
+          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? "text-right" : "text-left"}`}
+          placeholder={t("password")}
           placeholderTextColor="#888"
           value={password}
           onChangeText={setPassword}
@@ -66,22 +76,30 @@ export default function LoginPage() {
         {/* Forgot password */}
         <TouchableOpacity>
           <Text className="text-white underline mt-1 mb-7">
-            Forgot your password?
+            {t("forgotPassword")}
           </Text>
         </TouchableOpacity>
 
         {/* Language Switch */}
         <View className="flex-row justify-between w-1/2 mb-5">
-          <TouchableOpacity className="p-2 bg-black/30 rounded-lg">
+          <TouchableOpacity
+            className="p-2 bg-black/30 rounded-lg"
+            onPress={() => switchLanguage("en")}
+            activeOpacity={1}
+          >
             <Image
-              source={require("../assets/images/english.png")}
+              source={require("@/assets/images/english.png")}
               className="w-10 h-10"
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <TouchableOpacity className="p-2 bg-black/30 rounded-lg">
+          <TouchableOpacity
+            className="p-2 bg-black/30 rounded-lg"
+            onPress={() => switchLanguage("ar")}
+            activeOpacity={1}
+          >
             <Image
-              source={require("../assets/images/arabic.png")}
+              source={require("@/assets/images/arabic.png")}
               className="w-10 h-10"
               resizeMode="contain"
             />
@@ -90,16 +108,15 @@ export default function LoginPage() {
 
         {/* Invitation Text */}
         <Text className="text-white mb-5 text-xs text-center">
-          This service is accessible only under invitation
+          {t("notice")}
         </Text>
 
         {/* Login Button */}
-        <TouchableOpacity
-          className="bg-green-700 rounded-lg py-4 px-12"
+        <Button
+          title={t("Connect")}
           onPress={handleLogin}
-        >
-          <Text className="text-white text-lg font-bold">Next</Text>
-        </TouchableOpacity>
+          color={ButtonColor.primary}
+        />
       </View>
     </ImageBackground>
   );

@@ -1,27 +1,29 @@
-import * as Localization from 'expo-localization';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import * as Localization from "expo-localization";
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
 
 // Import individual translation files
-import arCommon from '../locales/ar/common.json';
-import arHeartSection from '../locales/ar/components/dashboard/HeartSection.json';
-import arSleepSection from '../locales/ar/components/dashboard/SleepSection.json';
-import arWellbeingSection from '../locales/ar/components/dashboard/WellbeingSection.json';
-import arHeart from '../locales/ar/components/heart/index.json';
-import arWellbeingSleep from '../locales/ar/components/wellbeing/sleep.json';
-import arIndex from '../locales/ar/index.json';
-import arLanguage from '../locales/ar/language.json';
-import arStats from '../locales/ar/stats.json';
+import arCommon from "../locales/ar/common.json";
+import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json";
+import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
+import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
+import arHeart from "../locales/ar/components/heart/index.json";
+import arWellbeingSleep from "../locales/ar/components/wellbeing/sleep.json";
+import arIndex from "../locales/ar/index.json";
+import arLanguage from "../locales/ar/language.json";
+import arLogin from "../locales/ar/login.json";
+import arStats from "../locales/ar/stats.json";
 
-import enCommon from '../locales/en/common.json';
-import enHeartSection from '../locales/en/components/dashboard/HeartSection.json';
-import enSleepSection from '../locales/en/components/dashboard/SleepSection.json';
-import enWellbeingSection from '../locales/en/components/dashboard/WellbeingSection.json';
-import enHeart from '../locales/en/components/heart/index.json';
-import enWellbeingSleep from '../locales/en/components/wellbeing/sleep.json';
-import enIndex from '../locales/en/index.json';
-import enLanguage from '../locales/en/language.json';
-import enStats from '../locales/en/stats.json';
+import enCommon from "../locales/en/common.json";
+import enHeartSection from "../locales/en/components/dashboard/HeartSection.json";
+import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
+import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
+import enHeart from "../locales/en/components/heart/index.json";
+import enWellbeingSleep from "../locales/en/components/wellbeing/sleep.json";
+import enIndex from "../locales/en/index.json";
+import enLanguage from "../locales/en/language.json";
+import enLogin from "../locales/en/login.json";
+import enStats from "../locales/en/stats.json";
 
 export const resources = {
   en: {
@@ -29,67 +31,67 @@ export const resources = {
     home: enIndex,
     language: enLanguage,
     stats: enStats,
+    login: enLogin,
     components: {
       dashboard: {
         wellbeingSection: enWellbeingSection,
         sleepSection: enSleepSection,
-        heartSection: enHeartSection
+        heartSection: enHeartSection,
       },
       wellbeing: {
-        sleep: enWellbeingSleep
+        sleep: enWellbeingSleep,
       },
-      heart: enHeart
-    }
+      heart: enHeart,
+    },
   },
   ar: {
     common: arCommon,
     home: arIndex,
     language: arLanguage,
     stats: arStats,
+    login: arLogin,
     components: {
       dashboard: {
         wellbeingSection: arWellbeingSection,
         sleepSection: arSleepSection,
-        heartSection: arHeartSection
+        heartSection: arHeartSection,
       },
       wellbeing: {
-        sleep: arWellbeingSleep
+        sleep: arWellbeingSleep,
       },
-      heart: arHeart
-    }
+      heart: arHeart,
+    },
   },
 };
 
 // Get device locale
-const deviceLocale = Localization.getLocales()[0]?.languageCode || 'en';
+const deviceLocale = Localization.getLocales()[0]?.languageCode || "en";
 
 const isRTL = (locale: string) => {
-  const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
+  const rtlLanguages = ["ar", "he", "fa", "ur"];
   return rtlLanguages.includes(locale);
 };
 
+i18n.use(initReactI18next).init({
+  resources,
+  lng: deviceLocale,
+  fallbackLng: "en",
+  defaultNS: "common",
+  ns: Object.keys(resources[deviceLocale as keyof typeof resources]),
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: deviceLocale,
-    fallbackLng: 'en',
-    defaultNS: 'common',
-    ns: Object.keys(resources[deviceLocale as keyof typeof resources]),
-    
-    interpolation: {
-      escapeValue: false, // React already does escaping
-    },
-    
-    react: {
-      useSuspense: false, // Disable suspense for React Native
-    },
-  });
+  interpolation: {
+    escapeValue: false, // React already does escaping
+  },
+
+  react: {
+    useSuspense: false, // Disable suspense for React Native
+  },
+});
 
 // Export helper functions
 export const getCurrentLanguage = () => i18n.language;
 export const isCurrentLanguageRTL = () => isRTL(i18n.language);
-export const changeLanguage = (language: string) => i18n.changeLanguage(language);
+export const changeLanguage = (language: string) =>
+  i18n.changeLanguage(language);
 
 export default i18n;

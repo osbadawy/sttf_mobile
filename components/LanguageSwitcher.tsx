@@ -1,18 +1,18 @@
-import { useLocalization } from '@/contexts/LocalizationContext';
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLocalization } from "@/contexts/LocalizationContext";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export const LanguageSwitcher: React.FC = () => {
   const { currentLanguage, switchLanguage, t } = useLocalization();
 
-  console.log('LanguageSwitcher: Current language:', currentLanguage);
+  console.log("LanguageSwitcher: Current language:", currentLanguage);
 
   const handleLanguageSwitch = () => {
-    console.log('LanguageSwitcher: Button pressed!');
-    const newLanguage = currentLanguage === 'en' ? 'ar' : 'en';
-    
-    console.log('Switching language from', currentLanguage, 'to', newLanguage);
-    
+    console.log("LanguageSwitcher: Button pressed!");
+    const newLanguage = currentLanguage === "en" ? "ar" : "en";
+
+    console.log("Switching language from", currentLanguage, "to", newLanguage);
+
     switchLanguage(newLanguage);
   };
 
@@ -20,7 +20,9 @@ export const LanguageSwitcher: React.FC = () => {
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={handleLanguageSwitch}>
         <Text style={styles.buttonText}>
-          {currentLanguage === 'en' ? t('arabic', { ns: 'language' }) : t('english', { ns: 'language' })}
+          {currentLanguage === "en"
+            ? t("arabic", { ns: "language" })
+            : t("english", { ns: "language" })}
         </Text>
       </TouchableOpacity>
     </View>
@@ -32,14 +34,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
   },
 });

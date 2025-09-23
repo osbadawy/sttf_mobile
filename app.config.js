@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import "dotenv/config";
 
 export default {
   expo: {
@@ -11,22 +11,28 @@ export default {
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
     },
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
-        backgroundColor: "#ffffff"
+        backgroundColor: "#ffffff",
       },
-      edgeToEdgeEnabled: true
+      edgeToEdgeEnabled: true,
     },
     web: {
       bundler: "metro",
       output: "static",
-      favicon: "./assets/images/favicon.png"
+      favicon: "./assets/images/favicon.png",
     },
     plugins: [
       "expo-router",
+      [
+        "expo-web-browser",
+        {
+          experimentalLauncherActivity: true,
+        },
+      ],
       [
         "expo-font",
         {
@@ -68,9 +74,9 @@ export default {
             "./assets/fonts/inter/Inter_18pt-ExtraBold.ttf",
             "./assets/fonts/inter/Inter_18pt-ExtraBoldItalic.ttf",
             "./assets/fonts/inter/Inter_18pt-Black.ttf",
-            "./assets/fonts/inter/Inter_18pt-BlackItalic.ttf"
-          ]
-        }
+            "./assets/fonts/inter/Inter_18pt-BlackItalic.ttf",
+          ],
+        },
       ],
       [
         "expo-splash-screen",
@@ -78,26 +84,29 @@ export default {
           image: "./assets/images/splash-icon.png",
           imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#ffffff"
-        }
+          backgroundColor: "#ffffff",
+        },
       ],
       [
         "@sentry/react-native/expo",
         {
           url: "https://sentry.io/",
           project: "react-native",
-          organization: "covelant"
-        }
-      ]
+          organization: "covelant",
+        },
+      ],
     ],
     experiments: {
-      typedRoutes: true
+      typedRoutes: true,
     },
     extra: {
       FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
       FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
       FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+      BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
+      API_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
+      SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
     },
   },
 };

@@ -1,10 +1,21 @@
 import colors from "@/colors.js";
-import { HeartLine1, PerformanceIcon, StrainIcon, StressIcon } from "@/components/icons";
+import {
+  HeartLine1,
+  PerformanceIcon,
+  StrainIcon,
+  StressIcon,
+} from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString, router } from "expo-router";
 import { useEffect, useRef } from "react";
-import { Animated, Dimensions, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -12,11 +23,16 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const CIRCLE_RADIUS = 108;
 const STROKE_WIDTH = 20;
 
-const ProgressCircle = ({ color, radiusOffset, animatedValue, cx }: { 
-  color: string, 
-  radiusOffset: number,
-  animatedValue: Animated.Value,
-  cx: number
+const ProgressCircle = ({
+  color,
+  radiusOffset,
+  animatedValue,
+  cx,
+}: {
+  color: string;
+  radiusOffset: number;
+  animatedValue: Animated.Value;
+  cx: number;
 }) => {
   const circumference = 2 * Math.PI * (CIRCLE_RADIUS - radiusOffset);
   return (
@@ -31,7 +47,7 @@ const ProgressCircle = ({ color, radiusOffset, animatedValue, cx }: {
       strokeDashoffset={animatedValue.interpolate({
         inputRange: [0, 1],
         outputRange: [circumference, 0],
-        extrapolate: 'clamp',
+        extrapolate: "clamp",
       })}
       strokeLinecap="round"
       transform={`rotate(-90 ${cx} 200)`}
@@ -39,10 +55,20 @@ const ProgressCircle = ({ color, radiusOffset, animatedValue, cx }: {
   );
 };
 
-const ProgressLabel = ({label, value, offset, icon}: {label: string, value: number, offset: number, icon: React.ReactNode}) => {
-  let containerClassName = "items-center flex-1"
+const ProgressLabel = ({
+  label,
+  value,
+  offset,
+  icon,
+}: {
+  label: string;
+  value: number;
+  offset: number;
+  icon: React.ReactNode;
+}) => {
+  let containerClassName = "items-center flex-1";
   if (offset !== 0) {
-    containerClassName += " transform -translate-y-[21px]"
+    containerClassName += " transform -translate-y-[21px]";
   }
   return (
     <View className={containerClassName}>
@@ -56,8 +82,18 @@ const ProgressLabel = ({label, value, offset, icon}: {label: string, value: numb
   );
 };
 
-export default function WellbeingSection({performance, strain, stress, animationDuration}: {performance: number, stress: number, strain: number, animationDuration: number}) {
-  const { t, isRTL } = useLocalization('components.dashboard.wellbeingSection');
+export default function WellbeingSection({
+  performance,
+  strain,
+  stress,
+  animationDuration,
+}: {
+  performance: number;
+  stress: number;
+  strain: number;
+  animationDuration: number;
+}) {
+  const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
 
   const windowWidth = Dimensions.get("window").width;
   // Create animated values for each progress circle
@@ -91,14 +127,22 @@ export default function WellbeingSection({performance, strain, stress, animation
 
     // Start animation after a short delay
     const timer = setTimeout(animateProgress, 300);
-    
+
     return () => clearTimeout(timer);
-  }, [ performance, strain, stress ]);
+  }, [performance, strain, stress]);
 
   return (
-    <TouchableOpacity className="flex-1 items-center" onPress={() => router.push('wellbeing' as RelativePathString)}>
+    <TouchableOpacity
+      className="flex-1 items-center"
+      onPress={() => router.push("wellbeing" as RelativePathString)}
+    >
       <View className="w-full">
-        <TitleWithIcon title={t('title')} titleColor="text-black" icon={<HeartLine1 />} isRTL={isRTL} />
+        <TitleWithIcon
+          title={t("title")}
+          titleColor="text-black"
+          icon={<HeartLine1 />}
+          isRTL={isRTL}
+        />
       </View>
       <Svg width={windowWidth} height={440}>
         {/* Background Circles */}
@@ -137,8 +181,8 @@ export default function WellbeingSection({performance, strain, stress, animation
           // dashes
           strokeDasharray={8}
         />
-        
-        <View style={{ position: 'absolute', zIndex: -1 }}>
+
+        <View style={{ position: "absolute", zIndex: -1 }}>
           <Svg width={windowWidth} height={600}>
             <Circle
               cx={center}
@@ -154,31 +198,46 @@ export default function WellbeingSection({performance, strain, stress, animation
         </View>
 
         {/* Foreground Progress - Animated */}
-        <ProgressCircle 
-          color={colors.performance} 
-          radiusOffset={0} 
+        <ProgressCircle
+          color={colors.performance}
+          radiusOffset={0}
           animatedValue={performanceRef}
           cx={center}
         />
-        <ProgressCircle 
-          color={colors.strain} 
-          radiusOffset={28} 
+        <ProgressCircle
+          color={colors.strain}
+          radiusOffset={28}
           animatedValue={strainRef}
           cx={center}
         />
-        <ProgressCircle 
-          color={colors.stress} 
-          radiusOffset={56} 
+        <ProgressCircle
+          color={colors.stress}
+          radiusOffset={56}
           animatedValue={stressRef}
           cx={center}
         />
       </Svg>
 
-       <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
-         <ProgressLabel label={t('performance')} value={Math.round(performance * 100)} offset={-21} icon={<PerformanceIcon />} />
-         <ProgressLabel label={t('strain')} value={Math.round(strain * 100)} offset={0} icon={<StrainIcon />} />
-         <ProgressLabel label={t('stress')} value={Math.round(stress * 100)} offset={-21} icon={<StressIcon />} />
-       </View>
+      <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
+        <ProgressLabel
+          label={t("performance")}
+          value={Math.round(performance * 100)}
+          offset={-21}
+          icon={<PerformanceIcon />}
+        />
+        <ProgressLabel
+          label={t("strain")}
+          value={Math.round(strain * 100)}
+          offset={0}
+          icon={<StrainIcon />}
+        />
+        <ProgressLabel
+          label={t("stress")}
+          value={Math.round(stress * 100)}
+          offset={-21}
+          icon={<StressIcon />}
+        />
+      </View>
     </TouchableOpacity>
   );
 }

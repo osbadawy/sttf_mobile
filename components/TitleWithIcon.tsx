@@ -9,19 +9,31 @@ interface TitleWithIconProps {
   arrow?: boolean;
 }
 
-export default function TitleWithIcon({ title, titleColor,  icon, isRTL=false, arrow=true }: TitleWithIconProps) {
+export default function TitleWithIcon({
+  title,
+  titleColor,
+  icon,
+  isRTL = false,
+  arrow = true,
+}: TitleWithIconProps) {
   return (
-    <View className={`flex-row w-full items-center ${isRTL ? 'justify-end' : 'justify-start'}`}>
+    <View
+      className={`flex-row w-full items-center ${isRTL ? "justify-end" : "justify-start"}`}
+    >
       {isRTL ? (
         <>
           {arrow && <Arrow direction="left" />}
-          <Text className={`text-2xl effra-medium pl-1 pr-2 ${titleColor}`}>{title}</Text>
+          <Text className={`text-2xl effra-medium pl-1 pr-2 ${titleColor}`}>
+            {title}
+          </Text>
           {icon}
         </>
       ) : (
         <>
           {icon}
-          <Text className={`text-2xl effra-medium pl-2 pr-1 ${titleColor}`}>{title}</Text>
+          <Text className={`text-2xl effra-medium pl-2 pr-1 ${titleColor}`}>
+            {title}
+          </Text>
           {arrow && <Arrow direction="right" />}
         </>
       )}

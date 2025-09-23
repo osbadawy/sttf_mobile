@@ -42,6 +42,7 @@ This project includes [Sentry](https://sentry.io/) for comprehensive error track
 ### Configuration
 
 Sentry is initialized in `app/_layout.tsx` with the following features:
+
 - **Error Tracking**: Automatically captures JavaScript errors and crashes
 - **Session Replay**: Records user sessions for debugging (10% sample rate, 100% on errors)
 - **User Feedback**: Allows users to submit feedback directly from the app
@@ -50,8 +51,9 @@ Sentry is initialized in `app/_layout.tsx` with the following features:
 ### Basic Error Handling
 
 #### Capturing Exceptions
+
 ```typescript
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from "@sentry/react-native";
 
 // Capture a caught exception
 try {
@@ -62,50 +64,53 @@ try {
 }
 
 // Capture a manual error
-Sentry.captureException(new Error('Something went wrong'));
+Sentry.captureException(new Error("Something went wrong"));
 ```
 
 #### Capturing Messages
+
 ```typescript
 // Log important events
-Sentry.captureMessage('User completed onboarding', 'info');
+Sentry.captureMessage("User completed onboarding", "info");
 
 // Log warnings
-Sentry.captureMessage('API response was slower than expected', 'warning');
+Sentry.captureMessage("API response was slower than expected", "warning");
 ```
 
 #### Adding Context
+
 ```typescript
 // Add user context
 Sentry.setUser({
-  id: '123',
-  email: 'user@example.com',
-  username: 'johndoe'
+  id: "123",
+  email: "user@example.com",
+  username: "johndoe",
 });
 
 // Add tags for filtering
-Sentry.setTag('feature', 'checkout');
-Sentry.setTag('environment', 'production');
+Sentry.setTag("feature", "checkout");
+Sentry.setTag("environment", "production");
 
 // Add extra context
-Sentry.setContext('checkout', {
+Sentry.setContext("checkout", {
   cartValue: 99.99,
   itemCount: 3,
-  paymentMethod: 'credit_card'
+  paymentMethod: "credit_card",
 });
 ```
 
 ### Advanced Error Handling Patterns
 
 #### React Error Boundaries
+
 ```typescript
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from "@sentry/react-native";
 
 class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     Sentry.withScope((scope) => {
-      scope.setTag('errorBoundary', true);
-      scope.setContext('errorInfo', errorInfo);
+      scope.setTag("errorBoundary", true);
+      scope.setContext("errorInfo", errorInfo);
       Sentry.captureException(error);
     });
   }
@@ -113,19 +118,20 @@ class ErrorBoundary extends React.Component {
 ```
 
 #### Async Error Handling
+
 ```typescript
 // Wrap async functions
 const safeAsyncFunction = Sentry.wrap(async () => {
-  const response = await fetch('/api/data');
+  const response = await fetch("/api/data");
   return response.json();
 });
 
 // Or use withScope for more control
 const fetchUserData = async (userId: string) => {
   return Sentry.withScope(async (scope) => {
-    scope.setTag('operation', 'fetchUserData');
-    scope.setContext('userId', { userId });
-    
+    scope.setTag("operation", "fetchUserData");
+    scope.setContext("userId", { userId });
+
     try {
       const response = await fetch(`/api/users/${userId}`);
       if (!response.ok) {
@@ -141,23 +147,24 @@ const fetchUserData = async (userId: string) => {
 ```
 
 #### Network Error Handling
+
 ```typescript
 // Global fetch wrapper
 const originalFetch = global.fetch;
 global.fetch = async (...args) => {
   try {
     const response = await originalFetch(...args);
-    
+
     // Log slow requests
     if (response.status >= 400) {
       Sentry.addBreadcrumb({
         message: `HTTP ${response.status}`,
-        category: 'http',
-        level: 'warning',
-        data: { url: args[0], status: response.status }
+        category: "http",
+        level: "warning",
+        data: { url: args[0], status: response.status },
       });
     }
-    
+
     return response;
   } catch (error) {
     Sentry.captureException(error);
@@ -172,10 +179,10 @@ You can test Sentry integration by using the test button in your app:
 
 ```typescript
 // Test button (already implemented in index.tsx)
-<Button 
-  title='Test Sentry!' 
-  onPress={() => { 
-    Sentry.captureException(new Error('Test error from button')) 
+<Button
+  title='Test Sentry!'
+  onPress={() => {
+    Sentry.captureException(new Error('Test error from button'))
   }}
 />
 ```
@@ -191,6 +198,7 @@ You can test Sentry integration by using the test button in your app:
 ### Sentry Dashboard
 
 Visit your [Sentry dashboard](https://sentry.io/) to:
+
 - View error reports and stack traces
 - Monitor app performance
 - Review session replays
