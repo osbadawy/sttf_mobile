@@ -31,6 +31,7 @@ export const resources = {
     home: enIndex,
     language: enLanguage,
     stats: enStats,
+    login: enLogin,
     components: {
       dashboard: {
         wellbeingSection: enWellbeingSection,
@@ -41,7 +42,6 @@ export const resources = {
         sleep: enWellbeingSleep
       },
       heart: enHeart,
-      login: enLogin
     }
   },
   ar: {
@@ -49,6 +49,7 @@ export const resources = {
     home: arIndex,
     language: arLanguage,
     stats: arStats,
+    login: arLogin,
     components: {
       dashboard: {
         wellbeingSection: arWellbeingSection,
@@ -59,7 +60,6 @@ export const resources = {
         sleep: arWellbeingSleep
       },
       heart: arHeart,
-      login: arLogin
     }
   },
 };
