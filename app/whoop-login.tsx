@@ -59,8 +59,6 @@ export default function WhoopLoginPage() {
         showInRecents: false,
         preferEphemeralSession: true,
       });
-
-      console.log(result.type);
     } catch (error) {
       console.error("Error during Whoop authentication:", error);
     }

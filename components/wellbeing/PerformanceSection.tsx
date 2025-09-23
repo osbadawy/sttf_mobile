@@ -3,9 +3,14 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 import { PerformanceIcon } from "../icons";
 
+interface PerformanceDataPoint {
+  date: string;
+  value: number;
+}
+
 interface PerformanceSectionProps {
   performance: number;
-  performance14DaysHistory: number[];
+  performance14DaysHistory: PerformanceDataPoint[];
 }
 
 export default function PerformanceSection({
@@ -18,25 +23,11 @@ export default function PerformanceSection({
   const { t, isRTL } = useLocalization("stats");
 
   const performance14Days =
-    performance14DaysHistory.reduce((acc, curr) => acc + curr, 0) /
+    performance14DaysHistory.reduce((acc, curr) => acc + curr.value, 0) /
     performance14DaysHistory.length;
   const todaysDate = new Date()
     .toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" })
     .replace("/", ".");
-
-  // Generate dates for the last 14 days
-  const generateDates = () => {
-    const dates = [];
-    const today = new Date();
-    for (let i = 13; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      dates.push(date.toLocaleDateString("en-US", { day: "2-digit" }));
-    }
-    return dates;
-  };
-
-  const dates = generateDates();
 
   return (
     <CardWithTitle
@@ -67,9 +58,9 @@ export default function PerformanceSection({
 
       {/* Bar Chart */}
       <View className="flex-row items-end justify-center h-[130px] px-5 relative">
-        {performance14DaysHistory.map((value, index) => {
+        {performance14DaysHistory.map((dataPoint, index) => {
           const isLatest = index === performance14DaysHistory.length - 1;
-          const height = (value / 100) * 100;
+          const height = (dataPoint.value / 100) * 100;
 
           return (
             <View key={index} className="items-center flex-1">
@@ -80,7 +71,7 @@ export default function PerformanceSection({
                 }}
               />
               <Text className="text-xs text-[#969696] mt-5 font-inter-light">
-                {dates[index]}
+                {dataPoint.date}
               </Text>
             </View>
           );
