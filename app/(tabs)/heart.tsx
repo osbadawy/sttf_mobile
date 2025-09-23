@@ -31,6 +31,7 @@ export default function HeartPage({ user_id }: HeartPageProps) {
     maxHeartRate: [],
     dailyAvgHeartRate: [],
     hrv: [],
+    workoutAverageHeartRate: [],
   });
 
   // const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +56,6 @@ export default function HeartPage({ user_id }: HeartPageProps) {
 
           // Extract metrics from all cycles
           const extractedMetrics = extractMultiDayMetricsFromData(data);
-          console.log('Extracted metrics:', extractedMetrics);
           setMetrics(extractedMetrics);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -66,30 +66,32 @@ export default function HeartPage({ user_id }: HeartPageProps) {
     fetchData();
   }, [user]);
 
-  // Calculate current values (most recent cycle)
-  const currentDailyAvgHeartRate = metrics.dailyAvgHeartRate.length > 0 ? metrics.dailyAvgHeartRate[0] : 0;
+  // Calculate current values (most recent cycle) - filter out zero values
+  const validWorkoutRates = metrics.workoutAverageHeartRate.filter(
+    (rate) => rate.value > 0,
+  );
+  const currentWorkoutAvgHeartRate =
+    validWorkoutRates.length > 0 ? validWorkoutRates[0].value : 0;
 
   // Create history data for MaxAndRestingHeartRateSection
-  const heartRateHistory = metrics.restingHeartRate.length > 0 
-    ? metrics.restingHeartRate.map((resting, index) => ({
-        resting: Math.round(resting || 0),
-        max: Math.round(metrics.maxHeartRate[index] || 0),
-      }))
-    : [{resting: 0, max: 0}];
+  const heartRateHistory =
+    metrics.restingHeartRate.length > 0
+      ? metrics.restingHeartRate.map((resting, index) => ({
+          resting: Math.round(resting || 0),
+          max: Math.round(metrics.maxHeartRate[index] || 0),
+        }))
+      : [{ resting: 0, max: 0 }];
 
-  // Create average heart rate history for AverageHeartRateSection
-  const averageHeartRateHistory = metrics.dailyAvgHeartRate.length > 0
-    ? metrics.dailyAvgHeartRate.map((rate, index) => ({
-        time: metrics.performance[index]?.date || `${index + 1}`,
-        heartRate: Math.round(rate || 0),
-      }))
-    : [{time: "1", heartRate: 0}];
-
-  console.log('All metrics:', metrics)
-  console.log('Daily avg heart rate:', metrics.dailyAvgHeartRate)
-  console.log('Resting heart rate:', metrics.restingHeartRate)
-  console.log('Max heart rate:', metrics.maxHeartRate)
-  // console.log('HRV data:', metrics.hrv)
+  // Create workout average heart rate history for AverageHeartRateSection - filter out zero values
+  const averageHeartRateHistory =
+    validWorkoutRates.length > 0
+      ? validWorkoutRates
+          .map((workoutRate) => ({
+            time: workoutRate.date,
+            heartRate: Math.round(workoutRate.value),
+          }))
+          .reverse()
+      : [{ time: "1", heartRate: 0 }];
 
   return (
     <PageWithArrow
@@ -98,16 +100,21 @@ export default function HeartPage({ user_id }: HeartPageProps) {
       isRTL={isRTL}
     >
       <AverageHeartRateSection
-        averageHeartRate={Math.round(currentDailyAvgHeartRate)}
+        averageHeartRate={Math.round(currentWorkoutAvgHeartRate)}
         averageHeartRateHistory={averageHeartRateHistory}
         HRV={metrics.hrv.length > 0 ? Math.round(metrics.hrv[0]) : 0}
-        averageHRV={metrics.hrv.length > 0 ? Math.round(metrics.hrv.reduce((sum, val) => sum + (val || 0), 0) / metrics.hrv.length) : 0}
+        averageHRV={
+          metrics.hrv.length > 0
+            ? Math.round(
+                metrics.hrv.reduce((sum, val) => sum + (val || 0), 0) /
+                  metrics.hrv.length,
+              )
+            : 0
+        }
       />
-      <MaxAndRestingHeartRateSection
-        history={heartRateHistory}
-      />
+      <MaxAndRestingHeartRateSection history={heartRateHistory} />
 
-      <Text>Heart</Text> 
+      <Text>Heart</Text>
     </PageWithArrow>
   );
 }

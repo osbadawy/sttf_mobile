@@ -14,6 +14,7 @@ export interface MultiDayMetrics {
   maxHeartRate: number[];
   dailyAvgHeartRate: number[];
   hrv: number[];
+  workoutAverageHeartRate: PerformanceDataPoint[];
 }
 
 export interface SingleDayMetrics {
@@ -27,12 +28,16 @@ export interface SingleDayMetrics {
   maxHeartRate: number;
   dailyAvgHeartRate: number;
   hrv: number;
+  workoutAverageHeartRate: number;
 }
 
 /**
  * Extracts metrics from a single cycle (day) of Whoop data
  */
-export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
+export function extractSingleDayMetrics(
+  cycle: any,
+  workouts: any[] = [],
+): SingleDayMetrics {
   let performance = 0;
   let stress = 0;
   let strain = 0;
@@ -43,6 +48,7 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
   let maxHeartRate = 0;
   let dailyAvgHeartRate = 0;
   let hrv = 0;
+  let workoutAverageHeartRate = 0;
 
   if (cycle) {
     strain = cycle.score.strain / 21;
@@ -76,6 +82,30 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
     }
   }
 
+  // Extract workout average heart rate for this cycle
+  if (workouts && workouts.length > 0) {
+    const cycleStart = new Date(cycle.start);
+    const cycleEnd = new Date(
+      cycle.end || cycleStart.getTime() + 24 * 60 * 60 * 1000,
+    ); // Add 24 hours if no end date
+
+    const cycleWorkouts = workouts.filter((workout: any) => {
+      const workoutStart = new Date(workout.start);
+      return workoutStart >= cycleStart && workoutStart < cycleEnd;
+    });
+
+    if (cycleWorkouts.length > 0) {
+      // Calculate average heart rate across all workouts in this cycle
+      const totalHeartRate = cycleWorkouts.reduce(
+        (sum: number, workout: any) => {
+          return sum + (workout.score?.average_heart_rate || 0);
+        },
+        0,
+      );
+      workoutAverageHeartRate = totalHeartRate / cycleWorkouts.length;
+    }
+  }
+
   // Calculate performance metric
   if (stress && strain) {
     performance = 1 - (stress + strain) / 2;
@@ -92,6 +122,7 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
     maxHeartRate,
     dailyAvgHeartRate,
     hrv,
+    workoutAverageHeartRate,
   };
 }
 
@@ -100,9 +131,13 @@ export function extractSingleDayMetrics(cycle: any): SingleDayMetrics {
  * Returns metrics for multiple days with performance data points
  */
 export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
-  console.log('Extracting metrics from data:', data);
+  console.log("Extracting metrics from data:");
   const cycles = data.whoop_user.cycles;
-  console.log('Number of cycles:', cycles?.length);
+  const workouts = data.whoop_user.workouts;
+  console.log("Number of cycles:", cycles?.length);
+  console.log("Number of workouts:", workouts?.length);
+
+  console.log("Workouts:", workouts);
 
   // Sort cycles by start date (newest first)
   const sortedCycles = cycles.sort(
@@ -120,10 +155,10 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
   const maxHeartRate: number[] = [];
   const dailyAvgHeartRate: number[] = [];
   const hrv: number[] = [];
+  const workoutAverageHeartRate: PerformanceDataPoint[] = [];
 
   sortedCycles.forEach((cycle: any, index: number) => {
-    const metrics = extractSingleDayMetrics(cycle);
-    console.log(`Cycle ${index} metrics:`, metrics);
+    const metrics = extractSingleDayMetrics(cycle, workouts);
 
     performance.push({
       date: new Date(cycle.start).toLocaleDateString("en-US", {
@@ -140,6 +175,10 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
     maxHeartRate.push(metrics.maxHeartRate);
     dailyAvgHeartRate.push(metrics.dailyAvgHeartRate);
     hrv.push(metrics.hrv);
+    workoutAverageHeartRate.push({
+      date: new Date(cycle.start).toISOString(),
+      value: metrics.workoutAverageHeartRate,
+    });
   });
 
   const result = {
@@ -153,9 +192,9 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
     maxHeartRate,
     dailyAvgHeartRate,
     hrv,
+    workoutAverageHeartRate,
   };
-  
-  console.log('Final extracted metrics:', result);
+
   return result;
 }
 
@@ -165,10 +204,11 @@ export function extractMultiDayMetricsFromData(data: any): MultiDayMetrics {
  */
 export function extractSingleDayMetricsFromData(data: any): SingleDayMetrics {
   const cycles = data.whoop_user.cycles;
+  const workouts = data.whoop_user.workouts;
   const newestCycle = cycles.sort(
     (a: any, b: any) =>
       new Date(b.start).getTime() - new Date(a.start).getTime(),
   )[0];
 
-  return extractSingleDayMetrics(newestCycle);
+  return extractSingleDayMetrics(newestCycle, workouts);
 }

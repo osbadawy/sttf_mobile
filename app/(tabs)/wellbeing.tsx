@@ -32,6 +32,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
     maxHeartRate: [],
     dailyAvgHeartRate: [],
     hrv: [],
+    workoutAverageHeartRate: [],
   });
 
   useEffect(() => {
@@ -51,7 +52,6 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
             },
           });
           const data = await response.json();
-          console.log(data);
 
           // Extract metrics from all cycles
           const extractedMetrics = extractMultiDayMetricsFromData(data);

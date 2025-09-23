@@ -34,28 +34,31 @@ export default function AverageHeartRateSection({
   const { t, isRTL } = useLocalization("stats");
   const [containerWidth, setContainerWidth] = useState(300); // Default fallback width
 
-  const chartData = averageHeartRateHistory.map((item, index) => {
-    // Handle different time formats - if it's a date or number string, use index
-    let xValue: number;
-    if (item.time.includes(":")) {
-      // Time format like "14:30"
-      const [hours, minutes] = item.time.split(":").map(Number);
-      xValue = hours * 60 + minutes;
-    } else {
-      // For date strings or numeric strings, use index for x-axis
-      xValue = index;
-    }
+  const averageHeartRate14Days =
+    averageHeartRateHistory.length > 0
+      ? Math.round(
+          averageHeartRateHistory.reduce(
+            (acc, curr) => acc + (curr.heartRate || 0),
+            0,
+          ) / averageHeartRateHistory.length,
+        )
+      : 0;
+
+  // Use actual dates for x-axis to show proper time spacing
+  const chartData = averageHeartRateHistory.map((item) => {
+    const date = new Date(item.time);
     return {
-      x: xValue,
-      y: item.heartRate,
+      x: date.getTime(), // Use timestamp for x-axis
+      y: Math.round(item.heartRate || 0),
     };
   });
 
-  const averageHeartRate14Days =
-    averageHeartRateHistory.reduce((acc, curr) => acc + curr.heartRate, 0) /
-    averageHeartRateHistory.length;
+  console.log("Chart data:", chartData);
+  console.log("Average heart rate history:", averageHeartRateHistory);
 
-  const xValues = chartData.map((d) => d.x);
+  const xValues = chartData
+    .map((d) => d.x)
+    .filter((x) => !isNaN(x) && isFinite(x));
 
   return (
     <CardWithTitle
@@ -117,39 +120,51 @@ export default function AverageHeartRateSection({
             grid: { stroke: "#e0e0e0", strokeWidth: 1 },
           }}
           tickFormat={(t) => {
-            // Check if this is a time-based value (has colon in original data)
-            const hasTimeFormat = averageHeartRateHistory.some(item => item.time.includes(":"));
-            if (hasTimeFormat) {
-              const hours = Math.floor(t / 60);
-              const minutes = t % 60;
-              return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-            } else {
-              // For non-time data, show day numbers
-              return `Day ${Math.round(t + 1)}`;
+            // Convert timestamp back to date and show month-day
+            try {
+              const date = new Date(t);
+              const month = (date.getMonth() + 1).toString().padStart(2, "0");
+              const day = date.getDate().toString().padStart(2, "0");
+              return `${month}.${day}`;
+            } catch (error) {
+              return `${Math.round(t)}`;
             }
           }}
+          tickCount={4}
         />
         <VictoryLine
-          data={chartData}
+          data={chartData.filter(
+            (d) => !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
+          )}
           style={{ data: { stroke: colors.heartLight, strokeWidth: 3 } }}
         />
-        <VictoryLine
-          data={[
-            { x: Math.min(...xValues), y: averageHeartRate },
-            { x: Math.max(...xValues), y: averageHeartRate },
-          ]}
-          style={{
-            data: {
-              stroke: colors.heart,
-              strokeWidth: 2,
-              strokeDasharray: "5,5",
-              strokeLinecap: "round",
-              opacity: 0.2,
-            },
-          }}
-        />
+        {xValues.length > 0 && (
+          <VictoryLine
+            data={[
+              {
+                x: Math.min(...xValues),
+                y: Math.round(averageHeartRate14Days || 0),
+              },
+              {
+                x: Math.max(...xValues),
+                y: Math.round(averageHeartRate14Days || 0),
+              },
+            ]}
+            style={{
+              data: {
+                stroke: colors.heart,
+                strokeWidth: 2,
+                strokeDasharray: "5,5",
+                strokeLinecap: "round",
+                opacity: 0.2,
+              },
+            }}
+          />
+        )}
         <VictoryScatter
-          data={chartData}
+          data={chartData.filter(
+            (d) => !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
+          )}
           style={{
             data: { fill: "#FFFFFF", stroke: colors.heart, strokeWidth: 3 },
           }}
