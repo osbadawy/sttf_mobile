@@ -3,6 +3,7 @@ import { WhoopIcon } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import * as Linking from 'expo-linking';
+import { RelativePathString, router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { ImageBackground, Text, View } from "react-native";
@@ -10,6 +11,7 @@ import { ImageBackground, Text, View } from "react-native";
 export default function WhoopLoginPage() {
   const { user } = useAuth();
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [whoopUserExists, setWhoopUserExists] = useState<boolean | null>(null);
   const { t } = useLocalization("login");
 
   useEffect(() => {
@@ -18,7 +20,21 @@ export default function WhoopLoginPage() {
         try {
           const token = await user.getIdToken();
           setAccessToken(token);
-          console.log("Firebase Access Token:", token);
+
+          const url = "https://nonextendible-kenzie-unfatalistic.ngrok-free.dev/whoop/auth"
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
+          });
+          const wu = (await response.json()).whoop_user
+          if(wu){
+            setWhoopUserExists(true);
+            router.push("(tabs)/dashboard" as RelativePathString);
+          } else {
+            setWhoopUserExists(false);
+          }
         } catch (error) {
           console.error("Error getting access token:", error);
         }
@@ -61,8 +77,14 @@ export default function WhoopLoginPage() {
       <View className="flex h-full items-center justify-between py-16">
         <Text className="text-white text-3xl effra-semibold">{t("whoopTitle")}</Text>
         <View className="w-full items-center justify-center" style={{ gap: 32 }}>
-          <WhoopIcon />
-          <Button title={t("Connect")} onPress={onPress} color={ButtonColor.primary} />
+          {
+            accessToken && whoopUserExists === false && (
+              <>
+                <WhoopIcon />
+                <Button title={t("Connect")} onPress={onPress} color={ButtonColor.primary} />
+              </>
+            )
+          }
         </View>
         <View/>
       </View>
