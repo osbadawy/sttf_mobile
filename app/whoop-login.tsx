@@ -35,7 +35,8 @@ export default function WhoopLoginPage() {
                 Authorization: `Bearer ${token}`,
               },
             });
-            if (response.status !== 200) throw new Error(`${response.status} ${response.statusText}`);
+            if (response.status !== 200)
+              throw new Error(`${response.status} ${response.statusText}`);
             const wu = (await response.json()).whoop_user;
             if (wu) {
               setWhoopUserExists(true);

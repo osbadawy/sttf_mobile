@@ -32,15 +32,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="wellbeing"
+        name="activities"
         options={{
-          title: tCommon("wellbeing"),
-        }}
-      />
-      <Tabs.Screen
-        name="heart"
-        options={{
-          title: tCommon("heart"),
+          title: tCommon("activities"),
         }}
       />
     </Tabs>
