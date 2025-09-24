@@ -18,26 +18,34 @@ export default function WhoopLoginPage() {
   useEffect(() => {
     const getAccessToken = async () => {
       if (user) {
+        let token = null;
         try {
-          const token = await user.getIdToken();
+          token = await user.getIdToken();
           setAccessToken(token);
-
-          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`;
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const wu = (await response.json()).whoop_user;
-          if (wu) {
-            setWhoopUserExists(true);
-            router.push("(tabs)/dashboard" as RelativePathString);
-          } else {
-            setWhoopUserExists(false);
-          }
         } catch (error) {
           console.error("Error getting access token:", error);
+        }
+
+        if (token) {
+          try {
+            const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`;
+            const response = await fetch(url, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (response.status !== 200) throw new Error(`${response.status} ${response.statusText}`);
+            const wu = (await response.json()).whoop_user;
+            if (wu) {
+              setWhoopUserExists(true);
+              router.push("(tabs)/dashboard" as RelativePathString);
+            } else {
+              setWhoopUserExists(false);
+            }
+          } catch (error) {
+            console.error("Error getting whoop user:", error);
+          }
         }
       }
     };
