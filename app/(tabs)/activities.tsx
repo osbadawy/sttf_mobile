@@ -1,10 +1,11 @@
 import { HeaderColor } from "@/components/Header";
+import { Arrow } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 function seperateDataByDay(data: any) {
   const date_seperated_data: any[][] = []
@@ -31,13 +32,34 @@ function formatDate(_date: Date, _locale: string = "en-US") {
   return `${day_of_week}, ${day}.${month}`;
 }
 
+function formatDuration(started_at: string, ended_at: string): string {
+  const totalSeconds = Math.floor((new Date(ended_at).getTime() - new Date(started_at).getTime()) / 1000);
+  return [Math.floor(totalSeconds / 3600), Math.floor((totalSeconds % 3600) / 60), totalSeconds % 60]
+    .map(n => n.toString().padStart(2, "0")).join(":");
+}
+
+function ActivityCard({ activity, isRTL }: { activity: any, isRTL: boolean }) {
+  const duration = formatDuration(activity.started_at, activity.ended_at);
+  return (
+    <TouchableOpacity className={`flex-row items-center justify-between pb-10 ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
+      <View className="w-[56px] h-[56px] rounded-full bg-white"/>
+      <View className="flex-1 pl-4">
+        <Text className="text-base effra-medium">{activity.activity_type} </Text>
+        <Text className="text-base effra-light">{duration}</Text>
+      </View>
+
+      <Arrow direction={isRTL ? "left" : "right"}/>
+    </TouchableOpacity>
+  );
+}
+
 interface ActivitiesPageProps {
   user_id?: string;
 }
 
 export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const { user } = useAuth();
-  const { currentLanguage } = useLocalization();
+  const { isRTL, currentLanguage } = useLocalization();
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
@@ -48,6 +70,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     color: HeaderColor.BG,
     showDateSelector: true,
     useDateState: useDateState,
+    showBGImage: false,
   };
 
   useEffect(() => {
@@ -87,12 +110,13 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     <ParallaxScrollView headerProps={props}>
       {data.map((day, index) => (
         <View key={index}>
-          <Text>{formatDate(day[0].started_at, currentLanguage)}</Text>
-          {day.map((item, index) => (
-            <View key={index}>
-              <Text>{item.started_at}</Text>
-            </View>
-          ))}
+          <Text className="text-xs effra-light pb-5">
+            {formatDate(day[0].started_at, currentLanguage)}
+            </Text>
+          {day.map((item, index) => {
+            return (
+              <ActivityCard activity={item} key={index} isRTL={isRTL}/>
+          )})}
         </View>
       ))}
     </ParallaxScrollView>

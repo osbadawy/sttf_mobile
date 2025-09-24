@@ -33,6 +33,7 @@ export interface HeaderProps {
   color?: HeaderColor;
   notification?: HeaderNotification;
   useDateState: [Date, (date: Date) => void];
+  showBGImage?: boolean;
 }
 
 export default function Header({
@@ -44,6 +45,7 @@ export default function Header({
   color = HeaderColor.BG,
   notification,
   useDateState,
+  showBGImage = true,
 }: HeaderProps) {
   /**
    * Header is on Z-index 50 and 60
@@ -102,6 +104,7 @@ export default function Header({
 
   return (
     <ParentContainer>
+      {showBGImage && (
       <HeaderBgIcon
         svgProps={{
           style: {
@@ -114,6 +117,7 @@ export default function Header({
           },
         }}
       />
+      )}
       <View style={{ zIndex: 50 }}>
         <View
           className={`flex justify-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
