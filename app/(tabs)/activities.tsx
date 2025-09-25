@@ -1,5 +1,6 @@
 import ActivityCard from "@/components/activities/ActivityCard";
 import FilterDropdown from "@/components/activities/FilterDropdown";
+import NewActvityDropdown from "@/components/activities/NewActvityDropdown";
 import Button, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
 import {
@@ -33,6 +34,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const [data, setData] = useState<any[][]>([]);
   const [activityFilters, setActivityFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [showNewActvityDropdown, setShowNewActvityDropdown] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,7 +108,9 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           </View>
           <Button
             title={t("addActivity")}
-            onPress={() => {}}
+            onPress={() => {
+              setShowNewActvityDropdown(true);
+            }}
             icon={<ThinPlusIcon />}
             color={ButtonColor.activity}
             size={ButtonSize.sm}
@@ -163,6 +167,11 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           activityFilters={activityFilters}
           setActivityFilters={setActivityFilters}
           setShowFilterDropdown={setShowFilterDropdown}
+        />
+      )}
+      {showNewActvityDropdown && (
+        <NewActvityDropdown
+          setShowNewActvityDropdown={setShowNewActvityDropdown}
         />
       )}
     </>

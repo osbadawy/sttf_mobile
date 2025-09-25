@@ -1,25 +1,25 @@
+import DynamicActivityIcon from "@/components/icons/activities";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { RelativePathString, router } from "expo-router";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { CheckIcon } from "../icons";
-import DynamicActivityIcon from "../icons/activities";
 
-export default function FilterDropdown({
-  uniqueActivityTypes,
-  activityFilters,
-  setActivityFilters,
-  setShowFilterDropdown,
-}: {
-  uniqueActivityTypes: string[];
-  activityFilters: string[];
-  setActivityFilters: (activityFilters: string[]) => void;
-  setShowFilterDropdown: (showFilterDropdown: boolean) => void;
-}) {
-  const { t, isRTL } = useLocalization("components.activities.filterDropdown");
+interface NewActvityDropdownProps {
+  setShowNewActvityDropdown: (showNewActvityDropdown: boolean) => void;
+}
+
+export default function NewActvityDropdown({
+  setShowNewActvityDropdown,
+}: NewActvityDropdownProps) {
+  const { t, isRTL } = useLocalization(
+    "components.activities.newActivityDropdown",
+  );
+
+  const categories = ["technical", "strength", "recovery"];
 
   return (
     <TouchableOpacity
       className="bg-transparent w-screen h-screen absolute z-100"
-      onPress={() => setShowFilterDropdown(false)}
+      onPress={() => setShowNewActvityDropdown(false)}
     >
       <View
         className="bg-white absolute bottom-0 w-screen rounded-3xl px-12 pt-2 pb-12"
@@ -31,25 +31,15 @@ export default function FilterDropdown({
           className={`items-center justify-between py-3 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >
           <Text className="font-inter-regular text-base">{t("title")}</Text>
-          <TouchableOpacity onPress={() => setActivityFilters([])}>
-            <Text className="font-inter-regular text-base underline">
-              {t("clear")}
-            </Text>
-          </TouchableOpacity>
         </View>
 
         <View className="w-full h-0 border-b border-gray-200" />
         <ScrollView>
-          {uniqueActivityTypes.map((activityType) => {
-            const isSelected = activityFilters.includes(activityType);
+          {categories.map((activityType) => {
             const onPress = () => {
-              if (isSelected) {
-                setActivityFilters(
-                  activityFilters.filter((filter) => filter !== activityType),
-                );
-              } else {
-                setActivityFilters([...activityFilters, activityType]);
-              }
+              router.push(
+                `/activities/create/${activityType}` as RelativePathString,
+              );
             };
             return (
               <TouchableOpacity
@@ -59,9 +49,8 @@ export default function FilterDropdown({
               >
                 <View className="flex-row items-center" style={{ gap: 20 }}>
                   <DynamicActivityIcon activityType={activityType} />
-                  <Text>{activityType}</Text>
+                  <Text>{t(activityType)}</Text>
                 </View>
-                {isSelected && <CheckIcon />}
               </TouchableOpacity>
             );
           })}
