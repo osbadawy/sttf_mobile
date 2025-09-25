@@ -105,18 +105,18 @@ export default function Header({
   return (
     <ParentContainer>
       {showBGImage && (
-      <HeaderBgIcon
-        svgProps={{
-          style: {
-            position: "absolute",
-            top: -50,
-            left: -50,
-            zIndex: 50,
-            filter: "blur(4px)",
-            opacity: color === HeaderColor.primary ? 1 : 0.4,
-          },
-        }}
-      />
+        <HeaderBgIcon
+          svgProps={{
+            style: {
+              position: "absolute",
+              top: -50,
+              left: -50,
+              zIndex: 50,
+              filter: "blur(4px)",
+              opacity: color === HeaderColor.primary ? 1 : 0.4,
+            },
+          }}
+        />
       )}
       <View style={{ zIndex: 50 }}>
         <View

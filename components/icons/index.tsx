@@ -1,3 +1,5 @@
+import ActivityFlameIcon from "./ActivityFlame";
+import ActivityPageBg from "./ActivityPageBg";
 import Arrow from "./Arrow";
 import ArrowBig from "./ArrowBig";
 import HeaderBgIcon from "./HeaderBgIcon";
@@ -10,10 +12,11 @@ import ProfilePictureDefaultIcon from "./ProfilePictureDefault";
 import SleepIcon from "./Sleep";
 import StrainIcon from "./Strain";
 import StressIcon from "./Stress";
+import ThinPlusIcon from "./ThinPlus";
 import WhoopIcon from "./WhoopIcon";
 
 export {
-  Arrow,
+  ActivityFlameIcon, ActivityPageBg, Arrow,
   ArrowBig,
   HeaderBgIcon,
   HeartBg,
@@ -25,5 +28,7 @@ export {
   SleepIcon,
   StrainIcon,
   StressIcon,
-  WhoopIcon,
+  ThinPlusIcon,
+  WhoopIcon
 };
+

@@ -24,6 +24,7 @@ const colors = {
   heartLight: "#FFA0A0",
   heartResting: "#00C8C9",
   heartRestingLight: "#BEE9E9",
+  activity: "#C00000",
 };
 
 export default colors;

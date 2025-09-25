@@ -1,5 +1,6 @@
+import Button, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
-import { Arrow } from "@/components/icons";
+import { ActivityFlameIcon, ActivityPageBg, Arrow, ThinPlusIcon } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -8,8 +9,8 @@ import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 function seperateDataByDay(data: any) {
-  const date_seperated_data: any[][] = []
-  let last_date = new Date()
+  const date_seperated_data: any[][] = [];
+  let last_date = new Date();
 
   for (const item of data) {
     const date = new Date(item.started_at);
@@ -21,7 +22,6 @@ function seperateDataByDay(data: any) {
     date_seperated_data[date_seperated_data.length - 1].push(item);
   }
   return date_seperated_data;
-
 }
 
 function formatDate(_date: Date, _locale: string = "en-US") {
@@ -33,22 +33,34 @@ function formatDate(_date: Date, _locale: string = "en-US") {
 }
 
 function formatDuration(started_at: string, ended_at: string): string {
-  const totalSeconds = Math.floor((new Date(ended_at).getTime() - new Date(started_at).getTime()) / 1000);
-  return [Math.floor(totalSeconds / 3600), Math.floor((totalSeconds % 3600) / 60), totalSeconds % 60]
-    .map(n => n.toString().padStart(2, "0")).join(":");
+  const totalSeconds = Math.floor(
+    (new Date(ended_at).getTime() - new Date(started_at).getTime()) / 1000,
+  );
+  return [
+    Math.floor(totalSeconds / 3600),
+    Math.floor((totalSeconds % 3600) / 60),
+    totalSeconds % 60,
+  ]
+    .map((n) => n.toString().padStart(2, "0"))
+    .join(":");
 }
 
-function ActivityCard({ activity, isRTL }: { activity: any, isRTL: boolean }) {
+function ActivityCard({ activity, isRTL }: { activity: any; isRTL: boolean }) {
   const duration = formatDuration(activity.started_at, activity.ended_at);
+  
   return (
-    <TouchableOpacity className={`flex-row items-center justify-between pb-10 ${isRTL ? "flex-row-reverse" : "flex-row"}`}>
-      <View className="w-[56px] h-[56px] rounded-full bg-white"/>
+    <TouchableOpacity
+      className={`flex-row items-center justify-between pb-10 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+    >
+      <View className="w-[56px] h-[56px] rounded-full bg-white" />
       <View className="flex-1 pl-4">
-        <Text className="text-base effra-medium">{activity.activity_type} </Text>
+        <Text className="text-base effra-medium">
+          {activity.activity_type}{" "}
+        </Text>
         <Text className="text-base effra-light">{duration}</Text>
       </View>
 
-      <Arrow direction={isRTL ? "left" : "right"}/>
+      <Arrow direction={isRTL ? "left" : "right"} />
     </TouchableOpacity>
   );
 }
@@ -108,17 +120,42 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
   return (
     <ParallaxScrollView headerProps={props}>
-      {data.map((day, index) => (
-        <View key={index}>
-          <Text className="text-xs effra-light pb-5">
-            {formatDate(day[0].started_at, currentLanguage)}
-            </Text>
-          {day.map((item, index) => {
-            return (
-              <ActivityCard activity={item} key={index} isRTL={isRTL}/>
-          )})}
+      <View className="items-start px-4 py-0 z-10 relative">
+        <Text className="effra-semibold text-2xl" style={{ paddingBottom: 87}}>Your Activity</Text>
+        <ActivityPageBg style={{ position: "absolute", right: -67, top:-32}} />
+        <Text className="effra-light text-base pb-4">Burnt Today</Text>
+
+        <View className="flex-row items-center justify-start pb-10">
+          <ActivityFlameIcon />
+          <Text className="effra-semibold text-4xl">{" 710 "}
+            <Text className="effra-light text-base">Kcal</Text>
+          </Text>
+          
         </View>
-      ))}
+        <Button
+          title="Add Activity"
+          onPress={() => {}}
+          icon={<ThinPlusIcon />}
+          color={ButtonColor.activity}
+          size={ButtonSize.sm}
+        />
+
+        <View className="w-full pb-2 items-center flex-row justify-end" style={{ paddingTop:120, gap:4}}>
+          <Text className="effra-light text-base">All Activities</Text>
+          <Arrow direction="down" strokeWidth={1.4} />
+        </View>
+
+        {data.map((day, index) => (
+          <View key={index} className="w-full">
+            <Text className="text-xs effra-light pb-5">
+              {formatDate(day[0].started_at, currentLanguage)}
+            </Text>
+            {day.map((item, index) => {
+              return <ActivityCard activity={item} key={index} isRTL={isRTL} />;
+            })}
+          </View>
+        ))}
+      </View>
     </ParallaxScrollView>
   );
 }
