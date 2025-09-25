@@ -185,7 +185,7 @@ export default function Header({
               </>
             )}
           </View>
-          <TouchableOpacity 
+          <TouchableOpacity
             className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4"
             onPress={showDatePickerModal}
           >
