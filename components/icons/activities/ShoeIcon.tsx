@@ -1,4 +1,4 @@
-import Svg, { ClipPath, Defs, G, Path } from "react-native-svg"
+import Svg, { ClipPath, Defs, G, Path } from "react-native-svg";
 const ShoeIcon = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -21,5 +21,5 @@ const ShoeIcon = (props: any) => (
       </ClipPath>
     </Defs>
   </Svg>
-)
-export default ShoeIcon
+);
+export default ShoeIcon;

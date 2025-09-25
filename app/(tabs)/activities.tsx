@@ -31,10 +31,24 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
-  const [data, setData] = useState<any[][]>([]);
+  const [data, setData] = useState<Record<number, any[]>>({});
+  const orderedData = Object.entries(data).sort(
+    (a, b) => Number(b[0]) - Number(a[0]),
+  );
+
   const [activityFilters, setActivityFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showNewActvityDropdown, setShowNewActvityDropdown] = useState(false);
+
+  const beginningOfDay = new Date(date);
+  beginningOfDay.setHours(0, 0, 0, 0);
+
+  const calories = data[beginningOfDay.getTime()]
+    ? data[beginningOfDay.getTime()].reduce(
+        (acc, item) => acc + Math.round(item.workout.score.kilojoule / 4.184),
+        0,
+      )
+    : 0;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,7 +116,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           <View className="flex-row items-center justify-start pb-10">
             <ActivityFlameIcon />
             <Text className="effra-semibold text-4xl">
-              {" 710 "}
+              {" " + calories + " "}
               <Text className="effra-light text-base">Kcal</Text>
             </Text>
           </View>
@@ -131,7 +145,8 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
             </TouchableOpacity>
           </View>
 
-          {data.map((day, index) => {
+          {orderedData.map((_data, index) => {
+            const day = _data[1];
             if (
               activityFilters.length > 0 &&
               !day.some((item: any) =>
@@ -152,9 +167,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                   ) {
                     return null;
                   }
-                  return (
-                    <ActivityCard activity={item} key={index} />
-                  );
+                  return <ActivityCard activity={item} key={index} />;
                 })}
               </View>
             );

@@ -4,13 +4,12 @@ import FlowerIcon from "./FlowerIcon";
 import ShoeIcon from "./ShoeIcon";
 import TableTennisIcon from "./TableTennisIcon";
 
-
 export default function DynamicActivityIcon({
   activityType,
 }: {
   activityType: string;
 }) {
-    // Parent should handle the size
+  // Parent should handle the size
 
   switch (activityType) {
     case "technical":

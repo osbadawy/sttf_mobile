@@ -5,11 +5,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Arrow } from "../icons";
 import DynamicActivityIcon from "../icons/activities";
 
-export default function ActivityCard({
-  activity,
-}: {
-  activity: any;
-}) {
+export default function ActivityCard({ activity }: { activity: any }) {
   const { t, isRTL } = useLocalization("components.activities.activityCard");
   const duration = formatDuration(activity.started_at, activity.ended_at);
   const needsAction =
