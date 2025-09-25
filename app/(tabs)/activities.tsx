@@ -153,7 +153,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                     return null;
                   }
                   return (
-                    <ActivityCard activity={item} key={index} isRTL={isRTL} />
+                    <ActivityCard activity={item} key={index} />
                   );
                 })}
               </View>

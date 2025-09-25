@@ -57,8 +57,10 @@ export default function FilterDropdown({
                 onPress={onPress}
                 className={`border-b border-gray-200 h-[56px] items-center justify-between ${isRTL ? "flex-row-reverse" : "flex-row"}`}
               >
-                <View className="flex-row items-center" style={{ gap: 20 }}>
-                  <DynamicActivityIcon activityType={activityType} />
+                <View className="flex-row items-center" style={{ gap: 10 }}>
+                  <View className="w-10 h-7 items-center justify-center">
+                    <DynamicActivityIcon activityType={activityType} />
+                  </View>
                   <Text>{activityType}</Text>
                 </View>
                 {isSelected && <CheckIcon />}

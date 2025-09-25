@@ -1,12 +1,17 @@
+import { View } from "react-native";
 import DumbellIcon from "./DumbellIcon";
 import FlowerIcon from "./FlowerIcon";
+import ShoeIcon from "./ShoeIcon";
 import TableTennisIcon from "./TableTennisIcon";
+
 
 export default function DynamicActivityIcon({
   activityType,
 }: {
   activityType: string;
 }) {
+    // Parent should handle the size
+
   switch (activityType) {
     case "technical":
       return <TableTennisIcon />;
@@ -19,8 +24,12 @@ export default function DynamicActivityIcon({
       return <TableTennisIcon />;
     case "weightlifting":
       return <DumbellIcon />;
+    case "walking":
+      return <ShoeIcon />;
+    case "running":
+      return <ShoeIcon />;
 
     default:
-      return <TableTennisIcon />;
+      return <View />;
   }
 }
