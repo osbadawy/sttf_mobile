@@ -1,5 +1,4 @@
-
-import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg"
+import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 const ActivityPageBg = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -30,5 +29,5 @@ const ActivityPageBg = (props: any) => (
       </LinearGradient>
     </Defs>
   </Svg>
-)
-export default ActivityPageBg
+);
+export default ActivityPageBg;

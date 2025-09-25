@@ -1,4 +1,4 @@
-import Svg, { Path } from "react-native-svg"
+import Svg, { Path } from "react-native-svg";
 const ActivityFlameIcon = (props: any) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
@@ -26,5 +26,5 @@ const ActivityFlameIcon = (props: any) => (
       d="M21.112 33.99c6.997-.607 2.98-6.062.078-11.622-.048-.093-.19-.058-.19.047v11.477c0 .058.054.104.112.099Z"
     />
   </Svg>
-)
-export default ActivityFlameIcon
+);
+export default ActivityFlameIcon;

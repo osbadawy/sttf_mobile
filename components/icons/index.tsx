@@ -2,6 +2,7 @@ import ActivityFlameIcon from "./ActivityFlame";
 import ActivityPageBg from "./ActivityPageBg";
 import Arrow from "./Arrow";
 import ArrowBig from "./ArrowBig";
+import CheckIcon from "./Check";
 import HeaderBgIcon from "./HeaderBgIcon";
 import HeartBg from "./HeartBg";
 import HeartLine1 from "./HeartLine1";
@@ -16,8 +17,11 @@ import ThinPlusIcon from "./ThinPlus";
 import WhoopIcon from "./WhoopIcon";
 
 export {
-  ActivityFlameIcon, ActivityPageBg, Arrow,
+  ActivityFlameIcon,
+  ActivityPageBg,
+  Arrow,
   ArrowBig,
+  CheckIcon,
   HeaderBgIcon,
   HeartBg,
   HeartLine1,
@@ -29,6 +33,5 @@ export {
   StrainIcon,
   StressIcon,
   ThinPlusIcon,
-  WhoopIcon
+  WhoopIcon,
 };
-

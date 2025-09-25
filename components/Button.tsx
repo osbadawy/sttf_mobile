@@ -35,7 +35,7 @@ export default function Button({
       className={`rounded-lg flex-row justify-between items-center ${color} ${sizeClass}`}
     >
       <Text className={`text-white text-center ${textSizeClass}`}>{title}</Text>
-      {icon ? <View style={{ paddingLeft: 12}}>{icon}</View> : null}
+      {icon ? <View style={{ paddingLeft: 12 }}>{icon}</View> : null}
     </TouchableOpacity>
   );
 }

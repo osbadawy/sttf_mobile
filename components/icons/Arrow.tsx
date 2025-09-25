@@ -19,15 +19,14 @@ export default function Arrow({
   width = 22,
   height = 22,
 }: ArrowProps) {
-  const transform = []
+  const transform = [];
   if (direction === "left") {
-    transform.push({ rotate: "180deg" })
+    transform.push({ rotate: "180deg" });
   } else if (direction === "up") {
-    transform.push({ rotate: "-90deg" })
+    transform.push({ rotate: "-90deg" });
   } else if (direction === "down") {
-    transform.push({ rotate: "90deg" })
+    transform.push({ rotate: "90deg" });
   }
-
 
   return (
     <View className={className}>

@@ -12,7 +12,7 @@ const colors = {
   strainHigh: "#28C5C6",
   strainAllOut: "#37E3E4",
   stress: "#F47B37",
-  stressBar: "FABB00",
+  stressBar: "#FABB00",
   stressLight: "#FFEBDF",
   background: "#F8F9F2",
   sleep: "#28C5C6",
