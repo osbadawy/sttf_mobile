@@ -3,7 +3,10 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 // Import individual translation files
+import arActivities from "../locales/ar/activities.json";
 import arCommon from "../locales/ar/common.json";
+import arActivitiesActivityCard from "../locales/ar/components/activities/ActivityCard.json";
+import arActivitiesFilterDropdown from "../locales/ar/components/activities/FilterDropdown.json";
 import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json";
 import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
@@ -14,7 +17,10 @@ import arLanguage from "../locales/ar/language.json";
 import arLogin from "../locales/ar/login.json";
 import arStats from "../locales/ar/stats.json";
 
+import enActivities from "../locales/en/activities.json";
 import enCommon from "../locales/en/common.json";
+import enActivitiesActivityCard from "../locales/en/components/activities/ActivityCard.json";
+import enActivitiesFilterDropdown from "../locales/en/components/activities/FilterDropdown.json";
 import enHeartSection from "../locales/en/components/dashboard/HeartSection.json";
 import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
@@ -32,6 +38,7 @@ export const resources = {
     language: enLanguage,
     stats: enStats,
     login: enLogin,
+    activities: enActivities,
     components: {
       dashboard: {
         wellbeingSection: enWellbeingSection,
@@ -42,6 +49,10 @@ export const resources = {
         sleep: enWellbeingSleep,
       },
       heart: enHeart,
+      activities: {
+        filterDropdown: enActivitiesFilterDropdown,
+        activityCard: enActivitiesActivityCard,
+      },
     },
   },
   ar: {
@@ -50,6 +61,7 @@ export const resources = {
     language: arLanguage,
     stats: arStats,
     login: arLogin,
+    activities: arActivities,
     components: {
       dashboard: {
         wellbeingSection: arWellbeingSection,
@@ -60,6 +72,10 @@ export const resources = {
         sleep: arWellbeingSleep,
       },
       heart: arHeart,
+      activities: {
+        filterDropdown: arActivitiesFilterDropdown,
+        activityCard: arActivitiesActivityCard,
+      },
     },
   },
 };
