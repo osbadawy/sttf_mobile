@@ -1,7 +1,9 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
+import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
 import {
@@ -56,11 +58,23 @@ export default function Header({
     throw new Error("Exactly one of 'title' or 'name' must be provided");
 
   const [date, setDate] = useDateState;
+  const [showDatePicker, setShowDatePicker] = useState(false);
   // const isToday = date.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
   const isToday = false;
   const { t, isRTL } = useLocalization("common");
 
   const textColor = color === HeaderColor.primary ? "text-white" : "text-black";
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
+
+  const showDatePickerModal = () => {
+    setShowDatePicker(true);
+  };
 
   const ParentContainer = ({ children }: { children: React.ReactNode }) => {
     const className = "z-50 rounded-b-[72px] overflow-hidden";
@@ -171,9 +185,12 @@ export default function Header({
               </>
             )}
           </View>
-          <View className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4">
+          <TouchableOpacity 
+            className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4"
+            onPress={showDatePickerModal}
+          >
             <CalendarIcon />
-          </View>
+          </TouchableOpacity>
         </View>
 
         {showDateSelector && (
@@ -210,6 +227,14 @@ export default function Header({
             <ArrowBig direction={isRTL ? "left" : "right"} />
           </TouchableOpacity>
         </View>
+      )}
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
       )}
     </ParentContainer>
   );
