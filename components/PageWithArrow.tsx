@@ -39,10 +39,14 @@ export default function PageWithArrow({
 
   return (
     <ParallaxScrollView>
-      <View className="flex-row items-center justify-between">
-        {isRTL ? <View /> : <ClickableArrow isRTL={isRTL} />}
-        <Text className="effra-medium text-2xl">{title}</Text>
-        {isRTL ? <ClickableArrow isRTL={isRTL} /> : <View />}
+      <View
+        className={`items-center justify-between ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+      >
+        <ClickableArrow isRTL={isRTL} />
+        <Text className="effra-medium text-2xl flex-1 text-center">
+          {title}
+        </Text>
+        <View className="w-[22px]" />
       </View>
       {children}
     </ParallaxScrollView>

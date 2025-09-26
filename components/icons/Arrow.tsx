@@ -6,7 +6,9 @@ interface ArrowProps {
   svgProps?: SvgProps;
   stroke?: string;
   strokeWidth?: number;
-  direction?: "left" | "right";
+  direction?: "left" | "right" | "up" | "down";
+  width?: number;
+  height?: number;
 }
 export default function Arrow({
   className,
@@ -14,16 +16,27 @@ export default function Arrow({
   strokeWidth = 2,
   svgProps,
   direction = "right",
+  width = 22,
+  height = 22,
 }: ArrowProps) {
+  const transform = [];
+  if (direction === "left") {
+    transform.push({ rotate: "180deg" });
+  } else if (direction === "up") {
+    transform.push({ rotate: "-90deg" });
+  } else if (direction === "down") {
+    transform.push({ rotate: "90deg" });
+  }
+
   return (
     <View className={className}>
       <Svg
-        width={22}
-        height={22}
+        width={width}
+        height={height}
         fill="none"
         {...svgProps}
         style={{
-          transform: direction === "left" ? [{ rotate: "180deg" }] : [],
+          transform: transform,
         }}
       >
         <Path

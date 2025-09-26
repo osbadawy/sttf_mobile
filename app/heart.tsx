@@ -64,7 +64,7 @@ export default function HeartPage({ user_id }: HeartPageProps) {
     };
 
     fetchData();
-  }, [user]);
+  }, [user, user_id]);
 
   // Calculate current values (most recent cycle) - filter out zero values
   const validWorkoutRates = metrics.workoutAverageHeartRate.filter(
