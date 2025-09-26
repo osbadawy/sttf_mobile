@@ -89,7 +89,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
     };
 
     fetchData();
-  }, [date, user]);
+  }, [date, user, user_id]);
 
   return (
     <ParallaxScrollView headerProps={props}>

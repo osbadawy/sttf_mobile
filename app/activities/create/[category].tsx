@@ -18,7 +18,7 @@ export default function NewActivityPage() {
   const activityTypes = getActivityTypesInCategory(categoryString);
   const [disableButton, setDisableButton] = useState(false);
 
-  const { t, isRTL } = useLocalization("components.activities.newActivity");
+  const { t } = useLocalization("components.activities.newActivity");
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );

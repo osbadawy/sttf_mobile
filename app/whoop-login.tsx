@@ -64,7 +64,7 @@ export default function WhoopLoginPage() {
       const redirectURL = Linking.createURL("(tabs)/dashboard");
       const url = `${Constants.expoConfig?.extra?.API_URL}/whoop/auth/start?access_token=${accessToken}&redirect_url=${redirectURL}`;
 
-      const result = await WebBrowser.openAuthSessionAsync(url, redirectURL, {
+      await WebBrowser.openAuthSessionAsync(url, redirectURL, {
         showInRecents: false,
         preferEphemeralSession: true,
       });

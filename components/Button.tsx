@@ -32,7 +32,8 @@ export default function Button({
   const textSizeClass =
     size === ButtonSize.sm ? "text-base" : "text-2xl effra-regular";
 
-  const textColorClass = color === ButtonColor.white ? "text-black" : "text-white";
+  const textColorClass =
+    color === ButtonColor.white ? "text-black" : "text-white";
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -41,7 +42,9 @@ export default function Button({
       style={{ borderRadius: 8 }}
       disabled={disabled}
     >
-      <Text className={`${textColorClass} text-center ${textSizeClass}`}>{title}</Text>
+      <Text className={`${textColorClass} text-center ${textSizeClass}`}>
+        {title}
+      </Text>
       {icon ? <View style={{ paddingLeft: 12 }}>{icon}</View> : null}
     </TouchableOpacity>
   );

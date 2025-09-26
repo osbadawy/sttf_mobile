@@ -63,7 +63,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
     };
 
     fetchData();
-  }, [user]);
+  }, [user, user_id]);
 
   // Calculate current values (most recent cycle)
   const currentPerformance = metrics.performance[0]?.value || 0;

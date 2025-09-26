@@ -36,7 +36,10 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
   const [data, setData] = useState<Record<number, any[]>>({});
-  const [dataRange, setDataRange] = useState<{ earliest: Date | null; latest: Date | null }>({
+  const [dataRange, setDataRange] = useState<{
+    earliest: Date | null;
+    latest: Date | null;
+  }>({
     earliest: null,
     latest: null,
   });
@@ -89,17 +92,23 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
         });
         const newData = await response.json();
         const separatedNewData = seperateDataByDay(newData);
-        
+
         // Merge with existing data
-        setData(prevData => ({
+        setData((prevData) => ({
           ...prevData,
           ...separatedNewData,
         }));
-        
+
         // Update data range
-        setDataRange(prevRange => ({
-          earliest: prevRange.earliest && startDate < prevRange.earliest ? startDate : prevRange.earliest,
-          latest: prevRange.latest && endDate > prevRange.latest ? endDate : prevRange.latest,
+        setDataRange((prevRange) => ({
+          earliest:
+            prevRange.earliest && startDate < prevRange.earliest
+              ? startDate
+              : prevRange.earliest,
+          latest:
+            prevRange.latest && endDate > prevRange.latest
+              ? endDate
+              : prevRange.latest,
         }));
       } catch (error) {
         console.error("Error fetching additional data:", error);
@@ -112,27 +121,27 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     if (dataRange.earliest && dataRange.latest) {
       const selectedDate = new Date(date);
       selectedDate.setHours(0, 0, 0, 0);
-      
+
       const earliestDate = new Date(dataRange.earliest);
       earliestDate.setHours(0, 0, 0, 0);
-      
+
       const latestDate = new Date(dataRange.latest);
       latestDate.setHours(0, 0, 0, 0);
-      
+
       // Check if selected date is outside the current data range
       if (selectedDate < earliestDate) {
         // Selected date is before our data range, fetch data from selected date to earliest
         const newEndDate = new Date(earliestDate);
         newEndDate.setDate(newEndDate.getDate() - 1);
         newEndDate.setHours(23, 59, 59, 999);
-        
+
         fetchAdditionalData(selectedDate, newEndDate);
       } else if (selectedDate > latestDate) {
         // Selected date is after our data range, fetch data from latest to selected date
         const newStartDate = new Date(latestDate);
         newStartDate.setDate(newStartDate.getDate() + 1);
         newStartDate.setHours(0, 0, 0, 0);
-        
+
         fetchAdditionalData(newStartDate, selectedDate);
       }
     }
@@ -173,7 +182,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     };
 
     fetchData();
-  }, [user]);
+  }, [user, user_id]);
 
   return (
     <>
@@ -266,27 +275,26 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           })}
 
           <View className="w-full items-center justify-center">
-          <Button
-            title="Load More"
-            onPress={() => {
-              if (dataRange.earliest) {
-                // Calculate 14 days before the earliest date
-                const newEndDate = new Date(dataRange.earliest);
-                newEndDate.setDate(newEndDate.getDate() - 1);
-                newEndDate.setHours(23, 59, 59, 999);
-                
-                const newStartDate = new Date(dataRange.earliest);
-                newStartDate.setDate(newStartDate.getDate() - 14);
-                newStartDate.setHours(0, 0, 0, 0);
-                
-                fetchAdditionalData(newStartDate, newEndDate);
-              }
-            }}
-            color={ButtonColor.white}
-            size={ButtonSize.sm}
-          />
+            <Button
+              title="Load More"
+              onPress={() => {
+                if (dataRange.earliest) {
+                  // Calculate 14 days before the earliest date
+                  const newEndDate = new Date(dataRange.earliest);
+                  newEndDate.setDate(newEndDate.getDate() - 1);
+                  newEndDate.setHours(23, 59, 59, 999);
+
+                  const newStartDate = new Date(dataRange.earliest);
+                  newStartDate.setDate(newStartDate.getDate() - 14);
+                  newStartDate.setHours(0, 0, 0, 0);
+
+                  fetchAdditionalData(newStartDate, newEndDate);
+                }
+              }}
+              color={ButtonColor.white}
+              size={ButtonSize.sm}
+            />
           </View>
-          
         </View>
       </ParallaxScrollView>
       {showFilterDropdown && (
