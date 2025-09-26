@@ -72,14 +72,14 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
       if (user) {
         try {
           // 14 days ago
-          const startDate = new Date(date);
+          const startDate = new Date();
           startDate.setHours(0, 0, 0, 0);
-          startDate.setDate(startDate.getDate() - 30);
+          startDate.setDate(startDate.getDate() - 14);
 
           const params = new URLSearchParams({
             firebase_id: user_id || user.uid,
             start_date: startDate.toISOString(),
-            end_date: date.toISOString(),
+            end_date: new Date().toISOString(),
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity?${params}`;
 
@@ -98,7 +98,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     };
 
     fetchData();
-  }, [date, user]);
+  }, [user]);
 
   return (
     <>
