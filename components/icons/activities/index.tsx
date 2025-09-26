@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import DumbellIcon from "./DumbellIcon";
 import FlowerIcon from "./FlowerIcon";
 import ShoeIcon from "./ShoeIcon";
@@ -19,7 +18,7 @@ export default function DynamicActivityIcon({
     case "recovery":
       return <FlowerIcon />;
 
-    case "table_tennis":
+    case "table_tennis_ping_pong":
       return <TableTennisIcon />;
     case "weightlifting":
       return <DumbellIcon />;
@@ -29,6 +28,6 @@ export default function DynamicActivityIcon({
       return <ShoeIcon />;
 
     default:
-      return <View />;
+      return <TableTennisIcon />;
   }
 }

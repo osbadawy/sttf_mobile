@@ -16,6 +16,7 @@ interface ButtonProps {
   color: ButtonColor;
   icon?: React.ReactNode;
   size?: ButtonSize;
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -24,6 +25,7 @@ export default function Button({
   color,
   icon,
   size = ButtonSize.lg,
+  disabled = false,
 }: ButtonProps) {
   const sizeClass = size === ButtonSize.sm ? "px-6 py-3" : "px-16 py-4";
   const textSizeClass =
@@ -32,7 +34,9 @@ export default function Button({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.6}
-      className={`rounded-lg flex-row justify-between items-center ${color} ${sizeClass}`}
+      className={`flex-row items-center ${icon ? "justify-between" : "justify-center"} ${disabled ? "bg-gray-300" : color} ${sizeClass}`}
+      style={{ borderRadius: 8 }}
+      disabled={disabled}
     >
       <Text className={`text-white text-center ${textSizeClass}`}>{title}</Text>
       {icon ? <View style={{ paddingLeft: 12 }}>{icon}</View> : null}

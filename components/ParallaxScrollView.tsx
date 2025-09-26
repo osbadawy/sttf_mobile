@@ -11,7 +11,11 @@ export default function ParallaxScrollView({
 }: ParallaxScrollViewProps) {
   return (
     <View className="flex-1">
-      <ScrollView scrollEventThrottle={16}>
+      <ScrollView
+        scrollEventThrottle={16}
+        contentContainerStyle={{ flexGrow: 1 }}
+        style={{ flex: 1 }}
+      >
         {headerProps && <Header {...headerProps} />}
         <View className="flex-1 pt-16 px-4 pb-4 gap-4 overflow-hidden">
           {children}

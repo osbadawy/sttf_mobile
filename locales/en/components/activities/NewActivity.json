@@ -1,8 +1,10 @@
 {
   "title": "Add Activity",
+  "selectActivityType": "Select Activity Type",
   "startTime": "Start Time",
   "endTime": "End Time",
   "workoutStart": "Workout Start",
   "workoutEnd": "Workout End",
-  "add": "Add"
+  "add": "Add",
+  "minDurationError": "Duration needs to be at least 5 minutes"
 }

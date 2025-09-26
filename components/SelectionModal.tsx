@@ -17,6 +17,7 @@ interface SelectionModalProps {
   checkMark?: React.ReactNode;
   showIcons?: boolean;
   customOnPress?: (item: Item) => void;
+  showClearButton?: boolean;
 }
 
 export default function SelectionModal({
@@ -28,12 +29,13 @@ export default function SelectionModal({
   checkMark = true,
   showIcons = true,
   customOnPress,
+  showClearButton = true,
 }: SelectionModalProps) {
   const { isRTL } = useLocalization();
 
   return (
     <TouchableOpacity
-      className="bg-transparent w-screen h-screen absolute z-100"
+      className="bg-transparent w-screen h-screen absolute z-100 bottom-0"
       onPress={() => setShowSelectionModal(false)}
     >
       <View
@@ -46,11 +48,13 @@ export default function SelectionModal({
           className={`items-center justify-between py-3 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >
           <Text className="font-inter-regular text-base">{title}</Text>
-          <TouchableOpacity onPress={() => setSelectedItems([])}>
+          {showClearButton && (
+            <TouchableOpacity onPress={() => setSelectedItems([])}>
             <Text className="font-inter-regular text-base underline">
-              clear
-            </Text>
-          </TouchableOpacity>
+                clear
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="w-full h-0 border-b border-gray-200" />
