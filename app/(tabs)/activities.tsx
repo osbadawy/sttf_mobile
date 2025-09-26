@@ -1,6 +1,4 @@
 import ActivityCard from "@/components/activities/ActivityCard";
-import FilterDropdown from "@/components/activities/FilterDropdown";
-import NewActvityDropdown from "@/components/activities/NewActvityDropdown";
 import Button, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
 import {
@@ -9,7 +7,9 @@ import {
   Arrow,
   ThinPlusIcon,
 } from "@/components/icons";
+import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import {
@@ -18,6 +18,7 @@ import {
   seperateDataByDay,
 } from "@/utils/activities";
 import Constants from "expo-constants";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -28,10 +29,14 @@ interface ActivitiesPageProps {
 export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const { user } = useAuth();
   const { t, isRTL, currentLanguage } = useLocalization("activities");
+  const { t: tActivityTypes } = useLocalization(
+    "components.activities.activityTypes",
+  );
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
   const [data, setData] = useState<Record<number, any[]>>({});
+  const categories = ["technical", "strength", "recovery"];
   const orderedData = Object.entries(data).sort(
     (a, b) => Number(b[0]) - Number(a[0]),
   );
@@ -175,16 +180,30 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
         </View>
       </ParallaxScrollView>
       {showFilterDropdown && (
-        <FilterDropdown
-          uniqueActivityTypes={getUniqueActivityTypes(data)}
-          activityFilters={activityFilters}
-          setActivityFilters={setActivityFilters}
-          setShowFilterDropdown={setShowFilterDropdown}
+        <SelectionModal
+          title={t("filterActivities")}
+          uniqueItems={getUniqueActivityTypes(data).map((activityType) => ({
+            name: tActivityTypes(activityType),
+            value: activityType,
+            icon: <DynamicActivityIcon activityType={activityType} />,
+          }))}
+          selectedItems={activityFilters}
+          setSelectedItems={setActivityFilters}
+          setShowSelectionModal={setShowFilterDropdown}
         />
       )}
       {showNewActvityDropdown && (
-        <NewActvityDropdown
-          setShowNewActvityDropdown={setShowNewActvityDropdown}
+        <SelectionModal
+          title={t("selectCategory")}
+          uniqueItems={categories.map((category) => ({
+            name: tActivityTypes(category),
+            value: category,
+          }))}
+          setShowSelectionModal={setShowNewActvityDropdown}
+          customOnPress={(item) => {
+            router.push(`/activities/create/${item.value}`);
+          }}
+          showIcons={false}
         />
       )}
     </>

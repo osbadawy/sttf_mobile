@@ -2,5 +2,7 @@
   "title": "Your Activity",
   "burntToday": "Burnt Today",
   "addActivity": "Add Activity",
-  "allActivities": "All Activities"
+  "allActivities": "All Activities",
+  "filterActivities": "Filter Activities",
+  "selectCategory": "Select Category"
 }

@@ -7,8 +7,7 @@ import arActivities from "../locales/ar/activities.json";
 import arCommon from "../locales/ar/common.json";
 import arActivitiesActivityCard from "../locales/ar/components/activities/ActivityCard.json";
 import arActivitiesActivityTypes from "../locales/ar/components/activities/ActivityTypes.json";
-import arActivitiesFilterDropdown from "../locales/ar/components/activities/FilterDropdown.json";
-import arActivitiesNewActivityDropdown from "../locales/ar/components/activities/NewActivityDropdown.json";
+import arActivitiesNewActivity from "../locales/ar/components/activities/NewActivity.json";
 import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json";
 import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
@@ -23,8 +22,7 @@ import enActivities from "../locales/en/activities.json";
 import enCommon from "../locales/en/common.json";
 import enActivitiesActivityCard from "../locales/en/components/activities/ActivityCard.json";
 import enActivitiesActivityTypes from "../locales/en/components/activities/ActivityTypes.json";
-import enActivitiesFilterDropdown from "../locales/en/components/activities/FilterDropdown.json";
-import enActivitiesNewActivityDropdown from "../locales/en/components/activities/NewActivityDropdown.json";
+import enActivitiesNewActivity from "../locales/en/components/activities/NewActivity.json";
 import enHeartSection from "../locales/en/components/dashboard/HeartSection.json";
 import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
@@ -55,9 +53,8 @@ export const resources = {
       heart: enHeart,
       activities: {
         activityTypes: enActivitiesActivityTypes,
-        filterDropdown: enActivitiesFilterDropdown,
-        newActivityDropdown: enActivitiesNewActivityDropdown,
         activityCard: enActivitiesActivityCard,
+        newActivity: enActivitiesNewActivity,
       },
     },
   },
@@ -80,9 +77,8 @@ export const resources = {
       heart: arHeart,
       activities: {
         activityTypes: arActivitiesActivityTypes,
-        filterDropdown: arActivitiesFilterDropdown,
-        newActivityDropdown: arActivitiesNewActivityDropdown,
         activityCard: arActivitiesActivityCard,
+        newActivity: arActivitiesNewActivity,
       },
     },
   },

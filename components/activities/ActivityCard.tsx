@@ -7,7 +7,9 @@ import DynamicActivityIcon from "../icons/activities";
 
 export default function ActivityCard({ activity }: { activity: any }) {
   const { t, isRTL } = useLocalization("components.activities.activityCard");
-  const { t: tActivityTypes } = useLocalization("components.activities.activityTypes");
+  const { t: tActivityTypes } = useLocalization(
+    "components.activities.activityTypes",
+  );
 
   const duration = formatDuration(activity.started_at, activity.ended_at);
   const needsAction =

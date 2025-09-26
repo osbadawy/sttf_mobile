@@ -34,7 +34,7 @@ export function formatDuration(started_at: string, ended_at: string): string {
     .join(":");
 }
 
-export function getUniqueActivityTypes(data: Record<number, any[]>) {
+export function getUniqueActivityTypes(data: Record<number, any[]>): string[] {
   const activityTypes = new Set<string>();
   for (const day of Object.values(data)) {
     for (const activity of day) {
@@ -42,4 +42,15 @@ export function getUniqueActivityTypes(data: Record<number, any[]>) {
     }
   }
   return Array.from(activityTypes);
+}
+
+export function getActivityTypesInCategory(category: string) {
+  if (category === "technical") {
+    return ["table_tennis", "rally_session", "serve_practice"];
+  } else if (category === "strength") {
+    return ["weightlifting", "walking", "running"];
+  } else if (category === "recovery") {
+    return ["swimming", "yoga", "pilates"];
+  }
+  return [];
 }

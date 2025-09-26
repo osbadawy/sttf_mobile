@@ -36,6 +36,8 @@ export interface HeaderProps {
   notification?: HeaderNotification;
   useDateState: [Date, (date: Date) => void];
   showBGImage?: boolean;
+  showCalendarIcon?: boolean;
+  customDescription?: string;
 }
 
 export default function Header({
@@ -48,6 +50,8 @@ export default function Header({
   notification,
   useDateState,
   showBGImage = true,
+  showCalendarIcon = true,
+  customDescription,
 }: HeaderProps) {
   /**
    * Header is on Z-index 50 and 60
@@ -155,7 +159,13 @@ export default function Header({
                 >
                   {title}
                 </Text>
-                <DateText className="text-center" />
+                {customDescription ? (
+                  <Text className="font-inter-light text-xs text-center">
+                    {customDescription}
+                  </Text>
+                ) : (
+                  <DateText className="text-center" />
+                )}
               </>
             ) : (
               <>
@@ -179,18 +189,26 @@ export default function Header({
                     >
                       {name}
                     </Text>
-                    <DateText className="text-start" />
+                    {customDescription ? (
+                      <Text className="font-inter-light text-xs text-start">
+                        {customDescription}
+                      </Text>
+                    ) : (
+                      <DateText className="text-start" />
+                    )}
                   </View>
                 </View>
               </>
             )}
           </View>
-          <TouchableOpacity
-            className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4"
-            onPress={showDatePickerModal}
-          >
-            <CalendarIcon />
-          </TouchableOpacity>
+          {showCalendarIcon && (
+            <TouchableOpacity
+              className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4"
+              onPress={showDatePickerModal}
+            >
+              <CalendarIcon />
+            </TouchableOpacity>
+          )}
         </View>
 
         {showDateSelector && (
