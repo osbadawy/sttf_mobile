@@ -3,6 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 export enum ButtonColor {
   primary = "bg-primary",
   activity = "bg-activity",
+  white = "bg-white border border-primary",
 }
 
 export enum ButtonSize {
@@ -30,6 +31,8 @@ export default function Button({
   const sizeClass = size === ButtonSize.sm ? "px-6 py-3" : "px-16 py-4";
   const textSizeClass =
     size === ButtonSize.sm ? "text-base" : "text-2xl effra-regular";
+
+  const textColorClass = color === ButtonColor.white ? "text-black" : "text-white";
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -38,7 +41,7 @@ export default function Button({
       style={{ borderRadius: 8 }}
       disabled={disabled}
     >
-      <Text className={`text-white text-center ${textSizeClass}`}>{title}</Text>
+      <Text className={`${textColorClass} text-center ${textSizeClass}`}>{title}</Text>
       {icon ? <View style={{ paddingLeft: 12 }}>{icon}</View> : null}
     </TouchableOpacity>
   );

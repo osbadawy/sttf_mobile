@@ -36,6 +36,10 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
   const [data, setData] = useState<Record<number, any[]>>({});
+  const [dataRange, setDataRange] = useState<{ earliest: Date | null; latest: Date | null }>({
+    earliest: null,
+    latest: null,
+  });
   const categories = ["technical", "strength", "recovery"];
   const orderedData = Object.entries(data).sort(
     (a, b) => Number(b[0]) - Number(a[0]),
@@ -67,6 +71,73 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
   const calories = getCalories();
 
+  const fetchAdditionalData = async (startDate: Date, endDate: Date) => {
+    if (user) {
+      try {
+        const params = new URLSearchParams({
+          firebase_id: user_id || user.uid,
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
+        });
+        const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity?${params}`;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${await user.getIdToken()}`,
+          },
+        });
+        const newData = await response.json();
+        const separatedNewData = seperateDataByDay(newData);
+        
+        // Merge with existing data
+        setData(prevData => ({
+          ...prevData,
+          ...separatedNewData,
+        }));
+        
+        // Update data range
+        setDataRange(prevRange => ({
+          earliest: prevRange.earliest && startDate < prevRange.earliest ? startDate : prevRange.earliest,
+          latest: prevRange.latest && endDate > prevRange.latest ? endDate : prevRange.latest,
+        }));
+      } catch (error) {
+        console.error("Error fetching additional data:", error);
+      }
+    }
+  };
+
+  // Watch for date changes and fetch data if needed
+  useEffect(() => {
+    if (dataRange.earliest && dataRange.latest) {
+      const selectedDate = new Date(date);
+      selectedDate.setHours(0, 0, 0, 0);
+      
+      const earliestDate = new Date(dataRange.earliest);
+      earliestDate.setHours(0, 0, 0, 0);
+      
+      const latestDate = new Date(dataRange.latest);
+      latestDate.setHours(0, 0, 0, 0);
+      
+      // Check if selected date is outside the current data range
+      if (selectedDate < earliestDate) {
+        // Selected date is before our data range, fetch data from selected date to earliest
+        const newEndDate = new Date(earliestDate);
+        newEndDate.setDate(newEndDate.getDate() - 1);
+        newEndDate.setHours(23, 59, 59, 999);
+        
+        fetchAdditionalData(selectedDate, newEndDate);
+      } else if (selectedDate > latestDate) {
+        // Selected date is after our data range, fetch data from latest to selected date
+        const newStartDate = new Date(latestDate);
+        newStartDate.setDate(newStartDate.getDate() + 1);
+        newStartDate.setHours(0, 0, 0, 0);
+        
+        fetchAdditionalData(newStartDate, selectedDate);
+      }
+    }
+  }, [date, dataRange, user, user_id]);
+
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -76,10 +147,13 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           startDate.setHours(0, 0, 0, 0);
           startDate.setDate(startDate.getDate() - 14);
 
+          const endDate = new Date();
+          endDate.setHours(23, 59, 59, 999);
+
           const params = new URLSearchParams({
             firebase_id: user_id || user.uid,
             start_date: startDate.toISOString(),
-            end_date: new Date().toISOString(),
+            end_date: endDate.toISOString(),
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity?${params}`;
 
@@ -91,6 +165,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           });
           const data = await response.json();
           setData(seperateDataByDay(data));
+          setDataRange({ earliest: startDate, latest: endDate });
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -189,6 +264,29 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
               </View>
             );
           })}
+
+          <View className="w-full items-center justify-center">
+          <Button
+            title="Load More"
+            onPress={() => {
+              if (dataRange.earliest) {
+                // Calculate 14 days before the earliest date
+                const newEndDate = new Date(dataRange.earliest);
+                newEndDate.setDate(newEndDate.getDate() - 1);
+                newEndDate.setHours(23, 59, 59, 999);
+                
+                const newStartDate = new Date(dataRange.earliest);
+                newStartDate.setDate(newStartDate.getDate() - 14);
+                newStartDate.setHours(0, 0, 0, 0);
+                
+                fetchAdditionalData(newStartDate, newEndDate);
+              }
+            }}
+            color={ButtonColor.white}
+            size={ButtonSize.sm}
+          />
+          </View>
+          
         </View>
       </ParallaxScrollView>
       {showFilterDropdown && (
