@@ -15,6 +15,7 @@ export default function FilterDropdown({
   setShowFilterDropdown: (showFilterDropdown: boolean) => void;
 }) {
   const { t, isRTL } = useLocalization("components.activities.filterDropdown");
+  const { t: tActivityTypes } = useLocalization("components.activities.activityTypes");
 
   return (
     <TouchableOpacity
@@ -61,7 +62,7 @@ export default function FilterDropdown({
                   <View className="w-10 h-7 items-center justify-center">
                     <DynamicActivityIcon activityType={activityType} />
                   </View>
-                  <Text>{activityType}</Text>
+                  <Text>{tActivityTypes(activityType)}</Text>
                 </View>
                 {isSelected && <CheckIcon />}
               </TouchableOpacity>

@@ -7,6 +7,8 @@ import DynamicActivityIcon from "../icons/activities";
 
 export default function ActivityCard({ activity }: { activity: any }) {
   const { t, isRTL } = useLocalization("components.activities.activityCard");
+  const { t: tActivityTypes } = useLocalization("components.activities.activityTypes");
+
   const duration = formatDuration(activity.started_at, activity.ended_at);
   const needsAction =
     !activity.activity_type || activity.activity_type === "activity";
@@ -26,7 +28,7 @@ export default function ActivityCard({ activity }: { activity: any }) {
       </View>
       <View className="flex-1 pl-4">
         <Text className="text-base effra-medium">
-          {activity.activity_type}{" "}
+          {tActivityTypes(activity.activity_type)}{" "}
         </Text>
         {needsAction ? (
           <Text
