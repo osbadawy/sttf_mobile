@@ -48,12 +48,24 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const beginningOfDay = new Date(date);
   beginningOfDay.setHours(0, 0, 0, 0);
 
-  const calories = data[beginningOfDay.getTime()]
-    ? data[beginningOfDay.getTime()].reduce(
-        (acc, item) => acc + Math.round(item.workout.score.kilojoule / 4.184),
-        0,
-      )
-    : 0;
+  const getCalories = () => {
+    if (data[beginningOfDay.getTime()]) {
+      return data[beginningOfDay.getTime()].reduce((acc, item) => {
+        if (
+          item &&
+          item.workout &&
+          item.workout.score &&
+          item.workout.score.kilojoule
+        ) {
+          return acc + Math.round(item.workout.score.kilojoule / 4.184);
+        }
+        return acc;
+      }, 0);
+    }
+    return 0;
+  };
+
+  const calories = getCalories();
 
   useEffect(() => {
     const fetchData = async () => {

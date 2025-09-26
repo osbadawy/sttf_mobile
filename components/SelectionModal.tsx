@@ -50,7 +50,7 @@ export default function SelectionModal({
           <Text className="font-inter-regular text-base">{title}</Text>
           {showClearButton && (
             <TouchableOpacity onPress={() => setSelectedItems([])}>
-            <Text className="font-inter-regular text-base underline">
+              <Text className="font-inter-regular text-base underline">
                 clear
               </Text>
             </TouchableOpacity>

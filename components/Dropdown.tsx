@@ -41,7 +41,10 @@ export default function Dropdown({
       </TouchableOpacity>
 
       {isOpen && (
-        <View className="absolute top-full left-0 right-0 mt-2 z-10 rounded-3xl bg-white" style={{ boxShadow: "0px 2px 4px 0px #00000018" }}>
+        <View
+          className="absolute top-full left-0 right-0 mt-2 z-10 rounded-3xl bg-white"
+          style={{ boxShadow: "0px 2px 4px 0px #00000018" }}
+        >
           <ScrollView
             showsVerticalScrollIndicator={false}
             nestedScrollEnabled={true}

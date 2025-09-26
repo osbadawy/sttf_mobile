@@ -201,13 +201,15 @@ export default function Header({
               </>
             )}
           </View>
-          {showCalendarIcon && (
+          {showCalendarIcon ? (
             <TouchableOpacity
               className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4"
               onPress={showDatePickerModal}
             >
               <CalendarIcon />
             </TouchableOpacity>
+          ) : (
+            <View className="w-[48px] h-[48px]" />
           )}
         </View>
 
