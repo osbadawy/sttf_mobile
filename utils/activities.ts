@@ -21,17 +21,32 @@ export function formatDate(_date: Date, _locale: string = "en-US"): string {
   return `${day_of_week}, ${day}.${month}`;
 }
 
-export function formatDuration(started_at: string, ended_at: string): string {
-  const totalSeconds = Math.floor(
-    (new Date(ended_at).getTime() - new Date(started_at).getTime()) / 1000,
-  );
-  return [
-    Math.floor(totalSeconds / 3600),
-    Math.floor((totalSeconds % 3600) / 60),
-    totalSeconds % 60,
-  ]
-    .map((n) => n.toString().padStart(2, "0"))
-    .join(":");
+export function formatDuration({
+  started_at,
+  ended_at,
+  seconds,
+}: {
+  started_at?: string;
+  ended_at?: string;
+  seconds?: number;
+}): string {
+  if (seconds || (started_at && ended_at)) {
+    const totalSeconds =
+      seconds ||
+      Math.floor(
+        (new Date(ended_at || new Date()).getTime() -
+          new Date(started_at || new Date()).getTime()) /
+          1000,
+      );
+    return [
+      Math.floor(totalSeconds / 3600),
+      Math.floor((totalSeconds % 3600) / 60),
+      totalSeconds % 60,
+    ]
+      .map((n) => n.toString().padStart(2, "0"))
+      .join(":");
+  }
+  return "--:--:--";
 }
 
 export function getUniqueActivityTypes(data: Record<number, any[]>): string[] {

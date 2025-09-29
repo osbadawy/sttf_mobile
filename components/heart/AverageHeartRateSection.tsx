@@ -53,9 +53,6 @@ export default function AverageHeartRateSection({
     };
   });
 
-  console.log("Chart data:", chartData);
-  console.log("Average heart rate history:", averageHeartRateHistory);
-
   const xValues = chartData
     .map((d) => d.x)
     .filter((x) => !isNaN(x) && isFinite(x));

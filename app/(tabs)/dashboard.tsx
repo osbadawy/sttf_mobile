@@ -58,7 +58,6 @@ export default function Dashboard({ user_id }: DashboardProps) {
             day: date.toISOString(),
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/day?${params}`;
-          console.log(url);
 
           const response = await fetch(url, {
             method: "GET",
