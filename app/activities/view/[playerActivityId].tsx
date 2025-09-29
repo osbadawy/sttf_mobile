@@ -1,5 +1,7 @@
 import AvgHeartRate from "@/components/activities/AvgHeartRate";
+import { StrainIcon } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { StrainSectionLine } from "@/components/wellbeing/StrainSection";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
@@ -15,8 +17,7 @@ export default function ViewActivityPage() {
     : playerActivityId;
 
   const useDateState = useState(new Date());
-  const [hrViewWidth, setHrViewWidth] = useState(0);
-  const { t } = useLocalization("components.activities.activityView");
+  const { t, isRTL } = useLocalization("components.activities.activityView");
 
   const {
     data: activities14Days,
@@ -41,6 +42,19 @@ export default function ViewActivityPage() {
     return <View />;
   }
 
+  const workoutStrain = activity?.workout?.score?.strain;
+  console.log("workoutStrain", workoutStrain);
+
+  let strain14Days: number | undefined = 0;
+  let strain14DaysCount = 0;
+  for (const activity of Object.values(activities14Days).flat()) {
+    if (activity?.workout?.score?.strain) {
+      strain14Days += activity?.workout?.score?.strain;
+      strain14DaysCount++;
+    }
+  }
+  strain14Days = strain14Days / strain14DaysCount;
+
   return (
     <ParallaxScrollView
       headerProps={{
@@ -51,12 +65,18 @@ export default function ViewActivityPage() {
         backLink: "activities" as RelativePathString,
       }}
     >
-      <View className="flex-row pb-[100px]">
+      <View
+        className={`flex-row pb-[100px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+      >
         <View className="flex-1">
-          <Text className="font-inter-light text-base pb-2">
+          <Text
+            className={`font-inter-light text-base pb-2 ${isRTL ? "text-right" : "text-left"}`}
+          >
             {t("duration")}
           </Text>
-          <Text className="font-inter-semibold text-3xl pb-8">
+          <Text
+            className={`font-inter-semibold text-3xl pb-8 ${isRTL ? "text-right" : "text-left"}`}
+          >
             {formatDuration({
               started_at: activity?.started_at,
               ended_at: activity?.ended_at,
@@ -64,17 +84,23 @@ export default function ViewActivityPage() {
           </Text>
           {activity?.workout?.score?.kilojoule && (
             <>
-              <Text className="font-inter-light text-base pb-2">
+              <Text
+                className={`font-inter-light text-base pb-2 ${isRTL ? "text-right" : "text-left"}`}
+              >
                 {t("calories")}
               </Text>
-              <Text className="font-inter-semibold text-3xl">
+              <Text
+                className={`font-inter-semibold text-3xl ${isRTL ? "text-right" : "text-left"}`}
+              >
                 {Math.round(activity?.workout?.score?.kilojoule / 4.184)}
               </Text>
             </>
           )}
         </View>
         <View className="flex-1">
-          <Text className="font-inter-light text-base pb-2">
+          <Text
+            className={`font-inter-light text-base pb-2 ${isRTL ? "text-right" : "text-left"}`}
+          >
             {t("feeling")}
           </Text>
         </View>
@@ -89,6 +115,56 @@ export default function ViewActivityPage() {
           zone4Milli={activity?.workout?.score?.zoneDurations?.zone_four_milli}
           zone5Milli={activity?.workout?.score?.zoneDurations?.zone_five_milli}
         />
+      )}
+
+      {activity?.workout?.score && (
+        <View
+          className={`pt-[64px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+        >
+          <View className="w-[30px] items-center">
+            <StrainIcon />
+          </View>
+          <View className={`flex-1 ${isRTL ? "pl-[30px]" : "pr-[30px]"}`}>
+            <Text
+              className={`effra-medium text-2xl pb-10 pl-1 ${isRTL ? "text-right" : "text-left"}`}
+            >
+              {t("strainTitle")}
+            </Text>
+
+            <View
+              className={`flex-row justify-between pb-[32px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+            >
+              {workoutStrain && (
+                <View className={`flex ${isRTL ? "items-end" : "items-start"}`}>
+                  <Text className="font-inter-light text-xs pb-3">
+                    {t("thisWorkout")}
+                  </Text>
+                  <Text className="font-inter-semibold text-5xl text-strain">
+                    {workoutStrain.toFixed(1)}
+                  </Text>
+                </View>
+              )}
+
+              {strain14Days && (
+                <View className={`flex ${isRTL ? "items-end" : "items-start"}`}>
+                  <Text className="font-inter-light text-xs pb-3">
+                    {t("workoutAverage")}
+                  </Text>
+                  <Text className="font-inter-semibold text-5xl text-[#4B4B4B]">
+                    {strain14Days.toFixed(1)}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {workoutStrain && (
+              <StrainSectionLine
+                strainToday={workoutStrain}
+                strain14Days={strain14Days}
+              />
+            )}
+          </View>
+        </View>
       )}
     </ParallaxScrollView>
   );

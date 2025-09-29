@@ -53,7 +53,7 @@ export default function AvgHeartRate({
   zone5Milli,
 }: AvgHeartRateProps) {
   const [innerWidth, setInnerWidth] = useState(0);
-  const { t } = useLocalization("components.activities.activityView");
+  const { t, isRTL } = useLocalization("components.activities.activityView");
 
   const durations = [
     Number(zone1Milli),
@@ -78,8 +78,12 @@ export default function AvgHeartRate({
 
   return (
     <>
-      <View className="flex-row items-start justify-start pb-[30px]">
-        <HeartLine2 />
+      <View
+        className={`items-start justify-start pb-[30px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+      >
+        <View className="w-[30px]">
+          <HeartLine2 />
+        </View>
         <View
           onLayout={(event) => {
             const { width } = event.nativeEvent.layout;
@@ -87,18 +91,25 @@ export default function AvgHeartRate({
           }}
           className="flex-1"
         >
-          <Text className="effra-medium text-2xl pb-10 pl-1">
+          <Text
+            className={`effra-medium text-2xl pb-10 px-1 w-full ${isRTL ? "text-right" : "text-left"}`}
+          >
             {t("avgHrTitle")}
           </Text>
 
-          <Text className="font-inter-semibold text-5xl text-[#424242]">
+          <Text
+            className={`font-inter-semibold text-5xl text-[#424242] ${isRTL ? "text-right" : "text-left"}`}
+          >
             {Math.round(averageHeartRate)}{" "}
             <Text className="font-inter-light text-base text-[#969696]">
               bpm
             </Text>
           </Text>
 
-          <View className="mt-4 flex-row" style={{ gap: 2 }}>
+          <View
+            className={`mt-4 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+            style={{ gap: 2 }}
+          >
             {durations.map((duration, index) => {
               const normalizedPercentage = normalizedPercentages[index]; // Minimum 5%
               const barWidth = normalizedPercentage * innerWidth - 2;
@@ -134,12 +145,16 @@ export default function AvgHeartRate({
           const barWidth = (percentage / 100) * innerWidth;
           return (
             <Card key={index} className="px-8 py-4" style={{ gap: 4 }}>
-              <View className="flex-row justify-start items-center">
-                <Text className="effra-medium text-base flex-1">
+              <View
+                className={`flex-row justify-start items-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+              >
+                <Text
+                  className={`effra-medium text-base flex-1 ${isRTL ? "text-right" : "text-left"}`}
+                >
                   {t(`zone${index + 1}`)}
                 </Text>
                 <Text
-                  className="font-inter-semibold text-base flex-1"
+                  className={`font-inter-semibold text-base flex-1 ${isRTL ? "text-right" : "text-left"}`}
                   style={{ color: zoneColors[index] }}
                 >
                   {percentage}%
