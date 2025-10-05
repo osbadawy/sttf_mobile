@@ -14,13 +14,17 @@ export default function NutritionCard() {
           className="w-5 h-5 mr-2"
           resizeMode="contain"
         />
-        <Text className="text-green-700 font-semibold text-base">Nutrition</Text>
+        <Text className="text-green-700 font-semibold text-base">
+          Nutrition
+        </Text>
         <Text className="ml-auto text-gray-400">{">"}</Text>
       </View>
 
       {/* Calories */}
       <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-3xl font-bold">{consumed} <Text className="text-base font-normal">Kcal</Text></Text>
+        <Text className="text-3xl font-bold">
+          {consumed} <Text className="text-base font-normal">Kcal</Text>
+        </Text>
         <Text className="text-gray-500">{goal} Kcal</Text>
       </View>
 

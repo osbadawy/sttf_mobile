@@ -109,7 +109,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
         max={metrics.maxHeartRate}
         resting={metrics.restingHeartRate}
       />
-      <NutritionCard/>
+      <NutritionCard />
     </ParallaxScrollView>
   );
 }
