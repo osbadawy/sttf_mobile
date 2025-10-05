@@ -1,9 +1,13 @@
 {
+  "title": "تقييم النشاط",
+  "sliderTitle": "كيف تشعر؟",
+  "sliderLeft": "غير رضا",
+  "sliderRight": "رضا",
+  "notice": "كيف رضيت بهذا النشاط؟",
+  "done": "تم",
+
   "sportTitle": "نوع الرياضة",
   "search": "بحث",
   "recentlyUsed": "أحدث استخدام",
-  "allActivities": "جميع النشاطات",
-  "satisfactionTitle": "مستوى الرضا",
-  "sliderLeft": "غير رضا",
-  "sliderRight": "رضا"
+  "allActivities": "جميع النشاطات"
 }

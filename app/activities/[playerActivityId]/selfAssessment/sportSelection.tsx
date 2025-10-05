@@ -2,7 +2,6 @@ import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
-import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
 import {
   getAllActivityTypes,
   getUniqueActivityTypes,
@@ -53,23 +52,8 @@ export default function SportSelectionPage() {
   const { t } = useLocalization("components.activities.selfAssessment");
   const useDateState = useState(new Date());
 
-  const {
-    data: activities14Days,
-    dataRange,
-    loading,
-    error,
-    fetchAdditionalData,
-  } = usePlayerActivities({
+  const { data: activities14Days } = usePlayerActivities({
     initialDaysBack: 14,
-  });
-
-  const {
-    activity,
-    loading: activityLoading,
-    error: activityError,
-    refetch,
-  } = useSinglePlayerActivity({
-    playerActivityId: playerActivityIdString || "",
   });
 
   const allActivities = getAllActivityTypes();
