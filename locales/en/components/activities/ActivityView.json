@@ -2,6 +2,13 @@
   "duration": "Duration",
   "calories": "Calories",
   "feeling": "Feeling",
+  "feelings": {
+    "veryBad": "Very Bad",
+    "bad": "Bad",
+    "moderate": "Moderate",
+    "good": "Good",
+    "veryGood": "Very Good"
+  },
   "avgHrTitle": "Average Heart Rate",
   "zone5": "Zone 5 (90-100%)",
   "zone4": "Zone 4 (80-90%)",

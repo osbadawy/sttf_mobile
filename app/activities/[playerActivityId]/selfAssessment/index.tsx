@@ -16,31 +16,34 @@ export default function SelfAssessmentPage() {
   const useDateState = useState(new Date());
   const { user } = useAuth();
   const [value, setValue] = useState(5);
-  const [ disableButton, setDisableButton ] = useState(false);
+  const [disableButton, setDisableButton] = useState(false);
 
   const onPress = async () => {
-    if (user && playerActivityId){
+    if (user && playerActivityId) {
       setDisableButton(true);
       const token = await user.getIdToken();
       const body: any = {
         player_activity_id: playerActivityId,
-        self_assessment_score: value/10,
-      }
+        self_assessment_score: value / 10,
+      };
 
-      if (activityType){
+      if (activityType) {
         body.activity_type = activityType;
       }
 
-      const response = await fetch(`${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity/self-assessment`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity/self-assessment`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      });
+      );
 
-      if (response.ok){
+      if (response.ok) {
         router.push("/activities" as RelativePathString);
       } else {
         const errorData = await response.json();
@@ -67,7 +70,10 @@ export default function SelfAssessmentPage() {
       }}
     >
       <View className="flex-1 flex-col justify-between pb-[60px]">
-        <Card className="flex-row items-center py-5 px-4" style={{ gap: 24, borderRadius: 24 }}>
+        <Card
+          className="flex-row items-center py-5 px-4"
+          style={{ gap: 24, borderRadius: 24 }}
+        >
           <Card className="w-[40px] h-[40px] items-center justify-center rounded-full bg-white drop-shadow-md">
             <ExclamationMark />
           </Card>

@@ -238,7 +238,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
         <SelectionModal
           title={t("selectCategory")}
           uniqueItems={categories.map((category) => ({
-            name: tActivityTypes(category),
+            name: tActivityTypes("categories." + category),
             value: category,
           }))}
           setShowSelectionModal={setShowNewActvityDropdown}

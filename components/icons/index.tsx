@@ -22,7 +22,9 @@ export {
   ActivityPageBg,
   Arrow,
   ArrowBig,
-  CheckIcon, ExclamationMark, HeaderBgIcon,
+  CheckIcon,
+  ExclamationMark,
+  HeaderBgIcon,
   HeartBg,
   HeartLine1,
   HeartLine2,
@@ -33,6 +35,5 @@ export {
   StrainIcon,
   StressIcon,
   ThinPlusIcon,
-  WhoopIcon
+  WhoopIcon,
 };
-

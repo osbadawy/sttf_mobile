@@ -1,4 +1,5 @@
 import AvgHeartRate from "@/components/activities/AvgHeartRate";
+import FeelingCircle from "@/components/activities/FeelingCircle";
 import { StrainIcon } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { StrainSectionLine } from "@/components/wellbeing/StrainSection";
@@ -18,23 +19,15 @@ export default function ViewActivityPage() {
 
   const useDateState = useState(new Date());
   const { t, isRTL } = useLocalization("components.activities.activityView");
+  const { t: tActivityTypes } = useLocalization(
+    "components.activities.activityTypes",
+  );
 
-  const {
-    data: activities14Days,
-    dataRange,
-    loading,
-    error,
-    fetchAdditionalData,
-  } = usePlayerActivities({
+  const { data: activities14Days, loading } = usePlayerActivities({
     initialDaysBack: 14,
   });
 
-  const {
-    activity,
-    loading: activityLoading,
-    error: activityError,
-    refetch,
-  } = useSinglePlayerActivity({
+  const { activity, loading: activityLoading } = useSinglePlayerActivity({
     playerActivityId: playerActivityIdString || "",
   });
 
@@ -55,10 +48,17 @@ export default function ViewActivityPage() {
   }
   strain14Days = strain14Days / strain14DaysCount;
 
+  const workout = activity?.workout;
+
+  const textClassNameSmall = "font-inter-light text-base pb-2";
+  const textClassNameLarge = "font-inter-regular text-2xl pb-2";
+  let textClassName = workout ? textClassNameSmall : textClassNameLarge;
+  textClassName = `${textClassName} ${isRTL ? "text-right" : "text-left"}`;
+
   return (
     <ParallaxScrollView
       headerProps={{
-        title: activity ? activity.activity_type : "--",
+        title: activity ? tActivityTypes(activity.activity_type) : "--",
         customDescription: activity ? formatDate(activity.started_at) : "--",
         useDateState: useDateState,
         showCalendarIcon: false,
@@ -66,58 +66,50 @@ export default function ViewActivityPage() {
       }}
     >
       <View
-        className={`flex-row pb-[100px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+        className={`pb-[100px] ${!workout ? "flex-col gap-20" : isRTL ? "flex-row-reverse" : "flex-row"}`}
       >
         <View className="flex-1">
+          <Text className={textClassName}>{t("duration")}</Text>
           <Text
-            className={`font-inter-light text-base pb-2 ${isRTL ? "text-right" : "text-left"}`}
-          >
-            {t("duration")}
-          </Text>
-          <Text
-            className={`font-inter-semibold text-3xl pb-8 ${isRTL ? "text-right" : "text-left"}`}
+            className={`font-inter-semibold pb-8 ${workout ? "text-3xl" : "text-4xl"} ${isRTL ? "text-right" : "text-left"}`}
           >
             {formatDuration({
               started_at: activity?.started_at,
               ended_at: activity?.ended_at,
             })}
           </Text>
-          {activity?.workout?.score?.kilojoule && (
+          {workout?.score?.kilojoule && (
             <>
-              <Text
-                className={`font-inter-light text-base pb-2 ${isRTL ? "text-right" : "text-left"}`}
-              >
-                {t("calories")}
-              </Text>
+              <Text className={textClassName}>{t("calories")}</Text>
               <Text
                 className={`font-inter-semibold text-3xl ${isRTL ? "text-right" : "text-left"}`}
               >
-                {Math.round(activity?.workout?.score?.kilojoule / 4.184)}
+                {Math.round(workout?.score?.kilojoule / 4.184)}
               </Text>
             </>
           )}
         </View>
-        <View className="flex-1">
-          <Text
-            className={`font-inter-light text-base pb-2 ${isRTL ? "text-right" : "text-left"}`}
-          >
-            {t("feeling")}
-          </Text>
+        <View>
+          <Text className={textClassName}>{t("feeling")}</Text>
+          <FeelingCircle
+            score={activity?.self_assessment_score}
+            size={workout ? "small" : "large"}
+          />
         </View>
       </View>
 
-      {activity?.workout?.score && (
+      {workout?.score && (
         <AvgHeartRate
-          averageHeartRate={activity?.workout?.score?.average_heart_rate}
-          zone1Milli={activity?.workout?.score?.zoneDurations?.zone_one_milli}
-          zone2Milli={activity?.workout?.score?.zoneDurations?.zone_two_milli}
-          zone3Milli={activity?.workout?.score?.zoneDurations?.zone_three_milli}
-          zone4Milli={activity?.workout?.score?.zoneDurations?.zone_four_milli}
-          zone5Milli={activity?.workout?.score?.zoneDurations?.zone_five_milli}
+          averageHeartRate={workout?.score?.average_heart_rate}
+          zone1Milli={workout?.score?.zoneDurations?.zone_one_milli}
+          zone2Milli={workout?.score?.zoneDurations?.zone_two_milli}
+          zone3Milli={workout?.score?.zoneDurations?.zone_three_milli}
+          zone4Milli={workout?.score?.zoneDurations?.zone_four_milli}
+          zone5Milli={workout?.score?.zoneDurations?.zone_five_milli}
         />
       )}
 
-      {activity?.workout?.score && (
+      {workout?.score && (
         <View
           className={`pt-[64px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >

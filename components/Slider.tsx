@@ -82,7 +82,9 @@ export default function CustomSlider({
           <Text
             key={num}
             className={"font-inter-regular text-base"}
-            style={{ color: num === Math.round(value) ? activeColor : "#B0B8B7" }}
+            style={{
+              color: num === Math.round(value) ? activeColor : "#B0B8B7",
+            }}
           >
             {num}
           </Text>
