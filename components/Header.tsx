@@ -31,7 +31,7 @@ export interface HeaderProps {
   name?: string;
   profilePicture?: string;
   showDateSelector?: boolean;
-  backLink?: RelativePathString;
+  showBackButton?: boolean;
   color?: HeaderColor;
   notification?: HeaderNotification;
   useDateState: [Date, (date: Date) => void];
@@ -45,7 +45,7 @@ export default function Header({
   name,
   profilePicture,
   showDateSelector,
-  backLink,
+  showBackButton = false,
   color = HeaderColor.BG,
   notification,
   useDateState,
@@ -140,10 +140,10 @@ export default function Header({
         <View
           className={`flex justify-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >
-          {backLink && (
+          {showBackButton && (
             <TouchableOpacity
               className="flex mx-4 items-center justify-center"
-              onPress={() => router.push(backLink as RelativePathString)}
+              onPress={() => router.back()}
             >
               <Arrow
                 direction={isRTL ? "right" : "left"}

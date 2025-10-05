@@ -26,8 +26,6 @@ export default function Dropdown({
     setIsOpen(false);
   };
 
-  console.log(items);
-
   return (
     <View className="relative">
       <TouchableOpacity

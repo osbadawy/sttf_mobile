@@ -12,12 +12,8 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import {
-  formatDate,
-  getUniqueActivityTypes,
-  seperateDataByDay,
-} from "@/utils/activities";
-import Constants from "expo-constants";
+import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
+import { formatDate, getUniqueActivityTypes } from "@/utils/activities";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -35,14 +31,12 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
-  const [data, setData] = useState<Record<number, any[]>>({});
-  const [dataRange, setDataRange] = useState<{
-    earliest: Date | null;
-    latest: Date | null;
-  }>({
-    earliest: null,
-    latest: null,
+
+  const { data, dataRange, fetchAdditionalData } = usePlayerActivities({
+    user_id,
+    initialDaysBack: 14,
   });
+
   const categories = ["technical", "strength", "recovery"];
   const orderedData = Object.entries(data).sort(
     (a, b) => Number(b[0]) - Number(a[0]),
@@ -74,48 +68,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
   const calories = getCalories();
 
-  const fetchAdditionalData = async (startDate: Date, endDate: Date) => {
-    if (user) {
-      try {
-        const params = new URLSearchParams({
-          firebase_id: user_id || user.uid,
-          start_date: startDate.toISOString(),
-          end_date: endDate.toISOString(),
-        });
-        const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity?${params}`;
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${await user.getIdToken()}`,
-          },
-        });
-        const newData = await response.json();
-        const separatedNewData = seperateDataByDay(newData);
-
-        // Merge with existing data
-        setData((prevData) => ({
-          ...prevData,
-          ...separatedNewData,
-        }));
-
-        // Update data range
-        setDataRange((prevRange) => ({
-          earliest:
-            prevRange.earliest && startDate < prevRange.earliest
-              ? startDate
-              : prevRange.earliest,
-          latest:
-            prevRange.latest && endDate > prevRange.latest
-              ? endDate
-              : prevRange.latest,
-        }));
-      } catch (error) {
-        console.error("Error fetching additional data:", error);
-      }
-    }
-  };
-
   // Watch for date changes and fetch data if needed
   useEffect(() => {
     if (dataRange.earliest && dataRange.latest) {
@@ -146,43 +98,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
       }
     }
   }, [date, dataRange, user, user_id]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        try {
-          // 14 days ago
-          const startDate = new Date();
-          startDate.setHours(0, 0, 0, 0);
-          startDate.setDate(startDate.getDate() - 14);
-
-          const endDate = new Date();
-          endDate.setHours(23, 59, 59, 999);
-
-          const params = new URLSearchParams({
-            firebase_id: user_id || user.uid,
-            start_date: startDate.toISOString(),
-            end_date: endDate.toISOString(),
-          });
-          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity?${params}`;
-
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${await user.getIdToken()}`,
-            },
-          });
-          const data = await response.json();
-          setData(seperateDataByDay(data));
-          setDataRange({ earliest: startDate, latest: endDate });
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user, user_id]);
 
   return (
     <>
@@ -261,14 +176,22 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                 <Text className="text-xs effra-light pb-5">
                   {formatDate(day[0].started_at, currentLanguage)}
                 </Text>
-                {day.map((item, index) => {
+                {day.map((item) => {
                   if (
                     activityFilters.length > 0 &&
                     !activityFilters.includes(item.activity_type)
                   ) {
                     return null;
                   }
-                  return <ActivityCard activity={item} key={index} />;
+                  return (
+                    <ActivityCard
+                      activity={item}
+                      key={item.id}
+                      // onPress={() => {
+                      //   router.push(`/activities/${item.id}`);
+                      // }}
+                    />
+                  );
                 })}
               </View>
             );
@@ -314,7 +237,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
         <SelectionModal
           title={t("selectCategory")}
           uniqueItems={categories.map((category) => ({
-            name: tActivityTypes(category),
+            name: tActivityTypes("categories." + category),
             value: category,
           }))}
           setShowSelectionModal={setShowNewActvityDropdown}

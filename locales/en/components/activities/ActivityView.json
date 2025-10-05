@@ -1,0 +1,21 @@
+{
+  "duration": "Duration",
+  "calories": "Calories",
+  "feeling": "Feeling",
+  "feelings": {
+    "veryBad": "Very Bad",
+    "bad": "Bad",
+    "moderate": "Moderate",
+    "good": "Good",
+    "veryGood": "Very Good"
+  },
+  "avgHrTitle": "Average Heart Rate",
+  "zone5": "Zone 5 (90-100%)",
+  "zone4": "Zone 4 (80-90%)",
+  "zone3": "Zone 3 (70-80%)",
+  "zone2": "Zone 2 (60-70%)",
+  "zone1": "Zone 1 (50-60%)",
+  "strainTitle": "Strain",
+  "thisWorkout": "This Workout",
+  "workoutAverage": "Workout Average"
+}

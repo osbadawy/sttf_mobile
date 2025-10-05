@@ -60,8 +60,6 @@ export default function NewActivityPage() {
       );
 
       if (response.ok) {
-        const data = await response.json();
-        console.log(data);
         router.push("/activities" as RelativePathString);
       } else {
         const errorData = await response.json();
@@ -84,8 +82,8 @@ export default function NewActivityPage() {
           useDateState: useDateState,
           showBGImage: false,
           showCalendarIcon: false,
-          customDescription: tActivityTypes(categoryString),
-          backLink: "activities" as RelativePathString,
+          customDescription: tActivityTypes(`categories.${categoryString}`),
+          showBackButton: true,
         }}
       >
         <View

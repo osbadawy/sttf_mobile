@@ -25,6 +25,11 @@ const colors = {
   heartResting: "#00C8C9",
   heartRestingLight: "#BEE9E9",
   activity: "#C00000",
+  red: "#C00000",
+  orange: "#F47B37",
+  yellow: "#FABB00",
+  blue: "#009FA0",
+  green: "#008C46",
 };
 
 export default colors;
