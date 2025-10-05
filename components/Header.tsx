@@ -1,7 +1,9 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
+import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
 import {
@@ -29,10 +31,13 @@ export interface HeaderProps {
   name?: string;
   profilePicture?: string;
   showDateSelector?: boolean;
-  backLink?: RelativePathString;
+  showBackButton?: boolean;
   color?: HeaderColor;
   notification?: HeaderNotification;
   useDateState: [Date, (date: Date) => void];
+  showBGImage?: boolean;
+  showCalendarIcon?: boolean;
+  customDescription?: string;
 }
 
 export default function Header({
@@ -40,10 +45,13 @@ export default function Header({
   name,
   profilePicture,
   showDateSelector,
-  backLink,
+  showBackButton = false,
   color = HeaderColor.BG,
   notification,
   useDateState,
+  showBGImage = true,
+  showCalendarIcon = true,
+  customDescription,
 }: HeaderProps) {
   /**
    * Header is on Z-index 50 and 60
@@ -54,11 +62,23 @@ export default function Header({
     throw new Error("Exactly one of 'title' or 'name' must be provided");
 
   const [date, setDate] = useDateState;
+  const [showDatePicker, setShowDatePicker] = useState(false);
   // const isToday = date.setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0);
   const isToday = false;
   const { t, isRTL } = useLocalization("common");
 
   const textColor = color === HeaderColor.primary ? "text-white" : "text-black";
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
+
+  const showDatePickerModal = () => {
+    setShowDatePicker(true);
+  };
 
   const ParentContainer = ({ children }: { children: React.ReactNode }) => {
     const className = "z-50 rounded-b-[72px] overflow-hidden";
@@ -102,26 +122,28 @@ export default function Header({
 
   return (
     <ParentContainer>
-      <HeaderBgIcon
-        svgProps={{
-          style: {
-            position: "absolute",
-            top: -50,
-            left: -50,
-            zIndex: 50,
-            filter: "blur(4px)",
-            opacity: color === HeaderColor.primary ? 1 : 0.4,
-          },
-        }}
-      />
+      {showBGImage && (
+        <HeaderBgIcon
+          svgProps={{
+            style: {
+              position: "absolute",
+              top: -50,
+              left: -50,
+              zIndex: 50,
+              filter: "blur(4px)",
+              opacity: color === HeaderColor.primary ? 1 : 0.4,
+            },
+          }}
+        />
+      )}
       <View style={{ zIndex: 50 }}>
         <View
           className={`flex justify-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >
-          {backLink && (
+          {showBackButton && (
             <TouchableOpacity
               className="flex mx-4 items-center justify-center"
-              onPress={() => router.push(backLink as RelativePathString)}
+              onPress={() => router.back()}
             >
               <Arrow
                 direction={isRTL ? "right" : "left"}
@@ -137,7 +159,13 @@ export default function Header({
                 >
                   {title}
                 </Text>
-                <DateText className="text-center" />
+                {customDescription ? (
+                  <Text className="font-inter-light text-xs text-center">
+                    {customDescription}
+                  </Text>
+                ) : (
+                  <DateText className="text-center" />
+                )}
               </>
             ) : (
               <>
@@ -161,15 +189,28 @@ export default function Header({
                     >
                       {name}
                     </Text>
-                    <DateText className="text-start" />
+                    {customDescription ? (
+                      <Text className="font-inter-light text-xs text-start">
+                        {customDescription}
+                      </Text>
+                    ) : (
+                      <DateText className="text-start" />
+                    )}
                   </View>
                 </View>
               </>
             )}
           </View>
-          <View className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4">
-            <CalendarIcon />
-          </View>
+          {showCalendarIcon ? (
+            <TouchableOpacity
+              className="bg-white w-[48px] h-[48px] rounded-full items-center justify-center mx-4"
+              onPress={showDatePickerModal}
+            >
+              <CalendarIcon />
+            </TouchableOpacity>
+          ) : (
+            <View className="w-[48px] h-[48px]" />
+          )}
         </View>
 
         {showDateSelector && (
@@ -206,6 +247,14 @@ export default function Header({
             <ArrowBig direction={isRTL ? "left" : "right"} />
           </TouchableOpacity>
         </View>
+      )}
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
       )}
     </ParentContainer>
   );

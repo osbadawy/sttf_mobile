@@ -53,9 +53,6 @@ export default function AverageHeartRateSection({
     };
   });
 
-  console.log("Chart data:", chartData);
-  console.log("Average heart rate history:", averageHeartRateHistory);
-
   const xValues = chartData
     .map((d) => d.x)
     .filter((x) => !isNaN(x) && isFinite(x));
@@ -126,7 +123,7 @@ export default function AverageHeartRateSection({
               const month = (date.getMonth() + 1).toString().padStart(2, "0");
               const day = date.getDate().toString().padStart(2, "0");
               return `${month}.${day}`;
-            } catch (error) {
+            } catch {
               return `${Math.round(t)}`;
             }
           }}

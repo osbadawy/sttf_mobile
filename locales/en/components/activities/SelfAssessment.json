@@ -1,0 +1,13 @@
+{
+  "title": "Activity Assessment",
+  "sliderTitle": "How do you feel?",
+  "sliderLeft": "Unsatisfied",
+  "sliderRight": "Satisfied",
+  "notice": "How satisfied are your with this activity?",
+  "done": "Done",
+
+  "sportTitle": "Sport Type",
+  "search": "Search",
+  "recentlyUsed": "Recently Used",
+  "allActivities": "All Activities"
+}
