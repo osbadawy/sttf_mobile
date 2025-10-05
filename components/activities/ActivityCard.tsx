@@ -1,19 +1,16 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { formatDuration } from "@/utils/activities";
+import { router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Arrow } from "../icons";
 import DynamicActivityIcon from "../icons/activities";
 
 interface ActivityCardProps {
   activity: any;
-  onPress?: () => void;
 }
 
-export default function ActivityCard({
-  activity,
-  onPress = () => {},
-}: ActivityCardProps) {
+export default function ActivityCard({ activity }: ActivityCardProps) {
   const { t, isRTL } = useLocalization("components.activities.activityCard");
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
@@ -23,8 +20,19 @@ export default function ActivityCard({
     started_at: activity.started_at,
     ended_at: activity.ended_at,
   });
-  const needsAction =
-    !activity.activity_type || activity.activity_type === "activity";
+  const needsAction = !activity.self_assessment_score;
+
+  const onPress = () => {
+    if (needsAction) {
+      if (activity.activity_type === "activity") {
+        router.push(`/activities/${activity.id}/selfAssessment/sportSelection`);
+      } else {
+        router.push(`/activities/${activity.id}/selfAssessment`);
+      }
+    } else {
+      router.push(`/activities/${activity.id}`);
+    }
+  };
 
   return (
     <TouchableOpacity

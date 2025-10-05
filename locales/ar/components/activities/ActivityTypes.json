@@ -1,7 +1,9 @@
 {
-  "technical": "فني",
-  "strength": "قوة",
-  "recovery": "استرجاع",
+  "categories": {
+    "technical": "فني",
+    "strength": "قوة",
+    "recovery": "استرجاع"
+  },
 
   "activity": "نشاط",
   "rally_session": "جلسة الريلي",

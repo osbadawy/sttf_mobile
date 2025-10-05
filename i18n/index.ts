@@ -9,6 +9,7 @@ import arActivitiesActivityCard from "../locales/ar/components/activities/Activi
 import arActivitiesActivityTypes from "../locales/ar/components/activities/ActivityTypes.json";
 import arActivitiesActivityView from "../locales/ar/components/activities/ActivityView.json";
 import arActivitiesNewActivity from "../locales/ar/components/activities/NewActivity.json";
+import arActivitiesSelfAssessment from "../locales/ar/components/activities/SelfAssessment.json";
 import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json";
 import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
@@ -25,6 +26,7 @@ import enActivitiesActivityCard from "../locales/en/components/activities/Activi
 import enActivitiesActivityTypes from "../locales/en/components/activities/ActivityTypes.json";
 import enActivitiesActivityView from "../locales/en/components/activities/ActivityView.json";
 import enActivitiesNewActivity from "../locales/en/components/activities/NewActivity.json";
+import enActivitiesSelfAssessment from "../locales/en/components/activities/SelfAssessment.json";
 import enHeartSection from "../locales/en/components/dashboard/HeartSection.json";
 import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
@@ -58,6 +60,7 @@ export const resources = {
         activityCard: enActivitiesActivityCard,
         newActivity: enActivitiesNewActivity,
         activityView: enActivitiesActivityView,
+        selfAssessment: enActivitiesSelfAssessment,
       },
     },
   },
@@ -83,6 +86,7 @@ export const resources = {
         activityCard: arActivitiesActivityCard,
         newActivity: arActivitiesNewActivity,
         activityView: arActivitiesActivityView,
+        selfAssessment: arActivitiesSelfAssessment,
       },
     },
   },

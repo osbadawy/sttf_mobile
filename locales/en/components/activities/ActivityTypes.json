@@ -1,7 +1,9 @@
 {
-  "technical": "Technical",
-  "strength": "Strength",
-  "recovery": "Recovery",
+  "categories": {
+    "technical": "Technical",
+    "strength": "Strength",
+    "recovery": "Recovery"
+  },
 
   "activity": "Activity",
   "rally_session": "Rally Session",

@@ -83,8 +83,8 @@ export default function NewActivityPage() {
           useDateState: useDateState,
           showBGImage: false,
           showCalendarIcon: false,
-          customDescription: tActivityTypes(categoryString),
-          backLink: "activities" as RelativePathString,
+          customDescription: tActivityTypes(`categories.${categoryString}`),
+          showBackButton: true,
         }}
       >
         <View

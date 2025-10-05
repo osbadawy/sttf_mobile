@@ -6,7 +6,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
 import { formatDate, formatDuration } from "@/utils/activities";
-import { RelativePathString, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
@@ -62,7 +62,7 @@ export default function ViewActivityPage() {
         customDescription: activity ? formatDate(activity.started_at) : "--",
         useDateState: useDateState,
         showCalendarIcon: false,
-        backLink: "activities" as RelativePathString,
+        showBackButton: true,
       }}
     >
       <View

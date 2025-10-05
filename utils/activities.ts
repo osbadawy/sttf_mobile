@@ -69,3 +69,11 @@ export function getActivityTypesInCategory(category: string) {
   }
   return [];
 }
+
+export function getAllActivityTypes(): string[] {
+  // Import the activity types JSON directly
+  const activityTypes = require("@/locales/en/components/activities/ActivityTypes.json");
+  return Object.keys(activityTypes)
+    .filter((key) => key !== "categories")
+    .sort();
+}

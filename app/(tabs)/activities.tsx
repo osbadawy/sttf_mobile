@@ -188,9 +188,9 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                     <ActivityCard
                       activity={item}
                       key={item.id}
-                      onPress={() => {
-                        router.push(`/activities/view/${item.id}`);
-                      }}
+                      // onPress={() => {
+                      //   router.push(`/activities/${item.id}`);
+                      // }}
                     />
                   );
                 })}
