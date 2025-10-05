@@ -32,11 +32,10 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
-  const { data, dataRange, loading, error, fetchAdditionalData } =
-    usePlayerActivities({
-      user_id,
-      initialDaysBack: 14,
-    });
+  const { data, dataRange, fetchAdditionalData } = usePlayerActivities({
+    user_id,
+    initialDaysBack: 14,
+  });
 
   const categories = ["technical", "strength", "recovery"];
   const orderedData = Object.entries(data).sort(

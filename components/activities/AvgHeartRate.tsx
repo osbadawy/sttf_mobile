@@ -24,7 +24,6 @@ function normalizeWithMinFraction(durations: number[], minFraction: number) {
   let raw = durations.map((d) => d / total);
 
   // Step 2: mark which need boosting
-  let result = Array(n).fill(minFraction);
   let remaining = 1 - n * minFraction;
 
   if (remaining < 0) {

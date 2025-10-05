@@ -60,7 +60,6 @@ export default function NewActivityPage() {
       );
 
       if (response.ok) {
-        const data = await response.json();
         router.push("/activities" as RelativePathString);
       } else {
         const errorData = await response.json();

@@ -19,13 +19,13 @@ function SportSelectionItem({
   activityType: string;
   firstItem: boolean;
 }) {
-  if (activityType === "activity") {
-    return null;
-  }
-
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
+
+  if (activityType === "activity") {
+    return null;
+  }
   return (
     <TouchableOpacity
       className={`flex-row items-center gap-2 border-b border-gray-200 py-5 ${firstItem ? "border-t" : ""}`}
