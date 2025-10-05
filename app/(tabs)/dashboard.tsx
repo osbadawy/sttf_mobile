@@ -3,6 +3,7 @@ import {
   SleepSection,
   WellbeingSection,
 } from "@/components/dashboard";
+import NutritionCard from "@/components/dashboard/NutritionCard";
 import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
@@ -108,6 +109,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
         max={metrics.maxHeartRate}
         resting={metrics.restingHeartRate}
       />
+      <NutritionCard/>
     </ParallaxScrollView>
   );
 }
