@@ -32,9 +32,10 @@ export interface HeaderProps {
   profilePicture?: string;
   showDateSelector?: boolean;
   showBackButton?: boolean;
+  customBackPath?: RelativePathString;
   color?: HeaderColor;
   notification?: HeaderNotification;
-  useDateState: [Date, (date: Date) => void];
+  useDateState?: [Date, (date: Date) => void];
   showBGImage?: boolean;
   showCalendarIcon?: boolean;
   customDescription?: string;
@@ -46,9 +47,10 @@ export default function Header({
   profilePicture,
   showDateSelector,
   showBackButton = false,
+  customBackPath,
   color = HeaderColor.BG,
   notification,
-  useDateState,
+  useDateState = [new Date(), () => {}],
   showBGImage = true,
   showCalendarIcon = true,
   customDescription,
@@ -143,7 +145,13 @@ export default function Header({
           {showBackButton && (
             <TouchableOpacity
               className="flex mx-4 items-center justify-center"
-              onPress={() => router.back()}
+              onPress={() => {
+                if (customBackPath) {
+                  router.push(customBackPath as RelativePathString);
+                } else {
+                  router.back();
+                }
+              }}
             >
               <Arrow
                 direction={isRTL ? "right" : "left"}

@@ -1,4 +1,4 @@
-import PageWithArrow from "@/components/PageWithArrow";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 import PerformanceSection from "@/components/wellbeing/PerformanceSection";
 import SleepSection from "@/components/wellbeing/SleepSection";
 import StrainSection from "@/components/wellbeing/StrainSection";
@@ -10,7 +10,6 @@ import {
   MultiDayMetrics,
 } from "@/utils/whoopMetrics";
 import Constants from "expo-constants";
-import { RelativePathString } from "expo-router";
 import { useEffect, useState } from "react";
 
 interface WellbeingPageProps {
@@ -84,10 +83,14 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
       : 0;
 
   return (
-    <PageWithArrow
-      title={t("title")}
-      backLink={"dashboard" as RelativePathString}
-      isRTL={isRTL}
+    <ParallaxScrollView
+      headerProps={{
+        title: t("title"),
+        showBackButton: true,
+        showDateSelector: false,
+        showBGImage: false,
+        showCalendarIcon: false,
+      }}
     >
       <PerformanceSection
         performance={Math.round(currentPerformance * 100)}
@@ -114,6 +117,6 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
         awake={21}
         score={currentSleepScore}
       />
-    </PageWithArrow>
+    </ParallaxScrollView>
   );
 }

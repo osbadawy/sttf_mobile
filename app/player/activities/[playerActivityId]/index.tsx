@@ -7,7 +7,11 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
 import { formatDate, formatDuration } from "@/utils/activities";
-import { useLocalSearchParams } from "expo-router";
+import {
+  RelativePathString,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
@@ -16,6 +20,10 @@ export default function ViewActivityPage() {
   const playerActivityIdString = Array.isArray(playerActivityId)
     ? playerActivityId[0]
     : playerActivityId;
+
+  let pathname = usePathname();
+  pathname = pathname.split("/").slice(0, -1).join("/");
+  console.log("pathname", pathname);
 
   const useDateState = useState(new Date());
   const { t, isRTL } = useLocalization("components.activities.activityView");
@@ -36,7 +44,6 @@ export default function ViewActivityPage() {
   }
 
   const workoutStrain = activity?.workout?.score?.strain;
-  console.log("workoutStrain", workoutStrain);
 
   let strain14Days: number | undefined = 0;
   let strain14DaysCount = 0;
@@ -63,6 +70,7 @@ export default function ViewActivityPage() {
         useDateState: useDateState,
         showCalendarIcon: false,
         showBackButton: true,
+        customBackPath: `${pathname}` as RelativePathString,
       }}
     >
       <View

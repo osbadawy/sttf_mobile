@@ -13,8 +13,9 @@ import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatDate, getUniqueActivityTypes } from "@/utils/activities";
-import { router } from "expo-router";
+import { RelativePathString, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -28,6 +29,8 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
+
+  const { userName, profilePicture } = useUserProfile();
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
@@ -103,7 +106,8 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     <>
       <ParallaxScrollView
         headerProps={{
-          name: "User",
+          name: userName || "User",
+          profilePicture: profilePicture,
           color: HeaderColor.BG,
           showDateSelector: true,
           useDateState: useDateState,
@@ -183,15 +187,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                   ) {
                     return null;
                   }
-                  return (
-                    <ActivityCard
-                      activity={item}
-                      key={item.id}
-                      // onPress={() => {
-                      //   router.push(`/activities/${item.id}`);
-                      // }}
-                    />
-                  );
+                  return <ActivityCard activity={item} key={item.id} />;
                 })}
               </View>
             );
@@ -242,7 +238,9 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           }))}
           setShowSelectionModal={setShowNewActvityDropdown}
           customOnPress={(item) => {
-            router.push(`/activities/create/${item.value}`);
+            router.push(
+              `player/activities/create/${item.value}` as RelativePathString,
+            );
           }}
           showIcons={false}
         />

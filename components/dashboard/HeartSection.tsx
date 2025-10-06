@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import { HeartBg, HeartLine2 } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { RelativePathString, router } from "expo-router";
+import { RelativePathString, router, usePathname } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface HeartSectionProps {
@@ -17,11 +17,12 @@ export default function HeartSection({
   resting,
 }: HeartSectionProps) {
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
+  const pathname = usePathname();
 
   return (
     <TouchableOpacity
       className="mt-11"
-      onPress={() => router.push("heart" as RelativePathString)}
+      onPress={() => router.push(`${pathname}/heart` as RelativePathString)}
     >
       <TitleWithIcon
         title={t("title")}

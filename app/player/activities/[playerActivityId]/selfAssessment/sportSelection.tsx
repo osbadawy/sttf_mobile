@@ -6,7 +6,12 @@ import {
   getAllActivityTypes,
   getUniqueActivityTypes,
 } from "@/utils/activities";
-import { router, useLocalSearchParams } from "expo-router";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -19,10 +24,12 @@ function SportSelectionItem({
   activityType: string;
   firstItem: boolean;
 }) {
+  let pathname = usePathname();
+  pathname = pathname.split("/").slice(0, -1).join("/");
+
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
-
   if (activityType === "activity") {
     return null;
   }
@@ -31,7 +38,7 @@ function SportSelectionItem({
       className={`flex-row items-center gap-2 border-b border-gray-200 py-5 ${firstItem ? "border-t" : ""}`}
       onPress={() => {
         router.push(
-          `/activities/${playerActivityId}/selfAssessment/?activityType=${activityType}`,
+          `${pathname}/?activityType=${activityType}` as RelativePathString,
         );
       }}
     >
