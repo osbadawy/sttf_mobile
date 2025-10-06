@@ -1,4 +1,3 @@
-import PageWithArrow from "@/components/PageWithArrow";
 import AverageHeartRateSection from "@/components/heart/AverageHeartRateSection";
 import MaxAndRestingHeartRateSection from "@/components/heart/MaxAndRestingHeartRateSection";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +10,7 @@ import Constants from "expo-constants";
 import { RelativePathString } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text } from "react-native";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 
 interface HeartPageProps {
   user_id?: string;
@@ -94,10 +94,14 @@ export default function HeartPage({ user_id }: HeartPageProps) {
       : [{ time: "1", heartRate: 0 }];
 
   return (
-    <PageWithArrow
-      title={t("title")}
-      backLink={"dashboard" as RelativePathString}
-      isRTL={isRTL}
+    <ParallaxScrollView
+      headerProps={{
+        title: t("title"),
+        showBackButton: true,
+        showDateSelector: false,
+        showBGImage: false,
+        showCalendarIcon: false,
+      }}
     >
       <AverageHeartRateSection
         averageHeartRate={Math.round(currentWorkoutAvgHeartRate)}
@@ -115,6 +119,6 @@ export default function HeartPage({ user_id }: HeartPageProps) {
       <MaxAndRestingHeartRateSection history={heartRateHistory} />
 
       <Text>Heart</Text>
-    </PageWithArrow>
+    </ParallaxScrollView>
   );
 }

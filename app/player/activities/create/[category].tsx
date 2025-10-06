@@ -60,7 +60,7 @@ export default function NewActivityPage() {
       );
 
       if (response.ok) {
-        router.push("/activities" as RelativePathString);
+        router.push("player/activities" as RelativePathString);
       } else {
         const errorData = await response.json();
         console.error("API Error:", {

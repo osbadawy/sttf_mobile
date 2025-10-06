@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import { SleepIcon } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { RelativePathString, router } from "expo-router";
+import { RelativePathString, router, usePathname } from "expo-router";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 interface SleepSectionProps {
@@ -17,6 +17,7 @@ export default function SleepSection({
   sleepNeededMilli,
 }: SleepSectionProps) {
   const { t, isRTL } = useLocalization("components.dashboard.sleepSection");
+  const pathname = usePathname();
 
   const milliToHoursAndMins = (milli: number) => {
     const hours = Math.floor(milli / 3600000);
@@ -30,7 +31,9 @@ export default function SleepSection({
   return (
     <Card className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl">
       <TouchableOpacity
-        onPress={() => router.push("wellbeing" as RelativePathString)}
+        onPress={() =>
+          router.push(`${pathname}/wellbeing` as RelativePathString)
+        }
       >
         <TitleWithIcon
           title={t("title")}

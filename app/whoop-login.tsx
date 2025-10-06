@@ -2,6 +2,7 @@ import Button, { ButtonColor } from "@/components/Button";
 import { WhoopIcon } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { Access, useUserProfile } from "@/hooks/useUserProfile";
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import { RelativePathString, router } from "expo-router";
@@ -14,6 +15,7 @@ export default function WhoopLoginPage() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [whoopUserExists, setWhoopUserExists] = useState<boolean | null>(null);
   const { t } = useLocalization("login");
+  const { setUserName, setProfilePicture, setAccess } = useUserProfile();
 
   useEffect(() => {
     const getAccessToken = async () => {
@@ -37,10 +39,21 @@ export default function WhoopLoginPage() {
             });
             if (response.status !== 200)
               throw new Error(`${response.status} ${response.statusText}`);
-            const wu = (await response.json()).whoop_user;
-            if (wu) {
+            const data = await response.json();
+            if (data.whoop_user) {
               setWhoopUserExists(true);
-              router.push("(tabs)/dashboard" as RelativePathString);
+
+              setUserName(data.display_name);
+              setProfilePicture(data.avatar_url);
+              setAccess(data.access as Access);
+
+              if (data.access == "player") {
+                router.push("player/dashboard" as RelativePathString);
+              } else if (data.access == "coach") {
+                router.push("coach/dashboard" as RelativePathString);
+              } else {
+                throw new Error("Invalid access");
+              }
             } else {
               setWhoopUserExists(false);
             }

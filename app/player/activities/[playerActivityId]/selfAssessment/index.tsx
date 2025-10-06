@@ -6,7 +6,12 @@ import CustomSlider from "@/components/Slider";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import Constants from "expo-constants";
-import { RelativePathString, router, useLocalSearchParams } from "expo-router";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
@@ -17,7 +22,8 @@ export default function SelfAssessmentPage() {
   const { user } = useAuth();
   const [value, setValue] = useState(5);
   const [disableButton, setDisableButton] = useState(false);
-
+  let pathname = usePathname();
+  pathname = pathname.split("/").slice(0, -1).join("/");
   const onPress = async () => {
     if (user && playerActivityId) {
       setDisableButton(true);
@@ -44,7 +50,7 @@ export default function SelfAssessmentPage() {
       );
 
       if (response.ok) {
-        router.push("/activities" as RelativePathString);
+        router.push(`${pathname}` as RelativePathString);
       } else {
         const errorData = await response.json();
         console.error("API Error:", {

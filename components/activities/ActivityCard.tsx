@@ -1,7 +1,7 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { formatDuration } from "@/utils/activities";
-import { router } from "expo-router";
+import { RelativePathString, router, usePathname } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Arrow } from "../icons";
 import DynamicActivityIcon from "../icons/activities";
@@ -15,6 +15,7 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
+  const pathname = usePathname();
 
   const duration = formatDuration({
     started_at: activity.started_at,
@@ -25,12 +26,16 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
   const onPress = () => {
     if (needsAction) {
       if (activity.activity_type === "activity") {
-        router.push(`/activities/${activity.id}/selfAssessment/sportSelection`);
+        router.push(
+          `${pathname}/${activity.id}/selfAssessment/sportSelection` as RelativePathString,
+        );
       } else {
-        router.push(`/activities/${activity.id}/selfAssessment`);
+        router.push(
+          `${pathname}/${activity.id}/selfAssessment` as RelativePathString,
+        );
       }
     } else {
-      router.push(`/activities/${activity.id}`);
+      router.push(`${pathname}/${activity.id}` as RelativePathString);
     }
   };
 
