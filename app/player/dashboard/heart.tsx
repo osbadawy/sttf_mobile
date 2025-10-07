@@ -6,6 +6,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
 function getAvgHrSectionData(
@@ -56,9 +57,13 @@ export default function HeartPage() {
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
   const { user } = useAuth();
 
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
+
   const [metrics, setMetrics] = useState<MultiDayWhoopMetrics>({});
 
   const { data: activities14Days } = usePlayerActivities({
+    user_id: playerData.firebase_id,
     initialDaysBack: 14,
   });
 
@@ -67,7 +72,7 @@ export default function HeartPage() {
       if (user) {
         try {
           const params = new URLSearchParams({
-            firebase_id: user.uid,
+            firebase_id: playerData.firebase_id || user.uid,
             days: "14",
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;

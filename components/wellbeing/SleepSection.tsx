@@ -28,7 +28,6 @@ export default function SleepSection({
   const swsPercent = Math.round((sws / total) * 100);
   const lightPercent = Math.round((light / total) * 100);
   const awakePercent = Math.round((awake / total) * 100);
-
   // Data for the pie chart
   const data = [
     { x: "REM", y: remPercent, color: colors.sleepRem }, // Purple

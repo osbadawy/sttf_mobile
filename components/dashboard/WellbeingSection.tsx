@@ -7,7 +7,12 @@ import {
 } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { RelativePathString, router, usePathname } from "expo-router";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { useEffect, useRef } from "react";
 import {
   Animated,
@@ -95,6 +100,7 @@ export default function WellbeingSection({
 }) {
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
   const pathname = usePathname();
+  const { player } = useLocalSearchParams();
 
   const windowWidth = Dimensions.get("window").width;
   // Create animated values for each progress circle
@@ -135,7 +141,14 @@ export default function WellbeingSection({
   return (
     <TouchableOpacity
       className="flex-1 items-center"
-      onPress={() => router.push(`${pathname}/wellbeing` as RelativePathString)}
+      onPress={() =>
+        router.push({
+          pathname: `${pathname}/wellbeing` as RelativePathString,
+          params: {
+            player,
+          },
+        })
+      }
     >
       <View className="w-full">
         <TitleWithIcon

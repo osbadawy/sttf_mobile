@@ -3,12 +3,19 @@ import { SleepIcon } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Sleep } from "@/schemas/whoop";
-import { RelativePathString, router, usePathname } from "expo-router";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function SleepSection({ sleep }: { sleep: Sleep }) {
   const { t, isRTL } = useLocalization("components.dashboard.sleepSection");
   const pathname = usePathname();
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
 
   const milliToHoursAndMins = (milli: number) => {
     const hours = Math.floor(milli / 3600000);
@@ -23,7 +30,12 @@ export default function SleepSection({ sleep }: { sleep: Sleep }) {
     <Card className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl">
       <TouchableOpacity
         onPress={() =>
-          router.push(`${pathname}/wellbeing` as RelativePathString)
+          router.push({
+            pathname: `${pathname}/wellbeing` as RelativePathString,
+            params: {
+              player,
+            },
+          })
         }
       >
         <TitleWithIcon

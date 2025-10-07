@@ -4,7 +4,9 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 // import { extractSingleDayMetricsFromData } from "@/utils/whoopMetrics";
-import { Text } from "react-native";
+import Button, { ButtonColor } from "@/components/Button";
+import { useRouter } from "expo-router";
+import { View } from "react-native";
 
 export default function Dashboard() {
   const { userName, profilePicture } = useUserProfile();
@@ -12,6 +14,8 @@ export default function Dashboard() {
   const { user } = useAuth();
 
   const [data, setData] = useState<any[]>([]);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,11 +55,29 @@ export default function Dashboard() {
     >
       {data &&
         data.map((player) => {
-          console.log(player.whoop_user);
-          return <Text>{player.display_name}</Text>;
+          return (
+            <View>
+              <Button
+                title={player.display_name}
+                onPress={() => {
+                  const path = "/player/dashboard";
+                  const params = {
+                    player: JSON.stringify({
+                      firebase_id: player.firebase_id,
+                      display_name: player.display_name,
+                      profile_picture: player.profile_picture,
+                    }),
+                  };
+                  router.push({
+                    pathname: path,
+                    params: params,
+                  });
+                }}
+                color={ButtonColor.primary}
+              />
+            </View>
+          );
         })}
-
-      {/* <Text>Coach Dashboard!</Text> */}
     </ParallaxScrollView>
   );
 }

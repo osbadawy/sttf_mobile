@@ -31,7 +31,7 @@ export default function PerformanceSection({
     1;
   const performance14Days = totalPerformance14Days / numPerformance14Days;
 
-  const today = new Date(new Date().setHours(0, 0, 0, 0))
+  const today = new Date(new Date().setUTCHours(0, 0, 0, 0))
     .toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" })
     .replace("/", ".");
 

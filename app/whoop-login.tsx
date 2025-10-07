@@ -42,6 +42,10 @@ export default function WhoopLoginPage() {
               throw new Error(`${response.status} ${response.statusText}`);
             const data = await response.json();
 
+            setUserName(data.display_name || data.access);
+            setProfilePicture(data.avatar_url || "");
+            setAccess(data.access as Access);
+
             if (data.access == "coach") {
               router.push("coach/dashboard" as RelativePathString);
               return;
@@ -49,11 +53,6 @@ export default function WhoopLoginPage() {
 
             if (data.access == "player" && data.whoop_user) {
               setWhoopUserExists(true);
-
-              setUserName(data.display_name);
-              setProfilePicture(data.avatar_url);
-              setAccess(data.access as Access);
-
               router.push("player/dashboard" as RelativePathString);
             } else {
               setWhoopUserExists(false);

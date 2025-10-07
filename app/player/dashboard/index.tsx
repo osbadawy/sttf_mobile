@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { exampleWhoopMetrics, WhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
 interface DashboardProps {
@@ -19,6 +20,8 @@ interface DashboardProps {
 export default function Dashboard({ user_id }: DashboardProps) {
   const { user } = useAuth();
   const { userName, profilePicture } = useUserProfile();
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
@@ -29,7 +32,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
       if (user) {
         try {
           const params = new URLSearchParams({
-            firebase_id: user_id || user.uid,
+            firebase_id: playerData.firebase_id || user.uid,
             day: date.toISOString(),
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/day?${params}`;
@@ -56,8 +59,9 @@ export default function Dashboard({ user_id }: DashboardProps) {
   return (
     <ParallaxScrollView
       headerProps={{
-        name: userName || "User",
-        profilePicture: profilePicture,
+        name: (playerData.display_name as string) || userName || "User",
+        profilePicture:
+          (playerData.profile_picture as string) || profilePicture,
         color: HeaderColor.BG,
         showDateSelector: true,
         useDateState: useDateState,

@@ -7,15 +7,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
-interface WellbeingPageProps {
-  user_id?: string;
-}
-
-export default function WellbeingPage({ user_id }: WellbeingPageProps) {
+export default function WellbeingPage() {
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
   const { user } = useAuth();
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
 
   const [metrics, setMetrics] = useState<MultiDayWhoopMetrics>({});
 
@@ -24,7 +23,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
       if (user) {
         try {
           const params = new URLSearchParams({
-            firebase_id: user_id || user.uid,
+            firebase_id: playerData.firebase_id || user.uid,
             days: "14",
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;
@@ -44,9 +43,9 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
     };
 
     fetchData();
-  }, [user, user_id]);
+  }, [user]);
 
-  const today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+  const today = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString();
 
   // Calculate averages for 14 days
   const dataValues = Object.values(metrics);
@@ -71,7 +70,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
       }}
     >
       <PerformanceSection
-        performance={Math.round(metrics[today]?.performance || 0 * 100)}
+        performance={Math.round(metrics[today]?.performance * 100)}
         performance14DaysHistory={Object.entries(metrics).map(
           ([day, value]) => ({
             date: day,
@@ -84,22 +83,24 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
         strain14Days={Math.round(avgStrain * 21)}
       />
       <StressSection
-        stress={Math.round(metrics[today]?.stress || 0 * 10)}
+        stress={Math.round(metrics[today]?.stress * 10)}
         stress14Days={Math.round(avgStress * 10)}
       />
       <SleepSection
-        rem={
-          metrics[today]?.sleep.stage_summary.total_rem_sleep_time_milli || 0
-        }
-        sws={
+        rem={Number(
+          metrics[today]?.sleep.stage_summary.total_rem_sleep_time_milli || 0,
+        )}
+        sws={Number(
           metrics[today]?.sleep.stage_summary
-            .total_slow_wave_sleep_time_milli || 0
-        }
-        light={
-          metrics[today]?.sleep.stage_summary.total_light_sleep_time_milli || 0
-        }
-        awake={metrics[today]?.sleep.stage_summary.total_awake_time_milli || 0}
-        score={metrics[today]?.sleep.score || 0}
+            .total_slow_wave_sleep_time_milli || 0,
+        )}
+        light={Number(
+          metrics[today]?.sleep.stage_summary.total_light_sleep_time_milli || 0,
+        )}
+        awake={Number(
+          metrics[today]?.sleep.stage_summary.total_awake_time_milli || 0,
+        )}
+        score={Number(metrics[today]?.sleep.score || 0)}
       />
     </ParallaxScrollView>
   );
