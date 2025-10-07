@@ -3,10 +3,12 @@ const colors = {
   primaryDark: "#017A3E",
   primaryVeryDark: "#024F25",
   primaryLight: "#00B35A",
+  primaryVeryLight: "#00E372",
   performance: "#03A454",
   performanceLight: "#CDEDDD",
   strain: "#009FA0",
   strainLight: "#E5F5F5",
+  strainVeryLight: "#00DBDC",
   strainLow: "#038485",
   strainModerate: "#00B5B6",
   strainHigh: "#28C5C6",
@@ -30,7 +32,6 @@ const colors = {
   yellow: "#FABB00",
   blue: "#009FA0",
   green: "#008C46",
-  lightGreen: "#00E372",
 };
 
 export default colors;

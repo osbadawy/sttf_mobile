@@ -5,16 +5,55 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { VictoryBar, VictoryChart, VictoryStack } from "victory-native";
 import { StrainIcon } from "../icons";
+import RadioSelect from "../RadioSelect";
 
-interface StrainSectionProps {
-  strainToday?: number; //0 - 21
-  strain14Days?: number;
+interface StrainSectionBaseProps {
+  p1StrainToday?: number; //0 - 21
+  p2StrainToday?: number; //0 - 21
+  p1AvgStrain?: number;
+  p2AvgStrain?: number;
+}
+
+interface StrainSectionProps extends StrainSectionBaseProps {
+  p1Name: string;
+  p2Name?: string;
+}
+
+interface StrainSectionLineProps extends StrainSectionBaseProps {
+  selectedPlayer: number;
+  secondaryExists: boolean;
+}
+
+interface StrainMarkerProps {
+  left: number;
+  marker: React.ReactNode;
+}
+
+function StrainMarker({ left, marker }: StrainMarkerProps) {
+  return (
+    <>
+      <View
+        style={{
+          left: left,
+          position: "absolute",
+          top: "50%",
+          transform: [{ translateY: "-50%" }],
+        }}
+      >
+        {marker}
+      </View>
+    </>
+  );
 }
 
 export function StrainSectionLine({
-  strainToday,
-  strain14Days,
-}: StrainSectionProps) {
+  p1StrainToday,
+  p2StrainToday,
+  p1AvgStrain,
+  p2AvgStrain,
+  selectedPlayer,
+  secondaryExists,
+}: StrainSectionLineProps) {
   const strainScale = {
     low: 10 / 21,
     moderate: 4 / 21,
@@ -27,6 +66,31 @@ export function StrainSectionLine({
   const getPositionOnLine = (value: number, offset: number) => {
     return Math.round((value / 21) * containerWidth) - offset;
   };
+
+  const defaultMarker = (
+    <View
+      className={`bg-strain w-5 h-5 rounded-full border-background border-2 border-solid`}
+    />
+  );
+  const defaultSecondaryMarker = (
+    <View
+      className={`bg-[#3C3C3C] w-2 h-6 border-background border-2 border-solid`}
+    />
+  );
+
+  const primaryComparisonMarker = (
+    <View className="bg-strainVeryLight w-[20px] h-[20px] rounded-full border-background border-[2px] items-center justify-center">
+      <View
+        className={`bg-strainVeryLight w-[12px] h-[12px] rounded-full border-background border-[2px]`}
+      />
+    </View>
+  );
+  const secondaryComparisonMarker = (
+    <View
+      className={`bg-strain w-[12px] h-[12px] rounded-full border-background border-[2px]`}
+    />
+  );
+
   return (
     <>
       <View
@@ -66,16 +130,42 @@ export function StrainSectionLine({
             />
           </VictoryStack>
         </VictoryChart>
-        {strainToday && (
-          <View
-            className={`absolute bg-strain w-5 h-5 rounded-full border-background border-2 border-solid`}
-            style={{ left: getPositionOnLine(strainToday, 8) }}
+        {!secondaryExists && p1StrainToday && (
+          <StrainMarker
+            left={getPositionOnLine(p1StrainToday, 8)}
+            marker={defaultMarker}
           />
         )}
-        {strain14Days && (
-          <View
-            className={`absolute bg-[#3C3C3C] w-2 h-6 border-background border-2 border-solid`}
-            style={{ left: getPositionOnLine(strain14Days, 1) }}
+        {!secondaryExists && p1AvgStrain && (
+          <StrainMarker
+            left={getPositionOnLine(p1AvgStrain, 1)}
+            marker={defaultSecondaryMarker}
+          />
+        )}
+        {secondaryExists && p1StrainToday && (
+          <StrainMarker
+            left={getPositionOnLine(
+              p1StrainToday,
+              selectedPlayer === 0 ? 10 : 6,
+            )}
+            marker={
+              selectedPlayer === 0
+                ? primaryComparisonMarker
+                : secondaryComparisonMarker
+            }
+          />
+        )}
+        {secondaryExists && p2StrainToday && (
+          <StrainMarker
+            left={getPositionOnLine(
+              p2StrainToday,
+              selectedPlayer === 0 ? 10 : 8,
+            )}
+            marker={
+              selectedPlayer === 1
+                ? primaryComparisonMarker
+                : secondaryComparisonMarker
+            }
           />
         )}
       </View>
@@ -113,13 +203,22 @@ export function StrainSectionLine({
 }
 
 export default function StrainSection({
-  strainToday,
-  strain14Days,
+  p1Name,
+  p2Name,
+  p1StrainToday,
+  p2StrainToday,
+  p1AvgStrain,
+  p2AvgStrain,
 }: StrainSectionProps) {
   const { t: tStats, isRTL } = useLocalization("stats");
   const { t: tWellbeing } = useLocalization(
     "components.dashboard.wellbeingSection",
   );
+
+  const [selectedPlayer, setSelectedPlayer] = useState<number>(0);
+
+  const strainToday = selectedPlayer === 0 ? p1StrainToday : p2StrainToday;
+  const avgStrain = selectedPlayer === 0 ? p1AvgStrain : p2AvgStrain;
 
   //in the form of 02.09 not 02/09
   const todaysDate = new Date()
@@ -145,7 +244,7 @@ export default function StrainSection({
         </Text>
         <Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {strain14Days ? strain14Days + " " : "-- "}
+            {avgStrain ? avgStrain + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#969696]">
             {tStats("14DayAvg")}
@@ -153,9 +252,37 @@ export default function StrainSection({
         </Text>
       </View>
       <StrainSectionLine
-        strainToday={strainToday}
-        strain14Days={strain14Days}
+        p1StrainToday={p1StrainToday}
+        p2StrainToday={p2StrainToday}
+        p1AvgStrain={p1AvgStrain}
+        p2AvgStrain={p2AvgStrain}
+        selectedPlayer={selectedPlayer}
+        secondaryExists={Boolean(p2Name && p2AvgStrain)}
       />
+
+      {p2Name && (
+        <View className="mt-4">
+          <RadioSelect
+            selectedColor={colors.strainVeryLight}
+            unselectedColor={colors.strain}
+            items={[
+              {
+                name: p1Name,
+                value: "0",
+              },
+              {
+                name: p2Name!,
+                value: "1",
+              },
+            ]}
+            selectedItem={{
+              name: p1Name,
+              value: selectedPlayer.toString(),
+            }}
+            setSelectedItem={(item) => setSelectedPlayer(Number(item.value))}
+          />
+        </View>
+      )}
     </CardWithTitle>
   );
 }
