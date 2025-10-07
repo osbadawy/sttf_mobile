@@ -8,10 +8,7 @@ import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import {
-  extractSingleDayMetricsFromData,
-  SingleDayMetrics,
-} from "@/utils/whoopMetrics";
+import { exampleWhoopMetrics, WhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 
@@ -26,19 +23,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
-  const [metrics, setMetrics] = useState<SingleDayMetrics>({
-    performance: 0,
-    stress: 0,
-    strain: 0,
-    sleepScore: 0,
-    sleepDurationMilli: 0,
-    sleepNeededMilli: 0,
-    restingHeartRate: 0,
-    maxHeartRate: 0,
-    dailyAvgHeartRate: 0,
-    hrv: 0,
-    workoutAverageHeartRate: 0,
-  });
+  const [metrics, setMetrics] = useState<WhoopMetrics>(exampleWhoopMetrics);
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -55,10 +40,10 @@ export default function Dashboard({ user_id }: DashboardProps) {
               Authorization: `Bearer ${await user.getIdToken()}`,
             },
           });
-          console.log(params.get("day"))
           const data = await response.json();
-          const extractedMetrics = extractSingleDayMetricsFromData(data);
-          setMetrics(extractedMetrics);
+          setMetrics(
+            (Object.values(data)[0] as WhoopMetrics) || exampleWhoopMetrics,
+          );
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -84,11 +69,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
         stress={metrics.stress}
         animationDuration={1000}
       />
-      <SleepSection
-        sleepScore={metrics.sleepScore}
-        sleepDurationMilli={metrics.sleepDurationMilli}
-        sleepNeededMilli={metrics.sleepNeededMilli}
-      />
+      <SleepSection sleep={metrics.sleep} />
       <HeartSection
         dailyAvg={metrics.dailyAvgHeartRate}
         max={metrics.maxHeartRate}

@@ -15,7 +15,8 @@ export default function WhoopLoginPage() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [whoopUserExists, setWhoopUserExists] = useState<boolean | null>(null);
   const { t } = useLocalization("login");
-  const { setUserName, setProfilePicture, access, setAccess } = useUserProfile();
+  const { setUserName, setProfilePicture, access, setAccess } =
+    useUserProfile();
 
   useEffect(() => {
     const getAccessToken = async () => {
@@ -41,11 +42,10 @@ export default function WhoopLoginPage() {
               throw new Error(`${response.status} ${response.statusText}`);
             const data = await response.json();
 
-            if(data.access == "coach"){
+            if (data.access == "coach") {
               router.push("coach/dashboard" as RelativePathString);
               return;
             }
-
 
             if (data.access == "player" && data.whoop_user) {
               setWhoopUserExists(true);

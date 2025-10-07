@@ -137,7 +137,7 @@ export default function StrainSection({
       <View className="flex-row justify-between">
         <Text>
           <Text className="font-inter-semibold text-3xl">
-            {strainToday + " "}
+            {strainToday ? strainToday + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#4B4B4B]">
             {todaysDate}
@@ -145,7 +145,7 @@ export default function StrainSection({
         </Text>
         <Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {strain14Days + " "}
+            {strain14Days ? strain14Days + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#969696]">
             {tStats("14DayAvg")}

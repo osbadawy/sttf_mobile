@@ -29,7 +29,7 @@ export default function Dashboard() {
             },
           });
           const data = await response.json();
-          console.log(data)
+          console.log(data);
           setData(data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -40,7 +40,6 @@ export default function Dashboard() {
     fetchData();
   }, [date, user]);
 
-
   return (
     <ParallaxScrollView
       headerProps={{
@@ -50,14 +49,13 @@ export default function Dashboard() {
         showCalendarIcon: false,
       }}
     >
-      {data && data.map((player) => {
-        console.log(player.whoop_user);
-        return (
-        <Text>{player.display_name}</Text>
-      )})}
+      {data &&
+        data.map((player) => {
+          console.log(player.whoop_user);
+          return <Text>{player.display_name}</Text>;
+        })}
 
       {/* <Text>Coach Dashboard!</Text> */}
-
     </ParallaxScrollView>
   );
 }

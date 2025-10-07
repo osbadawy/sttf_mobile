@@ -22,12 +22,29 @@ export default function PerformanceSection({
   );
   const { t, isRTL } = useLocalization("stats");
 
-  const performance14Days =
-    performance14DaysHistory.reduce((acc, curr) => acc + curr.value, 0) /
-    performance14DaysHistory.length;
-  const todaysDate = new Date()
+  const totalPerformance14Days = performance14DaysHistory.reduce(
+    (acc, curr) => acc + curr.value,
+    0,
+  );
+  const numPerformance14Days =
+    performance14DaysHistory.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) ||
+    1;
+  const performance14Days = totalPerformance14Days / numPerformance14Days;
+
+  const today = new Date(new Date().setHours(0, 0, 0, 0))
     .toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" })
     .replace("/", ".");
+
+  // sort performance14DaysHistory by date
+  let sortedPerformance14DaysHistory = performance14DaysHistory.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+  sortedPerformance14DaysHistory = sortedPerformance14DaysHistory.map(
+    (item) => ({
+      ...item,
+      date: new Date(item.date).toLocaleDateString("en-US", { day: "2-digit" }),
+    }),
+  );
 
   return (
     <CardWithTitle
@@ -40,15 +57,15 @@ export default function PerformanceSection({
       <View className="flex-row justify-between mb-4">
         <Text>
           <Text className="font-inter-semibold text-3xl">
-            {Math.round(performance) + " "}
+            {performance ? Math.round(performance) + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#4B4B4B]">
-            {todaysDate}
+            {today}
           </Text>
         </Text>
         <Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {Math.round(performance14Days) + " "}
+            {performance14Days ? Math.round(performance14Days) + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#969696]">
             {t("14DayAvg")}
@@ -58,8 +75,8 @@ export default function PerformanceSection({
 
       {/* Bar Chart */}
       <View className="flex-row items-end justify-center h-[130px] px-5 relative">
-        {performance14DaysHistory.map((dataPoint, index) => {
-          const isLatest = index === performance14DaysHistory.length - 1;
+        {sortedPerformance14DaysHistory.map((dataPoint, index) => {
+          const isLatest = index === sortedPerformance14DaysHistory.length - 1;
           const height = (dataPoint.value / 100) * 100;
 
           return (

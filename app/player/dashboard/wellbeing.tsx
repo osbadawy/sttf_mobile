@@ -5,10 +5,7 @@ import StrainSection from "@/components/wellbeing/StrainSection";
 import StressSection from "@/components/wellbeing/StressSection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import {
-  extractMultiDayMetricsFromData,
-  MultiDayMetrics,
-} from "@/utils/whoopMetrics";
+import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 
@@ -20,19 +17,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
   const { user } = useAuth();
 
-  const [metrics, setMetrics] = useState<MultiDayMetrics>({
-    performance: [],
-    stress: [],
-    strain: [],
-    sleepScore: [],
-    sleepDurationMilli: [],
-    sleepNeededMilli: [],
-    restingHeartRate: [],
-    maxHeartRate: [],
-    dailyAvgHeartRate: [],
-    hrv: [],
-    workoutAverageHeartRate: [],
-  });
+  const [metrics, setMetrics] = useState<MultiDayWhoopMetrics>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,10 +36,7 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
             },
           });
           const data = await response.json();
-
-          // Extract metrics from all cycles
-          const extractedMetrics = extractMultiDayMetricsFromData(data);
-          setMetrics(extractedMetrics);
+          setMetrics(data);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -64,23 +46,19 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
     fetchData();
   }, [user, user_id]);
 
-  // Calculate current values (most recent cycle)
-  const currentPerformance = metrics.performance[0]?.value || 0;
-  const currentStrain = metrics.strain[0] || 0;
-  const currentStress = metrics.stress[0] || 0;
-  const currentSleepScore = metrics.sleepScore[0] || 0;
+  const today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 
   // Calculate averages for 14 days
-  const avgStrain =
-    metrics.strain.length > 0
-      ? metrics.strain.reduce((sum, val) => sum + val, 0) /
-        metrics.strain.length
-      : 0;
-  const avgStress =
-    metrics.stress.length > 0
-      ? metrics.stress.reduce((sum, val) => sum + val, 0) /
-        metrics.stress.length
-      : 0;
+  const dataValues = Object.values(metrics);
+  const totalStrain = dataValues.reduce((sum, val) => sum + val.strain, 0);
+  const numStrainValues =
+    dataValues.reduce((sum, val) => (val ? sum + 1 : sum), 0) || 1;
+  const avgStrain = numStrainValues > 0 ? totalStrain / numStrainValues : 0;
+
+  const totalStress = dataValues.reduce((sum, val) => sum + val.stress, 0);
+  const numStressValues =
+    dataValues.reduce((sum, val) => (val ? sum + 1 : sum), 0) || 1;
+  const avgStress = numStressValues > 0 ? totalStress / numStressValues : 0;
 
   return (
     <ParallaxScrollView
@@ -93,29 +71,35 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
       }}
     >
       <PerformanceSection
-        performance={Math.round(currentPerformance * 100)}
-        performance14DaysHistory={metrics.performance
-          .slice()
-          .reverse()
-          .map((p) => ({
-            date: p.date,
-            value: Math.round(p.value * 100),
-          }))}
+        performance={Math.round(metrics[today]?.performance || 0 * 100)}
+        performance14DaysHistory={Object.entries(metrics).map(
+          ([day, value]) => ({
+            date: day,
+            value: Math.round(value.performance * 100),
+          }),
+        )}
       />
       <StrainSection
-        strainToday={Math.round(currentStrain * 21)}
+        strainToday={Math.round(metrics[today]?.strain || 0 * 21)}
         strain14Days={Math.round(avgStrain * 21)}
       />
       <StressSection
-        stress={Math.round(currentStress * 10)}
+        stress={Math.round(metrics[today]?.stress || 0 * 10)}
         stress14Days={Math.round(avgStress * 10)}
       />
       <SleepSection
-        rem={12}
-        sws={15.5}
-        light={18}
-        awake={21}
-        score={currentSleepScore}
+        rem={
+          metrics[today]?.sleep.stage_summary.total_rem_sleep_time_milli || 0
+        }
+        sws={
+          metrics[today]?.sleep.stage_summary
+            .total_slow_wave_sleep_time_milli || 0
+        }
+        light={
+          metrics[today]?.sleep.stage_summary.total_light_sleep_time_milli || 0
+        }
+        awake={metrics[today]?.sleep.stage_summary.total_awake_time_milli || 0}
+        score={metrics[today]?.sleep.score || 0}
       />
     </ParallaxScrollView>
   );

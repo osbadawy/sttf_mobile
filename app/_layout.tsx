@@ -29,7 +29,10 @@ function AppNavigator() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {user ? (
-        <Stack.Screen name={access  ? `${access}/dashboard` : "player/dashboard"} options={{ headerShown: false }} />
+        <Stack.Screen
+          name={access ? `${access}/dashboard` : "player/dashboard"}
+          options={{ headerShown: false }}
+        />
       ) : (
         <Stack.Screen name="login" />
       )}

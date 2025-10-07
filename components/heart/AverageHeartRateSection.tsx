@@ -12,44 +12,33 @@ import {
   VictoryTheme,
 } from "victory-native";
 
-interface HeartRateHistory {
-  time: string;
-  heartRate: number;
+interface Data {
+  date: Date;
+  avg: number;
+  hrv: number;
 }
 
-interface AverageHeartRateProps {
-  averageHeartRate: number;
-  averageHeartRateHistory: HeartRateHistory[];
-  HRV: number;
-  averageHRV: number;
-}
-
-export default function AverageHeartRateSection({
-  averageHeartRate,
-  averageHeartRateHistory,
-  HRV,
-  averageHRV,
-}: AverageHeartRateProps) {
+export default function AverageHeartRateSection({ data }: { data: Data[] }) {
   const { t: tHeart } = useLocalization("components.heart");
   const { t, isRTL } = useLocalization("stats");
   const [containerWidth, setContainerWidth] = useState(300); // Default fallback width
 
-  const averageHeartRate14Days =
-    averageHeartRateHistory.length > 0
-      ? Math.round(
-          averageHeartRateHistory.reduce(
-            (acc, curr) => acc + (curr.heartRate || 0),
-            0,
-          ) / averageHeartRateHistory.length,
-        )
-      : 0;
+  const today = data[data.length - 1];
+
+  const totalHr = data.reduce((acc, curr) => acc + (curr.avg || 0), 0);
+  const numHr = data.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) || 1;
+  const avgHr = totalHr / numHr;
+
+  const totalHrv = data.reduce((acc, curr) => acc + (curr.hrv || 0), 0);
+  const numHrv = data.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) || 1;
+  const avgHrv = totalHrv / numHrv;
 
   // Use actual dates for x-axis to show proper time spacing
-  const chartData = averageHeartRateHistory.map((item) => {
-    const date = new Date(item.time);
+  const chartData = data.map((item) => {
+    const date = new Date(item.date);
     return {
       x: date.getTime(), // Use timestamp for x-axis
-      y: Math.round(item.heartRate || 0),
+      y: Math.round(item.avg || 0),
     };
   });
 
@@ -72,13 +61,13 @@ export default function AverageHeartRateSection({
       <View className="flex-row justify-start mb-4">
         <Text style={{ width: "50%" }}>
           <Text className="font-inter-semibold text-3xl">
-            {Math.round(averageHeartRate) + " "}
+            {today ? Math.round(today.avg) + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#4B4B4B]">bpm</Text>
         </Text>
         <Text style={{ width: "50%" }}>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {Math.round(averageHeartRate14Days) + " "}
+            {avgHr ? Math.round(avgHr) + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#969696]">
             {t("14DayAvg")}
@@ -140,11 +129,11 @@ export default function AverageHeartRateSection({
             data={[
               {
                 x: Math.min(...xValues),
-                y: Math.round(averageHeartRate14Days || 0),
+                y: Math.round(avgHr || 0),
               },
               {
                 x: Math.max(...xValues),
-                y: Math.round(averageHeartRate14Days || 0),
+                y: Math.round(avgHr || 0),
               },
             ]}
             style={{
@@ -173,7 +162,7 @@ export default function AverageHeartRateSection({
         <View style={{ width: "50%" }}>
           <Text className="effra-medium text-base pb-3">{tHeart("hrv")}</Text>
           <Text className="font-inter-semibold text-3xl">
-            {HRV + " "}
+            {today ? Math.round(today.hrv) + " " : "-- "}
             <Text className="font-inter-light text-base text-[#4B4B4B]">
               ms
             </Text>
@@ -185,7 +174,7 @@ export default function AverageHeartRateSection({
             <Text className="effra-light text-base">{t("14DayAvg")}</Text>
           </Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {averageHRV + " "}
+            {avgHrv ? Math.round(avgHrv) + " " : "-- "}
             <Text className="font-inter-light text-base text-[#969696]">
               ms
             </Text>

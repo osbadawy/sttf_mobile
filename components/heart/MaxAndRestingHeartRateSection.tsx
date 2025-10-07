@@ -8,6 +8,7 @@ import { HeartLine3 } from "../icons";
 interface HeartRateHistory {
   resting: number;
   max: number;
+  day: string;
 }
 
 interface MaxAndRestingHeartRateSectionProps {
@@ -20,12 +21,15 @@ export default function MaxAndRestingHeartRateSection({
   const { t: tHeart } = useLocalization("components.heart");
   const { t, isRTL } = useLocalization("stats");
 
+  history = history.filter((item) => item.max !== 0 && item.resting !== 0);
+
   const minVal = history
     .map((item) => item.resting)
     .reduce((a, b) => Math.min(a, b), Infinity);
   const maxVal = history
     .map((item) => item.max)
     .reduce((a, b) => Math.max(a, b), -Infinity);
+
   const today = history[history.length - 1];
 
   const averageMax =
@@ -47,7 +51,7 @@ export default function MaxAndRestingHeartRateSection({
         <View style={{ width: "50%" }}>
           <Text className="effra-medium text-base pb-3">{t("max")}</Text>
           <Text className="font-inter-semibold text-3xl">
-            {today.max.toString() + " "}
+            {today ? `${today["max"].toString()} ` : "-- "}
             <Text className="font-inter-light text-base text-[#4B4B4B]">
               bpm
             </Text>
@@ -56,7 +60,7 @@ export default function MaxAndRestingHeartRateSection({
         <View style={{ width: "50%" }}>
           <Text className="effra-medium text-base pb-3">{t("resting")}</Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {today.resting.toString() + " "}
+            {today ? `${today["resting"].toString()} ` : "-- "}
             <Text className="font-inter-light text-base text-[#969696]">
               bpm
             </Text>

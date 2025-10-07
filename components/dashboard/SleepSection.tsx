@@ -2,20 +2,11 @@ import Card from "@/components/Card";
 import { SleepIcon } from "@/components/icons";
 import TitleWithIcon from "@/components/TitleWithIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { Sleep } from "@/schemas/whoop";
 import { RelativePathString, router, usePathname } from "expo-router";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
-interface SleepSectionProps {
-  sleepScore: number;
-  sleepDurationMilli: number;
-  sleepNeededMilli: number;
-}
-
-export default function SleepSection({
-  sleepScore,
-  sleepDurationMilli,
-  sleepNeededMilli,
-}: SleepSectionProps) {
+export default function SleepSection({ sleep }: { sleep: Sleep }) {
   const { t, isRTL } = useLocalization("components.dashboard.sleepSection");
   const pathname = usePathname();
 
@@ -25,8 +16,8 @@ export default function SleepSection({
     return { hours, minutes };
   };
 
-  const sleepDuration = milliToHoursAndMins(sleepDurationMilli);
-  const sleepNeeded = milliToHoursAndMins(sleepNeededMilli);
+  const sleepDuration = milliToHoursAndMins(sleep.durationMilli);
+  const sleepNeeded = milliToHoursAndMins(sleep.neededMilli);
 
   return (
     <Card className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl">
@@ -69,7 +60,7 @@ export default function SleepSection({
             <Animated.View
               className="bg-sleep h-1 rounded-sm"
               style={{
-                width: `${Math.round(sleepScore * 100)}%`,
+                width: `${Math.round(sleep.score * 100)}%`,
               }}
             />
           </View>

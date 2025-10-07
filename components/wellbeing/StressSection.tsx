@@ -125,7 +125,7 @@ export default function StressSection({
             }}
           >
             <Text className="font-inter-semibold text-5xl pb-2">
-              {stress.toFixed(1)}
+              {stress ? stress.toFixed(1) : "--"}
             </Text>
             <Text className="font-inter-light text-xs text-[#969696]">
               {todaysDate}
@@ -133,22 +133,24 @@ export default function StressSection({
           </View>
 
           {/* Average text outside circle */}
-          <View
-            style={{
-              position: "absolute",
-              left: adjustedTextX - 20,
-              top: adjustedTextY - 10,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text className="font-inter-semibold text-2xl text-center text-[#424242]">
-              {stress14Days.toFixed(1)}
-            </Text>
-            <Text className="font-inter-light text-base text-center text-[#969696]">
-              {t("avg")}
-            </Text>
-          </View>
+          {stress14Days && (
+            <View
+              style={{
+                position: "absolute",
+                left: adjustedTextX - 20,
+                top: adjustedTextY - 10,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text className="font-inter-semibold text-2xl text-center text-[#424242]">
+                {stress14Days.toFixed(1)}
+              </Text>
+              <Text className="font-inter-light text-base text-center text-[#969696]">
+                {t("avg")}
+              </Text>
+            </View>
+          )}
         </Svg>
       </View>
     </CardWithTitle>

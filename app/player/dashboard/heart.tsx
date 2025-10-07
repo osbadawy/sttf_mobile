@@ -1,47 +1,73 @@
 import AverageHeartRateSection from "@/components/heart/AverageHeartRateSection";
 import MaxAndRestingHeartRateSection from "@/components/heart/MaxAndRestingHeartRateSection";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import {
-  extractMultiDayMetricsFromData,
-  MultiDayMetrics,
-} from "@/utils/whoopMetrics";
+import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
+import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
-import { RelativePathString } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text } from "react-native";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 
-interface HeartPageProps {
-  user_id?: string;
+function getAvgHrSectionData(
+  activities: Record<number, any[]>,
+  metrics: MultiDayWhoopMetrics,
+) {
+  //sort by key
+  const sortedActivities = Object.entries(activities).sort(
+    (a, b) => Number(a[0]) - Number(b[0]), // ascending order
+  );
+
+  const formattedActivities = [];
+
+  for (const sortedActivity of sortedActivities) {
+    if (
+      sortedActivity[1] &&
+      sortedActivity[1][0].workout &&
+      sortedActivity[1][0].workout.score
+    ) {
+      const started_at = sortedActivity[1][0].started_at;
+      const ended_at = sortedActivity[1][0].ended_at;
+      const middle =
+        new Date(started_at).getTime() +
+        (new Date(ended_at).getTime() - new Date(started_at).getTime()) / 2;
+      const date = new Date(middle);
+      const hrv = getHrvForDay(metrics, date);
+
+      formattedActivities.push({
+        date: date,
+        avg: sortedActivity[1][0].workout.score.average_heart_rate,
+        hrv: hrv || 0,
+      });
+    }
+  }
+
+  return formattedActivities;
 }
 
-export default function HeartPage({ user_id }: HeartPageProps) {
+function getHrvForDay(metrics: MultiDayWhoopMetrics, day: Date) {
+  // set day to 00:00:00
+  const dateCopy = new Date(day);
+  dateCopy.setUTCHours(0, 0, 0, 0);
+  const dayString = dateCopy.toISOString();
+  return metrics[dayString] ? metrics[dayString].hrv : 0;
+}
+
+export default function HeartPage() {
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
   const { user } = useAuth();
 
-  const [metrics, setMetrics] = useState<MultiDayMetrics>({
-    performance: [],
-    stress: [],
-    strain: [],
-    sleepScore: [],
-    sleepDurationMilli: [],
-    sleepNeededMilli: [],
-    restingHeartRate: [],
-    maxHeartRate: [],
-    dailyAvgHeartRate: [],
-    hrv: [],
-    workoutAverageHeartRate: [],
-  });
+  const [metrics, setMetrics] = useState<MultiDayWhoopMetrics>({});
 
-  // const [isLoading, setIsLoading] = useState(true);
+  const { data: activities14Days } = usePlayerActivities({
+    initialDaysBack: 14,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         try {
           const params = new URLSearchParams({
-            firebase_id: user_id || user.uid,
+            firebase_id: user.uid,
             days: "14",
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;
@@ -55,8 +81,7 @@ export default function HeartPage({ user_id }: HeartPageProps) {
           const data = await response.json();
 
           // Extract metrics from all cycles
-          const extractedMetrics = extractMultiDayMetricsFromData(data);
-          setMetrics(extractedMetrics);
+          setMetrics(data);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -64,34 +89,19 @@ export default function HeartPage({ user_id }: HeartPageProps) {
     };
 
     fetchData();
-  }, [user, user_id]);
+  }, [user]);
 
-  // Calculate current values (most recent cycle) - filter out zero values
-  const validWorkoutRates = metrics.workoutAverageHeartRate.filter(
-    (rate) => rate.value > 0,
+  // // Create history data for MaxAndRestingHeartRateSection
+  const sortedMetrics = Object.entries(metrics).sort(
+    (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(),
   );
-  const currentWorkoutAvgHeartRate =
-    validWorkoutRates.length > 0 ? validWorkoutRates[0].value : 0;
+  const heartRateHistory = sortedMetrics.map((metric) => ({
+    resting: Math.round(metric[1].restingHeartRate || 0),
+    max: Math.round(metric[1].maxHeartRate || 0),
+    day: metric[0],
+  }));
 
-  // Create history data for MaxAndRestingHeartRateSection
-  const heartRateHistory =
-    metrics.restingHeartRate.length > 0
-      ? metrics.restingHeartRate.map((resting, index) => ({
-          resting: Math.round(resting || 0),
-          max: Math.round(metrics.maxHeartRate[index] || 0),
-        }))
-      : [{ resting: 0, max: 0 }];
-
-  // Create workout average heart rate history for AverageHeartRateSection - filter out zero values
-  const averageHeartRateHistory =
-    validWorkoutRates.length > 0
-      ? validWorkoutRates
-          .map((workoutRate) => ({
-            time: workoutRate.date,
-            heartRate: Math.round(workoutRate.value),
-          }))
-          .reverse()
-      : [{ time: "1", heartRate: 0 }];
+  const avgHrSectionData = getAvgHrSectionData(activities14Days, metrics);
 
   return (
     <ParallaxScrollView
@@ -103,22 +113,8 @@ export default function HeartPage({ user_id }: HeartPageProps) {
         showCalendarIcon: false,
       }}
     >
-      <AverageHeartRateSection
-        averageHeartRate={Math.round(currentWorkoutAvgHeartRate)}
-        averageHeartRateHistory={averageHeartRateHistory}
-        HRV={metrics.hrv.length > 0 ? Math.round(metrics.hrv[0]) : 0}
-        averageHRV={
-          metrics.hrv.length > 0
-            ? Math.round(
-                metrics.hrv.reduce((sum, val) => sum + (val || 0), 0) /
-                  metrics.hrv.length,
-              )
-            : 0
-        }
-      />
+      <AverageHeartRateSection data={avgHrSectionData} />
       <MaxAndRestingHeartRateSection history={heartRateHistory} />
-
-      <Text>Heart</Text>
     </ParallaxScrollView>
   );
 }

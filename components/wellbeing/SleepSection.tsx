@@ -66,7 +66,7 @@ export default function SleepSection({
           {/* Center Score */}
           <View className="absolute inset-0 items-center justify-center">
             <Text className="text-4xl font-bold text-black">
-              {Math.round(score * 100)}
+              {score ? Math.round(score * 100) : "--"}
             </Text>
           </View>
         </View>
