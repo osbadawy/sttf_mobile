@@ -55,6 +55,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
               Authorization: `Bearer ${await user.getIdToken()}`,
             },
           });
+          console.log(params.get("day"))
           const data = await response.json();
           const extractedMetrics = extractSingleDayMetricsFromData(data);
           setMetrics(extractedMetrics);

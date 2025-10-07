@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { LocalizationProvider } from "@/contexts/LocalizationContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import "@/i18n"; // Initialize i18n
 import * as Sentry from "@sentry/react-native";
 import Constants from "expo-constants";
@@ -23,11 +24,12 @@ Sentry.init({
 
 function AppNavigator() {
   const { user } = useAuth();
+  const { access } = useUserProfile();
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {user ? (
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name={access  ? `${access}/dashboard` : "player/dashboard"} options={{ headerShown: false }} />
       ) : (
         <Stack.Screen name="login" />
       )}

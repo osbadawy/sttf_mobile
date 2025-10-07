@@ -15,7 +15,7 @@ export default function WhoopLoginPage() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [whoopUserExists, setWhoopUserExists] = useState<boolean | null>(null);
   const { t } = useLocalization("login");
-  const { setUserName, setProfilePicture, setAccess } = useUserProfile();
+  const { setUserName, setProfilePicture, access, setAccess } = useUserProfile();
 
   useEffect(() => {
     const getAccessToken = async () => {
@@ -40,20 +40,21 @@ export default function WhoopLoginPage() {
             if (response.status !== 200)
               throw new Error(`${response.status} ${response.statusText}`);
             const data = await response.json();
-            if (data.whoop_user) {
+
+            if(data.access == "coach"){
+              router.push("coach/dashboard" as RelativePathString);
+              return;
+            }
+
+
+            if (data.access == "player" && data.whoop_user) {
               setWhoopUserExists(true);
 
               setUserName(data.display_name);
               setProfilePicture(data.avatar_url);
               setAccess(data.access as Access);
 
-              if (data.access == "player") {
-                router.push("player/dashboard" as RelativePathString);
-              } else if (data.access == "coach") {
-                router.push("coach/dashboard" as RelativePathString);
-              } else {
-                throw new Error("Invalid access");
-              }
+              router.push("player/dashboard" as RelativePathString);
             } else {
               setWhoopUserExists(false);
             }
@@ -74,7 +75,7 @@ export default function WhoopLoginPage() {
         return;
       }
 
-      const redirectURL = Linking.createURL("(tabs)/dashboard");
+      const redirectURL = Linking.createURL(`${access}/dashboard`);
       const url = `${Constants.expoConfig?.extra?.API_URL}/whoop/auth/start?access_token=${accessToken}&redirect_url=${redirectURL}`;
 
       await WebBrowser.openAuthSessionAsync(url, redirectURL, {
