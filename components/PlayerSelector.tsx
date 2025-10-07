@@ -38,14 +38,27 @@ export default function PlayerSelector({
     })
     .filter((player) => player.value !== ignorePlayerFirebaseId);
 
-  console.log(selectedPlayer);
+  const handlePlayerSelect = (item: any) => {
+    // Find the full player object from the original players array
+    const fullPlayer = players.find(player => player.firebase_id === item.value);
+    onSelectPlayer(fullPlayer);
+  };
 
   return (
     <View className="pb-10" style={{ marginHorizontal: 57 }}>
       <Dropdown
         items={playerNames}
-        selectedItem={selectedPlayer}
-        setSelectedItem={onSelectPlayer}
+        selectedItem={selectedPlayer ? {
+          value: selectedPlayer.firebase_id,
+          name: selectedPlayer.display_name,
+          icon: selectedPlayer.avatar_url ? (
+            <Image
+              source={{ uri: selectedPlayer.avatar_url }}
+              className="w-[32px] h-[32px] rounded-full"
+            />
+          ) : <PlayerSelectorPlaceholderIcon />
+        } : undefined}
+        setSelectedItem={handlePlayerSelect}
         placeholder="Select Player"
         placeholderIcon={<PlayerSelectorPlaceholderIcon />}
       />

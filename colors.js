@@ -30,6 +30,7 @@ const colors = {
   yellow: "#FABB00",
   blue: "#009FA0",
   green: "#008C46",
+  lightGreen: "#00E372",
 };
 
 export default colors;
