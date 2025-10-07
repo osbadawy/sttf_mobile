@@ -1,48 +1,14 @@
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import Constants from "expo-constants";
-import { useEffect, useState } from "react";
-// import { extractSingleDayMetricsFromData } from "@/utils/whoopMetrics";
 import Button, { ButtonColor } from "@/components/Button";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { useAllPlayers } from "@/hooks/useAllPlayers";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function Dashboard() {
   const { userName, profilePicture } = useUserProfile();
-  const [date, setDate] = useState(new Date());
-  const { user } = useAuth();
-
-  const [data, setData] = useState<any[]>([]);
-
+  const { players, loading, error } = useAllPlayers();
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        try {
-          const params = new URLSearchParams({
-            day: date.toISOString(),
-          });
-          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/day/players?${params}`;
-
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${await user.getIdToken()}`,
-            },
-          });
-          const data = await response.json();
-          console.log(data);
-          setData(data);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [date, user]);
 
   return (
     <ParallaxScrollView
@@ -53,10 +19,12 @@ export default function Dashboard() {
         showCalendarIcon: false,
       }}
     >
-      {data &&
-        data.map((player) => {
+      {loading && <View><Text>Loading players...</Text></View>}
+      {error && <View><Text>Error: {error}</Text></View>}
+      {players &&
+        players.map((player) => {
           return (
-            <View>
+            <View key={player.firebase_id}>
               <Button
                 title={player.display_name}
                 onPress={() => {
