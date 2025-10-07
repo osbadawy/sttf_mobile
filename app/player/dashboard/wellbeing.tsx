@@ -1,10 +1,12 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PlayerSelector from "@/components/PlayerSelector";
 import PerformanceSection from "@/components/wellbeing/PerformanceSection";
 import SleepSection from "@/components/wellbeing/SleepSection";
 import StrainSection from "@/components/wellbeing/StrainSection";
 import StressSection from "@/components/wellbeing/StressSection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
 import { useLocalSearchParams } from "expo-router";
@@ -16,7 +18,11 @@ export default function WellbeingPage() {
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
 
+  const { players } = useAllPlayers();
+
   const [metrics, setMetrics] = useState<MultiDayWhoopMetrics>({});
+
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,9 +75,17 @@ export default function WellbeingPage() {
         showCalendarIcon: false,
       }}
     >
+      {players && (
+        <PlayerSelector
+          players={players}
+          selectedPlayer={selectedPlayer}
+          onSelectPlayer={setSelectedPlayer}
+          ignorePlayerFirebaseId={playerData.firebase_id}
+        />
+      )}
+
       <PerformanceSection
-        performance={Math.round(metrics[today]?.performance * 100)}
-        performance14DaysHistory={Object.entries(metrics).map(
+        p1PerformanceHistory={Object.entries(metrics).map(
           ([day, value]) => ({
             date: day,
             value: Math.round(value.performance * 100),

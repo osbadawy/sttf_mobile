@@ -19,8 +19,16 @@ export default function Dashboard() {
         showCalendarIcon: false,
       }}
     >
-      {loading && <View><Text>Loading players...</Text></View>}
-      {error && <View><Text>Error: {error}</Text></View>}
+      {loading && (
+        <View>
+          <Text>Loading players...</Text>
+        </View>
+      )}
+      {error && (
+        <View>
+          <Text>Error: {error}</Text>
+        </View>
+      )}
       {players &&
         players.map((player) => {
           return (

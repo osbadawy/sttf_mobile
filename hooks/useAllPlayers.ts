@@ -34,7 +34,7 @@ export const useAllPlayers = (): UseAllPlayersReturn => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/user/players`;
 
       const response = await fetch(url, {
@@ -51,7 +51,8 @@ export const useAllPlayers = (): UseAllPlayersReturn => {
       const data = await response.json();
       setPlayers(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Error fetching players";
+      const errorMessage =
+        err instanceof Error ? err.message : "Error fetching players";
       console.error("Error fetching players:", err);
       setError(errorMessage);
     } finally {

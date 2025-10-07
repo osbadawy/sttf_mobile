@@ -12,12 +12,16 @@ interface DropdownProps {
   items: Item[];
   selectedItem?: Item;
   setSelectedItem: (item: Item) => void;
+  placeholder?: string;
+  placeholderIcon?: React.ReactNode;
 }
 
 export default function Dropdown({
   items,
   selectedItem,
   setSelectedItem,
+  placeholder,
+  placeholderIcon,
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -29,12 +33,30 @@ export default function Dropdown({
   return (
     <View className="relative">
       <TouchableOpacity
-        className="flex-row items-center justify-between rounded-3xl bg-white px-8 py-4"
+        className={`flex-row items-center justify-between rounded-3xl bg-white px-8 py-4 ${selectedItem ? "border-2 border-primary" : ""}`}
         onPress={() => setIsOpen(!isOpen)}
         activeOpacity={0.7}
         style={{ boxShadow: "0px 2px 4px 0px #00000018" }}
       >
-        <Text className="effra-regular text-base">{selectedItem?.name}</Text>
+        {selectedItem ? (
+          <View className="flex-row items-center">
+            {selectedItem.icon && (
+              <View className="mr-3">{selectedItem.icon}</View>
+            )}
+            <Text className="effra-regular text-base">
+              {selectedItem?.name}
+            </Text>
+          </View>
+        ) : (
+          <View className="flex-row items-center">
+            {placeholderIcon && <View className="mr-3">{placeholderIcon}</View>}
+            {placeholder && (
+              <Text className="effra-regular text-base opacity-50">
+                {placeholder}
+              </Text>
+            )}
+          </View>
+        )}
         <Arrow direction={isOpen ? "up" : "down"} />
       </TouchableOpacity>
 
