@@ -1,4 +1,4 @@
-import Button, { ButtonColor } from "@/components/Button";
+import CustomButton, { ButtonColor } from "@/components/Button";
 import { WhoopIcon } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -102,7 +102,7 @@ export default function WhoopLoginPage() {
           {accessToken && whoopUserExists === false && (
             <>
               <WhoopIcon />
-              <Button
+              <CustomButton
                 title={t("Connect")}
                 onPress={onPress}
                 color={ButtonColor.primary}

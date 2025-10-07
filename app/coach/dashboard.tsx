@@ -1,4 +1,4 @@
-import Button, { ButtonColor } from "@/components/Button";
+import CustomButton, { ButtonColor } from "@/components/Button";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -25,7 +25,7 @@ export default function Dashboard() {
         players.map((player) => {
           return (
             <View key={player.firebase_id}>
-              <Button
+              <CustomButton
                 title={player.display_name}
                 onPress={() => {
                   const path = "/player/dashboard";

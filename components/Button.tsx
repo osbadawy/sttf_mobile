@@ -20,7 +20,7 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-export default function Button({
+export default function CustomButton({
   title,
   onPress,
   color,

@@ -1,5 +1,5 @@
 import ActivityCard from "@/components/activities/ActivityCard";
-import Button, { ButtonColor, ButtonSize } from "@/components/Button";
+import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
 import {
   ActivityFlameIcon,
@@ -140,7 +140,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
               <Text className="effra-light text-base">Kcal</Text>
             </Text>
           </View>
-          <Button
+          <CustomButton
             title={t("addActivity")}
             onPress={() => {
               setShowNewActvityDropdown(true);
@@ -194,7 +194,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           })}
 
           <View className="w-full items-center justify-center">
-            <Button
+            <CustomButton
               title="Load More"
               onPress={() => {
                 if (dataRange.earliest) {

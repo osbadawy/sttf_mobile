@@ -1,4 +1,4 @@
-import Button, { ButtonColor, ButtonSize } from "@/components/Button";
+import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
 import { Arrow } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -143,7 +143,7 @@ export default function NewActivityPage() {
           </View>
 
           <View className="px-8">
-            <Button
+            <CustomButton
               title={t("add")}
               onPress={onPress}
               color={ButtonColor.primary}
