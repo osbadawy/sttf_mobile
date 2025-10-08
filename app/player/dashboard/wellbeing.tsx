@@ -4,6 +4,7 @@ import PerformanceSection from "@/components/wellbeing/PerformanceSection";
 import SleepSection from "@/components/wellbeing/SleepSection";
 import StrainSection from "@/components/wellbeing/StrainSection";
 import StressSection from "@/components/wellbeing/StressSection";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
@@ -26,6 +27,7 @@ export default function WellbeingPage() {
 
   const { players } = useAllPlayers();
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
+  const { user } = useAuth();
 
   const {
     primaryMetrics,
@@ -33,12 +35,14 @@ export default function WellbeingPage() {
     primaryLoading,
     selectedPlayerLoading,
   } = useMultiPlayerWhoopData({
-    primaryFirebaseId: playerData.firebase_id,
+    primaryFirebaseId: playerData.firebase_id || user?.uid,
     selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
     days: "14",
   });
 
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString();
+
+  console.log("playerData", playerData);
 
   return (
     <ParallaxScrollView
@@ -50,7 +54,7 @@ export default function WellbeingPage() {
         showCalendarIcon: false,
       }}
     >
-      {players && (
+      {players && Object.keys(playerData).length !== 0 && (
         <PlayerSelector
           players={players}
           selectedPlayer={selectedPlayer}
@@ -95,8 +99,20 @@ export default function WellbeingPage() {
         }
       />
       <StressSection
-        stress={Math.round(primaryMetrics[today]?.stress * 10)}
-        stress14Days={Math.round(getAvgValue(primaryMetrics, "stress") * 10)}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1StressToday={Math.round(primaryMetrics[today]?.stress * 10)}
+        p2StressToday={
+          selectedPlayer
+            ? Math.round(selectedPlayerMetrics[today]?.stress * 10)
+            : undefined
+        }
+        p1AvgStress={Math.round(getAvgValue(primaryMetrics, "stress") * 10)}
+        p2AvgStress={
+          selectedPlayer
+            ? Math.round(getAvgValue(selectedPlayerMetrics, "stress") * 10)
+            : undefined
+        }
       />
       <SleepSection
         rem={Number(

@@ -18,8 +18,8 @@ export default function RadioSelect({
   items,
   selectedItem,
   setSelectedItem,
-  selectedColor = colors.primaryVeryLight,
-  unselectedColor = colors.primary,
+  selectedColor = colors.performanceVeryLight,
+  unselectedColor = colors.performance,
 }: RadioSelectProps) {
   return (
     <View className="flex-row gap-2">

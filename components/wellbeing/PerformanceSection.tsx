@@ -44,7 +44,7 @@ function Graph({
         let color = isLatest ? "bg-performance" : "bg-performanceLight";
         if (secondaryExists) {
           width = isSecondary ? 16 : 10;
-          color = isSecondary ? "bg-performanceLight" : "bg-primaryVeryLight";
+          color = isSecondary ? "bg-performanceLight" : "bg-performanceVeryLight";
         }
 
         const boxShadow =
