@@ -11,7 +11,7 @@ interface UseMultiDayWhoopDataProps {
 interface UseMultiPlayerWhoopDataProps {
   primaryFirebaseId?: string;
   selectedPlayerFirebaseId?: string;
-  days?: string;
+  days?: number;
 }
 
 // Cache to store fetched data by firebase_id
@@ -71,7 +71,7 @@ export function useMultiDayWhoopData({
 export function useMultiPlayerWhoopData({
   primaryFirebaseId,
   selectedPlayerFirebaseId,
-  days = "14",
+  days = 14,
 }: UseMultiPlayerWhoopDataProps = {}) {
   const { user } = useAuth();
   const [primaryMetrics, setPrimaryMetrics] = useState<MultiDayWhoopMetrics>(
@@ -116,7 +116,7 @@ export function useMultiPlayerWhoopData({
       try {
         const params = new URLSearchParams({
           firebase_id: firebaseId,
-          days,
+          days: days.toString(),
         });
         const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;
 

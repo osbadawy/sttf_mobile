@@ -2,6 +2,7 @@ import colors from "@/colors";
 import CardWithTitle from "@/components/CardWithTitle";
 import { HeartLine2 } from "@/components/icons";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { getAvgValue } from "@/utils/data";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import {
@@ -11,6 +12,7 @@ import {
   VictoryScatter,
   VictoryTheme,
 } from "victory-native";
+import RadioSelect from "../RadioSelect";
 
 interface Data {
   date: Date;
@@ -18,23 +20,42 @@ interface Data {
   hrv: number;
 }
 
-export default function AverageHeartRateSection({ data }: { data: Data[] }) {
+interface AverageHeartRateSectionProps {
+  p1Name: string;
+  p2Name?: string;
+  p1Data: Data[];
+  p2Data?: Data[];
+}
+
+export default function AverageHeartRateSection({
+  p1Data,
+  p2Data,
+  p1Name,
+  p2Name,
+}: AverageHeartRateSectionProps) {
   const { t: tHeart } = useLocalization("components.heart");
   const { t, isRTL } = useLocalization("stats");
+
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(0);
+
+  const p1Color = colors.heart;
+  const p2Color = colors.yellow;
+
   const [containerWidth, setContainerWidth] = useState(300); // Default fallback width
 
-  const today = data[data.length - 1];
+  const p1Latest = p1Data[p1Data.length - 1];
+  const p2Latest = p2Data?.[p2Data.length - 1];
+  const latest = selectedPlayer === 0 ? p1Latest : p2Latest;
 
-  const totalHr = data.reduce((acc, curr) => acc + (curr.avg || 0), 0);
-  const numHr = data.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) || 1;
-  const avgHr = totalHr / numHr;
+  const p1AvgHr = getAvgValue(p1Data, ["avg"]);
+  const p1AvgHrv = getAvgValue(p1Data, ["hrv"]);
 
-  const totalHrv = data.reduce((acc, curr) => acc + (curr.hrv || 0), 0);
-  const numHrv = data.reduce((acc, curr) => (curr ? acc + 1 : acc), 0) || 1;
-  const avgHrv = totalHrv / numHrv;
+  // Calculate averages for p2Data if available
+  const p2AvgHr = p2Data ? getAvgValue(p2Data, ["avg"]) : null;
+  const p2AvgHrv = p2Data ? getAvgValue(p2Data, ["hrv"]) : null;
 
   // Use actual dates for x-axis to show proper time spacing
-  const chartData = data.map((item) => {
+  const p1ChartData = p1Data.map((item) => {
     const date = new Date(item.date);
     return {
       x: date.getTime(), // Use timestamp for x-axis
@@ -42,7 +63,17 @@ export default function AverageHeartRateSection({ data }: { data: Data[] }) {
     };
   });
 
-  const xValues = chartData
+  const p2ChartData =
+    p2Data?.map((item) => {
+      const date = new Date(item.date);
+      return {
+        x: date.getTime(), // Use timestamp for x-axis
+        y: Math.round(item.avg || 0),
+      };
+    }) || [];
+
+  // Combine x values from both datasets for proper domain calculation
+  const allXValues = [...p1ChartData, ...p2ChartData]
     .map((d) => d.x)
     .filter((x) => !isNaN(x) && isFinite(x));
 
@@ -61,13 +92,16 @@ export default function AverageHeartRateSection({ data }: { data: Data[] }) {
       <View className="flex-row justify-start mb-4">
         <Text style={{ width: "50%" }}>
           <Text className="font-inter-semibold text-3xl">
-            {today ? Math.round(today.avg) + " " : "-- "}
+            {latest ? Math.round(latest.avg) + " " : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#4B4B4B]">bpm</Text>
         </Text>
         <Text style={{ width: "50%" }}>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {avgHr ? Math.round(avgHr) + " " : "-- "}
+            {(selectedPlayer === 0 ? p1AvgHr : p2AvgHr)
+              ? Math.round((selectedPlayer === 0 ? p1AvgHr : p2AvgHr) || 0) +
+                " "
+              : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#969696]">
             {t("14DayAvg")}
@@ -118,27 +152,84 @@ export default function AverageHeartRateSection({ data }: { data: Data[] }) {
           }}
           tickCount={4}
         />
+        {/* Player 1 line */}
         <VictoryLine
-          data={chartData.filter(
+          data={p1ChartData.filter(
             (d) => !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
           )}
-          style={{ data: { stroke: colors.heartLight, strokeWidth: 3 } }}
+          style={{
+            data: {
+              stroke: p1Color,
+              strokeWidth: 3,
+              opacity: selectedPlayer === 0 ? 1 : 0.25,
+            },
+          }}
         />
-        {xValues.length > 0 && (
+        {/* Player 2 line */}
+        {p2Data && p2ChartData.length > 0 && (
+          <VictoryLine
+            data={p2ChartData.filter(
+              (d) =>
+                !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
+            )}
+            style={{
+              data: {
+                stroke: p2Color,
+                strokeWidth: 3,
+                opacity: selectedPlayer === 1 ? 1 : 0.25,
+              },
+            }}
+          />
+        )}
+        {/* Player 1 scatter points */}
+        <VictoryScatter
+          data={p1ChartData.filter(
+            (d) => !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
+          )}
+          style={{
+            data: {
+              fill: "#FFFFFF",
+              stroke: p1Color,
+              strokeWidth: 3,
+              opacity: selectedPlayer === 0 ? 1 : 0.25,
+            },
+          }}
+          size={8}
+        />
+        {/* Player 2 scatter points */}
+        {p2Data && p2ChartData.length > 0 && (
+          <VictoryScatter
+            data={p2ChartData.filter(
+              (d) =>
+                !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
+            )}
+            style={{
+              data: {
+                fill: "#FFFFFF",
+                stroke: p2Color,
+                strokeWidth: 3,
+                opacity: selectedPlayer === 1 ? 1 : 0.25,
+              },
+            }}
+            size={8}
+          />
+        )}
+
+        {allXValues.length > 0 && (
           <VictoryLine
             data={[
               {
-                x: Math.min(...xValues),
-                y: Math.round(avgHr || 0),
+                x: Math.min(...allXValues),
+                y: Math.round((selectedPlayer === 0 ? p1AvgHr : p2AvgHr) || 0),
               },
               {
-                x: Math.max(...xValues),
-                y: Math.round(avgHr || 0),
+                x: Math.max(...allXValues),
+                y: Math.round((selectedPlayer === 0 ? p1AvgHr : p2AvgHr) || 0),
               },
             ]}
             style={{
               data: {
-                stroke: colors.heart,
+                stroke: selectedPlayer === 0 ? p1Color : p2Color,
                 strokeWidth: 2,
                 strokeDasharray: "5,5",
                 strokeLinecap: "round",
@@ -147,22 +238,13 @@ export default function AverageHeartRateSection({ data }: { data: Data[] }) {
             }}
           />
         )}
-        <VictoryScatter
-          data={chartData.filter(
-            (d) => !isNaN(d.x) && !isNaN(d.y) && isFinite(d.x) && isFinite(d.y),
-          )}
-          style={{
-            data: { fill: "#FFFFFF", stroke: colors.heart, strokeWidth: 3 },
-          }}
-          size={8}
-        />
       </VictoryChart>
 
       <View className="flex-row justify-start pt-8">
         <View style={{ width: "50%" }}>
           <Text className="effra-medium text-base pb-3">{tHeart("hrv")}</Text>
           <Text className="font-inter-semibold text-3xl">
-            {today ? Math.round(today.hrv) + " " : "-- "}
+            {latest ? Math.round(latest.hrv) + " " : "-- "}
             <Text className="font-inter-light text-base text-[#4B4B4B]">
               ms
             </Text>
@@ -174,13 +256,40 @@ export default function AverageHeartRateSection({ data }: { data: Data[] }) {
             <Text className="effra-light text-base">{t("14DayAvg")}</Text>
           </Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {avgHrv ? Math.round(avgHrv) + " " : "-- "}
+            {(selectedPlayer === 0 ? p1AvgHrv : p2AvgHrv)
+              ? Math.round((selectedPlayer === 0 ? p1AvgHrv : p2AvgHrv) || 0) +
+                " "
+              : "-- "}
             <Text className="font-inter-light text-base text-[#969696]">
               ms
             </Text>
           </Text>
         </View>
       </View>
+
+      {p2Name && (
+        <View className="mt-4">
+          <RadioSelect
+            p1Color={p1Color}
+            p2Color={p2Color}
+            items={[
+              {
+                name: p1Name,
+                value: "0",
+              },
+              {
+                name: p2Name!,
+                value: "1",
+              },
+            ]}
+            selectedItem={{
+              name: p1Name,
+              value: selectedPlayer ? selectedPlayer.toString() : "0",
+            }}
+            setSelectedItem={(item) => setSelectedPlayer(Number(item.value))}
+          />
+        </View>
+      )}
     </CardWithTitle>
   );
 }

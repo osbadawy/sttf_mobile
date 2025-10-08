@@ -8,31 +8,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
-import { MultiDayWhoopMetrics } from "@/schemas/whoop";
+import { getAvgValue } from "@/utils/data";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-
-function getAvgValue(metrics: MultiDayWhoopMetrics, keys: string[]) {
-  const dataValues = Object.values(metrics);
-  const total = dataValues.reduce((sum, val) => {
-    // Navigate to the most nested value using the keys array
-    let current: any = val;
-    for (const key of keys) {
-      current = current?.[key];
-    }
-    return sum + ((current as number) || 0);
-  }, 0);
-  const numValues =
-    dataValues.reduce((sum, val) => {
-      // Check if the nested value exists
-      let current: any = val;
-      for (const key of keys) {
-        current = current?.[key];
-      }
-      return current !== undefined && current !== null ? sum + 1 : sum;
-    }, 0) || 1;
-  return numValues > 0 ? total / numValues : 0;
-}
 
 export default function WellbeingPage() {
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
@@ -51,7 +29,7 @@ export default function WellbeingPage() {
   } = useMultiPlayerWhoopData({
     primaryFirebaseId: playerData.firebase_id || user?.uid,
     selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
-    days: "14",
+    days: 14,
   });
 
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString();

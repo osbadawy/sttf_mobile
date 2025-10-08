@@ -1,8 +1,10 @@
+import AverageHeartRateSection from "@/components/heart/AverageHeartRateSection";
 import MaxAndRestingHeartRateSection from "@/components/heart/MaxAndRestingHeartRateSection";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import PlayerSelector from "@/components/PlayerSelector";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { useMultiPlayerActivities } from "@/hooks/activities";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
@@ -82,7 +84,16 @@ export default function HeartPage() {
   } = useMultiPlayerWhoopData({
     primaryFirebaseId: playerData.firebase_id || user?.uid,
     selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
-    days: "14",
+    days: 14,
+  });
+
+  const {
+    primaryData: primaryPlayerActivities,
+    selectedPlayerData: selectedPlayerActivities,
+  } = useMultiPlayerActivities({
+    primaryFirebaseId: playerData.firebase_id || user?.uid,
+    selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
+    initialDaysBack: 14,
   });
 
   const p1HeartRateHistory = getHeartRateHistory(primaryMetrics);
@@ -90,7 +101,14 @@ export default function HeartPage() {
     ? getHeartRateHistory(selectedPlayerMetrics)
     : undefined;
 
-  // const avgHrSectionData = getAvgHrSectionData(activities14Days, metrics);
+  const p1AvgHrSectionData = getAvgHrSectionData(
+    primaryPlayerActivities,
+    primaryMetrics,
+  );
+  const p2AvgHrSectionData = getAvgHrSectionData(
+    selectedPlayerActivities,
+    selectedPlayerMetrics,
+  );
 
   return (
     <ParallaxScrollView
@@ -110,7 +128,12 @@ export default function HeartPage() {
           ignorePlayerFirebaseId={playerData.firebase_id}
         />
       )}
-      {/* <AverageHeartRateSection data={avgHrSectionData} /> */}
+      <AverageHeartRateSection
+        p1Data={p1AvgHrSectionData}
+        p2Data={p2AvgHrSectionData}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+      />
       <MaxAndRestingHeartRateSection
         p1Name={playerData.display_name}
         p2Name={selectedPlayer?.display_name}
