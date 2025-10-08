@@ -8,11 +8,9 @@ import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import {
-  extractSingleDayMetricsFromData,
-  SingleDayMetrics,
-} from "@/utils/whoopMetrics";
+import { exampleWhoopMetrics, WhoopMetrics } from "@/schemas/whoop";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
 interface DashboardProps {
@@ -22,29 +20,19 @@ interface DashboardProps {
 export default function Dashboard({ user_id }: DashboardProps) {
   const { user } = useAuth();
   const { userName, profilePicture } = useUserProfile();
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
-  const [metrics, setMetrics] = useState<SingleDayMetrics>({
-    performance: 0,
-    stress: 0,
-    strain: 0,
-    sleepScore: 0,
-    sleepDurationMilli: 0,
-    sleepNeededMilli: 0,
-    restingHeartRate: 0,
-    maxHeartRate: 0,
-    dailyAvgHeartRate: 0,
-    hrv: 0,
-    workoutAverageHeartRate: 0,
-  });
+  const [metrics, setMetrics] = useState<WhoopMetrics>(exampleWhoopMetrics);
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         try {
           const params = new URLSearchParams({
-            firebase_id: user_id || user.uid,
+            firebase_id: playerData.firebase_id || user.uid,
             day: date.toISOString(),
           });
           const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/day?${params}`;
@@ -56,8 +44,9 @@ export default function Dashboard({ user_id }: DashboardProps) {
             },
           });
           const data = await response.json();
-          const extractedMetrics = extractSingleDayMetricsFromData(data);
-          setMetrics(extractedMetrics);
+          setMetrics(
+            (Object.values(data)[0] as WhoopMetrics) || exampleWhoopMetrics,
+          );
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -70,28 +59,25 @@ export default function Dashboard({ user_id }: DashboardProps) {
   return (
     <ParallaxScrollView
       headerProps={{
-        name: userName || "User",
-        profilePicture: profilePicture,
+        name: (playerData.display_name as string) || userName || "User",
+        profilePicture:
+          (playerData.profile_picture as string) || profilePicture,
         color: HeaderColor.BG,
         showDateSelector: true,
         useDateState: useDateState,
       }}
     >
       <WellbeingSection
-        performance={metrics.performance}
-        strain={metrics.strain}
-        stress={metrics.stress}
+        performance={metrics.basic.performance}
+        strain={metrics.basic.strain}
+        stress={metrics.basic.stress}
         animationDuration={1000}
       />
-      <SleepSection
-        sleepScore={metrics.sleepScore}
-        sleepDurationMilli={metrics.sleepDurationMilli}
-        sleepNeededMilli={metrics.sleepNeededMilli}
-      />
+      <SleepSection sleep={metrics.sleep} />
       <HeartSection
-        dailyAvg={metrics.dailyAvgHeartRate}
-        max={metrics.maxHeartRate}
-        resting={metrics.restingHeartRate}
+        dailyAvg={metrics.heart.avg}
+        max={metrics.heart.max}
+        resting={metrics.heart.resting}
       />
       <NutritionCard />
     </ParallaxScrollView>

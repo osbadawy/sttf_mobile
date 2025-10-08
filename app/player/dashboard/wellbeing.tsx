@@ -1,86 +1,38 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PlayerSelector from "@/components/PlayerSelector";
 import PerformanceSection from "@/components/wellbeing/PerformanceSection";
 import SleepSection from "@/components/wellbeing/SleepSection";
 import StrainSection from "@/components/wellbeing/StrainSection";
 import StressSection from "@/components/wellbeing/StressSection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import {
-  extractMultiDayMetricsFromData,
-  MultiDayMetrics,
-} from "@/utils/whoopMetrics";
-import Constants from "expo-constants";
-import { useEffect, useState } from "react";
+import { useAllPlayers } from "@/hooks/useAllPlayers";
+import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
+import { getAvgValue } from "@/utils/data";
+import { useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 
-interface WellbeingPageProps {
-  user_id?: string;
-}
-
-export default function WellbeingPage({ user_id }: WellbeingPageProps) {
+export default function WellbeingPage() {
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
+
+  const { players } = useAllPlayers();
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
   const { user } = useAuth();
 
-  const [metrics, setMetrics] = useState<MultiDayMetrics>({
-    performance: [],
-    stress: [],
-    strain: [],
-    sleepScore: [],
-    sleepDurationMilli: [],
-    sleepNeededMilli: [],
-    restingHeartRate: [],
-    maxHeartRate: [],
-    dailyAvgHeartRate: [],
-    hrv: [],
-    workoutAverageHeartRate: [],
+  const {
+    primaryMetrics,
+    selectedPlayerMetrics,
+    primaryLoading,
+    selectedPlayerLoading,
+  } = useMultiPlayerWhoopData({
+    primaryFirebaseId: playerData.firebase_id || user?.uid,
+    selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
+    days: 14,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        try {
-          const params = new URLSearchParams({
-            firebase_id: user_id || user.uid,
-            days: "14",
-          });
-          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;
-
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${await user.getIdToken()}`,
-            },
-          });
-          const data = await response.json();
-
-          // Extract metrics from all cycles
-          const extractedMetrics = extractMultiDayMetricsFromData(data);
-          setMetrics(extractedMetrics);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user, user_id]);
-
-  // Calculate current values (most recent cycle)
-  const currentPerformance = metrics.performance[0]?.value || 0;
-  const currentStrain = metrics.strain[0] || 0;
-  const currentStress = metrics.stress[0] || 0;
-  const currentSleepScore = metrics.sleepScore[0] || 0;
-
-  // Calculate averages for 14 days
-  const avgStrain =
-    metrics.strain.length > 0
-      ? metrics.strain.reduce((sum, val) => sum + val, 0) /
-        metrics.strain.length
-      : 0;
-  const avgStress =
-    metrics.stress.length > 0
-      ? metrics.stress.reduce((sum, val) => sum + val, 0) /
-        metrics.stress.length
-      : 0;
+  const today = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString();
 
   return (
     <ParallaxScrollView
@@ -92,30 +44,89 @@ export default function WellbeingPage({ user_id }: WellbeingPageProps) {
         showCalendarIcon: false,
       }}
     >
+      {players && Object.keys(playerData).length !== 0 && (
+        <PlayerSelector
+          players={players}
+          selectedPlayer={selectedPlayer}
+          onSelectPlayer={setSelectedPlayer}
+          ignorePlayerFirebaseId={playerData.firebase_id}
+        />
+      )}
+
       <PerformanceSection
-        performance={Math.round(currentPerformance * 100)}
-        performance14DaysHistory={metrics.performance
-          .slice()
-          .reverse()
-          .map((p) => ({
-            date: p.date,
-            value: Math.round(p.value * 100),
-          }))}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1PerformanceHistory={Object.entries(primaryMetrics).map(
+          ([day, value]) => ({
+            date: day,
+            value: Math.round(value.basic.performance * 100),
+          }),
+        )}
+        p2PerformanceHistory={
+          selectedPlayer
+            ? Object.entries(selectedPlayerMetrics).map(([day, value]) => ({
+                date: day,
+                value: Math.round(value.basic.performance * 100),
+              }))
+            : undefined
+        }
       />
+
       <StrainSection
-        strainToday={Math.round(currentStrain * 21)}
-        strain14Days={Math.round(avgStrain * 21)}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1StrainToday={Math.round(primaryMetrics[today]?.basic.strain * 21)}
+        p2StrainToday={
+          selectedPlayer
+            ? Math.round(selectedPlayerMetrics[today]?.basic.strain * 21)
+            : undefined
+        }
+        p1AvgStrain={Math.round(
+          getAvgValue(primaryMetrics, ["basic", "strain"]) * 21,
+        )}
+        p2AvgStrain={
+          selectedPlayer
+            ? Math.round(
+                getAvgValue(selectedPlayerMetrics, ["basic", "strain"]) * 21,
+              )
+            : undefined
+        }
       />
       <StressSection
-        stress={Math.round(currentStress * 10)}
-        stress14Days={Math.round(avgStress * 10)}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1StressToday={Math.round(primaryMetrics[today]?.basic.stress * 10)}
+        p2StressToday={
+          selectedPlayer
+            ? Math.round(selectedPlayerMetrics[today]?.basic.stress * 10)
+            : undefined
+        }
+        p1AvgStress={Math.round(
+          getAvgValue(primaryMetrics, ["basic", "stress"]) * 10,
+        )}
+        p2AvgStress={
+          selectedPlayer
+            ? Math.round(
+                getAvgValue(selectedPlayerMetrics, ["basic", "stress"]) * 10,
+              )
+            : undefined
+        }
       />
       <SleepSection
-        rem={12}
-        sws={15.5}
-        light={18}
-        awake={21}
-        score={currentSleepScore}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1Score={Number(primaryMetrics[today]?.sleep.score || 0)}
+        p2Score={
+          selectedPlayer
+            ? Number(selectedPlayerMetrics[today]?.sleep.score || 0)
+            : undefined
+        }
+        p1StageSummary={primaryMetrics[today]?.sleep.stage_summary}
+        p2StageSummary={
+          selectedPlayer
+            ? selectedPlayerMetrics[today]?.sleep.stage_summary
+            : undefined
+        }
       />
     </ParallaxScrollView>
   );

@@ -1,3 +1,4 @@
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, RelativePathString, usePathname } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -8,9 +9,9 @@ interface NavItem {
   icon: keyof typeof Ionicons.glyphMap;
 }
 
-const navItems: NavItem[] = [
+const playerNavItems: NavItem[] = [
   {
-    href: "player/" as RelativePathString,
+    href: "/" as RelativePathString,
     label: "Home",
     icon: "home-outline",
   },
@@ -26,8 +27,29 @@ const navItems: NavItem[] = [
   },
 ];
 
+const coachNavItems: NavItem[] = [
+  {
+    href: "/" as RelativePathString,
+    label: "Home",
+    icon: "home-outline",
+  },
+  {
+    href: "coach/dashboard" as RelativePathString,
+    label: "Dashboard",
+    icon: "analytics-outline",
+  },
+];
+
 export default function Nav() {
   const pathname = usePathname();
+  const { access } = useUserProfile();
+
+  let navItems: NavItem[] = [];
+  if (access === "player") {
+    navItems = playerNavItems;
+  } else if (access === "coach") {
+    navItems = coachNavItems;
+  }
 
   return (
     <View className="absolute bottom-0 left-0 right-0 flex-row bg-white border-t border-gray-200 px-4 py-3 safe-area-pb">

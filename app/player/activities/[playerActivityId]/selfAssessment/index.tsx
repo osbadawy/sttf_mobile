@@ -1,4 +1,4 @@
-import Button, { ButtonColor } from "@/components/Button";
+import CustomButton, { ButtonColor } from "@/components/Button";
 import Card from "@/components/Card";
 import { ExclamationMark } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -98,7 +98,7 @@ export default function SelfAssessmentPage() {
           />
         </View>
 
-        <Button
+        <CustomButton
           title={t("done")}
           onPress={onPress}
           color={ButtonColor.primary}

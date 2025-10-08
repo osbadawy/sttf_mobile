@@ -23,7 +23,6 @@ export default function ViewActivityPage() {
 
   let pathname = usePathname();
   pathname = pathname.split("/").slice(0, -1).join("/");
-  console.log("pathname", pathname);
 
   const useDateState = useState(new Date());
   const { t, isRTL } = useLocalization("components.activities.activityView");

@@ -1,4 +1,4 @@
-import Button, { ButtonColor } from "@/components/Button";
+import CustomButton, { ButtonColor } from "@/components/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useRouter } from "expo-router";
@@ -112,7 +112,7 @@ export default function LoginPage() {
         </Text>
 
         {/* Login Button */}
-        <Button
+        <CustomButton
           title={t("Connect")}
           onPress={handleLogin}
           color={ButtonColor.primary}
