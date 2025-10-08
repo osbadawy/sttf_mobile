@@ -9,6 +9,12 @@ export interface SleepStageSummary {
   disturbance_count: number;
 }
 
+export interface BasicWhoopMetrics {
+  performance: number;
+  stress: number;
+  strain: number;
+}
+
 export interface Sleep {
   score: number;
   durationMilli: number;
@@ -16,15 +22,17 @@ export interface Sleep {
   stage_summary: SleepStageSummary;
 }
 
-export interface WhoopMetrics {
-  performance: number;
-  stress: number;
-  strain: number;
-  sleep: Sleep;
-  restingHeartRate: number;
-  maxHeartRate: number;
-  dailyAvgHeartRate: number;
+export interface Heart {
+  resting: number;
+  max: number;
+  avg: number;
   hrv: number;
+}
+
+export interface WhoopMetrics {
+  basic: BasicWhoopMetrics;
+  sleep: Sleep;
+  heart: Heart;
 }
 
 export interface MultiDayWhoopMetrics {
@@ -32,9 +40,17 @@ export interface MultiDayWhoopMetrics {
 }
 
 export const exampleWhoopMetrics: WhoopMetrics = {
-  performance: 0,
-  stress: 0,
-  strain: 0,
+  basic: {
+    performance: 0,
+    stress: 0,
+    strain: 0,
+  },
+  heart: {
+    resting: 0,
+    max: 0,
+    avg: 0,
+    hrv: 0,
+  },
   sleep: {
     score: 0,
     durationMilli: 0,
@@ -50,8 +66,4 @@ export const exampleWhoopMetrics: WhoopMetrics = {
       disturbance_count: 0,
     },
   },
-  restingHeartRate: 0,
-  maxHeartRate: 0,
-  dailyAvgHeartRate: 0,
-  hrv: 0,
 };

@@ -68,16 +68,16 @@ export default function Dashboard({ user_id }: DashboardProps) {
       }}
     >
       <WellbeingSection
-        performance={metrics.performance}
-        strain={metrics.strain}
-        stress={metrics.stress}
+        performance={metrics.basic.performance}
+        strain={metrics.basic.strain}
+        stress={metrics.basic.stress}
         animationDuration={1000}
       />
       <SleepSection sleep={metrics.sleep} />
       <HeartSection
-        dailyAvg={metrics.dailyAvgHeartRate}
-        max={metrics.maxHeartRate}
-        resting={metrics.restingHeartRate}
+        dailyAvg={metrics.heart.avg}
+        max={metrics.heart.max}
+        resting={metrics.heart.resting}
       />
       <NutritionCard />
     </ParallaxScrollView>

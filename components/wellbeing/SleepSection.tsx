@@ -228,7 +228,7 @@ export default function SleepSection({
             ]}
             selectedItem={{
               name: p1Name,
-              value: selectedPlayer.toString(),
+              value: selectedPlayer ? selectedPlayer.toString() : "0",
             }}
             setSelectedItem={(item) => setSelectedPlayer(Number(item.value))}
           />

@@ -70,26 +70,27 @@ export function StrainSectionLine({
 
   const defaultMarker = (
     <View
-      className={`bg-strain w-5 h-5 rounded-full border-background border-2 border-solid`}
+      className={`bg-strain w-5 h-5 rounded-full border-white border-2 border-solid`}
     />
   );
   const defaultSecondaryMarker = (
     <View
-      className={`bg-[#3C3C3C] w-2 h-6 border-background border-2 border-solid`}
+      className={`bg-[#3C3C3C] w-2 h-6 border-white border-2 border-solid`}
     />
   );
 
   const p1ComparisonMarker = (
-    <View className="bg-strainVeryLight w-[20px] h-[20px] rounded-full border-background border-[2px] items-center justify-center">
+    <View
+      className={`bg-strain w-[20px] h-[20px] rounded-full border-white border-[2px]`}
+    />
+  );
+
+  const p2ComparisonMarker = (
+    <View className="bg-strainVeryLight w-[20px] h-[20px] rounded-full border-white border-[2px] items-center justify-center">
       <View
-        className={`bg-strainVeryLight w-[12px] h-[12px] rounded-full border-background border-[2px]`}
+        className={`bg-strainVeryLight w-[12px] h-[12px] rounded-full border-white border-[2px]`}
       />
     </View>
-  );
-  const p2ComparisonMarker = (
-    <View
-      className={`bg-strain w-[20px] h-[20px] rounded-full border-background border-[2px]`}
-    />
   );
 
   return (
@@ -267,7 +268,7 @@ export default function StrainSection({
             ]}
             selectedItem={{
               name: p1Name,
-              value: selectedPlayer.toString(),
+              value: selectedPlayer ? selectedPlayer.toString() : "0",
             }}
             setSelectedItem={(item) => setSelectedPlayer(Number(item.value))}
           />

@@ -1,13 +1,13 @@
-import AverageHeartRateSection from "@/components/heart/AverageHeartRateSection";
 import MaxAndRestingHeartRateSection from "@/components/heart/MaxAndRestingHeartRateSection";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PlayerSelector from "@/components/PlayerSelector";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
+import { useAllPlayers } from "@/hooks/useAllPlayers";
+import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
-import Constants from "expo-constants";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function getAvgHrSectionData(
   activities: Record<number, any[]>,
@@ -45,68 +45,52 @@ function getAvgHrSectionData(
   return formattedActivities;
 }
 
+function getHeartRateHistory(metrics: MultiDayWhoopMetrics) {
+  const sortedMetrics = Object.entries(metrics).sort(
+    (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(),
+  );
+  return sortedMetrics.map(([day, value]) => ({
+    resting: Math.round(value.heart.resting || 0),
+    max: Math.round(value.heart.max || 0),
+    day: day,
+  }));
+}
+
 function getHrvForDay(metrics: MultiDayWhoopMetrics, day: Date) {
   // set day to 00:00:00
   const dateCopy = new Date(day);
   dateCopy.setUTCHours(0, 0, 0, 0);
   const dayString = dateCopy.toISOString();
-  return metrics[dayString] ? metrics[dayString].hrv : 0;
+  return metrics[dayString] ? metrics[dayString].heart.hrv : 0;
 }
 
 export default function HeartPage() {
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
-  const { user } = useAuth();
 
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
 
-  const [metrics, setMetrics] = useState<MultiDayWhoopMetrics>({});
+  const { players } = useAllPlayers();
+  const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
+  const { user } = useAuth();
 
-  const { data: activities14Days } = usePlayerActivities({
-    user_id: playerData.firebase_id,
-    initialDaysBack: 14,
+  const {
+    primaryMetrics,
+    selectedPlayerMetrics,
+    primaryLoading,
+    selectedPlayerLoading,
+  } = useMultiPlayerWhoopData({
+    primaryFirebaseId: playerData.firebase_id || user?.uid,
+    selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
+    days: "14",
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        try {
-          const params = new URLSearchParams({
-            firebase_id: playerData.firebase_id || user.uid,
-            days: "14",
-          });
-          const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/app/days?${params}`;
+  const p1HeartRateHistory = getHeartRateHistory(primaryMetrics);
+  const p2HeartRateHistory = selectedPlayerMetrics
+    ? getHeartRateHistory(selectedPlayerMetrics)
+    : undefined;
 
-          const response = await fetch(url, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${await user.getIdToken()}`,
-            },
-          });
-          const data = await response.json();
-
-          // Extract metrics from all cycles
-          setMetrics(data);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user]);
-
-  // // Create history data for MaxAndRestingHeartRateSection
-  const sortedMetrics = Object.entries(metrics).sort(
-    (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(),
-  );
-  const heartRateHistory = sortedMetrics.map((metric) => ({
-    resting: Math.round(metric[1].restingHeartRate || 0),
-    max: Math.round(metric[1].maxHeartRate || 0),
-    day: metric[0],
-  }));
-
-  const avgHrSectionData = getAvgHrSectionData(activities14Days, metrics);
+  // const avgHrSectionData = getAvgHrSectionData(activities14Days, metrics);
 
   return (
     <ParallaxScrollView
@@ -118,8 +102,21 @@ export default function HeartPage() {
         showCalendarIcon: false,
       }}
     >
-      <AverageHeartRateSection data={avgHrSectionData} />
-      <MaxAndRestingHeartRateSection history={heartRateHistory} />
+      {players && Object.keys(playerData).length !== 0 && (
+        <PlayerSelector
+          players={players}
+          selectedPlayer={selectedPlayer}
+          onSelectPlayer={setSelectedPlayer}
+          ignorePlayerFirebaseId={playerData.firebase_id}
+        />
+      )}
+      {/* <AverageHeartRateSection data={avgHrSectionData} /> */}
+      <MaxAndRestingHeartRateSection
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1History={p1HeartRateHistory}
+        p2History={p2HeartRateHistory}
+      />
     </ParallaxScrollView>
   );
 }

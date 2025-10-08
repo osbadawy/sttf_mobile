@@ -8,15 +8,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
-import { MultiDayWhoopMetrics, WhoopMetrics } from "@/schemas/whoop";
+import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
-function getAvgValue(metrics: MultiDayWhoopMetrics, key: keyof WhoopMetrics) {
+function getAvgValue(metrics: MultiDayWhoopMetrics, keys: string[]) {
   const dataValues = Object.values(metrics);
-  const total = dataValues.reduce((sum, val) => sum + (val[key] as number), 0);
+  const total = dataValues.reduce((sum, val) => {
+    // Navigate to the most nested value using the keys array
+    let current: any = val;
+    for (const key of keys) {
+      current = current?.[key];
+    }
+    return sum + ((current as number) || 0);
+  }, 0);
   const numValues =
-    dataValues.reduce((sum, val) => (val ? sum + 1 : sum), 0) || 1;
+    dataValues.reduce((sum, val) => {
+      // Check if the nested value exists
+      let current: any = val;
+      for (const key of keys) {
+        current = current?.[key];
+      }
+      return current !== undefined && current !== null ? sum + 1 : sum;
+    }, 0) || 1;
   return numValues > 0 ? total / numValues : 0;
 }
 
@@ -67,14 +81,14 @@ export default function WellbeingPage() {
         p1PerformanceHistory={Object.entries(primaryMetrics).map(
           ([day, value]) => ({
             date: day,
-            value: Math.round(value.performance * 100),
+            value: Math.round(value.basic.performance * 100),
           }),
         )}
         p2PerformanceHistory={
           selectedPlayer
             ? Object.entries(selectedPlayerMetrics).map(([day, value]) => ({
                 date: day,
-                value: Math.round(value.performance * 100),
+                value: Math.round(value.basic.performance * 100),
               }))
             : undefined
         }
@@ -83,32 +97,40 @@ export default function WellbeingPage() {
       <StrainSection
         p1Name={playerData.display_name}
         p2Name={selectedPlayer?.display_name}
-        p1StrainToday={Math.round(primaryMetrics[today]?.strain * 21)}
+        p1StrainToday={Math.round(primaryMetrics[today]?.basic.strain * 21)}
         p2StrainToday={
           selectedPlayer
-            ? Math.round(selectedPlayerMetrics[today]?.strain * 21)
+            ? Math.round(selectedPlayerMetrics[today]?.basic.strain * 21)
             : undefined
         }
-        p1AvgStrain={Math.round(getAvgValue(primaryMetrics, "strain") * 21)}
+        p1AvgStrain={Math.round(
+          getAvgValue(primaryMetrics, ["basic", "strain"]) * 21,
+        )}
         p2AvgStrain={
           selectedPlayer
-            ? Math.round(getAvgValue(selectedPlayerMetrics, "strain") * 21)
+            ? Math.round(
+                getAvgValue(selectedPlayerMetrics, ["basic", "strain"]) * 21,
+              )
             : undefined
         }
       />
       <StressSection
         p1Name={playerData.display_name}
         p2Name={selectedPlayer?.display_name}
-        p1StressToday={Math.round(primaryMetrics[today]?.stress * 10)}
+        p1StressToday={Math.round(primaryMetrics[today]?.basic.stress * 10)}
         p2StressToday={
           selectedPlayer
-            ? Math.round(selectedPlayerMetrics[today]?.stress * 10)
+            ? Math.round(selectedPlayerMetrics[today]?.basic.stress * 10)
             : undefined
         }
-        p1AvgStress={Math.round(getAvgValue(primaryMetrics, "stress") * 10)}
+        p1AvgStress={Math.round(
+          getAvgValue(primaryMetrics, ["basic", "stress"]) * 10,
+        )}
         p2AvgStress={
           selectedPlayer
-            ? Math.round(getAvgValue(selectedPlayerMetrics, "stress") * 10)
+            ? Math.round(
+                getAvgValue(selectedPlayerMetrics, ["basic", "stress"]) * 10,
+              )
             : undefined
         }
       />
