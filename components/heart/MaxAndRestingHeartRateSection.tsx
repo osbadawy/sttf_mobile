@@ -223,6 +223,8 @@ export default function MaxAndRestingHeartRateSection({
   if (p2Name) {
     p1History = p1History.slice(-7);
     p2History = p2History.slice(-7);
+  } else {
+    p1History = p1FliteredHistory;
   }
 
   return (
