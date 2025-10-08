@@ -44,24 +44,26 @@ export default function StressSection({
     .toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" })
     .replace("/", ".");
 
-
   const c1_radius = 70 + 11;
   const c1_circumference = 2 * Math.PI * c1_radius;
   const c1_removeFromCircle = 0.25;
-  const c1_stressPercentage = selectedPlayer === 0 ? p1StressToday / 10 : (p2StressToday || 0) / 10;
+  const c1_stressPercentage =
+    selectedPlayer === 0 ? p1StressToday / 10 : (p2StressToday || 0) / 10;
   const c1_centerX = 150;
   const c1_centerY = 150;
 
   const c2_radius = c1_radius + 23;
   const c2_circumference = 2 * Math.PI * c2_radius;
   const c2_removeFromCircle = 0.25;
-  const c2_stressPercentage = selectedPlayer === 0 && p2Name ? (p2StressToday || 0) / 10 : p1StressToday / 10;
+  const c2_stressPercentage =
+    selectedPlayer === 0 && p2Name
+      ? (p2StressToday || 0) / 10
+      : p1StressToday / 10;
   const c2_centerX = 150;
   const c2_centerY = 150;
 
   const stressToday = selectedPlayer === 0 ? p1StressToday : p2StressToday;
   const avgStress = selectedPlayer === 0 ? p1AvgStress : p2AvgStress;
-
 
   return (
     <CardWithTitle
@@ -72,10 +74,16 @@ export default function StressSection({
       isRTL={isRTL}
     >
       <View>
-      <Text className={`font-inter-semibold text-2xl ${isRTL ? "text-right" : "text-left"}`}>{avgStress ? avgStress.toFixed(1) : "--"}</Text>
-      <Text className={`w-full text-base ${isRTL ? "text-right" : "text-left"}`}>
-        {t("14DayAvg")}
-      </Text>
+        <Text
+          className={`font-inter-semibold text-2xl ${isRTL ? "text-right" : "text-left"}`}
+        >
+          {avgStress ? avgStress.toFixed(1) : "--"}
+        </Text>
+        <Text
+          className={`w-full text-base ${isRTL ? "text-right" : "text-left"}`}
+        >
+          {t("14DayAvg")}
+        </Text>
       </View>
       <View className="flex w-full items-center">
         <Svg width={300} height={250}>
@@ -83,7 +91,9 @@ export default function StressSection({
             cx={c1_centerX}
             cy={c1_centerY}
             r={c1_radius}
-            stroke={selectedPlayer === 0 ? colors.stressBar : colors.stressVeryLight}
+            stroke={
+              selectedPlayer === 0 ? colors.stressBar : colors.stressVeryLight
+            }
             strokeWidth={23}
             fill="none"
             strokeDasharray={c1_circumference}
@@ -97,7 +107,9 @@ export default function StressSection({
             cx={c1_centerX}
             cy={c1_centerY}
             r={c1_radius}
-            stroke={selectedPlayer === 0 ? colors.stressBar : colors.stressVeryLight}
+            stroke={
+              selectedPlayer === 0 ? colors.stressBar : colors.stressVeryLight
+            }
             strokeWidth={23}
             fill="none"
             strokeDasharray={c1_circumference}
@@ -110,42 +122,48 @@ export default function StressSection({
             transform={`rotate(135 ${c1_centerX} ${c1_centerY})`}
           />
 
-          {
-            p2Name && (
-              <>
+          {p2Name && (
+            <>
               <Circle
-              cx={c2_centerX}
-              cy={c2_centerY}
-              r={c2_radius}
-              stroke={selectedPlayer === 0 ? colors.stressVeryLight : colors.stressBar}
-              strokeWidth={4}
-              fill="none"
-              strokeDasharray={c2_circumference}
-              strokeDashoffset={c2_circumference * c2_removeFromCircle}
-              strokeLinecap="round"
-              transform={`rotate(135 ${c2_centerX} ${c2_centerY})`}
-              opacity={0.2}
-            />
+                cx={c2_centerX}
+                cy={c2_centerY}
+                r={c2_radius}
+                stroke={
+                  selectedPlayer === 0
+                    ? colors.stressVeryLight
+                    : colors.stressBar
+                }
+                strokeWidth={4}
+                fill="none"
+                strokeDasharray={c2_circumference}
+                strokeDashoffset={c2_circumference * c2_removeFromCircle}
+                strokeLinecap="round"
+                transform={`rotate(135 ${c2_centerX} ${c2_centerY})`}
+                opacity={0.2}
+              />
 
-            <Circle
-              cx={c2_centerX}
-              cy={c2_centerY}
-              r={c2_radius}
-              stroke={selectedPlayer === 0 ? colors.stressVeryLight : colors.stressBar}
-              strokeWidth={4}
-              fill="none"
-              strokeDasharray={c2_circumference}
-              strokeDashoffset={
-                c2_circumference *
-                (c2_removeFromCircle +
-                  (1 - c2_stressPercentage) * (1 - c2_removeFromCircle))
-              }
-              strokeLinecap="round"
-              transform={`rotate(135 ${c2_centerX} ${c2_centerY})`}
-            />
-              </>
-            )
-          }
+              <Circle
+                cx={c2_centerX}
+                cy={c2_centerY}
+                r={c2_radius}
+                stroke={
+                  selectedPlayer === 0
+                    ? colors.stressVeryLight
+                    : colors.stressBar
+                }
+                strokeWidth={4}
+                fill="none"
+                strokeDasharray={c2_circumference}
+                strokeDashoffset={
+                  c2_circumference *
+                  (c2_removeFromCircle +
+                    (1 - c2_stressPercentage) * (1 - c2_removeFromCircle))
+                }
+                strokeLinecap="round"
+                transform={`rotate(135 ${c2_centerX} ${c2_centerY})`}
+              />
+            </>
+          )}
 
           {/* Center text */}
           <View
@@ -171,8 +189,8 @@ export default function StressSection({
       {p2Name && (
         <View className="mt-4">
           <RadioSelect
-            selectedColor={colors.stressVeryLight}
-            unselectedColor={colors.stress}
+            p1Color={colors.stressBar}
+            p2Color={colors.stressVeryLight}
             items={[
               {
                 name: p1Name,

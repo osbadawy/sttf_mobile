@@ -27,9 +27,10 @@ interface StrainSectionLineProps extends StrainSectionBaseProps {
 interface StrainMarkerProps {
   left: number;
   marker: React.ReactNode;
+  scale?: number;
 }
 
-function StrainMarker({ left, marker }: StrainMarkerProps) {
+function StrainMarker({ left, marker, scale = 1 }: StrainMarkerProps) {
   return (
     <>
       <View
@@ -37,7 +38,7 @@ function StrainMarker({ left, marker }: StrainMarkerProps) {
           left: left,
           position: "absolute",
           top: "50%",
-          transform: [{ translateY: "-50%" }],
+          transform: [{ translateY: "-50%" }, { scale }],
         }}
       >
         {marker}
@@ -78,16 +79,16 @@ export function StrainSectionLine({
     />
   );
 
-  const primaryComparisonMarker = (
+  const p1ComparisonMarker = (
     <View className="bg-strainVeryLight w-[20px] h-[20px] rounded-full border-background border-[2px] items-center justify-center">
       <View
         className={`bg-strainVeryLight w-[12px] h-[12px] rounded-full border-background border-[2px]`}
       />
     </View>
   );
-  const secondaryComparisonMarker = (
+  const p2ComparisonMarker = (
     <View
-      className={`bg-strain w-[12px] h-[12px] rounded-full border-background border-[2px]`}
+      className={`bg-strain w-[20px] h-[20px] rounded-full border-background border-[2px]`}
     />
   );
 
@@ -142,30 +143,19 @@ export function StrainSectionLine({
             marker={defaultSecondaryMarker}
           />
         )}
-        {secondaryExists && p1StrainToday && (
+
+        {secondaryExists && (
           <StrainMarker
-            left={getPositionOnLine(
-              p1StrainToday,
-              selectedPlayer === 0 ? 10 : 6,
-            )}
-            marker={
-              selectedPlayer === 0
-                ? primaryComparisonMarker
-                : secondaryComparisonMarker
-            }
+            left={getPositionOnLine(p1StrainToday || 0, 10)}
+            marker={p1ComparisonMarker}
+            scale={selectedPlayer === 0 ? 1 : 0.75}
           />
         )}
-        {secondaryExists && p2StrainToday && (
+        {secondaryExists && (
           <StrainMarker
-            left={getPositionOnLine(
-              p2StrainToday,
-              selectedPlayer === 0 ? 10 : 8,
-            )}
-            marker={
-              selectedPlayer === 1
-                ? primaryComparisonMarker
-                : secondaryComparisonMarker
-            }
+            left={getPositionOnLine(p2StrainToday || 0, 10)}
+            marker={p2ComparisonMarker}
+            scale={selectedPlayer === 1 ? 1 : 0.75}
           />
         )}
       </View>
@@ -263,8 +253,8 @@ export default function StrainSection({
       {p2Name && (
         <View className="mt-4">
           <RadioSelect
-            selectedColor={colors.strainVeryLight}
-            unselectedColor={colors.strain}
+            p1Color={colors.strain}
+            p2Color={colors.strainVeryLight}
             items={[
               {
                 name: p1Name,

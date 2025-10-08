@@ -1,3 +1,4 @@
+import colors from "@/colors";
 import CardWithTitle from "@/components/CardWithTitle";
 import RadioSelect from "@/components/RadioSelect";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -21,10 +22,12 @@ function Graph({
   history,
   isSecondary,
   secondaryExists,
+  highlightColor,
 }: {
   history: PerformanceDataPoint[];
   isSecondary: boolean;
   secondaryExists: boolean;
+  highlightColor: string;
 }) {
   let translation = 0;
   if (secondaryExists) {
@@ -41,10 +44,10 @@ function Graph({
         const height = (dataPoint.value / 100) * 100;
 
         let width = 16;
-        let color = isLatest ? "bg-performance" : "bg-performanceLight";
+        let opacity = isLatest ? 1 : 0.5;
         if (secondaryExists) {
-          width = isSecondary ? 16 : 10;
-          color = isSecondary ? "bg-performanceLight" : "bg-performanceVeryLight";
+          width = !isSecondary ? 10 : 16;
+          opacity = !isSecondary ? 1 : 0.5;
         }
 
         const boxShadow =
@@ -55,11 +58,13 @@ function Graph({
         return (
           <View key={index} className="items-center flex-1">
             <View
-              className={`rounded-3xl ${color}`}
+              className={`rounded-3xl`}
               style={{
                 height: height,
                 width: width,
                 boxShadow: boxShadow,
+                backgroundColor: highlightColor,
+                opacity: opacity,
               }}
             />
             <Text
@@ -90,6 +95,8 @@ export default function PerformanceSection({
   );
   const { t, isRTL } = useLocalization("stats");
   const [selectedPlayer, setSelectedPlayer] = useState<number>(0);
+  const p1Color = colors.performance;
+  const p2Color = colors.performanceVeryLight;
 
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
 
@@ -183,19 +190,23 @@ export default function PerformanceSection({
           <Graph
             history={secondarySortedPerformance14DaysHistory}
             isSecondary={true}
-            secondaryExists={Boolean(p2Name && p2PerformanceHistory)}
+            secondaryExists={Boolean(p2Name)}
+            highlightColor={selectedPlayer === 0 ? p2Color : p1Color}
           />
         )}
         <Graph
           history={primarySortedPerformance14DaysHistory}
           isSecondary={false}
-          secondaryExists={Boolean(p2Name && p2PerformanceHistory)}
+          secondaryExists={Boolean(p2Name)}
+          highlightColor={selectedPlayer === 0 ? p1Color : p2Color}
         />
       </View>
 
       {p2Name && p2PerformanceHistory && (
         <View className="mt-4">
           <RadioSelect
+            p1Color={p1Color}
+            p2Color={p2Color}
             items={[
               {
                 name: p1Name,

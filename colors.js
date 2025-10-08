@@ -19,6 +19,7 @@ const colors = {
   stressVeryLight: "#FFA280",
   background: "#F8F9F2",
   sleep: "#28C5C6",
+  sleepVeryLight: "#AAC7F4",
   sleepRem: "#8871FF",
   sleepSws: "#2A74E3",
   sleepLight: "#70D7FF",

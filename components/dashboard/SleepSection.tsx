@@ -37,6 +37,7 @@ export default function SleepSection({ sleep }: { sleep: Sleep }) {
             },
           })
         }
+        activeOpacity={1}
       >
         <TitleWithIcon
           title={t("title")}

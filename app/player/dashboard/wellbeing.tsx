@@ -42,8 +42,6 @@ export default function WellbeingPage() {
 
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString();
 
-  console.log("playerData", playerData);
-
   return (
     <ParallaxScrollView
       headerProps={{
@@ -115,23 +113,20 @@ export default function WellbeingPage() {
         }
       />
       <SleepSection
-        rem={Number(
-          primaryMetrics[today]?.sleep.stage_summary
-            .total_rem_sleep_time_milli || 0,
-        )}
-        sws={Number(
-          primaryMetrics[today]?.sleep.stage_summary
-            .total_slow_wave_sleep_time_milli || 0,
-        )}
-        light={Number(
-          primaryMetrics[today]?.sleep.stage_summary
-            .total_light_sleep_time_milli || 0,
-        )}
-        awake={Number(
-          primaryMetrics[today]?.sleep.stage_summary.total_awake_time_milli ||
-            0,
-        )}
-        score={Number(primaryMetrics[today]?.sleep.score || 0)}
+        p1Name={playerData.display_name}
+        p2Name={selectedPlayer?.display_name}
+        p1Score={Number(primaryMetrics[today]?.sleep.score || 0)}
+        p2Score={
+          selectedPlayer
+            ? Number(selectedPlayerMetrics[today]?.sleep.score || 0)
+            : undefined
+        }
+        p1StageSummary={primaryMetrics[today]?.sleep.stage_summary}
+        p2StageSummary={
+          selectedPlayer
+            ? selectedPlayerMetrics[today]?.sleep.stage_summary
+            : undefined
+        }
       />
     </ParallaxScrollView>
   );

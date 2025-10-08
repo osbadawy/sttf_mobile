@@ -149,6 +149,7 @@ export default function WellbeingSection({
           },
         })
       }
+      activeOpacity={1}
     >
       <View className="w-full">
         <TitleWithIcon

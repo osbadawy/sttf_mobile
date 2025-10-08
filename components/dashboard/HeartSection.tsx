@@ -36,6 +36,7 @@ export default function HeartSection({
           },
         })
       }
+      activeOpacity={1}
     >
       <TitleWithIcon
         title={t("title")}

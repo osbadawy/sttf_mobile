@@ -88,27 +88,14 @@ export function useMultiPlayerWhoopData({
 
   const fetchPlayerData = useCallback(
     async (firebaseId: string, isSelectedPlayer = false) => {
-      console.log("fetchPlayerData called with:", {
-        firebaseId,
-        isSelectedPlayer,
-        user: !!user,
-      });
       if (!user || !firebaseId) {
-        console.log("Early return - no user or firebaseId");
         return;
       }
 
       // Check cache first
       const cacheKey = `${firebaseId}-${days}`;
-      console.log(
-        "Cache key:",
-        cacheKey,
-        "Has cache:",
-        dataCache.has(cacheKey),
-      );
       if (dataCache.has(cacheKey)) {
         const cachedData = dataCache.get(cacheKey)!;
-        console.log("Using cached data for:", firebaseId);
         if (isSelectedPlayer) {
           setSelectedPlayerMetrics(cachedData);
         } else {
@@ -179,18 +166,9 @@ export function useMultiPlayerWhoopData({
 
   // Fetch selected player data
   useEffect(() => {
-    console.log(
-      "useMultiPlayerWhoopData - selectedPlayerFirebaseId:",
-      selectedPlayerFirebaseId,
-    );
     if (selectedPlayerFirebaseId) {
-      console.log(
-        "Fetching selected player data for:",
-        selectedPlayerFirebaseId,
-      );
       fetchPlayerData(selectedPlayerFirebaseId, true);
     } else {
-      console.log("Clearing selected player data");
       // Clear selected player data when no player is selected
       setSelectedPlayerMetrics({});
       setSelectedPlayerError(null);
