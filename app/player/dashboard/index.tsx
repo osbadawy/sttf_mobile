@@ -43,10 +43,15 @@ export default function Dashboard({ user_id }: DashboardProps) {
               Authorization: `Bearer ${await user.getIdToken()}`,
             },
           });
-          const data = await response.json();
-          setMetrics(
-            (Object.values(data)[0] as WhoopMetrics) || exampleWhoopMetrics,
-          );
+
+          if (response.ok) {
+            const data = await response.json();
+            setMetrics(
+              (Object.values(data)[0] as WhoopMetrics) || exampleWhoopMetrics,
+            );
+          } else {
+            throw new Error(`${response.status}: ${response.statusText}`);
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
         }

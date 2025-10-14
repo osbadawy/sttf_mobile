@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 // --- helper: pick filled when inactive, outline when active ---
 export function getIoniconName(
   baseOutlineName: keyof typeof Ionicons.glyphMap,
-  isActive: boolean
+  isActive: boolean,
 ): keyof typeof Ionicons.glyphMap {
   // item.icon is the outline by default (e.g., "home-outline")
   const outline = baseOutlineName as string;
