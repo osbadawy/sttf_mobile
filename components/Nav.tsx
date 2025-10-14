@@ -13,15 +13,35 @@ interface NavItem {
 
 const playerNavItems: NavItem[] = [
   { href: "/" as RelativePathString, label: "Home", icon: "home-outline" },
-  { href: "player/dashboard" as RelativePathString, label: "Dashboard", icon: "analytics-outline" },
-  { href: "player/activities" as RelativePathString, label: "Activities", icon: "fitness-outline" },
-  { href: "player/settings" as RelativePathString, label: "Settings", icon: "settings-outline" },
+  {
+    href: "/player/dashboard" as RelativePathString,
+    label: "Dashboard",
+    icon: "analytics-outline",
+  },
+  {
+    href: "/player/activities" as RelativePathString,
+    label: "Activities",
+    icon: "fitness-outline",
+  },
+  {
+    href: "/player/settings" as RelativePathString,
+    label: "Settings",
+    icon: "settings-outline",
+  },
 ];
 
 const coachNavItems: NavItem[] = [
   { href: "/" as RelativePathString, label: "Home", icon: "home-outline" },
-  { href: "coach/dashboard" as RelativePathString, label: "Dashboard", icon: "analytics-outline" },
-  { href: "coach/settings" as RelativePathString, label: "Settings", icon: "settings-outline" },
+  {
+    href: "/coach/dashboard" as RelativePathString,
+    label: "Dashboard",
+    icon: "analytics-outline",
+  },
+  {
+    href: "/coach/settings" as RelativePathString,
+    label: "Settings",
+    icon: "settings-outline",
+  },
 ];
 
 // Match your NavBarSvg viewBox
@@ -45,19 +65,20 @@ export default function Nav() {
   // Compute evenly spaced circle centers across the SVG width.
   const midX = SVG_WIDTH / 2;
   const SPACING = 0.92; // < 1.0 brings buttons closer together
-  const evenCenters = navItems.map((_, i) => ((2 * i + 1) / (navItems.length * 2)) * SVG_WIDTH);
-  const centersX = evenCenters.map(x => midX + (x - midX) * SPACING);
+  const evenCenters = navItems.map(
+    (_, i) => ((2 * i + 1) / (navItems.length * 2)) * SVG_WIDTH,
+  );
+  const centersX = evenCenters.map((x) => midX + (x - midX) * SPACING);
   const centerY = SVG_HEIGHT / 2;
 
   return (
     <View className="absolute bottom-8 left-0 right-0 items-center">
       {/* Container sized to the SVG */}
-      <View style={{ width: SVG_WIDTH, height: SVG_HEIGHT, position: "relative" }}>
+      <View
+        style={{ width: SVG_WIDTH, height: SVG_HEIGHT, position: "relative" }}
+      >
         {/* SVG background replaces the old pill container */}
-        <NavGlassBlur
-          width={SVG_WIDTH}
-          height={SVG_HEIGHT}
-        />
+        <NavGlassBlur width={SVG_WIDTH} height={SVG_HEIGHT} />
 
         {/* Buttons centered over each background circle */}
         {navItems.map((item, idx) => {
