@@ -5,6 +5,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CustomSlider from "@/components/Slider";
 import { useAuth } from "@/contexts/AuthContext";
 import { RelativePathString } from "expo-router";
+import { User } from "firebase/auth";
 import { useState } from "react";
 import { Text, View } from "react-native";
 
@@ -19,7 +20,7 @@ interface PageTextProps {
 
 export interface SelfAssessmentOnPressProps {
   value: number;
-  accessToken: string;
+  user: User;
   setDisableButton: (disable: boolean) => void;
 }
 
@@ -41,10 +42,9 @@ export default function SelfAssessmentPage({
   const onPressButton = async () => {
     if (user) {
       setDisableButton(true);
-      const token = await user.getIdToken();
       await onPress({
         value: value / 10,
-        accessToken: token,
+        user: user,
         setDisableButton,
       });
       setDisableButton(false);

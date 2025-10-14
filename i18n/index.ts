@@ -14,6 +14,8 @@ import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json
 import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
 import arHeart from "../locales/ar/components/heart/index.json";
+import arSelfAssessmentReadiness from "../locales/ar/components/self-assessment/Readiness.json";
+import arSelfAssessmentTiredness from "../locales/ar/components/self-assessment/Tiredness.json";
 import arWellbeingSleep from "../locales/ar/components/wellbeing/sleep.json";
 import arIndex from "../locales/ar/index.json";
 import arLanguage from "../locales/ar/language.json";
@@ -31,6 +33,8 @@ import enHeartSection from "../locales/en/components/dashboard/HeartSection.json
 import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
 import enHeart from "../locales/en/components/heart/index.json";
+import enDashboardSelfAssessmentReadiness from "../locales/en/components/self-assessment/Readiness.json";
+import enDashboardSelfAssessmentTiredness from "../locales/en/components/self-assessment/Tiredness.json";
 import enWellbeingSleep from "../locales/en/components/wellbeing/sleep.json";
 import enIndex from "../locales/en/index.json";
 import enLanguage from "../locales/en/language.json";
@@ -46,6 +50,10 @@ export const resources = {
     login: enLogin,
     activities: enActivities,
     components: {
+      selfAssessment: {
+        readiness: enDashboardSelfAssessmentReadiness,
+        tiredness: enDashboardSelfAssessmentTiredness,
+      },
       dashboard: {
         wellbeingSection: enWellbeingSection,
         sleepSection: enSleepSection,
@@ -72,6 +80,10 @@ export const resources = {
     login: arLogin,
     activities: arActivities,
     components: {
+      selfAssessment: {
+        readiness: arSelfAssessmentReadiness,
+        tiredness: arSelfAssessmentTiredness,
+      },
       dashboard: {
         wellbeingSection: arWellbeingSection,
         sleepSection: arSleepSection,

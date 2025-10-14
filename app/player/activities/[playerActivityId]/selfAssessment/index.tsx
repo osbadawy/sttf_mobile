@@ -21,7 +21,7 @@ export default function PlayerActivitySelfAssessmentPage() {
 
   const onPress = async ({
     value,
-    accessToken,
+    user,
     setDisableButton,
   }: SelfAssessmentOnPressProps) => {
     const body: any = {
@@ -38,7 +38,7 @@ export default function PlayerActivitySelfAssessmentPage() {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${await user.getIdToken()}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
