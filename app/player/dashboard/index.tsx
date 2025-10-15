@@ -43,10 +43,13 @@ export default function Dashboard({ user_id }: DashboardProps) {
               Authorization: `Bearer ${await user.getIdToken()}`,
             },
           });
-          const data = await response.json();
-          setMetrics(
-            (Object.values(data)[0] as WhoopMetrics) || exampleWhoopMetrics,
-          );
+          if (response.ok) {
+            const data = await response.json();
+            setMetrics(
+              (Object.values(data)[0] as WhoopMetrics) || exampleWhoopMetrics,
+            );
+          }
+          
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -68,7 +71,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
       }}
     >
       <WellbeingSection
-        performance={metrics.basic.performance}
+        performance={metrics.basic.performance || 0}
         strain={metrics.basic.strain}
         stress={metrics.basic.stress}
         animationDuration={1000}
@@ -79,7 +82,7 @@ export default function Dashboard({ user_id }: DashboardProps) {
         max={metrics.heart.max}
         resting={metrics.heart.resting}
       />
-      <NutritionCard />
+      <NutritionCard id={user_id}/>
     </ParallaxScrollView>
   );
 }

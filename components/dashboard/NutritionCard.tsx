@@ -1,6 +1,14 @@
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function NutritionCard() {
+export default function NutritionCard(user_id: { id?: string }) {
+  const pathname = usePathname();
+    const { player } = useLocalSearchParams();
   const consumed = 924;
   const goal = 2802;
   const progress = consumed / goal;
@@ -41,8 +49,18 @@ export default function NutritionCard() {
         <Text className="text-gray-600 w-1/2 text-sm">
           Great Start! You’re on track towards your calories goal
         </Text>
-        <TouchableOpacity className="bg-green-700 px-10 py-4 rounded-lg">
-          <Text className="text-white font-medium">Insert Meal</Text>
+        <TouchableOpacity 
+          className="bg-[#008C46] px-10 py-4 rounded-lg"
+          onPress={() =>
+            router.push({
+              pathname: `player/nutrition` as RelativePathString,
+              params: { player: player },
+            })
+          }
+          activeOpacity={1}
+          style={{ zIndex: 10 }} // Ensure the button is above other elements
+        >
+          <Text className="text-white font-medium text-center">Insert Meal</Text>
         </TouchableOpacity>
       </View>
 
