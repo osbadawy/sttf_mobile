@@ -4,9 +4,11 @@ import SelfAssessmentPage, {
 import { useLocalization } from "@/contexts/LocalizationContext";
 import Constants from "expo-constants";
 import { RelativePathString, router } from "expo-router";
+import { useState } from "react";
 
 export default function TirednessSelfAssessmentPage() {
   const { t } = useLocalization("components.selfAssessment.tiredness");
+  const [error, setError] = useState<boolean>(false);
 
   const onPress = async ({
     value,
@@ -28,6 +30,7 @@ export default function TirednessSelfAssessmentPage() {
     });
     if (response.ok) {
       router.replace("player/dashboard" as RelativePathString);
+      setError(false);
     } else {
       const errorData = await response.json();
       console.error("API Error:", {
@@ -40,6 +43,7 @@ export default function TirednessSelfAssessmentPage() {
           assessment_type: "tiredness",
         },
       });
+      setError(true);
     }
     setDisableButton(false);
   };
@@ -55,6 +59,7 @@ export default function TirednessSelfAssessmentPage() {
         sliderRight: t("sliderRight"),
         buttonText: t("done"),
       }}
+      error={Boolean(error)}
     />
   );
 }

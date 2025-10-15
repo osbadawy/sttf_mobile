@@ -35,7 +35,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
-  const { data, dataRange, fetchAdditionalData } = usePlayerActivities({
+  const { data, dataRange, fetchAdditionalData, error } = usePlayerActivities({
     user_id,
     initialDaysBack: 14,
   });
@@ -113,6 +113,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           useDateState: useDateState,
           showBGImage: false,
         }}
+        error={Boolean(error)}
       >
         <View
           className={`px-4 py-0 z-10 relative ${isRTL ? "items-end" : "items-start"}`}

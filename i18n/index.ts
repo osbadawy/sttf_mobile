@@ -17,6 +17,7 @@ import arHeart from "../locales/ar/components/heart/index.json";
 import arSelfAssessmentReadiness from "../locales/ar/components/self-assessment/Readiness.json";
 import arSelfAssessmentTiredness from "../locales/ar/components/self-assessment/Tiredness.json";
 import arWellbeingSleep from "../locales/ar/components/wellbeing/sleep.json";
+import arError from "../locales/ar/error.json";
 import arIndex from "../locales/ar/index.json";
 import arLanguage from "../locales/ar/language.json";
 import arLogin from "../locales/ar/login.json";
@@ -36,6 +37,7 @@ import enHeart from "../locales/en/components/heart/index.json";
 import enDashboardSelfAssessmentReadiness from "../locales/en/components/self-assessment/Readiness.json";
 import enDashboardSelfAssessmentTiredness from "../locales/en/components/self-assessment/Tiredness.json";
 import enWellbeingSleep from "../locales/en/components/wellbeing/sleep.json";
+import enError from "../locales/en/error.json";
 import enIndex from "../locales/en/index.json";
 import enLanguage from "../locales/en/language.json";
 import enLogin from "../locales/en/login.json";
@@ -49,6 +51,7 @@ export const resources = {
     stats: enStats,
     login: enLogin,
     activities: enActivities,
+    error: enError,
     components: {
       selfAssessment: {
         readiness: enDashboardSelfAssessmentReadiness,
@@ -79,6 +82,7 @@ export const resources = {
     stats: arStats,
     login: arLogin,
     activities: arActivities,
+    error: arError,
     components: {
       selfAssessment: {
         readiness: arSelfAssessmentReadiness,

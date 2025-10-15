@@ -59,7 +59,7 @@ export default function SportSelectionPage() {
   const { t } = useLocalization("components.activities.selfAssessment");
   const useDateState = useState(new Date());
 
-  const { data: activities14Days } = usePlayerActivities({
+  const { data: activities14Days, error } = usePlayerActivities({
     initialDaysBack: 14,
   });
 
@@ -76,6 +76,7 @@ export default function SportSelectionPage() {
         showCalendarIcon: false,
         showBackButton: true,
       }}
+      error={Boolean(error)}
     >
       {/* TODO: Insert Search Bar */}
 

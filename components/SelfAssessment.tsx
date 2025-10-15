@@ -28,12 +28,14 @@ interface SelfAssessmentPageProps {
   onPress: (props: SelfAssessmentOnPressProps) => Promise<void>;
   pageText: PageTextProps;
   customBackPath?: RelativePathString;
+  error?: boolean;
 }
 
 export default function SelfAssessmentPage({
   onPress,
   pageText,
   customBackPath,
+  error,
 }: SelfAssessmentPageProps) {
   const { user } = useAuth();
   const [value, setValue] = useState(5);
@@ -61,6 +63,7 @@ export default function SelfAssessmentPage({
         showBackButton: true,
         customBackPath,
       }}
+      error={Boolean(error)}
     >
       <View className="flex-1 flex-col justify-between pb-[60px]">
         <Card

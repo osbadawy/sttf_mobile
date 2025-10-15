@@ -9,12 +9,14 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
+import { useState } from "react";
 
 export default function PlayerActivitySelfAssessmentPage() {
   const { playerActivityId, activityType } = useLocalSearchParams();
   const { t } = useLocalization("components.activities.selfAssessment");
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
+  const [error, setError] = useState<boolean>(false);
 
   let pathname = usePathname();
   pathname = pathname.split("/").slice(0, -1).join("/");
@@ -47,6 +49,7 @@ export default function PlayerActivitySelfAssessmentPage() {
 
     if (response.ok) {
       router.replace(`${pathname}` as RelativePathString);
+      setError(false);
     } else {
       const errorData = await response.json();
       console.error("API Error:", {
@@ -55,6 +58,7 @@ export default function PlayerActivitySelfAssessmentPage() {
         error: errorData,
         requestBody: body,
       });
+      setError(true);
     }
     setDisableButton(false);
   };
@@ -70,6 +74,7 @@ export default function PlayerActivitySelfAssessmentPage() {
         sliderRight: t("sliderRight"),
         buttonText: t("done"),
       }}
+      error={Boolean(error)}
       customBackPath={
         `player/dashboard?player=${JSON.stringify(playerData)}` as RelativePathString
       }

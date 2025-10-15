@@ -30,11 +30,19 @@ export default function ViewActivityPage() {
     "components.activities.activityTypes",
   );
 
-  const { data: activities14Days, loading } = usePlayerActivities({
+  const {
+    data: activities14Days,
+    loading,
+    error,
+  } = usePlayerActivities({
     initialDaysBack: 14,
   });
 
-  const { activity, loading: activityLoading } = useSinglePlayerActivity({
+  const {
+    activity,
+    loading: activityLoading,
+    error: activityError,
+  } = useSinglePlayerActivity({
     playerActivityId: playerActivityIdString || "",
   });
 
@@ -71,6 +79,7 @@ export default function ViewActivityPage() {
         showBackButton: true,
         customBackPath: `${pathname}` as RelativePathString,
       }}
+      error={Boolean(error) || Boolean(activityError)}
     >
       <View
         className={`pb-[100px] ${!workout ? "flex-col gap-20" : isRTL ? "flex-row-reverse" : "flex-row"}`}
