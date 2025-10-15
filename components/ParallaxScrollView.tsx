@@ -1,4 +1,5 @@
 import { ScrollView, View } from "react-native";
+import ErrorToast from "./ErrorToast";
 import Header, { HeaderProps } from "./Header";
 import Nav from "./Nav";
 
@@ -6,14 +7,17 @@ export interface ParallaxScrollViewProps {
   children: React.ReactNode;
   headerProps?: HeaderProps;
   showNav?: boolean;
+  error?: boolean;
 }
 export default function ParallaxScrollView({
   children,
   headerProps,
   showNav = true,
+  error = false,
 }: ParallaxScrollViewProps) {
   return (
     <View className="flex-1">
+      {error && <ErrorToast />}
       <ScrollView
         scrollEventThrottle={16}
         contentContainerStyle={{ flexGrow: 1 }}

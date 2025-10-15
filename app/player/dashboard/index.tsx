@@ -36,6 +36,7 @@ export default function Dashboard() {
         showDateSelector: true,
         useDateState: useDateState,
       }}
+      error={Boolean(error)}
     >
       <WellbeingSection
         performance={metrics.basic.performance}

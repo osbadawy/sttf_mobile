@@ -24,8 +24,8 @@ export default function WellbeingPage() {
   const {
     primaryMetrics,
     selectedPlayerMetrics,
-    primaryLoading,
-    selectedPlayerLoading,
+    primaryError,
+    selectedPlayerError,
   } = useMultiPlayerWhoopData({
     primaryFirebaseId: playerData.firebase_id || user?.uid,
     selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
@@ -43,6 +43,7 @@ export default function WellbeingPage() {
         showBGImage: false,
         showCalendarIcon: false,
       }}
+      error={Boolean(primaryError) || Boolean(selectedPlayerError)}
     >
       {players && Object.keys(playerData).length !== 0 && (
         <PlayerSelector
