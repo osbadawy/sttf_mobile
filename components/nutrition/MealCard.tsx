@@ -42,11 +42,11 @@ export default function MealCard({
   }
 
 return (
-  <View className="mb-4">
+  <View className="">
     {/* Header */}
     {confirmed ? (
       <LinearGradient
-        colors={["rgba(16,185,129,0.06)", "rgba(16,185,129,0.24)"]} // subtle → richer emerald
+        colors={["rgba(240, 240, 240, 1)", "rgba(240, 240, 240, 0.5)" , "rgba(16,185,129,0.24)"]} // subtle → richer emerald
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }} // left → right
         className="rounded-xl px-3 py-2"

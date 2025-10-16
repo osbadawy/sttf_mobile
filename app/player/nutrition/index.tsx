@@ -63,7 +63,7 @@ export default function MealLogPage() {
           {["Breakfast", "Lunch", "Dinner", "Snacks"].map((mealType) => (
             <View key={mealType} className="mb-5">
               <Text className={`text-xl font-normal mb-2 ${titleAlign}`}>{mealType}</Text>
-               <View className="h-[1px] bg-gray-300 w-full mb-3" />
+               <View className="h-[1px] bg-gray-300 w-full" />
               {groupedMeals[mealType]?.map(
                 (
                   meal: { food: string; amount: string; calories: number },
