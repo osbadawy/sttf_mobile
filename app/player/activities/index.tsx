@@ -1,11 +1,7 @@
 import ActivityCard from "@/components/activities/ActivityCard";
 import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
-import {
-  ActivityFlameIcon,
-  ActivityPageBg,
-  Arrow
-} from "@/components/icons";
+import { ActivityFlameIcon, ActivityPageBg, Arrow } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import SelectionModal from "@/components/SelectionModal";
@@ -52,11 +48,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const getCalories = () => {
     if (data[beginningOfDay.getTime()]) {
       return data[beginningOfDay.getTime()].reduce((acc, item) => {
-        if (
-          item &&
-          item.score &&
-          item.score.kilojoule
-        ) {
+        if (item && item.score && item.score.kilojoule) {
           return acc + Math.round(item.score.kilojoule / 4.184);
         }
         return acc;
@@ -157,12 +149,10 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
             const day = _data[1];
             if (
               activityFilters.length > 0 &&
-              !day.some((item: any) =>
-                {
-                  console.log(item);
-                  return activityFilters.includes(item.sport_name)
-                }
-              )
+              !day.some((item: any) => {
+                console.log(item);
+                return activityFilters.includes(item.sport_name);
+              })
             ) {
               return null;
             }

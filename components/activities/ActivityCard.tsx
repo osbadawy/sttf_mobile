@@ -30,9 +30,7 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
       className={`flex-row items-center justify-between pb-10 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
       onPress={onPress}
     >
-      <View
-        className="w-[56px] h-[56px] rounded-full bg-white items-center justify-center"
-      >
+      <View className="w-[56px] h-[56px] rounded-full bg-white items-center justify-center">
         <DynamicActivityIcon activityType={activity.sport_name} />
       </View>
       <View className="flex-1 pl-4">
@@ -42,10 +40,7 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
         <Text className="text-base effra-light">{duration}</Text>
       </View>
 
-      <Arrow
-        direction={isRTL ? "left" : "right"}
-        stroke="black"
-      />
+      <Arrow direction={isRTL ? "left" : "right"} stroke="black" />
     </TouchableOpacity>
   );
 }

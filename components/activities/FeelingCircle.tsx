@@ -13,10 +13,12 @@ interface FeelingPointsCircleProps {
   maxScore: number;
 }
 
-export default function FeelingCircle({ score, maxScore }: FeelingPointsCircleProps) {
+export default function FeelingCircle({
+  score,
+  maxScore,
+}: FeelingPointsCircleProps) {
   const { t } = useTranslation();
   const animatedValue = useRef(new Animated.Value(0)).current;
-
 
   const scoresColors = [
     colors.red,
@@ -28,7 +30,7 @@ export default function FeelingCircle({ score, maxScore }: FeelingPointsCirclePr
 
   // Calculate which feeling category the score falls into
   const feelingIndex = Math.min(
-    Math.floor(score / maxScore * scoresColors.length),
+    Math.floor((score / maxScore) * scoresColors.length),
     scoresColors.length - 1,
   );
   const currentColor = scoresColors[feelingIndex];

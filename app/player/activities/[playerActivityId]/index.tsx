@@ -62,7 +62,6 @@ export default function ViewActivityPage() {
   }
   strain14Days = strain14Days / strain14DaysCount;
 
-
   const textClassNameSmall = "font-inter-light text-base pb-2";
   const textClassNameLarge = "font-inter-regular text-2xl pb-2";
   let textClassName = activity ? textClassNameSmall : textClassNameLarge;
@@ -106,10 +105,7 @@ export default function ViewActivityPage() {
         </View>
         <View>
           <Text className={textClassName}>{t("score")}</Text>
-          <WorkoutPointsCircle
-            score={activity?.points || 20}
-            maxScore={40}
-          />
+          <WorkoutPointsCircle score={activity?.points || 20} maxScore={40} />
         </View>
       </View>
 
