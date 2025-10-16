@@ -1,6 +1,6 @@
 import colors from "@/colors.js";
-import { useLocalization } from "@/contexts/LocalizationContext";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Animated, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
@@ -8,18 +8,19 @@ import Svg, { Circle } from "react-native-svg";
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-interface FeelingCircleProps {
+interface FeelingPointsCircleProps {
   score: number;
-  size: "small" | "large";
+  maxScore: number;
 }
 
-export default function FeelingCircle({ score, size }: FeelingCircleProps) {
-  const { t } = useLocalization("components.activities.activityView.feelings");
+export default function FeelingCircle({
+  score,
+  maxScore,
+}: FeelingPointsCircleProps) {
+  const { t } = useTranslation();
   const animatedValue = useRef(new Animated.Value(0)).current;
 
-  const feelings = ["veryBad", "bad", "moderate", "good", "veryGood"];
-
-  const feelingsColors = [
+  const scoresColors = [
     colors.red,
     colors.orange,
     colors.yellow,
@@ -29,20 +30,20 @@ export default function FeelingCircle({ score, size }: FeelingCircleProps) {
 
   // Calculate which feeling category the score falls into
   const feelingIndex = Math.min(
-    Math.floor(score * feelings.length),
-    feelings.length - 1,
+    Math.floor((score / maxScore) * scoresColors.length),
+    scoresColors.length - 1,
   );
-  const currentFeeling = feelings[feelingIndex];
-  const currentColor = feelingsColors[feelingIndex];
+  const currentColor = scoresColors[feelingIndex];
 
   // SVG circle properties
-  const width = size === "small" ? 140 : 200;
-  const strokeWidth = size === "small" ? 18 : 26;
+  const width = 140;
+  const strokeWidth = 18;
   const radius = (width - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
   // Calculate stroke-dasharray and stroke-dashoffset for progress
-  const progressOffset = circumference - score * circumference;
+  const progressRatio = score / maxScore;
+  const progressOffset = circumference - progressRatio * circumference;
 
   // Animation effect - reset and animate every time component mounts
   useEffect(() => {
@@ -58,8 +59,8 @@ export default function FeelingCircle({ score, size }: FeelingCircleProps) {
 
   // Interpolate the animated value to stroke-dashoffset
   const animatedStrokeDashoffset = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [circumference, circumference - score * circumference],
+    inputRange: [0, maxScore],
+    outputRange: [circumference, circumference - progressRatio * circumference],
   });
 
   return (
@@ -98,10 +99,10 @@ export default function FeelingCircle({ score, size }: FeelingCircleProps) {
         }}
       >
         <Text
-          className={`${size === "small" ? "text-base" : "text-2xl"} effra-semibold text-center`}
+          className={`text-5xl effra-semibold text-center`}
           style={{ color: currentColor }}
         >
-          {t(currentFeeling)}
+          {score}
         </Text>
       </View>
     </View>
