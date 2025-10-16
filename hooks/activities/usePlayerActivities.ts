@@ -51,7 +51,7 @@ export const usePlayerActivities = ({
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
       });
-      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity?${params}`;
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/workout?${params}`;
 
       const response = await fetch(url, {
         method: "GET",
