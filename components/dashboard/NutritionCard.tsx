@@ -6,7 +6,7 @@ import {
 } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function NutritionCard(user_id: { id?: string }) {
+export default function NutritionCard() {
   const pathname = usePathname();
     const { player } = useLocalSearchParams();
   const consumed = 924;

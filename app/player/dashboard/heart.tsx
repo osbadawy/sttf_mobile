@@ -79,8 +79,8 @@ export default function HeartPage() {
   const {
     primaryMetrics,
     selectedPlayerMetrics,
-    primaryLoading,
-    selectedPlayerLoading,
+    primaryError,
+    selectedPlayerError,
   } = useMultiPlayerWhoopData({
     primaryFirebaseId: playerData.firebase_id || user?.uid,
     selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
@@ -119,6 +119,7 @@ export default function HeartPage() {
         showBGImage: false,
         showCalendarIcon: false,
       }}
+      error={Boolean(primaryError) || Boolean(selectedPlayerError)}
     >
       {players && Object.keys(playerData).length !== 0 && (
         <PlayerSelector

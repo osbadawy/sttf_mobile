@@ -17,6 +17,7 @@ export default function NewActivityPage() {
   const categoryString = Array.isArray(category) ? category[0] : category;
   const activityTypes = getActivityTypesInCategory(categoryString);
   const [disableButton, setDisableButton] = useState(false);
+  const [error, setError] = useState<boolean>(false);
 
   const { t } = useLocalization("components.activities.newActivity");
   const { t: tActivityTypes } = useLocalization(
@@ -60,6 +61,7 @@ export default function NewActivityPage() {
       );
 
       if (response.ok) {
+        setError(false);
         router.push("player/activities" as RelativePathString);
       } else {
         const errorData = await response.json();
@@ -69,6 +71,7 @@ export default function NewActivityPage() {
           error: errorData,
           requestBody: body,
         });
+        setError(true);
       }
     }
   };
@@ -85,6 +88,7 @@ export default function NewActivityPage() {
           customDescription: tActivityTypes(`categories.${categoryString}`),
           showBackButton: true,
         }}
+        error={Boolean(error)}
       >
         <View
           className="flex-1 flex-col justify-between pb-[60px]"

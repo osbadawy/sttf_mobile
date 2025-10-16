@@ -18,6 +18,7 @@ export default function Dashboard() {
         showDateSelector: false,
         showCalendarIcon: false,
       }}
+      error={Boolean(error)}
     >
       {loading && (
         <View>

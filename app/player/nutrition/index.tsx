@@ -3,7 +3,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useLocalSearchParams } from "expo-router";
 import { Key, useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 export default function MealLogPage() {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
@@ -80,10 +80,6 @@ export default function MealLogPage() {
             </View>
           ))}
         </ScrollView>
-
-        <TouchableOpacity className="mt-5" onPress={() => setShowFilterDropdown(true)}>
-          <Text className={`text-base ${titleAlign}`}>{t("filterMeals")}</Text>
-        </TouchableOpacity>
       </View>
     </ParallaxScrollView>
   );
