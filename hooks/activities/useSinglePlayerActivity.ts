@@ -32,7 +32,7 @@ export const useSinglePlayerActivity = ({
 
       const token = await user.getIdToken();
       const response = await fetch(
-        `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity/${playerActivityId}`,
+        `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/workout/${playerActivityId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

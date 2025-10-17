@@ -1,12 +1,7 @@
 import ActivityCard from "@/components/activities/ActivityCard";
 import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
-import {
-  ActivityFlameIcon,
-  ActivityPageBg,
-  Arrow,
-  ThinPlusIcon,
-} from "@/components/icons";
+import { ActivityFlameIcon, ActivityPageBg, Arrow } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import SelectionModal from "@/components/SelectionModal";
@@ -15,7 +10,6 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatDate, getUniqueActivityTypes } from "@/utils/activities";
-import { RelativePathString, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -47,7 +41,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
   const [activityFilters, setActivityFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [showNewActvityDropdown, setShowNewActvityDropdown] = useState(false);
 
   const beginningOfDay = new Date(date);
   beginningOfDay.setHours(0, 0, 0, 0);
@@ -55,13 +48,8 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const getCalories = () => {
     if (data[beginningOfDay.getTime()]) {
       return data[beginningOfDay.getTime()].reduce((acc, item) => {
-        if (
-          item &&
-          item.workout &&
-          item.workout.score &&
-          item.workout.score.kilojoule
-        ) {
-          return acc + Math.round(item.workout.score.kilojoule / 4.184);
+        if (item && item.score && item.score.kilojoule) {
+          return acc + Math.round(item.score.kilojoule / 4.184);
         }
         return acc;
       }, 0);
@@ -141,15 +129,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
               <Text className="effra-light text-base">Kcal</Text>
             </Text>
           </View>
-          <CustomButton
-            title={t("addActivity")}
-            onPress={() => {
-              setShowNewActvityDropdown(true);
-            }}
-            icon={<ThinPlusIcon />}
-            color={ButtonColor.activity}
-            size={ButtonSize.sm}
-          />
 
           <View
             className={`w-full pb-2 pt-[120px] items-center flex-row ${isRTL ? "justify-start" : "justify-end"}`}
@@ -170,21 +149,22 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
             const day = _data[1];
             if (
               activityFilters.length > 0 &&
-              !day.some((item: any) =>
-                activityFilters.includes(item.activity_type),
-              )
+              !day.some((item: any) => {
+                console.log(item);
+                return activityFilters.includes(item.sport_name);
+              })
             ) {
               return null;
             }
             return (
               <View key={index} className="w-full">
                 <Text className="text-xs effra-light pb-5">
-                  {formatDate(day[0].started_at, currentLanguage)}
+                  {formatDate(day[0].start, currentLanguage)}
                 </Text>
                 {day.map((item) => {
                   if (
                     activityFilters.length > 0 &&
-                    !activityFilters.includes(item.activity_type)
+                    !activityFilters.includes(item.sport_name)
                   ) {
                     return null;
                   }
@@ -228,22 +208,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
           selectedItems={activityFilters}
           setSelectedItems={setActivityFilters}
           setShowSelectionModal={setShowFilterDropdown}
-        />
-      )}
-      {showNewActvityDropdown && (
-        <SelectionModal
-          title={t("selectCategory")}
-          uniqueItems={categories.map((category) => ({
-            name: tActivityTypes("categories." + category),
-            value: category,
-          }))}
-          setShowSelectionModal={setShowNewActvityDropdown}
-          customOnPress={(item) => {
-            router.push(
-              `player/activities/create/${item.value}` as RelativePathString,
-            );
-          }}
-          showIcons={false}
         />
       )}
     </>

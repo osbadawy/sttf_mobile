@@ -1,5 +1,5 @@
 import AvgHeartRate from "@/components/activities/AvgHeartRate";
-import FeelingCircle from "@/components/activities/FeelingCircle";
+import WorkoutPointsCircle from "@/components/activities/FeelingCircle";
 import { StrainIcon } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { StrainSectionLine } from "@/components/wellbeing/StrainSection";
@@ -50,30 +50,28 @@ export default function ViewActivityPage() {
     return <View />;
   }
 
-  const workoutStrain = activity?.workout?.score?.strain;
+  const strainToday = activity?.score?.strain;
 
   let strain14Days: number | undefined = 0;
   let strain14DaysCount = 0;
   for (const activity of Object.values(activities14Days).flat()) {
-    if (activity?.workout?.score?.strain) {
-      strain14Days += activity?.workout?.score?.strain;
+    if (activity?.score?.strain) {
+      strain14Days += activity?.score?.strain;
       strain14DaysCount++;
     }
   }
   strain14Days = strain14Days / strain14DaysCount;
 
-  const workout = activity?.workout;
-
   const textClassNameSmall = "font-inter-light text-base pb-2";
   const textClassNameLarge = "font-inter-regular text-2xl pb-2";
-  let textClassName = workout ? textClassNameSmall : textClassNameLarge;
+  let textClassName = activity ? textClassNameSmall : textClassNameLarge;
   textClassName = `${textClassName} ${isRTL ? "text-right" : "text-left"}`;
 
   return (
     <ParallaxScrollView
       headerProps={{
-        title: activity ? tActivityTypes(activity.activity_type) : "--",
-        customDescription: activity ? formatDate(activity.started_at) : "--",
+        title: activity ? tActivityTypes(activity.sport_name) : "--",
+        customDescription: activity ? formatDate(activity.start) : "--",
         useDateState: useDateState,
         showCalendarIcon: false,
         showBackButton: true,
@@ -82,50 +80,47 @@ export default function ViewActivityPage() {
       error={Boolean(error) || Boolean(activityError)}
     >
       <View
-        className={`pb-[100px] ${!workout ? "flex-col gap-20" : isRTL ? "flex-row-reverse" : "flex-row"}`}
+        className={`pb-[100px] ${!activity ? "flex-col gap-20" : isRTL ? "flex-row-reverse" : "flex-row"}`}
       >
         <View className="flex-1">
           <Text className={textClassName}>{t("duration")}</Text>
           <Text
-            className={`font-inter-semibold pb-8 ${workout ? "text-3xl" : "text-4xl"} ${isRTL ? "text-right" : "text-left"}`}
+            className={`font-inter-semibold pb-8 ${activity ? "text-3xl" : "text-4xl"} ${isRTL ? "text-right" : "text-left"}`}
           >
             {formatDuration({
-              started_at: activity?.started_at,
-              ended_at: activity?.ended_at,
+              started_at: activity?.start,
+              ended_at: activity?.end,
             })}
           </Text>
-          {workout?.score?.kilojoule && (
+          {activity?.score?.kilojoule && (
             <>
               <Text className={textClassName}>{t("calories")}</Text>
               <Text
                 className={`font-inter-semibold text-3xl ${isRTL ? "text-right" : "text-left"}`}
               >
-                {Math.round(workout?.score?.kilojoule / 4.184)}
+                {Math.round(activity?.score?.kilojoule / 4.184)}
               </Text>
             </>
           )}
         </View>
         <View>
-          <Text className={textClassName}>{t("feeling")}</Text>
-          <FeelingCircle
-            score={activity?.self_assessment_score}
-            size={workout ? "small" : "large"}
-          />
+          <Text className={textClassName}>{t("score")}</Text>
+          <WorkoutPointsCircle score={activity?.points || 20} maxScore={40} />
         </View>
       </View>
 
-      {workout?.score && (
+      {activity?.score && (
         <AvgHeartRate
-          averageHeartRate={workout?.score?.average_heart_rate}
-          zone1Milli={workout?.score?.zoneDurations?.zone_one_milli}
-          zone2Milli={workout?.score?.zoneDurations?.zone_two_milli}
-          zone3Milli={workout?.score?.zoneDurations?.zone_three_milli}
-          zone4Milli={workout?.score?.zoneDurations?.zone_four_milli}
-          zone5Milli={workout?.score?.zoneDurations?.zone_five_milli}
+          averageHeartRate={activity?.score?.average_heart_rate}
+          zone1Milli={activity?.score?.zoneDurations?.zone_one_milli}
+          zone2Milli={activity?.score?.zoneDurations?.zone_two_milli}
+          zone3Milli={activity?.score?.zoneDurations?.zone_three_milli}
+          zone4Milli={activity?.score?.zoneDurations?.zone_four_milli}
+          zone5Milli={activity?.score?.zoneDurations?.zone_five_milli}
         />
       )}
 
-      {workout?.score && (
+      {activity?.score && (
         <View
           className={`pt-[64px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >
@@ -142,13 +137,13 @@ export default function ViewActivityPage() {
             <View
               className={`flex-row justify-between pb-[32px] ${isRTL ? "flex-row-reverse" : "flex-row"}`}
             >
-              {workoutStrain && (
+              {strainToday && (
                 <View className={`flex ${isRTL ? "items-end" : "items-start"}`}>
                   <Text className="font-inter-light text-xs pb-3">
                     {t("thisWorkout")}
                   </Text>
                   <Text className="font-inter-semibold text-5xl text-strain">
-                    {workoutStrain.toFixed(1)}
+                    {strainToday.toFixed(1)}
                   </Text>
                 </View>
               )}
@@ -165,10 +160,12 @@ export default function ViewActivityPage() {
               )}
             </View>
 
-            {workoutStrain && (
+            {strainToday && strain14Days && (
               <StrainSectionLine
-                strainToday={workoutStrain}
-                strain14Days={strain14Days}
+                p1StrainToday={strainToday}
+                p2StrainToday={strain14Days}
+                selectedPlayer={0}
+                secondaryExists={false}
               />
             )}
           </View>

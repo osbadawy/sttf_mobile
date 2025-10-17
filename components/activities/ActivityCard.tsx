@@ -1,4 +1,3 @@
-import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { formatDuration } from "@/utils/activities";
 import { RelativePathString, router, usePathname } from "expo-router";
@@ -18,25 +17,12 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
   const pathname = usePathname();
 
   const duration = formatDuration({
-    started_at: activity.started_at,
-    ended_at: activity.ended_at,
+    started_at: activity.start,
+    ended_at: activity.end,
   });
-  const needsAction = !activity.self_assessment_score;
 
   const onPress = () => {
-    if (needsAction) {
-      if (activity.activity_type === "activity") {
-        router.push(
-          `${pathname}/${activity.id}/selfAssessment/sportSelection` as RelativePathString,
-        );
-      } else {
-        router.push(
-          `${pathname}/${activity.id}/selfAssessment` as RelativePathString,
-        );
-      }
-    } else {
-      router.push(`${pathname}/${activity.id}` as RelativePathString);
-    }
+    router.push(`${pathname}/${activity.id}` as RelativePathString);
   };
 
   return (
@@ -44,33 +30,17 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
       className={`flex-row items-center justify-between pb-10 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
       onPress={onPress}
     >
-      <View
-        className="w-[56px] h-[56px] rounded-full bg-white items-center justify-center"
-        style={{
-          boxShadow: needsAction ? `0 0 8px 0 ${colors.stress}` : "none",
-        }}
-      >
-        <DynamicActivityIcon activityType={activity.activity_type} />
+      <View className="w-[56px] h-[56px] rounded-full bg-white items-center justify-center">
+        <DynamicActivityIcon activityType={activity.sport_name} />
       </View>
       <View className="flex-1 pl-4">
         <Text className="text-base effra-medium">
-          {tActivityTypes(activity.activity_type)}{" "}
+          {tActivityTypes(activity.sport_name)}{" "}
         </Text>
-        {needsAction ? (
-          <Text
-            className={`text-base effra-light ${needsAction ? "text-stress" : ""}`}
-          >
-            {t("assessmentNeeded")}
-          </Text>
-        ) : (
-          <Text className="text-base effra-light">{duration}</Text>
-        )}
+        <Text className="text-base effra-light">{duration}</Text>
       </View>
 
-      <Arrow
-        direction={isRTL ? "left" : "right"}
-        stroke={needsAction ? colors.stress : "black"}
-      />
+      <Arrow direction={isRTL ? "left" : "right"} stroke="black" />
     </TouchableOpacity>
   );
 }

@@ -2,7 +2,7 @@ export function seperateDataByDay(data: any): Record<number, any[]> {
   const date_seperated_data: Record<number, any[]> = {};
 
   for (const item of data) {
-    const date = new Date(item.started_at);
+    const date = new Date(item.start);
     date.setHours(0, 0, 0, 0);
     const timestamp = date.getTime();
     if (date_seperated_data[timestamp] === undefined) {
@@ -53,7 +53,7 @@ export function getUniqueActivityTypes(data: Record<number, any[]>): string[] {
   const activityTypes = new Set<string>();
   for (const day of Object.values(data)) {
     for (const activity of day) {
-      activityTypes.add(activity.activity_type);
+      activityTypes.add(activity.sport_name);
     }
   }
   return Array.from(activityTypes);
