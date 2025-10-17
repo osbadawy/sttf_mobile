@@ -5,5 +5,14 @@
   "breakfast": "Breakfast",
   "lunch": "Lunch",
   "dinner": "Dinner",
-  "snacks": "Snacks"
+  "snacks": "Snacks",
+  "or": "or",
+  "add meal": "Add Extra Meal",
+  "add": "Add",
+  "swipe to": "Swipe To",
+  "confirm": "Confirm",
+  "tap here": "Tap Here",
+  "no meals planned": "No meals Planned yet.",
+  "dashboard message": "Great Start! You’re on track towards your calories goal",
+  "view meal plan": "View Meal Plan"
 }

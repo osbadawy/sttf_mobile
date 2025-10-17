@@ -1,3 +1,4 @@
+import { useLocalization } from "@/contexts/LocalizationContext";
 import {
   RelativePathString,
   router,
@@ -7,8 +8,9 @@ import {
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function NutritionCard() {
+  const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   const pathname = usePathname();
-    const { player } = useLocalSearchParams();
+  const { player } = useLocalSearchParams();
   const consumed = 924;
   const goal = 2802;
   const progress = consumed / goal;
@@ -23,7 +25,7 @@ export default function NutritionCard() {
           resizeMode="contain"
         />
         <Text className="text-green-700 font-semibold text-base">
-          Nutrition
+          {t("title")}
         </Text>
         <Text className="ml-auto text-gray-400">{">"}</Text>
       </View>
@@ -47,7 +49,7 @@ export default function NutritionCard() {
       {/* Text + Button */}
       <View className="flex-row items-center justify-between mt-6 mb-40">
         <Text className="text-gray-600 w-1/2 text-sm">
-          Great Start! You’re on track towards your calories goal
+          {t("dashboard message")}
         </Text>
         <TouchableOpacity 
           className="bg-[#008C46] px-10 py-4 rounded-lg"
@@ -60,7 +62,7 @@ export default function NutritionCard() {
           activeOpacity={1}
           style={{ zIndex: 10 }} // Ensure the button is above other elements
         >
-          <Text className="text-white font-medium text-center">Insert Meal</Text>
+          <Text className="text-white font-medium text-center">{t("view meal plan")}</Text>
         </TouchableOpacity>
       </View>
 

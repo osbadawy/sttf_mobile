@@ -1,3 +1,4 @@
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useMemo, useRef, useState } from "react";
@@ -11,6 +12,7 @@ interface NutritionCameraProps {
 }
 
 export default function NutritionCamera({ onConfirm, hideSwipePill = true }: NutritionCameraProps) {
+  const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [containerH, setContainerH] = useState(0);
   const chevronOpacities = [0.10, 0.28, 0.42, 0.58, 0.75];
@@ -91,8 +93,8 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
           {/* 👇 Left message: only show when swipe is active */}
           {isSwipeActive ? (
             <View className="flex-row items-baseline">
-              <Text className="text-[18px] font-medium text-neutral-500">Swipe to </Text>
-              <Text className="text-[18px] font-semibold text-emerald-600">Confirm</Text>
+              <Text className="text-[18px] font-medium text-neutral-500">{t("swipe to")}</Text>
+              <Text className="text-[18px] font-semibold text-emerald-600">{t("confirm")}</Text>
             </View>
           ) : (
             <View /> // keep layout tidy when inactive
@@ -124,7 +126,7 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
 
             {/* 👇 Right label: only show when swipe is NOT active */}
             {!isSwipeActive && (
-              <Text className="mt-1 text-[13px] text-neutral-800">Tap Here</Text>
+              <Text className="mt-1 text-[13px] text-neutral-800">{t("tap here")}</Text>
             )}
           </TouchableOpacity>
 
