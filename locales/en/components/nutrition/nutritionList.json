@@ -15,5 +15,19 @@
   "no meals planned": "No meals Planned yet.",
   "dashboard message": "Great Start! You’re on track towards your calories goal",
   "view meal plan": "View Meal Plan",
-  "AddMealtitle": "Add Meal"
+  "AddMealtitle": "Add Meal",
+  "uploading": "Uploading...",
+  "Add picture": "Add picture",
+  "add macro": "Add Macro",
+  "data incomplete": "Data Incomplete",
+  "carbs": "Carbs",
+  "protein": "Protein",
+  "fat": "Fat",
+  "calories": "Calories",
+  "name of meal": "Name of Meal",
+  "when": "When",
+   "camera permission title": "Camera Permission",
+  "camera permission body": "Camera access is needed to add a picture.",
+  "upload failed title": "Upload failed",
+  "upload failed body": "Could not upload the image. Please retry."
 }

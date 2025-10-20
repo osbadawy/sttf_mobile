@@ -15,5 +15,19 @@
   "no meals planned": "لا توجد وجبات مسجلة حتى الآن.",
   "dashboard message": "بداية رائعة! أنت على المسار الصحيح نحو هدف السعرات الحرارية الخاص بك",
   "view meal plan": "خطة وجباتك",
-  "AddMealtitle": "إضافة وجبة"
+  "AddMealtitle": "إضافة وجبة",
+  "uploading": "...تحميل الملف",
+  "Add picture": "إضافة صورة",
+  "add macro": "إضافة ماكرو",
+  "data incomplete": "البيانات غير مكتملة",
+  "carbs": "كربوهيدرات",
+  "protein": "بروتين",
+  "fat": "دهون",
+  "calories": "كالوري",
+  "name of meal": "اسم الوجبة",
+  "when": "متى",
+  "camera permission title": "إذن الكاميرا",
+  "camera permission body": "الوصول إلى الكاميرا مطلوب لإضافة صورة.",
+  "upload failed title": "فشل التحميل",
+  "upload failed body": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى."
 }
