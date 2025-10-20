@@ -29,5 +29,6 @@
   "camera permission title": "إذن الكاميرا",
   "camera permission body": "الوصول إلى الكاميرا مطلوب لإضافة صورة.",
   "upload failed title": "فشل التحميل",
-  "upload failed body": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى."
+  "upload failed body": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى.",
+  "nutritionDashboard": "لوحة معلومات التغذية"
 }
