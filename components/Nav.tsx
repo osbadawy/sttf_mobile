@@ -24,9 +24,9 @@ const playerNavItems: NavItem[] = [
     icon: "fitness-outline",
   },
   {
-    href: "/player/settings" as RelativePathString,
-    label: "Settings",
-    icon: "settings-outline",
+    href: "/player/nutrition" as RelativePathString,
+    label: "Add",
+    icon: "nutrition-outline",
   },
 ];
 

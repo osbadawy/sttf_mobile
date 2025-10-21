@@ -1,3 +1,4 @@
+import NutritionProgress from "@/components/nutrition/NutritionProgress";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import {
   RelativePathString,
@@ -8,12 +9,13 @@ import {
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function NutritionCard() {
-  const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
+  const { t } = useLocalization("components.nutrition.nutritionList");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
+
+  // Placeholder data (can be props in the future)
   const consumed = 924;
   const goal = 2802;
-  const progress = consumed / goal;
 
   return (
     <View className="bg-white mt-20 rounded-2xl p-5 shadow-md overflow-hidden relative">
@@ -30,28 +32,15 @@ export default function NutritionCard() {
         <Text className="ml-auto text-gray-400">{">"}</Text>
       </View>
 
-      {/* Calories */}
-      <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-3xl font-bold">
-          {consumed} <Text className="text-base font-normal">Kcal</Text>
-        </Text>
-        <Text className="text-gray-500">{goal} Kcal</Text>
-      </View>
-
-      {/* Progress Bar */}
-      <View className="w-full h-1.5 bg-gray-200 rounded-full mb-4">
-        <View
-          className="h-1.5 bg-green-600 rounded-full"
-          style={{ width: `${progress * 100}%` }}
-        />
-      </View>
+      {/* Calories + Progress (extracted) */}
+      <NutritionProgress consumed={consumed} goal={goal} unit="Kcal" />
 
       {/* Text + Button */}
       <View className="flex-row items-center justify-between mt-6 mb-40">
         <Text className="text-gray-600 w-1/2 text-sm">
           {t("dashboard message")}
         </Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           className="bg-[#008C46] px-10 py-4 rounded-lg"
           onPress={() =>
             router.push({
@@ -60,9 +49,11 @@ export default function NutritionCard() {
             })
           }
           activeOpacity={1}
-          style={{ zIndex: 10 }} // Ensure the button is above other elements
+          style={{ zIndex: 10 }}
         >
-          <Text className="text-white font-medium text-center">{t("view meal plan")}</Text>
+          <Text className="text-white font-medium text-center">
+            {t("view meal plan")}
+          </Text>
         </TouchableOpacity>
       </View>
 
