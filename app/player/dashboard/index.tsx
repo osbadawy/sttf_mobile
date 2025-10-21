@@ -6,14 +6,12 @@ import {
 import NutritionCard from "@/components/dashboard/NutritionCard";
 import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useWhoopData } from "@/hooks/useWhoopData";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 export default function Dashboard() {
-  const { user } = useAuth();
   const { userName, profilePicture, access } = useUserProfile();
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
@@ -39,7 +37,7 @@ export default function Dashboard() {
       error={Boolean(error)}
     >
       <WellbeingSection
-        performance={metrics.basic.performance}
+        performance={metrics.basic.performance || 0}
         strain={metrics.basic.strain}
         stress={metrics.basic.stress}
         animationDuration={1000}

@@ -1,9 +1,21 @@
+import NutritionProgress from "@/components/nutrition/NutritionProgress";
+import { useLocalization } from "@/contexts/LocalizationContext";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function NutritionCard() {
+  const { t } = useLocalization("components.nutrition.nutritionList");
+  const pathname = usePathname();
+  const { player } = useLocalSearchParams();
+
+  // Placeholder data (can be props in the future)
   const consumed = 924;
   const goal = 2802;
-  const progress = consumed / goal;
 
   return (
     <View className="bg-white mt-20 rounded-2xl p-5 shadow-md overflow-hidden relative">
@@ -15,34 +27,33 @@ export default function NutritionCard() {
           resizeMode="contain"
         />
         <Text className="text-green-700 font-semibold text-base">
-          Nutrition
+          {t("title")}
         </Text>
         <Text className="ml-auto text-gray-400">{">"}</Text>
       </View>
 
-      {/* Calories */}
-      <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-3xl font-bold">
-          {consumed} <Text className="text-base font-normal">Kcal</Text>
-        </Text>
-        <Text className="text-gray-500">{goal} Kcal</Text>
-      </View>
-
-      {/* Progress Bar */}
-      <View className="w-full h-1.5 bg-gray-200 rounded-full mb-4">
-        <View
-          className="h-1.5 bg-green-600 rounded-full"
-          style={{ width: `${progress * 100}%` }}
-        />
-      </View>
+      {/* Calories + Progress (extracted) */}
+      <NutritionProgress consumed={consumed} goal={goal} unit="Kcal" />
 
       {/* Text + Button */}
       <View className="flex-row items-center justify-between mt-6 mb-40">
         <Text className="text-gray-600 w-1/2 text-sm">
-          Great Start! You’re on track towards your calories goal
+          {t("dashboard message")}
         </Text>
-        <TouchableOpacity className="bg-green-700 px-10 py-4 rounded-lg">
-          <Text className="text-white font-medium">Insert Meal</Text>
+        <TouchableOpacity
+          className="bg-[#008C46] px-10 py-4 rounded-lg"
+          onPress={() =>
+            router.push({
+              pathname: `player/nutrition` as RelativePathString,
+              params: { player: player },
+            })
+          }
+          activeOpacity={1}
+          style={{ zIndex: 10 }}
+        >
+          <Text className="text-white font-medium text-center">
+            {t("view meal plan")}
+          </Text>
         </TouchableOpacity>
       </View>
 

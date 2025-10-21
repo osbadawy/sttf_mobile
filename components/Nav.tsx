@@ -1,4 +1,4 @@
-import { NavGlassBlur } from "@/components/icons/NavBarSvg"; // <-- adjust path to where you saved it
+import NavBarSvg from "@/components/icons/NavBarSvg"; // <-- adjust path to where you saved it
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { getIoniconName } from "@/utils/getIoniconName";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,9 +24,9 @@ const playerNavItems: NavItem[] = [
     icon: "fitness-outline",
   },
   {
-    href: "/player/settings" as RelativePathString,
-    label: "Settings",
-    icon: "settings-outline",
+    href: "/player/nutrition" as RelativePathString,
+    label: "Add",
+    icon: "nutrition-outline",
   },
 ];
 
@@ -78,7 +78,7 @@ export default function Nav() {
         style={{ width: SVG_WIDTH, height: SVG_HEIGHT, position: "relative" }}
       >
         {/* SVG background replaces the old pill container */}
-        <NavGlassBlur width={SVG_WIDTH} height={SVG_HEIGHT} />
+        <NavBarSvg width={SVG_WIDTH} height={SVG_HEIGHT} />
 
         {/* Buttons centered over each background circle */}
         {navItems.map((item, idx) => {
