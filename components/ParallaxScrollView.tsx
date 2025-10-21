@@ -18,8 +18,8 @@ export default function ParallaxScrollView({
   backgroundColor,
 }: ParallaxScrollViewProps) {
   const bgStyle: ViewStyle | undefined = backgroundColor
-  ? { backgroundColor }
-  : undefined;
+    ? { backgroundColor }
+    : undefined;
 
   return (
     <View className="flex-1" style={bgStyle}>

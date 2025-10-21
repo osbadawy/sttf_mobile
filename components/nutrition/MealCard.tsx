@@ -15,9 +15,9 @@ type MealType = "breakfast" | "lunch" | "snack" | "dinner";
 
 interface MealCardProps {
   name: string;
-  amount: string;    // e.g., "230g"
-  calories: number;  // e.g., 534
-  type?: MealType;   // may be omitted
+  amount: string; // e.g., "230g"
+  calories: number; // e.g., 534
+  type?: MealType; // may be omitted
 }
 
 export default function MealCard({
@@ -34,7 +34,10 @@ export default function MealCard({
     lunch: LunchIcon,
     dinner: DinnerIcon,
     snack: SnackIcon,
-  } as const satisfies Record<MealType, React.ComponentType<{ width?: number; height?: number; color?: string }>>;
+  } as const satisfies Record<
+    MealType,
+    React.ComponentType<{ width?: number; height?: number; color?: string }>
+  >;
 
   const MealIcon = IconByType[type];
 
@@ -50,7 +53,11 @@ export default function MealCard({
   async function handleConfirm(photoUri: string | null) {
     setConfirmed(true);
     setOpen(false);
-    console.log("Sending image to backend...", { uri: photoUri, meal: name, type });
+    console.log("Sending image to backend...", {
+      uri: photoUri,
+      meal: name,
+      type,
+    });
   }
 
   return (
@@ -58,7 +65,11 @@ export default function MealCard({
       {/* Header */}
       {confirmed ? (
         <LinearGradient
-          colors={["rgba(240, 240, 240, 1)", "rgba(240, 240, 240, 0.5)", "rgba(16,185,129,0.24)"]}
+          colors={[
+            "rgba(240, 240, 240, 1)",
+            "rgba(240, 240, 240, 0.5)",
+            "rgba(16,185,129,0.24)",
+          ]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           className="rounded-xl px-3 py-2"
@@ -75,9 +86,11 @@ export default function MealCard({
 
               {/* Title + details */}
               <View className="mx-4">
-                <Text className="text-[16px] font-semibold text-neutral-900">{name}</Text>
+                <Text className="text-[16px] font-semibold text-neutral-900">
+                  {name}
+                </Text>
                 <Text className="text-[14px] text-neutral-600">
-                  {amount}  •  {calories} kcal
+                  {amount} • {calories} kcal
                 </Text>
               </View>
             </View>
@@ -98,9 +111,11 @@ export default function MealCard({
 
             {/* Title + details */}
             <View className="mx-4">
-              <Text className="text-[16px] font-semibold text-neutral-900">{name}</Text>
+              <Text className="text-[16px] font-semibold text-neutral-900">
+                {name}
+              </Text>
               <Text className="text-[14px] text-neutral-600">
-                {amount}  •  {calories} kcal
+                {amount} • {calories} kcal
               </Text>
             </View>
           </View>
@@ -112,7 +127,9 @@ export default function MealCard({
             className="flex-row items-center"
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Text className="text-[15px] font-medium text-emerald-600">{t("add")}</Text>
+            <Text className="text-[15px] font-medium text-emerald-600">
+              {t("add")}
+            </Text>
             <Ionicons
               name={open ? "chevron-down" : "chevron-forward"}
               size={16}
@@ -132,4 +149,3 @@ export default function MealCard({
     </View>
   );
 }
-

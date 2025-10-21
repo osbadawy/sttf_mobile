@@ -56,7 +56,7 @@ export default function NutritionDashboard() {
             bmi={20.5}
             fatPercent={12.2}
             musclePercent={35.6}
-            />
+          />
         </View>
         <View className="mt-10 mb-6">
           <MealLog />

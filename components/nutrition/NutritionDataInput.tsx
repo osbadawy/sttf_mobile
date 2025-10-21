@@ -41,7 +41,7 @@ function MetricInput({
       <TextInput
         className="flex-1 text-[14px] ml-2 font-semibold"
         keyboardType="numeric"
-        placeholder={t(placeholder)}          // ✅ Localized placeholder
+        placeholder={t(placeholder)} // ✅ Localized placeholder
         placeholderTextColor={color + "80"}
         style={{ color }}
         value={typeof value === "number" ? String(value) : ""}
@@ -65,7 +65,7 @@ export default function NutritionDataInput({ value, onChange }: Props) {
     <View className="flex-1 gap-4 overflow-hidden">
       <View className="flex-row">
         <MetricInput
-          placeholder="carbs"             // ✅ match translation key
+          placeholder="carbs" // ✅ match translation key
           unit="g"
           value={safe.carbs}
           onChange={(v) => onChange({ ...safe, carbs: v })}

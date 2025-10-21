@@ -1,17 +1,10 @@
 import * as React from "react";
 import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
 
-
 type SVGProps = React.ComponentProps<typeof Svg>;
 
-const ProteinIcon  : React.FC<SVGProps> = (props) => (
-  <Svg
-    width={23}
-    height={18}
-    viewBox="0 0 23 18"
-    fill="none"
-    {...props}
-  >
+const ProteinIcon: React.FC<SVGProps> = (props) => (
+  <Svg width={23} height={18} viewBox="0 0 23 18" fill="none" {...props}>
     <G clipPath="url(#clip0_286_3501)">
       <Path
         fillRule="evenodd"

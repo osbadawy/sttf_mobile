@@ -2,20 +2,14 @@
 import { Text, View } from "react-native";
 
 export type BodyMetricsProps = {
-  weightKg: number;        // e.g., 83.2
-  bmi: number;             // e.g., 20.5
-  fatPercent: number;      // e.g., 12.2
-  musclePercent: number;   // e.g., 35.6
-  title?: string;          // optional override for the header
+  weightKg: number; // e.g., 83.2
+  bmi: number; // e.g., 20.5
+  fatPercent: number; // e.g., 12.2
+  musclePercent: number; // e.g., 35.6
+  title?: string; // optional override for the header
 };
 
-function Row({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
+function Row({ label, value }: { label: string; value: string | number }) {
   return (
     <View className="flex-row items-center py-3">
       <Text className="text-[16px] text-neutral-800">{label}</Text>

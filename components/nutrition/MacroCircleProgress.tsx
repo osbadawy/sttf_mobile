@@ -7,10 +7,10 @@ export type MacroCircleProps = {
   totalCarbs?: number;
   totalProteins?: number;
   totalFats?: number;
-  carbs?: number;   // current
+  carbs?: number; // current
   protein?: number; // current
-  fats?: number;    // current
-  size?: number;        // px (outer)
+  fats?: number; // current
+  size?: number; // px (outer)
   strokeWidth?: number; // ring thickness
   trackColor?: string;
   carbsColor?: string;
@@ -26,7 +26,7 @@ function arcPath(
   r: number,
   startDeg: number,
   endDeg: number,
-  sweepFlag: 0 | 1
+  sweepFlag: 0 | 1,
 ): string {
   const start = {
     x: cx + r * Math.cos(deg2rad(startDeg)),
@@ -50,7 +50,7 @@ function pointOnCircle(
   cx: number,
   cy: number,
   r: number,
-  deg: number
+  deg: number,
 ): { x: number; y: number } {
   return {
     x: cx + r * Math.cos(deg2rad(deg)),
@@ -108,9 +108,9 @@ export default function MacroCircleProgress({
   size = 220,
   strokeWidth = 22,
   trackColor = "#E5E7EB",
-  carbsColor = "#FABB00",   // Grain
+  carbsColor = "#FABB00", // Grain
   proteinColor = "#009FA0", // Protein
-  fatsColor = "#F47B37",    // Fat
+  fatsColor = "#F47B37", // Fat
 }: MacroCircleProps) {
   const half = size / 2;
   const r = half - strokeWidth / 2;
@@ -119,14 +119,17 @@ export default function MacroCircleProgress({
   const seg = { span: 120, halfSpan: 60, centers: [60, 180, 300] };
 
   // Target progress (0..1)
-  const pCarbsTarget   = totalCarbs     > 0 ? Math.min(1, Math.max(0, carbs   / totalCarbs))     : 0;
-  const pProteinTarget = totalProteins  > 0 ? Math.min(1, Math.max(0, protein / totalProteins))  : 0;
-  const pFatsTarget    = totalFats      > 0 ? Math.min(1, Math.max(0, fats    / totalFats))      : 0;
+  const pCarbsTarget =
+    totalCarbs > 0 ? Math.min(1, Math.max(0, carbs / totalCarbs)) : 0;
+  const pProteinTarget =
+    totalProteins > 0 ? Math.min(1, Math.max(0, protein / totalProteins)) : 0;
+  const pFatsTarget =
+    totalFats > 0 ? Math.min(1, Math.max(0, fats / totalFats)) : 0;
 
   // Animated progress
-  const pCarbs   = useAnimatedValue(pCarbsTarget);
+  const pCarbs = useAnimatedValue(pCarbsTarget);
   const pProtein = useAnimatedValue(pProteinTarget);
-  const pFats    = useAnimatedValue(pFatsTarget);
+  const pFats = useAnimatedValue(pFatsTarget);
 
   const L_half = r * deg2rad(seg.halfSpan);
 
@@ -137,11 +140,7 @@ export default function MacroCircleProgress({
   const markerOuterR = Math.max(3.5, strokeWidth * 0.28);
   const markerInnerR = markerOuterR * 0.45;
 
-  const renderCategory = (
-    centerDeg: number,
-    fillColor: string,
-    p: number
-  ) => {
+  const renderCategory = (centerDeg: number, fillColor: string, p: number) => {
     const startDeg = centerDeg - seg.halfSpan;
     const endDeg = centerDeg + seg.halfSpan;
 
@@ -150,15 +149,15 @@ export default function MacroCircleProgress({
 
     // Halves (center -> edges)
     const rightHalf = arcPath(half, half, r, centerDeg, endDeg, 1);
-    const leftHalf  = arcPath(half, half, r, centerDeg, startDeg, 0);
+    const leftHalf = arcPath(half, half, r, centerDeg, startDeg, 0);
 
     const dash = dashForHalf(L_half, p);
 
     // Marker positions at the CURRENT filled ends (if p > 0)
     const rightAngle = centerDeg + p * seg.halfSpan;
-    const leftAngle  = centerDeg - p * seg.halfSpan;
+    const leftAngle = centerDeg - p * seg.halfSpan;
     const rightPos = pointOnCircle(half, half, r, rightAngle);
-    const leftPos  = pointOnCircle(half, half, r, leftAngle);
+    const leftPos = pointOnCircle(half, half, r, leftAngle);
 
     return (
       <G key={`seg-${centerDeg}`}>
@@ -192,10 +191,30 @@ export default function MacroCircleProgress({
         {/* End markers (only draw if we have some progress) */}
         {p > 0 && (
           <>
-            <Circle cx={rightPos.x} cy={rightPos.y} r={markerOuterR} fill={fillColor} />
-            <Circle cx={rightPos.x} cy={rightPos.y} r={markerInnerR} fill="#FFFFFF" />
-            <Circle cx={leftPos.x}  cy={leftPos.y}  r={markerOuterR} fill={fillColor} />
-            <Circle cx={leftPos.x}  cy={leftPos.y}  r={markerInnerR} fill="#FFFFFF" />
+            <Circle
+              cx={rightPos.x}
+              cy={rightPos.y}
+              r={markerOuterR}
+              fill={fillColor}
+            />
+            <Circle
+              cx={rightPos.x}
+              cy={rightPos.y}
+              r={markerInnerR}
+              fill="#FFFFFF"
+            />
+            <Circle
+              cx={leftPos.x}
+              cy={leftPos.y}
+              r={markerOuterR}
+              fill={fillColor}
+            />
+            <Circle
+              cx={leftPos.x}
+              cy={leftPos.y}
+              r={markerInnerR}
+              fill="#FFFFFF"
+            />
           </>
         )}
       </G>
@@ -203,13 +222,21 @@ export default function MacroCircleProgress({
   };
 
   return (
-    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center" }}>
+    <View
+      style={{
+        width: size,
+        height: size,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <Svg width={size} height={size}>
         {/* --- z-index via render order ---
             back (carbs) -> middle (protein) -> top (fats) */}
-        {renderCategory(seg.centers[2], carbsColor, pCarbs)}     {/* carbs back */}
-        {renderCategory(seg.centers[0], proteinColor, pProtein)} {/* protein middle */}
-        {renderCategory(seg.centers[1], fatsColor, pFats)}       {/* fats top */}
+        {renderCategory(seg.centers[2], carbsColor, pCarbs)} {/* carbs back */}
+        {renderCategory(seg.centers[0], proteinColor, pProtein)}{" "}
+        {/* protein middle */}
+        {renderCategory(seg.centers[1], fatsColor, pFats)} {/* fats top */}
       </Svg>
 
       {/* Center percentage */}
@@ -221,12 +248,20 @@ export default function MacroCircleProgress({
         }}
         pointerEvents="none"
       >
-        <Text style={{ fontSize: 52, fontWeight: "700", color: "#374151", lineHeight: 56 }}>
+        <Text
+          style={{
+            fontSize: 52,
+            fontWeight: "700",
+            color: "#374151",
+            lineHeight: 56,
+          }}
+        >
           {centerPct}
-          <Text style={{ fontSize: 28, fontWeight: "500", color: "#6B7280" }}>%</Text>
+          <Text style={{ fontSize: 28, fontWeight: "500", color: "#6B7280" }}>
+            %
+          </Text>
         </Text>
       </View>
     </View>
   );
 }
-

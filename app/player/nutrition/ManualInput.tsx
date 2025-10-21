@@ -16,10 +16,17 @@ import {
   View,
 } from "react-native";
 
-import NutritionDataInput, { NutritionData } from "@/components/nutrition/NutritionDataInput";
+import NutritionDataInput, {
+  NutritionData,
+} from "@/components/nutrition/NutritionDataInput";
 
 const shadow = Platform.select({
-  ios: { shadowColor: "#000", shadowOpacity: 0.08, shadowRadius: 10, shadowOffset: { width: 0, height: 6 } },
+  ios: {
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+  },
   android: { elevation: 4 },
 });
 
@@ -107,10 +114,18 @@ export default function ManualInputDesign() {
         >
           <View className="flex-1 bg-[#E6E6E6] justify-between">
             {/* Header block */}
-            <View className="py-10 px-4" style={{ backgroundColor: imageUri ? "#F3F6EE" : "#E6E6E6" }}>
+            <View
+              className="py-10 px-4"
+              style={{ backgroundColor: imageUri ? "#F3F6EE" : "#E6E6E6" }}
+            >
               <View className="items-center mb-4 pt-6 w-full">
                 {imageUri ? (
-                  <Image source={{ uri: imageUri }} className="w-full h-64 rounded-xl" resizeMode="cover" style={shadow as object} />
+                  <Image
+                    source={{ uri: imageUri }}
+                    className="w-full h-64 rounded-xl"
+                    resizeMode="cover"
+                    style={shadow as object}
+                  />
                 ) : (
                   <>
                     <Ionicons name="camera-outline" size={82} color="#A3A3A3" />
@@ -132,7 +147,11 @@ export default function ManualInputDesign() {
                         <Text className="text-[#464646] font-normal text-lg">
                           {isSending ? t("uploading") : t("Add picture")}
                         </Text>
-                        {!isSending && <Text className="text-[#464646] font-thin text-3xl ml-1">+</Text>}
+                        {!isSending && (
+                          <Text className="text-[#464646] font-thin text-3xl ml-1">
+                            +
+                          </Text>
+                        )}
                       </View>
                     </TouchableOpacity>
                   </>
@@ -143,11 +162,14 @@ export default function ManualInputDesign() {
             {/* Content area */}
             <View className="flex-1 px-4 pt-5 bg-[#F3F6EE]">
               {/* Name input (localized placeholder) */}
-              <View className="w-full rounded-xl bg-white border border-[#E8E8E8] mb-3" style={shadow}>
+              <View
+                className="w-full rounded-xl bg-white border border-[#E8E8E8] mb-3"
+                style={shadow}
+              >
                 <TextInput
                   value={mealName}
                   onChangeText={setMealName}
-                  placeholder={t("name of meal")}   // 👈 localized
+                  placeholder={t("name of meal")} // 👈 localized
                   placeholderTextColor="#A3A3A3"
                   className="px-4 py-3 text-[16px] text-neutral-900"
                   returnKeyType="done"
@@ -155,16 +177,25 @@ export default function ManualInputDesign() {
               </View>
 
               {/* When dropdown (localized header + options) */}
-              <View className="w-full rounded-xl bg-white border border-[#E8E8E8] mb-3" style={shadow}>
+              <View
+                className="w-full rounded-xl bg-white border border-[#E8E8E8] mb-3"
+                style={shadow}
+              >
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => setWhenOpen((v) => !v)}
                   className="flex-row items-center justify-between px-4 py-3"
                 >
-                  <Text className={`text-[16px] ${whenValue ? "text-neutral-900" : "text-neutral-400"}`}>
+                  <Text
+                    className={`text-[16px] ${whenValue ? "text-neutral-900" : "text-neutral-400"}`}
+                  >
                     {localizedWhen(whenValue)}
                   </Text>
-                  <Ionicons name={whenOpen ? "chevron-up" : "chevron-down"} size={16} color="#111827" />
+                  <Ionicons
+                    name={whenOpen ? "chevron-up" : "chevron-down"}
+                    size={16}
+                    color="#111827"
+                  />
                 </TouchableOpacity>
 
                 {whenOpen && (
@@ -185,8 +216,16 @@ export default function ManualInputDesign() {
                           }`}
                         >
                           <View className="flex-row items-center justify-between">
-                            <Text className="text-[16px] text-neutral-900">{t(WHEN_I18N_KEY[opt])}</Text>
-                            {isSelected && <Ionicons name="checkmark" size={18} color="#10B981" />}
+                            <Text className="text-[16px] text-neutral-900">
+                              {t(WHEN_I18N_KEY[opt])}
+                            </Text>
+                            {isSelected && (
+                              <Ionicons
+                                name="checkmark"
+                                size={18}
+                                color="#10B981"
+                              />
+                            )}
                           </View>
                         </TouchableOpacity>
                       );
@@ -202,11 +241,16 @@ export default function ManualInputDesign() {
                 className="flex-row items-center justify-center my-2"
               >
                 <Text className="text-base text-neutral-700">
-                  {t("add macro")} <Text className="text-neutral-500">{dataOpen ? "▾" : "▸"}</Text>
+                  {t("add macro")}{" "}
+                  <Text className="text-neutral-500">
+                    {dataOpen ? "▾" : "▸"}
+                  </Text>
                 </Text>
               </TouchableOpacity>
 
-              {dataOpen && <NutritionDataInput value={nutrition} onChange={setNutrition} />}
+              {dataOpen && (
+                <NutritionDataInput value={nutrition} onChange={setNutrition} />
+              )}
             </View>
 
             {/* Confirm button (kept simple) */}

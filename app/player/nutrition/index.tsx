@@ -10,7 +10,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 type MealType = "breakfast" | "lunch" | "snack" | "dinner";
 
 const UI_MEAL_LABELS = ["Breakfast", "Lunch", "Dinner", "Snacks"] as const;
-type UiMealLabel = typeof UI_MEAL_LABELS[number];
+type UiMealLabel = (typeof UI_MEAL_LABELS)[number];
 
 const labelToMealType: Record<UiMealLabel, MealType> = {
   Breakfast: "breakfast",
@@ -30,7 +30,12 @@ export default function MealLogPage() {
   const playerData = JSON.parse((player as string) || "{}");
 
   const [meals, setMeals] = useState<
-    Array<{ meal_type: UiMealLabel; food: string; calories: number; amount: string }>
+    Array<{
+      meal_type: UiMealLabel;
+      food: string;
+      calories: number;
+      amount: string;
+    }>
   >([]);
   const [mealFilters, setMealFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -38,15 +43,60 @@ export default function MealLogPage() {
 
   useEffect(() => {
     const fetchMeals = async () => {
-      const data: Array<{ meal_type: UiMealLabel; food: string; calories: number; amount: string }> = [
-        { meal_type: "Breakfast", food: "Oatmeal", calories: 150, amount: "1 bowl" },
-        { meal_type: "Breakfast", food: "Scrambled Eggs", calories: 200, amount: "2 eggs" },
-        { meal_type: "Lunch", food: "Chicken Salad", calories: 350, amount: "1 plate" },
-        { meal_type: "Lunch", food: "Quinoa Bowl", calories: 400, amount: "1 bowl" },
-        { meal_type: "Dinner", food: "Grilled Salmon", calories: 500, amount: "1 fillet" },
-        { meal_type: "Dinner", food: "Steamed Vegetables", calories: 100, amount: "1 cup" },
-        { meal_type: "Snacks", food: "Almonds", calories: 150, amount: "1 handful" },
-        { meal_type: "Snacks", food: "Greek Yogurt", calories: 120, amount: "1 cup" },
+      const data: Array<{
+        meal_type: UiMealLabel;
+        food: string;
+        calories: number;
+        amount: string;
+      }> = [
+        {
+          meal_type: "Breakfast",
+          food: "Oatmeal",
+          calories: 150,
+          amount: "1 bowl",
+        },
+        {
+          meal_type: "Breakfast",
+          food: "Scrambled Eggs",
+          calories: 200,
+          amount: "2 eggs",
+        },
+        {
+          meal_type: "Lunch",
+          food: "Chicken Salad",
+          calories: 350,
+          amount: "1 plate",
+        },
+        {
+          meal_type: "Lunch",
+          food: "Quinoa Bowl",
+          calories: 400,
+          amount: "1 bowl",
+        },
+        {
+          meal_type: "Dinner",
+          food: "Grilled Salmon",
+          calories: 500,
+          amount: "1 fillet",
+        },
+        {
+          meal_type: "Dinner",
+          food: "Steamed Vegetables",
+          calories: 100,
+          amount: "1 cup",
+        },
+        {
+          meal_type: "Snacks",
+          food: "Almonds",
+          calories: 150,
+          amount: "1 handful",
+        },
+        {
+          meal_type: "Snacks",
+          food: "Greek Yogurt",
+          calories: 120,
+          amount: "1 cup",
+        },
       ];
       setMeals(data);
     };
@@ -63,7 +113,7 @@ export default function MealLogPage() {
 
   // Only labels that have meals
   const presentLabels: UiMealLabel[] = UI_MEAL_LABELS.filter(
-    (label) => (groupedMeals[label]?.length ?? 0) > 0
+    (label) => (groupedMeals[label]?.length ?? 0) > 0,
   );
 
   // ✅ Localize section titles BEFORE mapping/render
@@ -96,12 +146,16 @@ export default function MealLogPage() {
     >
       <View className="p-5">
         <View className="mt-4 flex-row items-center justify-between">
-          <Text className={`text-2xl font-semibold ${titleAlign}`}>{t("header")}</Text>
+          <Text className={`text-2xl font-semibold ${titleAlign}`}>
+            {t("header")}
+          </Text>
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => router.push("/player/nutrition/NutritionDashboard")}
           >
-            <Text className={`text-base font-normal text-[#008C46] underline ${titleAlign}`}>
+            <Text
+              className={`text-base font-normal text-[#008C46] underline ${titleAlign}`}
+            >
               {t("show data")}
             </Text>
           </TouchableOpacity>
@@ -111,7 +165,9 @@ export default function MealLogPage() {
           {sections.length > 0 ? (
             sections.map((section) => (
               <View key={section.label} className="mb-5">
-                <Text className={`text-xl font-normal mb-2 ${titleAlign}`}>{section.title}</Text>
+                <Text className={`text-xl font-normal mb-2 ${titleAlign}`}>
+                  {section.title}
+                </Text>
                 <View className="h-[1px] bg-gray-300 w-full" />
                 {section.items.map((meal, idx) => (
                   <MealCard
@@ -133,7 +189,6 @@ export default function MealLogPage() {
               </Text>
             </View>
           )}
-
           {/* OR divider */}
           <View
             className="my-6 flex-row items-center"
@@ -142,10 +197,11 @@ export default function MealLogPage() {
             accessibilityLabel="or separator"
           >
             <View className="flex-1 h-[1px] bg-neutral-300" />
-            <Text className="mx-3 text-neutral-600 font-medium text-xl">{t("or")}</Text>
+            <Text className="mx-3 text-neutral-600 font-medium text-xl">
+              {t("or")}
+            </Text>
             <View className="flex-1 h-[1px] bg-neutral-300" />
           </View>
-
           {/* Add Meal Manually button */}
           <TouchableOpacity
             activeOpacity={0.95}
@@ -160,7 +216,11 @@ export default function MealLogPage() {
             accessibilityRole="button"
             accessibilityLabel="Add meal manually"
           >
-            <Ionicons name="add" size={18} color={manualPressed ? "#047857" : "#475569"} />
+            <Ionicons
+              name="add"
+              size={18}
+              color={manualPressed ? "#047857" : "#475569"}
+            />
             <Text
               className={`ml-2 text-[16px] font-semibold ${
                 manualPressed ? "text-emerald-700" : "text-slate-600"
@@ -169,7 +229,6 @@ export default function MealLogPage() {
               {t("add meal")}
             </Text>
           </TouchableOpacity>
-
           <View className="h-6" />
           <View className="h-6" /> {/* bottom spacer */}
         </ScrollView>
@@ -177,4 +236,3 @@ export default function MealLogPage() {
     </ParallaxScrollView>
   );
 }
-

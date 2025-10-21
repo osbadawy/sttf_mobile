@@ -1,23 +1,17 @@
 import Svg, {
-    ClipPath,
-    Defs,
-    G,
-    LinearGradient,
-    Path,
-    Rect,
-    Stop,
+  ClipPath,
+  Defs,
+  G,
+  LinearGradient,
+  Path,
+  Rect,
+  Stop,
 } from "react-native-svg";
 
 type SVGProps = React.ComponentProps<typeof Svg>;
 
 const SnackIcon: React.FC<SVGProps> = (props) => (
-  <Svg
-    width={22}
-    height={26}
-    viewBox="0 0 22 26"
-    fill="none"
-    {...props}
-  >
+  <Svg width={22} height={26} viewBox="0 0 22 26" fill="none" {...props}>
     <G clipPath="url(#clip0_281_3430)">
       <Path
         fillRule="evenodd"

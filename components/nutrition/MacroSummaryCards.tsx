@@ -8,9 +8,9 @@ type Props = {
   totalCarbs?: number;
   totalProteins?: number;
   totalFats?: number;
-  carbs?: number;    // goal
-  protein?: number;  // goal
-  fats?: number;     // goal
+  carbs?: number; // goal
+  protein?: number; // goal
+  fats?: number; // goal
 };
 
 function MacroCard({
@@ -69,10 +69,19 @@ export default function MacroSummaryCards({
 }: Props) {
   return (
     <View className="flex-row justify-between px-2">
-      <MacroCard Icon={GrainIcon} label="Carbs" total={totalCarbs} goal={carbs} />
-      <MacroCard Icon={ProteinIcon} label="Proteins" total={totalProteins} goal={protein} />
+      <MacroCard
+        Icon={GrainIcon}
+        label="Carbs"
+        total={totalCarbs}
+        goal={carbs}
+      />
+      <MacroCard
+        Icon={ProteinIcon}
+        label="Proteins"
+        total={totalProteins}
+        goal={protein}
+      />
       <MacroCard Icon={FatIcon} label="Fats" total={totalFats} goal={fats} />
     </View>
   );
 }
-

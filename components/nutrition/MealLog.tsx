@@ -17,7 +17,10 @@ type MealItem = {
   dateISO: string; // e.g., "2025-02-09"
 };
 
-const ICON_BY_TYPE: Record<MealType, React.ComponentType<{ className?: string }>> = {
+const ICON_BY_TYPE: Record<
+  MealType,
+  React.ComponentType<{ className?: string }>
+> = {
   breakfast: BreakfastIcon,
   lunch: LunchIcon,
   dinner: DinnerIcon,
@@ -28,7 +31,9 @@ const ICON_BY_TYPE: Record<MealType, React.ComponentType<{ className?: string }>
 function formatDateLabel(iso: string): string {
   const d = new Date(iso);
   const wd = d.toLocaleDateString(undefined, { weekday: "short" }); // Tue
-  const dd = d.toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" }).replace("/", ".");
+  const dd = d
+    .toLocaleDateString(undefined, { day: "2-digit", month: "2-digit" })
+    .replace("/", ".");
   // Some locales use "/", normalize to 02.09
   const [m, day] = dd.includes(".") ? dd.split(".") : dd.split("/");
   // dd mm order can vary; ensure "DD.MM"
@@ -39,19 +44,71 @@ function formatDateLabel(iso: string): string {
 export default function MealLog() {
   // ---- Placeholder static data ----
   const data: MealItem[] = [
-    { id: "1",  mealName: "Meat Lasagna",         weightGrams: 340, calories: 535, type: "dinner",    dateISO: "2025-02-09" },
-    { id: "2",  mealName: "Eggs With Bacon",      weightGrams: 158, calories: 482, type: "breakfast", dateISO: "2025-02-09" },
-    { id: "3",  mealName: "Oatmeal with Berries", weightGrams: 230, calories: 535, type: "breakfast", dateISO: "2025-02-08" },
-    { id: "4",  mealName: "Eggs With Bacon",      weightGrams: 158, calories: 482, type: "breakfast", dateISO: "2025-02-08" },
-    { id: "5",  mealName: "Chicken Salad",        weightGrams: 300, calories: 410, type: "lunch",     dateISO: "2025-02-07" },
-    { id: "6",  mealName: "Greek Yogurt",         weightGrams: 150, calories: 120, type: "snack",     dateISO: "2025-02-07" },
-    { id: "7",  mealName: "Grilled Salmon",       weightGrams: 220, calories: 520, type: "dinner",    dateISO: "2025-02-06" },
+    {
+      id: "1",
+      mealName: "Meat Lasagna",
+      weightGrams: 340,
+      calories: 535,
+      type: "dinner",
+      dateISO: "2025-02-09",
+    },
+    {
+      id: "2",
+      mealName: "Eggs With Bacon",
+      weightGrams: 158,
+      calories: 482,
+      type: "breakfast",
+      dateISO: "2025-02-09",
+    },
+    {
+      id: "3",
+      mealName: "Oatmeal with Berries",
+      weightGrams: 230,
+      calories: 535,
+      type: "breakfast",
+      dateISO: "2025-02-08",
+    },
+    {
+      id: "4",
+      mealName: "Eggs With Bacon",
+      weightGrams: 158,
+      calories: 482,
+      type: "breakfast",
+      dateISO: "2025-02-08",
+    },
+    {
+      id: "5",
+      mealName: "Chicken Salad",
+      weightGrams: 300,
+      calories: 410,
+      type: "lunch",
+      dateISO: "2025-02-07",
+    },
+    {
+      id: "6",
+      mealName: "Greek Yogurt",
+      weightGrams: 150,
+      calories: 120,
+      type: "snack",
+      dateISO: "2025-02-07",
+    },
+    {
+      id: "7",
+      mealName: "Grilled Salmon",
+      weightGrams: 220,
+      calories: 520,
+      type: "dinner",
+      dateISO: "2025-02-06",
+    },
   ];
 
   // Order newest date first
   const sorted = useMemo(
-    () => [...data].sort((a, b) => (a.dateISO < b.dateISO ? 1 : a.dateISO > b.dateISO ? -1 : 0)),
-    []
+    () =>
+      [...data].sort((a, b) =>
+        a.dateISO < b.dateISO ? 1 : a.dateISO > b.dateISO ? -1 : 0,
+      ),
+    [],
   );
 
   const [visibleCount, setVisibleCount] = useState<number>(5);
@@ -108,7 +165,9 @@ export default function MealLog() {
                   <Text className="text-2xl font-bold text-neutral-900">
                     {m.calories}
                   </Text>
-                  <Text className="ml-1 text-[13px] text-neutral-700">Kcal</Text>
+                  <Text className="ml-1 text-[13px] text-neutral-700">
+                    Kcal
+                  </Text>
                 </View>
               </View>
             );
@@ -121,7 +180,9 @@ export default function MealLog() {
         <View className="mt-2 mb-6">
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => setVisibleCount((c) => Math.min(c + 5, sorted.length))}
+            onPress={() =>
+              setVisibleCount((c) => Math.min(c + 5, sorted.length))
+            }
             className="h-12 rounded-xl border border-emerald-600 items-center justify-center"
           >
             <Text className="text-emerald-700 font-medium">Load More</Text>

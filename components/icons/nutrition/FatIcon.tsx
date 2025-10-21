@@ -3,14 +3,8 @@ import Svg, { ClipPath, Defs, G, Path, Rect } from "react-native-svg";
 
 type SVGProps = React.ComponentProps<typeof Svg>;
 
-const FatIcon  : React.FC<SVGProps> = (props) => (
-  <Svg
-    width={20}
-    height={18}
-    viewBox="0 0 20 18"
-    fill="none"
-    {...props}
-  >
+const FatIcon: React.FC<SVGProps> = (props) => (
+  <Svg width={20} height={18} viewBox="0 0 20 18" fill="none" {...props}>
     <G clipPath="url(#clip0_286_3504)">
       <Path
         fillRule="evenodd"

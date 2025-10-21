@@ -1,24 +1,18 @@
 import * as React from "react";
 import Svg, {
-    ClipPath,
-    Defs,
-    G,
-    LinearGradient,
-    Path,
-    Rect,
-    Stop,
+  ClipPath,
+  Defs,
+  G,
+  LinearGradient,
+  Path,
+  Rect,
+  Stop,
 } from "react-native-svg";
 // ✅ Define props type using the built-in Svg component props
 type SVGProps = React.ComponentProps<typeof Svg>;
 
 const DinnerIcon: React.FC<SVGProps> = (props) => (
-  <Svg
-    width={30}
-    height={22}
-    viewBox="0 0 30 22"
-    fill="none"
-    {...props}
-  >
+  <Svg width={30} height={22} viewBox="0 0 30 22" fill="none" {...props}>
     <G clipPath="url(#clip0_281_3424)">
       <Path
         fillRule="evenodd"

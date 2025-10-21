@@ -75,9 +75,9 @@ export const resources = {
         activityView: enActivitiesActivityView,
         selfAssessment: enActivitiesSelfAssessment,
       },
-      nutrition:{
-        nutritionList: enNutritionList
-      }
+      nutrition: {
+        nutritionList: enNutritionList,
+      },
     },
   },
   ar: {
@@ -109,9 +109,9 @@ export const resources = {
         activityView: arActivitiesActivityView,
         selfAssessment: arActivitiesSelfAssessment,
       },
-      nutrition:{
-        nutritionList: arNutritionList
-      }
+      nutrition: {
+        nutritionList: arNutritionList,
+      },
     },
   },
 };

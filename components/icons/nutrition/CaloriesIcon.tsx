@@ -3,14 +3,8 @@ import Svg, { Path } from "react-native-svg";
 
 type SVGProps = React.ComponentProps<typeof Svg>;
 
-const CaloriesIcon  : React.FC<SVGProps> = (props) => (
-  <Svg
-    width={24}
-    height={24}
-    viewBox="0 0 24 24"
-    fill="none"
-    {...props}
-  >
+const CaloriesIcon: React.FC<SVGProps> = (props) => (
+  <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" {...props}>
     <Path
       fillRule="evenodd"
       clipRule="evenodd"

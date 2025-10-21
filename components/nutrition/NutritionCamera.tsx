@@ -2,7 +2,14 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useMemo, useRef, useState } from "react";
-import { Animated, Image, PanResponder, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  Image,
+  PanResponder,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface NutritionCameraProps {
   /** Called when user successfully swipes to confirm; passes the taken photo URI (or null). */
@@ -11,11 +18,14 @@ interface NutritionCameraProps {
   hideSwipePill?: boolean;
 }
 
-export default function NutritionCamera({ onConfirm, hideSwipePill = true }: NutritionCameraProps) {
+export default function NutritionCamera({
+  onConfirm,
+  hideSwipePill = true,
+}: NutritionCameraProps) {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [containerH, setContainerH] = useState(0);
-  const chevronOpacities = [0.10, 0.28, 0.42, 0.58, 0.75];
+  const chevronOpacities = [0.1, 0.28, 0.42, 0.58, 0.75];
   const chevronSize = Math.max(28, containerH * 1);
   const isSwipeActive = !!photoUri;
 
@@ -51,7 +61,7 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
           }
         },
       }),
-    [photoUri]
+    [photoUri],
   );
 
   async function openCamera() {
@@ -83,7 +93,11 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
               name="chevron-forward"
               size={chevronSize}
               color="#3C6B67"
-              style={{ opacity: op, marginHorizontal: -35, transform: [{ scaleX: 0.30 }] }}
+              style={{
+                opacity: op,
+                marginHorizontal: -35,
+                transform: [{ scaleX: 0.3 }],
+              }}
             />
           ))}
         </View>
@@ -93,15 +107,22 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
           {/* 👇 Left message: only show when swipe is active */}
           {isSwipeActive ? (
             <View className="flex-row items-baseline">
-              <Text className="text-[18px] font-medium text-neutral-500">{t("swipe to")}</Text>
-              <Text className="text-[18px] font-semibold text-emerald-600">{t("confirm")}</Text>
+              <Text className="text-[18px] font-medium text-neutral-500">
+                {t("swipe to")}
+              </Text>
+              <Text className="text-[18px] font-semibold text-emerald-600">
+                {t("confirm")}
+              </Text>
             </View>
           ) : (
             <View /> // keep layout tidy when inactive
           )}
 
           {/* Camera button / preview */}
-          <TouchableOpacity onPress={openCamera} className="ml-auto items-center">
+          <TouchableOpacity
+            onPress={openCamera}
+            className="ml-auto items-center"
+          >
             <View className="rounded-full p-1">
               <View
                 className="size-12 rounded-full items-center justify-center bg-white overflow-hidden"
@@ -117,7 +138,11 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
                 }}
               >
                 {photoUri ? (
-                  <Image source={{ uri: photoUri }} className="w-full h-full rounded-full" resizeMode="cover" />
+                  <Image
+                    source={{ uri: photoUri }}
+                    className="w-full h-full rounded-full"
+                    resizeMode="cover"
+                  />
                 ) : (
                   <Ionicons name="camera-outline" size={20} color="#546E7A" />
                 )}
@@ -126,7 +151,9 @@ export default function NutritionCamera({ onConfirm, hideSwipePill = true }: Nut
 
             {/* 👇 Right label: only show when swipe is NOT active */}
             {!isSwipeActive && (
-              <Text className="mt-1 text-[13px] text-neutral-800">{t("tap here")}</Text>
+              <Text className="mt-1 text-[13px] text-neutral-800">
+                {t("tap here")}
+              </Text>
             )}
           </TouchableOpacity>
 

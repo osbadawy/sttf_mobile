@@ -26,7 +26,7 @@
   "calories": "Calories",
   "name of meal": "Name of Meal",
   "when": "When",
-   "camera permission title": "Camera Permission",
+  "camera permission title": "Camera Permission",
   "camera permission body": "Camera access is needed to add a picture.",
   "upload failed title": "Upload failed",
   "upload failed body": "Could not upload the image. Please retry.",
