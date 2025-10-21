@@ -73,19 +73,19 @@ export default function MacroSummaryCards({
     <View className="flex-row justify-between px-2">
       <MacroCard
         Icon={GrainIcon}
-        label={t("carbs")}        // 🟢 Localized label
+        label={t("carbs")} // 🟢 Localized label
         total={totalCarbs}
         goal={carbs}
       />
       <MacroCard
         Icon={ProteinIcon}
-        label={t("protein")}     // 🟢 Localized label
+        label={t("protein")} // 🟢 Localized label
         total={totalProteins}
         goal={protein}
       />
       <MacroCard
         Icon={FatIcon}
-        label={t("fat")}         // 🟢 Localized label
+        label={t("fat")} // 🟢 Localized label
         total={totalFats}
         goal={fats}
       />

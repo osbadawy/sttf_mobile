@@ -2,11 +2,11 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 
 export type BodyMetricsProps = {
-  weightKg: number;        // e.g., 83.2
-  bmi: number;             // e.g., 20.5
-  fatPercent: number;      // e.g., 12.2
-  musclePercent: number;   // e.g., 35.6
-  title?: string;          // optional override
+  weightKg: number; // e.g., 83.2
+  bmi: number; // e.g., 20.5
+  fatPercent: number; // e.g., 12.2
+  musclePercent: number; // e.g., 35.6
+  title?: string; // optional override
 };
 
 function Row({
@@ -74,7 +74,11 @@ export default function BodyMetricsCard({
         <Row isRTL={isRTL} label={t("fat %")} value={`${fmt1(fatPercent)}%`} />
         <View className="h-[1px] bg-neutral-200" />
 
-        <Row isRTL={isRTL} label={t("muscle %")} value={`${fmt1(musclePercent)}%`} />
+        <Row
+          isRTL={isRTL}
+          label={t("muscle %")}
+          value={`${fmt1(musclePercent)}%`}
+        />
       </View>
     </View>
   );

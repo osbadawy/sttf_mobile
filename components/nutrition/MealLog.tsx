@@ -43,7 +43,7 @@ function formatDateLabel(iso: string): string {
 }
 
 export default function MealLog() {
-    const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
+  const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   // ---- Placeholder static data ----
   const data: MealItem[] = [
     {
@@ -134,7 +134,12 @@ export default function MealLog() {
 
   return (
     <View className="px-5">
-      <Text className="text-xl font-semibold text-neutral-900 mb-3" style={{ textAlign: isRTL ? "right" : "left" }}>{t("meal log")}</Text>
+      <Text
+        className="text-xl font-semibold text-neutral-900 mb-3"
+        style={{ textAlign: isRTL ? "right" : "left" }}
+      >
+        {t("meal log")}
+      </Text>
       <View className="h-[1px] bg-neutral-200 mb-2" />
 
       {grouped.map((section) => (
