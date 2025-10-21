@@ -30,5 +30,11 @@
   "camera permission body": "Camera access is needed to add a picture.",
   "upload failed title": "Upload failed",
   "upload failed body": "Could not upload the image. Please retry.",
-  "nutritionDashboard": "Nutrition Dashboard"
+  "nutritionDashboard": "Nutrition Dashboard",
+  "body metrics": "Body Metrics",
+  "weight": "Weight",
+  "bmi": "BMI",
+  "fat %": "Fat %",
+  "muscle %": "Muscle %",
+  "meal log": "Meal Log"
 }

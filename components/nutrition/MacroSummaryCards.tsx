@@ -1,7 +1,7 @@
-// components/nutrition/MacroSummaryCards.tsx
 import FatIcon from "@/components/icons/nutrition/FatIcon";
 import GrainIcon from "@/components/icons/nutrition/GrainIcon";
 import ProteinIcon from "@/components/icons/nutrition/ProteinIcon";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 
 type Props = {
@@ -67,21 +67,28 @@ export default function MacroSummaryCards({
   protein = 150,
   fats = 132,
 }: Props) {
+  const { t } = useLocalization("components.nutrition.nutritionList");
+
   return (
     <View className="flex-row justify-between px-2">
       <MacroCard
         Icon={GrainIcon}
-        label="Carbs"
+        label={t("carbs")}        // 🟢 Localized label
         total={totalCarbs}
         goal={carbs}
       />
       <MacroCard
         Icon={ProteinIcon}
-        label="Proteins"
+        label={t("protein")}     // 🟢 Localized label
         total={totalProteins}
         goal={protein}
       />
-      <MacroCard Icon={FatIcon} label="Fats" total={totalFats} goal={fats} />
+      <MacroCard
+        Icon={FatIcon}
+        label={t("fat")}         // 🟢 Localized label
+        total={totalFats}
+        goal={fats}
+      />
     </View>
   );
 }

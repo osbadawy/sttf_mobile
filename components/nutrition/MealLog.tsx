@@ -3,6 +3,7 @@ import BreakfastIcon from "@/components/icons/nutrition/BreakfastIcon";
 import DinnerIcon from "@/components/icons/nutrition/DinnerIcon";
 import LunchIcon from "@/components/icons/nutrition/LunchIcon";
 import SnackIcon from "@/components/icons/nutrition/SnackIcon";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import React, { useMemo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -42,6 +43,7 @@ function formatDateLabel(iso: string): string {
 }
 
 export default function MealLog() {
+    const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   // ---- Placeholder static data ----
   const data: MealItem[] = [
     {
@@ -132,7 +134,7 @@ export default function MealLog() {
 
   return (
     <View className="px-5">
-      <Text className="text-xl font-semibold text-neutral-900 mb-3">Meals</Text>
+      <Text className="text-xl font-semibold text-neutral-900 mb-3" style={{ textAlign: isRTL ? "right" : "left" }}>{t("meal log")}</Text>
       <View className="h-[1px] bg-neutral-200 mb-2" />
 
       {grouped.map((section) => (

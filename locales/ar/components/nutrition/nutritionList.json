@@ -30,5 +30,11 @@
   "camera permission body": "الوصول إلى الكاميرا مطلوب لإضافة صورة.",
   "upload failed title": "فشل التحميل",
   "upload failed body": "تعذر تحميل الصورة. يرجى المحاولة مرة أخرى.",
-  "nutritionDashboard": "لوحة معلومات التغذية"
+  "nutritionDashboard": "لوحة معلومات التغذية",
+  "body metrics": "مقاييس الجسم",
+  "weight": "الوزن",
+  "bmi": "مؤشر كتلة الجسم",
+  "fat %": "نسبة الدهون %",
+  "muscle %": "نسبة العضلات %",
+  "meal log": "سجل الوجبات"
 }
