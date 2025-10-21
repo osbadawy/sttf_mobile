@@ -10,12 +10,7 @@ const NavBarSvg: React.FC<NavGlassBlurProps> = ({
   width = 336,
   height = 102,
 }) => (
-  <Svg
-    width={width}
-    height={height}
-    viewBox="0 0 336 102"
-    fill="none"
-  >
+  <Svg width={width} height={height} viewBox="0 0 336 102" fill="none">
     <ForeignObject x={0} y={-1} width={336} height={103} />
     <G filter="url(#filter0_di_1209_1702)" data-figma-bg-blur-radius={12}>
       <Path
