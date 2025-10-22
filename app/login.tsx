@@ -32,7 +32,7 @@ export default function LoginPage() {
   // Redirect to dashboard once logged in
   useEffect(() => {
     if (user) {
-      router.replace("/player/dashboard");
+      router.replace("/coach/dashboard");
     }
   }, [user]);
 
