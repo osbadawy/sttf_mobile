@@ -4,6 +4,7 @@ import Arrow from "./Arrow";
 import ArrowBig from "./ArrowBig";
 import CheckIcon from "./Check";
 import ExclamationMark from "./ExclamationMark";
+import FilterIcon from "./FilterIcon";
 import HeaderBgIcon from "./HeaderBgIcon";
 import HeartBg from "./HeartBg";
 import HeartLine1 from "./HeartLine1";
@@ -24,6 +25,7 @@ export {
   ArrowBig,
   CheckIcon,
   ExclamationMark,
+  FilterIcon,
   HeaderBgIcon,
   HeartBg,
   HeartLine1,
