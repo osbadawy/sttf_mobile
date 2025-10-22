@@ -6,8 +6,12 @@
   },
 
   "activity": "Activity",
-  "rally-session": "Rally Session",
-  "serve-practice": "Serve Practice",
+  "warm-up": "Warm Up",
+  "serve": "Serve",
+  "recieve": "Recieve",
+  "stroke-technique": "Stroke Technique",
+  "footwork": "Footwork",
+  "pattern-play": "Pattern Play",
 
   "assault-bike": "Assault Bike",
   "australian-rules-football": "Australian Rules Football",

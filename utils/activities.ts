@@ -61,11 +61,37 @@ export function getUniqueActivityTypes(data: Record<number, any[]>): string[] {
 
 export function getActivityTypesInCategory(category: string) {
   if (category === "technical") {
-    return ["table-tennis-ping-pong", "rally-session", "serve-practice"];
-  } else if (category === "strength") {
-    return ["weightlifting", "walking", "running"];
-  } else if (category === "recovery") {
-    return ["swimming", "yoga", "pilates"];
+    return [
+      "warm-up",
+      "serve",
+      "recieve",
+      "stroke-technique",
+      "footwork",
+      "pattern-play",
+    ];
+  } else if (category === "strength" || category === "recovery") {
+    return [
+      "badminton",
+      "basketball",
+      "cycling",
+      "elliptical",
+      "functional-fitness",
+      "hiking",
+      "hiit",
+      "jumping-rope",
+      "pickleball",
+      "pilates",
+      "padel",
+      "rowing",
+      "running",
+      "soccer",
+      "squash",
+      "swimming",
+      "tennis",
+      "volleyball",
+      "weightlifting",
+      "yoga",
+    ];
   }
   return [];
 }
