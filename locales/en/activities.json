@@ -1,7 +1,8 @@
 {
   "title": "Your Activity",
   "burntToday": "Burnt Today",
-  "addActivity": "Add Activity",
+  "yourWorkouts": "Your Workouts",
+  "manageWorkouts": "Manage Workouts",
   "allActivities": "All Activities",
   "filterActivities": "Filter Activities",
   "selectCategory": "Select Category"
