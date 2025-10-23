@@ -1,0 +1,16 @@
+{
+  "title": "Create Workout",
+  "players": "Players",
+  "addActivity": "Add Activity",
+
+  "activitySelectionTitle": "Choose your option",
+  "makeYourOwn": "Make your own",
+  "custom": "Custom",
+  "selectFromList": "Select from list",
+
+  "edit": "Edit",
+  "selectTime": "Select time",
+  "nameOfActivity": "Name of Activity",
+  "details": "Details of Activity",
+  "add": "Add"
+}

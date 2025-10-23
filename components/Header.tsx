@@ -38,7 +38,8 @@ export interface HeaderProps {
   useDateState?: [Date, (date: Date) => void];
   showBGImage?: boolean;
   showCalendarIcon?: boolean;
-  customDescription?: string;
+  customDescription?: React.ReactNode | string;
+  disableFutureDates?: boolean;
 }
 
 export default function Header({
@@ -54,6 +55,7 @@ export default function Header({
   showBGImage = true,
   showCalendarIcon = true,
   customDescription,
+  disableFutureDates,
 }: HeaderProps) {
   /**
    * Header is on Z-index 50 and 60
@@ -70,6 +72,14 @@ export default function Header({
   const { t, isRTL } = useLocalization("common");
 
   const textColor = color === HeaderColor.primary ? "text-white" : "text-black";
+
+  if (typeof customDescription === "string") {
+    customDescription = (
+      <Text className="font-inter-light text-xs text-center">
+        {customDescription}
+      </Text>
+    );
+  }
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
@@ -226,6 +236,7 @@ export default function Header({
             selectedDate={date}
             onDateSelect={setDate}
             color={color}
+            disableFutureDates={disableFutureDates}
           />
         )}
       </View>

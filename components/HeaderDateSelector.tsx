@@ -7,12 +7,14 @@ interface DateSelectorProps {
   selectedDate?: Date;
   onDateSelect?: (date: Date) => void;
   color?: HeaderColor;
+  disableFutureDates?: boolean;
 }
 
 export default function HeaderDateSelector({
   selectedDate = new Date(),
   onDateSelect,
   color = HeaderColor.BG,
+  disableFutureDates = true,
 }: DateSelectorProps) {
   const [currentWeek, setCurrentWeek] = useState(selectedDate);
 
@@ -54,7 +56,7 @@ export default function HeaderDateSelector({
   };
 
   const handleDatePress = (date: Date) => {
-    if (!isFutureDate(date)) {
+    if (!disableFutureDates || !isFutureDate(date)) {
       onDateSelect?.(date);
     }
   };
@@ -92,6 +94,7 @@ export default function HeaderDateSelector({
           const isSelected = isSelectedDate(date);
           const isFuture = isFutureDate(date);
           const dayNumber = date.getDate().toString().padStart(2, "0");
+          const isDisabled = disableFutureDates && isFuture;
 
           return (
             <View key={index} className="items-center">
@@ -106,11 +109,11 @@ export default function HeaderDateSelector({
               {/* Date circle */}
               <TouchableOpacity
                 onPress={() => handleDatePress(date)}
-                disabled={isFuture}
+                disabled={isDisabled}
                 className={`w-10 h-10 rounded-full items-center justify-center ${
                   isSelected
                     ? "bg-primaryVeryDark shadow-lg"
-                    : isFuture
+                    : isDisabled
                       ? "bg-gray-300"
                       : "bg-white"
                 }`}
@@ -126,11 +129,11 @@ export default function HeaderDateSelector({
                   className={`effra-redular text-base ${
                     isSelected
                       ? "text-white"
-                      : isFuture
+                      : isDisabled
                         ? "text-gray-500"
                         : "text-black"
                   }`}
-                  style={{ opacity: isSelected ? 1 : isFuture ? 0.5 : 0.6 }}
+                  style={{ opacity: isSelected ? 1 : isDisabled ? 0.5 : 0.6 }}
                 >
                   {dayNumber}
                 </Text>
@@ -141,7 +144,7 @@ export default function HeaderDateSelector({
       </View>
 
       {/* Next week arrow - only show if not on current week */}
-      {isCurrentWeek() ? (
+      {disableFutureDates && isCurrentWeek() ? (
         <View className="w-8 h-8" />
       ) : (
         <TouchableOpacity
