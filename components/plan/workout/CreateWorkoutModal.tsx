@@ -9,18 +9,20 @@ import CreateWorkoutMain from "./CreateWorkoutMain";
 import PlayersSelection from "./PlayersSelection";
 
 // Function to determine category based on activity type
-function getCategoryFromActivityType(activityType: string): "technical" | "strength" | "recovery" {
+function getCategoryFromActivityType(
+  activityType: string,
+): "technical" | "strength" | "recovery" {
   const technicalActivities = [
     "warm-up",
     "serve",
-    "recieve", 
+    "recieve",
     "stroke-technique",
     "footwork",
     "pattern-play",
   ];
-  
+
   const recoveryActivities = ["yoga"];
-  
+
   if (technicalActivities.includes(activityType)) {
     return "technical";
   } else if (recoveryActivities.includes(activityType)) {
@@ -44,6 +46,7 @@ interface CreateWorkoutModalProps {
   onActivityCreated?: () => void;
   date: Date;
   editingActivity?: any; // Activity being edited
+  onDeleteActivity?: (activity: any) => void;
 }
 export default function CreateWorkoutModal({
   date,
@@ -53,6 +56,7 @@ export default function CreateWorkoutModal({
   user,
   onActivityCreated,
   editingActivity,
+  onDeleteActivity,
 }: CreateWorkoutModalProps) {
   const { t, isRTL } = useLocalization("components.plan.workout");
   const { t: tActivityTypes } = useLocalization(
@@ -61,18 +65,22 @@ export default function CreateWorkoutModal({
 
   const [category, setCategory] = useState<
     "technical" | "strength" | "recovery" | null
-  >(editingActivity ? getCategoryFromActivityType(editingActivity.activity_type) : null);
+  >(
+    editingActivity
+      ? getCategoryFromActivityType(editingActivity.activity_type)
+      : null,
+  );
   const [selectedActivity, setSelectedActivity] = useState<string | null>(
-    editingActivity ? editingActivity.activity_type : null
+    editingActivity ? editingActivity.activity_type : null,
   );
   const [showPlayersSelection, setShowPlayersSelection] =
     useState<boolean>(false);
   const [players, setPlayers] = useState<string[]>(
-    editingActivity 
+    editingActivity
       ? editingActivity.players_assigned
           .filter((assignment: any) => !assignment.removed_at)
           .map((assignment: any) => assignment.assigned_to_user.firebase_id)
-      : originalSelectedPlayers
+      : originalSelectedPlayers,
   );
 
   let modalContent = null;
@@ -114,6 +122,8 @@ export default function CreateWorkoutModal({
         onActivityCreated={onActivityCreated}
         onOpenPlayersSelection={() => setShowPlayersSelection(true)}
         editingActivity={editingActivity}
+        originalPlayers={originalSelectedPlayers}
+        onDeleteActivity={onDeleteActivity}
       />
     );
   }

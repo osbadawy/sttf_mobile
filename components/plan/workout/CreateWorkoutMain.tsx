@@ -5,6 +5,7 @@ import {
   Arrow,
   ClockIcon,
   ProfilePictureDefaultIcon,
+  TrashIcon,
 } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import CustomSwitch from "@/components/Switch";
@@ -35,6 +36,8 @@ interface CreateWorkoutMainProps {
   date: Date;
   onOpenPlayersSelection: () => void;
   editingActivity?: any; // Activity being edited
+  originalPlayers?: string[]; // Original players for deletion
+  onDeleteActivity?: (activity: any) => void;
 }
 
 export default function CreateWorkoutMain({
@@ -50,22 +53,24 @@ export default function CreateWorkoutMain({
   onActivityCreated,
   onOpenPlayersSelection,
   editingActivity,
+  originalPlayers = [],
+  onDeleteActivity,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(
-    editingActivity ? new Date(editingActivity.start) : null
+    editingActivity ? new Date(editingActivity.start) : null,
   );
   const [activityName, setActivityName] = useState<string>(
-    editingActivity?.is_custom ? editingActivity.activity_type : ""
+    editingActivity?.is_custom ? editingActivity.activity_type : "",
   );
   const [activityDetails, setActivityDetails] = useState<string>(
-    editingActivity?.notes || ""
+    editingActivity?.notes || "",
   );
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isRecurring, setIsRecurring] = useState<boolean>(
-    editingActivity?.recurrence_patterns?.length > 0 || false
+    editingActivity?.recurrence_patterns?.length > 0 || false,
   );
   const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(
-    editingActivity?.recurrence_patterns?.[0]?.end || null
+    editingActivity?.recurrence_patterns?.[0]?.end || null,
   );
 
   const activity =
@@ -100,10 +105,10 @@ export default function CreateWorkoutMain({
         time?.getSeconds() ?? 0,
         0,
       );
-      
+
       const isEditing = !!editingActivity;
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
-      
+
       const body: any = {
         users_assigned: players,
         start: dateWithTime,
@@ -115,8 +120,8 @@ export default function CreateWorkoutMain({
 
       // Add id for editing
       if (isEditing) {
-        body.id = editingActivity.id
-        body.day = date
+        body.id = editingActivity.id;
+        body.day = date;
       }
 
       if (isRecurring && recurranceDays.length > 0) {
@@ -150,13 +155,21 @@ export default function CreateWorkoutMain({
           statusText: response.statusText,
           error: errorData,
         });
-        throw new Error(`Failed to ${isEditing ? 'update' : 'create'} activity: ${errorData.message}`);
+        throw new Error(
+          `Failed to ${isEditing ? "update" : "create"} activity: ${errorData.message}`,
+        );
       }
       onActivityCreated?.(); // Call the callback to refresh the activities list
       onClose();
     } catch (error) {
-      console.error(`Error ${editingActivity ? 'updating' : 'creating'} activity`, error);
-      Alert.alert("Error", `Failed to ${editingActivity ? 'update' : 'create'} activity`);
+      console.error(
+        `Error ${editingActivity ? "updating" : "creating"} activity`,
+        error,
+      );
+      Alert.alert(
+        "Error",
+        `Failed to ${editingActivity ? "update" : "create"} activity`,
+      );
     } finally {
       setDisabled(false);
     }
@@ -164,9 +177,14 @@ export default function CreateWorkoutMain({
 
   return (
     <View>
-      <Text className="font-inter-regular text-base border-b border-gray-200 pb-2 pt-[24px]">
-        {t("activitySelectionTitle")}
-      </Text>
+      <View className="flex-row items-center justify-between border-b border-gray-200">
+        <Text className="font-inter-regular text-base pb-2 pt-[24px]">
+          {t("activitySelectionTitle")}
+        </Text>
+        <TouchableOpacity onPress={() => onDeleteActivity?.(editingActivity)}>
+          <TrashIcon />
+        </TouchableOpacity>
+      </View>
 
       <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
         <View className="flex-row items-center" style={{ gap: 12 }}>

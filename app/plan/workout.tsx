@@ -1,37 +1,17 @@
 import { ThinPlusIcon } from "@/components/icons";
-import DynamicActivityIcon from "@/components/icons/activities";
 import Modal from "@/components/Modal";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
+import DeletionConfirmation from "@/components/plan/workout/DeletionConfirmation";
+import PlannedActivityItem from "@/components/plan/workout/PlannedActivityItem";
 import PlayersSelection from "@/components/plan/workout/PlayersSelection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
+import Constants from "expo-constants";
 import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-
-// Function to determine category based on activity type
-function getCategoryFromActivityType(activityType: string): "technical" | "strength" | "recovery" {
-  const technicalActivities = [
-    "warm-up",
-    "serve",
-    "recieve", 
-    "stroke-technique",
-    "footwork",
-    "pattern-play",
-  ];
-  
-  const recoveryActivities = ["yoga"];
-  
-  if (technicalActivities.includes(activityType)) {
-    return "technical";
-  } else if (recoveryActivities.includes(activityType)) {
-    return "recovery";
-  } else {
-    return "strength";
-  }
-}
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function WorkoutPlan() {
   const { t } = useLocalization("components.plan.workout");
@@ -59,6 +39,12 @@ export default function WorkoutPlan() {
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [showPlayersSelection, setShowPlayersSelection] = useState(false);
   const [editingActivity, setEditingActivity] = useState<any>(null);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
+    null,
+  );
+  const [showDeletionConfirmation, setShowDeletionConfirmation] =
+    useState(false);
+  const [activityToDelete, setActivityToDelete] = useState<any>(null);
   const { user } = useAuth();
 
   // Fetch planned activities for the committed players and date
@@ -72,6 +58,54 @@ export default function WorkoutPlan() {
   const handleActivityCreated = () => {
     clearCache(); // Clear cache to force refetch
     refetch(); // Refetch the activities
+  };
+
+  // Handle activity deletion
+  const handleDeleteActivity = async () => {
+    if (!user || !activityToDelete) {
+      Alert.alert("Error", "User or activity not found");
+      return;
+    }
+
+    try {
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+      const body = {
+        users_assigned: committedPlayers, // Use original committed players
+        id: activityToDelete.id,
+        day: date.toISOString().split("T")[0], // Format as YYYY-MM-DD
+      };
+
+      const token = await user.getIdToken();
+
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData,
+        });
+        throw new Error(`Failed to delete activity: ${errorData.message}`);
+      }
+
+      // Close modal and refresh activities
+      setShowDeletionConfirmation(false);
+      setShowCreateWorkoutModal(false);
+      setActivityToDelete(null);
+      clearCache(); // Clear cache to force refetch
+      refetch(); // Refetch the activities
+    } catch (error) {
+      console.error("Error deleting activity", error);
+      Alert.alert("Error", "Failed to delete activity");
+    }
   };
 
   return (
@@ -113,50 +147,25 @@ export default function WorkoutPlan() {
 
         {activities.length > 0 && (
           <View className="mb-4">
-            {activities.map((activity) => {
-              const date = new Date(activity.start);
-              const time = date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-
-              const activityName = activity.is_custom
-                ? activity.activity_type
-                : tActivityTypes(activity.activity_type);
-
-                return (
-                  <TouchableOpacity
-                    key={activity.id}
-                    className="bg-white border-2 border-[#B5BCBF] rounded-[16px] px-[24px] py-[20px] mb-3 flex-row items-center"
-                    style={{
-                      backgroundColor: "rgba(255, 255, 255, 0.5)",
-                    }}
-                    onPress={() => {
-                      setEditingActivity(activity);
-                      setShowCreateWorkoutModal(true);
-                    }}
-                  >
-                      <DynamicActivityIcon
-                        activityType={activity.activity_type}
-                      />
-
-                      <View className="pl-4">
-                        <Text>
-                          {activityName} · {time}
-                        </Text>
-                        <Text className="effra-regular text-base" style={{ opacity: 0.6 }}>{activity.players_assigned.length} {t("players")}</Text>
-                      </View>
-                  </TouchableOpacity>
-                );
-            })}
+            {activities.map((activity) => (
+              <PlannedActivityItem
+                key={activity.id}
+                activity={activity}
+                isSelected={selectedActivityId === activity.id}
+                onPress={(activity) => {
+                  setSelectedActivityId(activity.id);
+                  setEditingActivity(activity);
+                  setShowCreateWorkoutModal(true);
+                }}
+              />
+            ))}
           </View>
         )}
 
         <TouchableOpacity
-          className="w-full border-[#B5BCBF] border-2 rounded-[16px] py-[30px] items-center justify-center flex-row"
+          className="w-full border-[#B5BCBF] border-2 rounded-[16px] py-[30px] items-center justify-center flex-row bg-white/50"
           style={{
             gap: 12,
-            boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
             borderStyle: "dashed",
           }}
           onPress={() => setShowCreateWorkoutModal(true)}
@@ -175,6 +184,7 @@ export default function WorkoutPlan() {
         <CreateWorkoutModal
           onClose={() => {
             setEditingActivity(null);
+            setSelectedActivityId(null);
             setShowCreateWorkoutModal(false);
           }}
           allPlayers={players as Player[]}
@@ -183,6 +193,10 @@ export default function WorkoutPlan() {
           onActivityCreated={handleActivityCreated}
           date={date}
           editingActivity={editingActivity}
+          onDeleteActivity={(activity) => {
+            setActivityToDelete(activity);
+            setShowDeletionConfirmation(true);
+          }}
         />
       )}
 
@@ -211,6 +225,15 @@ export default function WorkoutPlan() {
           </ScrollView>
         </Modal>
       )}
+
+      <DeletionConfirmation
+        isVisible={showDeletionConfirmation}
+        onClose={() => {
+          setShowDeletionConfirmation(false);
+          setActivityToDelete(null);
+        }}
+        onConfirm={handleDeleteActivity}
+      />
     </>
   );
 }

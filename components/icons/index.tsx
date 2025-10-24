@@ -19,8 +19,8 @@ import SleepIcon from "./Sleep";
 import StrainIcon from "./Strain";
 import StressIcon from "./Stress";
 import ThinPlusIcon from "./ThinPlus";
+import TrashIcon from "./Trash";
 import WhoopIcon from "./WhoopIcon";
-
 export {
   ActivityFlameIcon,
   ActivityPageBg,
@@ -43,5 +43,6 @@ export {
   StrainIcon,
   StressIcon,
   ThinPlusIcon,
+  TrashIcon,
   WhoopIcon,
 };

@@ -18,5 +18,9 @@
   "everyDay": "Every Day",
 
   "selected": "Selected",
-  "notSelected": "Not Selected"
+  "notSelected": "Not Selected",
+
+  "deleteMessage": "Are you sure you want to delete this activity?",
+  "delete": "Delete",
+  "back": "Back"
 }
