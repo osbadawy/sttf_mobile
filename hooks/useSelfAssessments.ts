@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { SelfAssessmentData } from "@/schemas/selfAssessment";
+import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
@@ -8,8 +9,8 @@ interface UseSelfAssessmentsProps {
   date?: Date;
 }
 
-// Cache to store fetched data by firebase_id and date
-const dataCache = new Map<string, SelfAssessmentData[] | undefined>();
+// Cache to store fetched data by firebase_id and date (expires after 10 minutes)
+const dataCache = new ExpiringCache<SelfAssessmentData[] | undefined>(10);
 
 export function useSelfAssessments({
   firebaseId,
@@ -27,8 +28,8 @@ export function useSelfAssessments({
 
     // Check cache first
     const cacheKey = `${firebaseId || user.uid}-${date.toISOString().split("T")[0]}`;
-    if (dataCache.has(cacheKey)) {
-      const cachedData = dataCache.get(cacheKey)!;
+    const cachedData = dataCache.get(cacheKey);
+    if (cachedData !== null) {
       setData(cachedData);
       return;
     }

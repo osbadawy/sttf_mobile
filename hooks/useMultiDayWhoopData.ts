@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
+import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
@@ -14,8 +15,8 @@ interface UseMultiPlayerWhoopDataProps {
   days?: number;
 }
 
-// Cache to store fetched data by firebase_id
-const dataCache = new Map<string, MultiDayWhoopMetrics>();
+// Cache to store fetched data by firebase_id (expires after 10 minutes)
+const dataCache = new ExpiringCache<MultiDayWhoopMetrics>(10);
 
 export function useMultiDayWhoopData({
   firebaseId,
@@ -94,8 +95,8 @@ export function useMultiPlayerWhoopData({
 
       // Check cache first
       const cacheKey = `${firebaseId}-${days}`;
-      if (dataCache.has(cacheKey)) {
-        const cachedData = dataCache.get(cacheKey)!;
+      const cachedData = dataCache.get(cacheKey);
+      if (cachedData) {
         if (isSelectedPlayer) {
           setSelectedPlayerMetrics(cachedData);
         } else {

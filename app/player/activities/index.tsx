@@ -1,7 +1,12 @@
 import ActivityCard from "@/components/activities/ActivityCard";
 import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
-import { ActivityFlameIcon, ActivityPageBg, Arrow } from "@/components/icons";
+import {
+  ActivityFlameIcon,
+  ActivityPageBg,
+  FilterIcon,
+  ThinPlusIcon,
+} from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import SelectionModal from "@/components/SelectionModal";
@@ -10,6 +15,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatDate, getUniqueActivityTypes } from "@/utils/activities";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -23,6 +29,10 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
+
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
+  const isCoachViewing = Object.keys(playerData).length > 0;
 
   const { userName, profilePicture } = useUserProfile();
 
@@ -130,18 +140,29 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
             </Text>
           </View>
 
+          <CustomButton
+            title={isCoachViewing ? t("manageWorkouts") : t("yourWorkouts")}
+            onPress={() => {}}
+            icon={<ThinPlusIcon />}
+            color={ButtonColor.activity}
+            size={ButtonSize.sm}
+          />
+
           <View
-            className={`w-full pb-2 pt-[120px] items-center flex-row ${isRTL ? "justify-start" : "justify-end"}`}
-            style={{ gap: 4 }}
+            className={`w-full pb-2 pt-[120px] items-center justify-between ${isRTL ? "flex-row-reverse" : "flex-row"}`}
           >
+            <Text className="effra-semibold text-2xl">
+              {t("whoopDetected")}
+            </Text>
             <TouchableOpacity
               className="flex-row items-center py-4 px-0"
               onPress={() => setShowFilterDropdown(true)}
+              style={{ gap: 8 }}
             >
               <Text className="effra-light text-base">
-                {t("allActivities")}
+                {t("filterActivities")}
               </Text>
-              <Arrow direction="down" strokeWidth={1.4} />
+              <FilterIcon />
             </TouchableOpacity>
           </View>
 

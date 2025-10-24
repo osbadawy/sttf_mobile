@@ -1,0 +1,26 @@
+{
+  "title": "إنشاء خطة تدريب",
+  "players": "اللاعبين",
+  "addActivity": "إضافة نشاط",
+
+  "activitySelectionTitle": "اختر خيارك",
+  "makeYourOwn": "إنشاء نشاطك الخاص",
+  "custom": "مخصص",
+  "selectFromList": "اختر من القائمة",
+
+  "edit": "تعديل",
+  "selectTime": "اختر الوقت",
+  "nameOfActivity": "اسم النشاط",
+  "details": "تفاصيل النشاط",
+  "add": "إضافة",
+  "save": "حفظ",
+  "recurring": "اجعله متكرر",
+  "everyDay": "كل يوم",
+
+  "selected": "مختار",
+  "notSelected": "غير مختار",
+
+  "deleteMessage": "هل أنت متأكد من حذف هذا النشاط؟",
+  "delete": "حذف",
+  "back": "السابق"
+}
