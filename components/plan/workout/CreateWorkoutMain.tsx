@@ -34,6 +34,7 @@ interface CreateWorkoutMainProps {
   onActivityCreated?: () => void;
   date: Date;
   onOpenPlayersSelection: () => void;
+  editingActivity?: any; // Activity being edited
 }
 
 export default function CreateWorkoutMain({
@@ -48,13 +49,24 @@ export default function CreateWorkoutMain({
   user,
   onActivityCreated,
   onOpenPlayersSelection,
+  editingActivity,
 }: CreateWorkoutMainProps) {
-  const [time, setTime] = useState<Date | null>(null);
-  const [activityName, setActivityName] = useState<string>("");
-  const [activityDetails, setActivityDetails] = useState<string>("");
+  const [time, setTime] = useState<Date | null>(
+    editingActivity ? new Date(editingActivity.start) : null
+  );
+  const [activityName, setActivityName] = useState<string>(
+    editingActivity?.is_custom ? editingActivity.activity_type : ""
+  );
+  const [activityDetails, setActivityDetails] = useState<string>(
+    editingActivity?.notes || ""
+  );
   const [disabled, setDisabled] = useState<boolean>(false);
-  const [isRecurring, setIsRecurring] = useState<boolean>(false);
-  const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(null);
+  const [isRecurring, setIsRecurring] = useState<boolean>(
+    editingActivity?.recurrence_patterns?.length > 0 || false
+  );
+  const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(
+    editingActivity?.recurrence_patterns?.[0]?.end || null
+  );
 
   const activity =
     selectedActivity === "custom" ? activityName : selectedActivity;
@@ -88,8 +100,10 @@ export default function CreateWorkoutMain({
         time?.getSeconds() ?? 0,
         0,
       );
-      // Make post request
+      
+      const isEditing = !!editingActivity;
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+      
       const body: any = {
         users_assigned: players,
         start: dateWithTime,
@@ -98,6 +112,13 @@ export default function CreateWorkoutMain({
         is_custom: selectedActivity === "custom",
         notes: activityDetails,
       };
+
+      // Add id for editing
+      if (isEditing) {
+        body.id = editingActivity.id
+        body.day = date
+      }
+
       if (isRecurring && recurranceDays.length > 0) {
         body.recurrance = {
           start: dateWithTime,
@@ -114,7 +135,7 @@ export default function CreateWorkoutMain({
       const token = await user.getIdToken();
 
       const response = await fetch(url, {
-        method: "POST",
+        method: isEditing ? "PATCH" : "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -129,13 +150,13 @@ export default function CreateWorkoutMain({
           statusText: response.statusText,
           error: errorData,
         });
-        throw new Error(`Failed to create activity: ${errorData.message}`);
+        throw new Error(`Failed to ${isEditing ? 'update' : 'create'} activity: ${errorData.message}`);
       }
       onActivityCreated?.(); // Call the callback to refresh the activities list
       onClose();
     } catch (error) {
-      console.error("Error creating activity", error);
-      Alert.alert("Error", "Failed to create activity");
+      console.error(`Error ${editingActivity ? 'updating' : 'creating'} activity`, error);
+      Alert.alert("Error", `Failed to ${editingActivity ? 'update' : 'create'} activity`);
     } finally {
       setDisabled(false);
     }
@@ -290,7 +311,7 @@ export default function CreateWorkoutMain({
       />
 
       <CustomButton
-        title={t("add")}
+        title={editingActivity ? t("save") : t("add")}
         onPress={onPressAdd}
         color={isButtonDisabled ? ButtonColor.white : ButtonColor.primary}
         disabled={isButtonDisabled}

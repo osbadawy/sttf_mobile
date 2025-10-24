@@ -11,6 +11,28 @@ import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
 import { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
+// Function to determine category based on activity type
+function getCategoryFromActivityType(activityType: string): "technical" | "strength" | "recovery" {
+  const technicalActivities = [
+    "warm-up",
+    "serve",
+    "recieve", 
+    "stroke-technique",
+    "footwork",
+    "pattern-play",
+  ];
+  
+  const recoveryActivities = ["yoga"];
+  
+  if (technicalActivities.includes(activityType)) {
+    return "technical";
+  } else if (recoveryActivities.includes(activityType)) {
+    return "recovery";
+  } else {
+    return "strength";
+  }
+}
+
 export default function WorkoutPlan() {
   const { t } = useLocalization("components.plan.workout");
   const { t: tActivityTypes } = useLocalization(
@@ -36,6 +58,7 @@ export default function WorkoutPlan() {
   const [date, setDate] = dateState;
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [showPlayersSelection, setShowPlayersSelection] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<any>(null);
   const { user } = useAuth();
 
   // Fetch planned activities for the committed players and date
@@ -101,28 +124,30 @@ export default function WorkoutPlan() {
                 ? activity.activity_type
                 : tActivityTypes(activity.activity_type);
 
-              return (
-                <View
-                  key={activity.id}
-                  className="bg-white border-2 border-[#B5BCBF] rounded-[16px] px-[24px] py-[20px] mb-3"
-                  style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.5)",
-                  }}
-                >
-                  <View>
-                    <DynamicActivityIcon
-                      activityType={activity.activity_type}
-                    />
+                return (
+                  <TouchableOpacity
+                    key={activity.id}
+                    className="bg-white border-2 border-[#B5BCBF] rounded-[16px] px-[24px] py-[20px] mb-3 flex-row items-center"
+                    style={{
+                      backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    }}
+                    onPress={() => {
+                      setEditingActivity(activity);
+                      setShowCreateWorkoutModal(true);
+                    }}
+                  >
+                      <DynamicActivityIcon
+                        activityType={activity.activity_type}
+                      />
 
-                    <View>
-                      <Text>
-                        {activityName} · {time}
-                      </Text>
-                      <Text className="effra-regular text-base" style={{ opacity: 0.6 }}>{activity.players_assigned.length} {t("players")}</Text>
-                    </View>
-                  </View>
-                </View>
-              );
+                      <View className="pl-4">
+                        <Text>
+                          {activityName} · {time}
+                        </Text>
+                        <Text className="effra-regular text-base" style={{ opacity: 0.6 }}>{activity.players_assigned.length} {t("players")}</Text>
+                      </View>
+                  </TouchableOpacity>
+                );
             })}
           </View>
         )}
@@ -148,12 +173,16 @@ export default function WorkoutPlan() {
 
       {showCreateWorkoutModal && (
         <CreateWorkoutModal
-          onClose={() => setShowCreateWorkoutModal(false)}
+          onClose={() => {
+            setEditingActivity(null);
+            setShowCreateWorkoutModal(false);
+          }}
           allPlayers={players as Player[]}
           originalSelectedPlayers={committedPlayers}
           user={user}
           onActivityCreated={handleActivityCreated}
           date={date}
+          editingActivity={editingActivity}
         />
       )}
 
