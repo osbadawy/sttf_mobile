@@ -4,7 +4,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { usePlannedActivities } from "@/hooks/usePlannedActivities";
+import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -83,6 +83,13 @@ export default function WorkoutPlan() {
             const activityName = activity.is_custom
               ? activity.activity_type
               : tActivityTypes(activity.activity_type);
+
+            // Get assigned players names
+            const assignedPlayers = activity.players_assigned
+              .filter(assignment => !assignment.removed_at) // Only show active assignments
+              .map(assignment => assignment.assigned_to_user.display_name || 'Unknown Player')
+              .join(', ');
+
             return (
               <View
                 key={activity.id}
@@ -130,6 +137,7 @@ export default function WorkoutPlan() {
           players={players}
           user={user}
           onActivityCreated={handleActivityCreated}
+          date={date}
         />
       )}
     </ParallaxScrollView>

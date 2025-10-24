@@ -101,7 +101,7 @@ export default function HeaderDateSelector({
               {/* Day label */}
               <Text
                 className={`effra-light text-base ${textColor} mb-3`}
-                style={{ opacity: isFuture ? 0.3 : 0.8 }}
+                style={{ opacity: isDisabled ? 0.3 : 0.8 }}
               >
                 {dayLabels[index]}
               </Text>

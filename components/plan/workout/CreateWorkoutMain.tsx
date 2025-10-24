@@ -17,9 +17,11 @@ interface CreateWorkoutMainProps {
   onClose: () => void;
   user: User | null;
   onActivityCreated?: () => void;
+  date: Date;
 }
 
 export default function CreateWorkoutMain({
+  date,
   players,
   selectedActivity,
   setSelectedActivity,
@@ -48,11 +50,13 @@ export default function CreateWorkoutMain({
     }
     try {
       setDisabled(true);
+      const dateWithTime = new Date(date);
+      dateWithTime.setHours(time?.getHours() ?? 0, time?.getMinutes() ?? 0, time?.getSeconds() ?? 0, 0);
       // Make post request
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
       const body = {
         users_assigned: players,
-        start: time,
+        start: dateWithTime,
         category: category,
         activity_type: activity,
         is_custom: selectedActivity === "custom",

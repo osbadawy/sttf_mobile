@@ -12,8 +12,10 @@ interface CreateWorkoutModalProps {
   players: string[];
   user: User | null;
   onActivityCreated?: () => void;
+  date: Date;
 }
 export default function CreateWorkoutModal({
+  date,
   onClose,
   players,
   user,
@@ -47,6 +49,7 @@ export default function CreateWorkoutModal({
   } else {
     modalContent = (
       <CreateWorkoutMain
+        date={date}
         players={players}
         selectedActivity={selectedActivity}
         setSelectedActivity={setSelectedActivity}

@@ -3,16 +3,50 @@ import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
+interface PlannedActivityAssignment {
+  id: string;
+  activity_id: string;
+  assigned_to: string;
+  assigned_at: Date;
+  removed_at?: Date;
+  created_at: Date;
+  updated_at: Date;
+  assigned_to_user: {
+    id: string;
+    firebase_id: string;
+    display_name?: string;
+    avatar_url?: string;
+  };
+}
+
+interface PlannedActivityRecurrence {
+  id: string;
+  planned_activity_id: string;
+  start: Date;
+  end: Date;
+  sun?: boolean;
+  mon?: boolean;
+  tue?: boolean;
+  wed?: boolean;
+  thu?: boolean;
+  fri?: boolean;
+  sat?: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
 interface PlannedActivity {
   id: string;
-  users_assigned: string[];
-  start: string;
+  assigned_by: string;
   category: "technical" | "strength" | "recovery";
   activity_type: string;
   is_custom: boolean;
-  notes: string;
-  created_at?: string;
-  updated_at?: string;
+  notes?: string;
+  start: Date;
+  created_at: Date;
+  updated_at: Date;
+  players_assigned: PlannedActivityAssignment[];
+  recurrence_patterns: PlannedActivityRecurrence[];
 }
 
 interface UsePlannedActivitiesProps {

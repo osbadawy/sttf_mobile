@@ -34,7 +34,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
           style={{ borderRadius: 4, boxShadow: "0px 2px 4px 0px #00000018" }}
         >
           <Text className="text-base effra-medium text-black">
-            {hours.toString().padStart(2, "0")}
+            {value ? hours.toString().padStart(2, "0") : "--"}
           </Text>
         </View>
 
@@ -45,7 +45,7 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
           style={{ borderRadius: 4, boxShadow: "0px 2px 4px 0px #00000018" }}
         >
           <Text className="text-base effra-medium text-black">
-            {minutes.toString().padStart(2, "0")}
+            {value ? minutes.toString().padStart(2, "0") : "--"}
           </Text>
         </View>
       </TouchableOpacity>
