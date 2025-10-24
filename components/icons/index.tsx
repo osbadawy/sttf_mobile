@@ -3,6 +3,7 @@ import ActivityPageBg from "./ActivityPageBg";
 import Arrow from "./Arrow";
 import ArrowBig from "./ArrowBig";
 import CheckIcon from "./Check";
+import ClockIcon from "./Clock";
 import ExclamationMark from "./ExclamationMark";
 import FilterIcon from "./FilterIcon";
 import HeaderBgIcon from "./HeaderBgIcon";
@@ -24,6 +25,7 @@ export {
   Arrow,
   ArrowBig,
   CheckIcon,
+  ClockIcon,
   ExclamationMark,
   FilterIcon,
   HeaderBgIcon,
