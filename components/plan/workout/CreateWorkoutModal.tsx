@@ -11,11 +11,13 @@ interface CreateWorkoutModalProps {
   onClose: () => void;
   players: string[];
   user: User | null;
+  onActivityCreated?: () => void;
 }
 export default function CreateWorkoutModal({
   onClose,
   players,
   user,
+  onActivityCreated,
 }: CreateWorkoutModalProps) {
   const { t, isRTL } = useLocalization("components.plan.workout");
   const { t: tActivityTypes } = useLocalization(
@@ -53,6 +55,7 @@ export default function CreateWorkoutModal({
         category={category}
         onClose={onClose}
         user={user}
+        onActivityCreated={onActivityCreated}
       />
     );
   }

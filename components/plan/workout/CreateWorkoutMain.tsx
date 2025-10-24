@@ -16,6 +16,7 @@ interface CreateWorkoutMainProps {
   category: "technical" | "strength" | "recovery";
   onClose: () => void;
   user: User | null;
+  onActivityCreated?: () => void;
 }
 
 export default function CreateWorkoutMain({
@@ -27,13 +28,15 @@ export default function CreateWorkoutMain({
   category,
   onClose,
   user,
+  onActivityCreated,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(null);
   const [activityName, setActivityName] = useState<string>("");
   const [activityDetails, setActivityDetails] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(false);
 
-  const activity = selectedActivity === "custom" ? activityName : selectedActivity;
+  const activity =
+    selectedActivity === "custom" ? activityName : selectedActivity;
 
   const isButtonDisabled =
     disabled || time === null || activityDetails === "" || activity === "";
@@ -45,44 +48,45 @@ export default function CreateWorkoutMain({
     }
     try {
       setDisabled(true);
-    // Make post request
-    const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
-    const body = {
-      users_assigned: players,
-      start: time,
-      category: category,
-      activity_type: activity,
-      is_custom: selectedActivity === "custom",
-      notes: activityDetails,
-    };
+      // Make post request
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+      const body = {
+        users_assigned: players,
+        start: time,
+        category: category,
+        activity_type: activity,
+        is_custom: selectedActivity === "custom",
+        notes: activityDetails,
+      };
 
-    const token = await user.getIdToken();
+      const token = await user.getIdToken();
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("API Error:", {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorData,
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
       });
-      throw new Error(`Failed to create activity: ${errorData.message}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData,
+        });
+        throw new Error(`Failed to create activity: ${errorData.message}`);
+      }
+      onActivityCreated?.(); // Call the callback to refresh the activities list
+      onClose();
+    } catch (error) {
+      console.error("Error creating activity", error);
+      Alert.alert("Error", "Failed to create activity");
+    } finally {
+      setDisabled(false);
     }
-    onClose();
-  } catch (error) {
-    console.error("Error creating activity", error);
-    Alert.alert("Error", "Failed to create activity");
-  } finally {
-    setDisabled(false);
-  }
   }
 
   return (

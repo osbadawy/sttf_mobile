@@ -1,13 +1,18 @@
 import { ThinPlusIcon } from "@/components/icons";
+import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { usePlannedActivities } from "@/hooks/usePlannedActivities";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function WorkoutPlan() {
   const { t } = useLocalization("components.plan.workout");
+  const { t: tActivityTypes } = useLocalization(
+    "components.activities.activityTypes",
+  );
 
   // TODO: Get from params later
   const players = [
@@ -18,22 +23,89 @@ export default function WorkoutPlan() {
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
-  const {user} = useAuth();
+  const { user } = useAuth();
+
+  // Fetch planned activities for the selected players and date
+  const { activities, loading, error, refetch, clearCache } =
+    usePlannedActivities({
+      users_assigned: players,
+      day: date,
+    });
+
+  // Handle activity creation success
+  const handleActivityCreated = () => {
+    clearCache(); // Clear cache to force refetch
+    refetch(); // Refetch the activities
+  };
 
   return (
     <ParallaxScrollView
-      headerProps={showCreateWorkoutModal ? undefined : {
-        title: t("title"),
-        // customDescription: TODO: Made the players icons + title here,
-        showBackButton: true,
-        showBGImage: false,
-        showCalendarIcon: false,
-        showDateSelector: true,
-        disableFutureDates: false,
-        useDateState: dateState,
-      }}
+      headerProps={
+        showCreateWorkoutModal
+          ? undefined
+          : {
+              title: t("title"),
+              // customDescription: TODO: Made the players icons + title here,
+              showBackButton: true,
+              showBGImage: false,
+              showCalendarIcon: false,
+              showDateSelector: true,
+              disableFutureDates: false,
+              useDateState: dateState,
+            }
+      }
       showNav={false}
     >
+      {/* Display planned activities */}
+      {loading && (
+        <View className="py-4">
+          <Text className="text-center text-gray-500">
+            Loading activities...
+          </Text>
+        </View>
+      )}
+
+      {error && (
+        <View className="py-4">
+          <Text className="text-center text-red-500">Error: {error}</Text>
+        </View>
+      )}
+
+      {activities.length > 0 && (
+        <View className="mb-4">
+          {activities.map((activity) => {
+            const date = new Date(activity.start);
+            const time = date.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            const activityName = activity.is_custom
+              ? activity.activity_type
+              : tActivityTypes(activity.activity_type);
+            return (
+              <View
+                key={activity.id}
+                className="bg-white border-2 border-[#B5BCBF] rounded-[16px] px-[24px] py-[20px] mb-3"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.5)",
+                }}
+              >
+                <View>
+                  <DynamicActivityIcon activityType={activity.activity_type} />
+
+                  <View>
+                    <Text>
+                      {activityName} · {time}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      )}
+
       <TouchableOpacity
         className="w-full border-[#B5BCBF] border-2 rounded-[16px] py-[30px] items-center justify-center flex-row"
         style={{
@@ -57,6 +129,7 @@ export default function WorkoutPlan() {
           onClose={() => setShowCreateWorkoutModal(false)}
           players={players}
           user={user}
+          onActivityCreated={handleActivityCreated}
         />
       )}
     </ParallaxScrollView>
