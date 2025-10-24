@@ -1,7 +1,11 @@
 import colors from "@/colors";
 import CustomButton, { ButtonColor } from "@/components/Button";
 import DateSelector from "@/components/DateSelector";
-import { ClockIcon } from "@/components/icons";
+import {
+  Arrow,
+  ClockIcon,
+  ProfilePictureDefaultIcon,
+} from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import CustomSwitch from "@/components/Switch";
 import TimePicker from "@/components/TimePicker";
@@ -29,6 +33,7 @@ interface CreateWorkoutMainProps {
   user: User | null;
   onActivityCreated?: () => void;
   date: Date;
+  onOpenPlayersSelection: () => void;
 }
 
 export default function CreateWorkoutMain({
@@ -42,6 +47,7 @@ export default function CreateWorkoutMain({
   onClose,
   user,
   onActivityCreated,
+  onOpenPlayersSelection,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(null);
   const [activityName, setActivityName] = useState<string>("");
@@ -163,6 +169,23 @@ export default function CreateWorkoutMain({
           <Text className="effra-medium text-base">{t("selectTime")}</Text>
         </View>
         <TimePicker value={time} onChange={setTime} />
+      </View>
+
+      <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
+        <View className="flex-row items-center" style={{ gap: 12 }}>
+          <ProfilePictureDefaultIcon fill={"black"} />
+          <Text className="effra-medium text-base">{t("players")}</Text>
+        </View>
+        <TouchableOpacity
+          className="flex-row items-center"
+          style={{ gap: 4 }}
+          onPress={onOpenPlayersSelection}
+        >
+          <Text className="effra-regular text-base" style={{ opacity: 0.6 }}>
+            {players.length} {t("players")}
+          </Text>
+          <Arrow />
+        </TouchableOpacity>
       </View>
 
       <View className="border-b border-gray-200">

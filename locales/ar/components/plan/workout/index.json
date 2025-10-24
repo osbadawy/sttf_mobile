@@ -16,5 +16,6 @@
   "recurring": "اجعله متكرر",
   "everyDay": "كل يوم",
 
-  "selected": "مختار"
+  "selected": "مختار",
+  "notSelected": "غير مختار"
 }

@@ -16,5 +16,6 @@
   "recurring": "Make it recurring",
   "everyDay": "Every Day",
 
-  "selected": "Selected"
+  "selected": "Selected",
+  "notSelected": "Not Selected"
 }

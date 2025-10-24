@@ -6,10 +6,18 @@ import { ScrollView } from "react-native";
 import ActivitySelection from "./ActivitySelection";
 import CategorySelection from "./CategorySelection";
 import CreateWorkoutMain from "./CreateWorkoutMain";
+import PlayersSelection from "./PlayersSelection";
+
+interface Player {
+  firebase_id: string;
+  display_name: string;
+  profile_picture: string;
+}
 
 interface CreateWorkoutModalProps {
   onClose: () => void;
-  players: string[];
+  allPlayers: Player[] | undefined;
+  originalSelectedPlayers: string[];
   user: User | null;
   onActivityCreated?: () => void;
   date: Date;
@@ -17,7 +25,8 @@ interface CreateWorkoutModalProps {
 export default function CreateWorkoutModal({
   date,
   onClose,
-  players,
+  allPlayers,
+  originalSelectedPlayers = [],
   user,
   onActivityCreated,
 }: CreateWorkoutModalProps) {
@@ -30,9 +39,21 @@ export default function CreateWorkoutModal({
     "technical" | "strength" | "recovery" | null
   >(null);
   const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
+  const [showPlayersSelection, setShowPlayersSelection] =
+    useState<boolean>(false);
+  const [players, setPlayers] = useState<string[]>(originalSelectedPlayers);
 
   let modalContent = null;
-  if (category == null) {
+  if (showPlayersSelection) {
+    modalContent = (
+      <PlayersSelection
+        allPlayers={allPlayers}
+        selectedPlayers={players}
+        onSelectPlayers={setPlayers}
+        onClickBack={() => setShowPlayersSelection(false)}
+      />
+    );
+  } else if (category == null) {
     modalContent = (
       <CategorySelection setCategory={setCategory} t={t} isRTL={isRTL} />
     );
@@ -59,6 +80,7 @@ export default function CreateWorkoutModal({
         onClose={onClose}
         user={user}
         onActivityCreated={onActivityCreated}
+        onOpenPlayersSelection={() => setShowPlayersSelection(true)}
       />
     );
   }
