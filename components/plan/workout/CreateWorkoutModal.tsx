@@ -1,5 +1,6 @@
 import Modal from "@/components/Modal";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { User } from "firebase/auth";
 import { useState } from "react";
 import { ScrollView } from "react-native";
 import ActivitySelection from "./ActivitySelection";
@@ -8,9 +9,13 @@ import CreateWorkoutMain from "./CreateWorkoutMain";
 
 interface CreateWorkoutModalProps {
   onClose: () => void;
+  players: string[];
+  user: User | null;
 }
 export default function CreateWorkoutModal({
   onClose,
+  players,
+  user,
 }: CreateWorkoutModalProps) {
   const { t, isRTL } = useLocalization("components.plan.workout");
   const { t: tActivityTypes } = useLocalization(
@@ -40,10 +45,14 @@ export default function CreateWorkoutModal({
   } else {
     modalContent = (
       <CreateWorkoutMain
+        players={players}
         selectedActivity={selectedActivity}
         setSelectedActivity={setSelectedActivity}
         t={t}
         tActivityTypes={tActivityTypes}
+        category={category}
+        onClose={onClose}
+        user={user}
       />
     );
   }

@@ -1,25 +1,34 @@
 import { ThinPlusIcon } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function WorkoutPlan() {
   const { t } = useLocalization("components.plan.workout");
+
+  // TODO: Get from params later
+  const players = [
+    "j3qvXziHUwbzVkKpR0OcG35axWV2",
+    "oCK9lOmTSeZsx28W5E9QZJhe7Yy1",
+  ];
+
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
+  const {user} = useAuth();
 
   return (
     <ParallaxScrollView
-      headerProps={{
+      headerProps={showCreateWorkoutModal ? undefined : {
         title: t("title"),
         // customDescription: TODO: Made the players icons + title here,
         showBackButton: true,
         showBGImage: false,
         showCalendarIcon: false,
-        showDateSelector: !showCreateWorkoutModal,
+        showDateSelector: true,
         disableFutureDates: false,
         useDateState: dateState,
       }}
@@ -44,7 +53,11 @@ export default function WorkoutPlan() {
       </TouchableOpacity>
 
       {showCreateWorkoutModal && (
-        <CreateWorkoutModal onClose={() => setShowCreateWorkoutModal(false)} />
+        <CreateWorkoutModal
+          onClose={() => setShowCreateWorkoutModal(false)}
+          players={players}
+          user={user}
+        />
       )}
     </ParallaxScrollView>
   );

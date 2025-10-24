@@ -2,27 +2,88 @@ import CustomButton, { ButtonColor } from "@/components/Button";
 import { ClockIcon } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import TimePicker from "@/components/TimePicker";
+import Constants from "expo-constants";
+import { User } from "firebase/auth";
 import { useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 interface CreateWorkoutMainProps {
+  players: string[];
   selectedActivity: string;
   setSelectedActivity: (activity: string | null) => void;
   t: (key: string) => string;
   tActivityTypes: (key: string) => string;
+  category: "technical" | "strength" | "recovery";
+  onClose: () => void;
+  user: User | null;
 }
 
 export default function CreateWorkoutMain({
+  players,
   selectedActivity,
   setSelectedActivity,
   t,
   tActivityTypes,
+  category,
+  onClose,
+  user,
 }: CreateWorkoutMainProps) {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  const [time, setTime] = useState<Date>(d);
+  const [time, setTime] = useState<Date | null>(null);
   const [activityName, setActivityName] = useState<string>("");
   const [activityDetails, setActivityDetails] = useState<string>("");
+  const [disabled, setDisabled] = useState<boolean>(false);
+
+  const activity = selectedActivity === "custom" ? activityName : selectedActivity;
+
+  const isButtonDisabled =
+    disabled || time === null || activityDetails === "" || activity === "";
+
+  async function onPressAdd() {
+    if (user == null) {
+      Alert.alert("Error", "User not found");
+      return;
+    }
+    try {
+      setDisabled(true);
+    // Make post request
+    const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+    const body = {
+      users_assigned: players,
+      start: time,
+      category: category,
+      activity_type: activity,
+      is_custom: selectedActivity === "custom",
+      notes: activityDetails,
+    };
+
+    const token = await user.getIdToken();
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("API Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData,
+      });
+      throw new Error(`Failed to create activity: ${errorData.message}`);
+    }
+    onClose();
+  } catch (error) {
+    console.error("Error creating activity", error);
+    Alert.alert("Error", "Failed to create activity");
+  } finally {
+    setDisabled(false);
+  }
+  }
 
   return (
     <View>
@@ -84,8 +145,9 @@ export default function CreateWorkoutMain({
 
       <CustomButton
         title={t("add")}
-        onPress={() => {}}
-        color={ButtonColor.primary}
+        onPress={onPressAdd}
+        color={isButtonDisabled ? ButtonColor.white : ButtonColor.primary}
+        disabled={isButtonDisabled}
       />
     </View>
   );
