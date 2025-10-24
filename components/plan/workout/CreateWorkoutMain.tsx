@@ -1,11 +1,21 @@
+import colors from "@/colors";
 import CustomButton, { ButtonColor } from "@/components/Button";
 import { ClockIcon } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
+import CustomSwitch from "@/components/Switch";
 import TimePicker from "@/components/TimePicker";
 import Constants from "expo-constants";
 import { User } from "firebase/auth";
 import { useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface CreateWorkoutMainProps {
   players: string[];
@@ -36,12 +46,25 @@ export default function CreateWorkoutMain({
   const [activityName, setActivityName] = useState<string>("");
   const [activityDetails, setActivityDetails] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(false);
+  const [isRecurring, setIsRecurring] = useState<boolean>(false);
 
   const activity =
     selectedActivity === "custom" ? activityName : selectedActivity;
 
   const isButtonDisabled =
     disabled || time === null || activityDetails === "" || activity === "";
+
+  const recurranceDaysOptions = [
+    { label: "Mo", value: "mon" },
+    { label: "Tu", value: "tue" },
+    { label: "We", value: "wed" },
+    { label: "Th", value: "thu" },
+    { label: "Fr", value: "fri" },
+    { label: "Sa", value: "sat" },
+    { label: "Su", value: "sun" },
+  ];
+
+  const [recurranceDays, setRecurranceDays] = useState<string[]>([]);
 
   async function onPressAdd() {
     if (user == null) {
@@ -51,10 +74,15 @@ export default function CreateWorkoutMain({
     try {
       setDisabled(true);
       const dateWithTime = new Date(date);
-      dateWithTime.setHours(time?.getHours() ?? 0, time?.getMinutes() ?? 0, time?.getSeconds() ?? 0, 0);
+      dateWithTime.setHours(
+        time?.getHours() ?? 0,
+        time?.getMinutes() ?? 0,
+        time?.getSeconds() ?? 0,
+        0,
+      );
       // Make post request
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
-      const body = {
+      const body: any = {
         users_assigned: players,
         start: dateWithTime,
         category: category,
@@ -62,6 +90,14 @@ export default function CreateWorkoutMain({
         is_custom: selectedActivity === "custom",
         notes: activityDetails,
       };
+      if (isRecurring && recurranceDays.length > 0) {
+        body.recurrance = {
+          start: dateWithTime,
+          recurring_days: recurranceDays,
+        };
+      }
+
+      console.log(body);
 
       const token = await user.getIdToken();
 
@@ -122,6 +158,67 @@ export default function CreateWorkoutMain({
         </View>
         <TimePicker value={time} onChange={setTime} />
       </View>
+
+      <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
+        <Text className="effra-medium text-base">{t("recurring")}</Text>
+        <CustomSwitch
+          value={isRecurring}
+          onValueChange={(v) => {
+            if (!v) {
+              setRecurranceDays([]); // reset the recurrance days
+            }
+            setIsRecurring(v);
+          }}
+        />
+      </View>
+
+      {isRecurring && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View className="flex-row items-center" style={{ gap: 12 }}>
+            <TouchableHighlight
+              underlayColor={colors.primaryLight}
+              onPress={() => {
+                setRecurranceDays(
+                  recurranceDaysOptions.map((option) => option.value),
+                );
+              }}
+              className="px-6 py-2 bg-white rounded-lg"
+            >
+              <Text className="effra-medium text-base">{t("everyDay")}</Text>
+            </TouchableHighlight>
+
+            {recurranceDaysOptions.map(({ label, value }) => {
+              const isSelected = recurranceDays.includes(value);
+              return (
+                <TouchableHighlight
+                  underlayColor={colors.primaryLight}
+                  key={value}
+                  onPress={() => {
+                    if (isSelected) {
+                      setRecurranceDays(
+                        recurranceDays.filter((d) => d !== value),
+                      );
+                    } else {
+                      setRecurranceDays([...recurranceDays, value]);
+                    }
+                  }}
+                  className={`items-center justify-center rounded-lg ${isSelected ? "bg-primary" : "bg-white"}`}
+                  style={{
+                    width: 36,
+                    height: 36,
+                  }}
+                >
+                  <Text
+                    className={`effra-medium text-base ${isSelected ? "text-white" : "text-primary"}`}
+                  >
+                    {label}
+                  </Text>
+                </TouchableHighlight>
+              );
+            })}
+          </View>
+        </ScrollView>
+      )}
 
       {selectedActivity === "custom" && (
         <TextInput

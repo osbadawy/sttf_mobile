@@ -17,11 +17,15 @@ export default function Modal({
   outterColor = "transparent",
 }: ModalProps) {
   return (
-    <TouchableOpacity
-      className="bg-transparent w-screen h-screen absolute z-100 bottom-0"
-      onPress={onClose}
+    <View
+      className="bg-transparent w-screen h-screen absolute bottom-0"
       style={{ backgroundColor: outterColor }}
     >
+      <TouchableOpacity
+        className="flex-1"
+        onPress={onClose}
+        activeOpacity={1}
+      />
       <View
         className="absolute bottom-0 w-screen px-12 pt-2 pb-12"
         style={{
@@ -33,6 +37,6 @@ export default function Modal({
       >
         {children}
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }

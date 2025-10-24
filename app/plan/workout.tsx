@@ -86,9 +86,12 @@ export default function WorkoutPlan() {
 
             // Get assigned players names
             const assignedPlayers = activity.players_assigned
-              .filter(assignment => !assignment.removed_at) // Only show active assignments
-              .map(assignment => assignment.assigned_to_user.display_name || 'Unknown Player')
-              .join(', ');
+              .filter((assignment) => !assignment.removed_at) // Only show active assignments
+              .map(
+                (assignment) =>
+                  assignment.assigned_to_user.display_name || "Unknown Player",
+              )
+              .join(", ");
 
             return (
               <View

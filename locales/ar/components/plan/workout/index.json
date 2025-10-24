@@ -12,5 +12,9 @@
   "selectTime": "اختر الوقت",
   "nameOfActivity": "اسم النشاط",
   "details": "تفاصيل النشاط",
-  "add": "إضافة"
+  "add": "إضافة",
+  "recurring": "اجعله متكرر",
+  "everyDay": "كل يوم",
+
+  "selected": "مختار"
 }

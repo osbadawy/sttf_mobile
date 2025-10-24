@@ -74,7 +74,9 @@ export default function CreateWorkoutModal({
       }}
       maxHeight={"80%"}
     >
-      <ScrollView>{modalContent}</ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {modalContent}
+      </ScrollView>
     </Modal>
   );
 }

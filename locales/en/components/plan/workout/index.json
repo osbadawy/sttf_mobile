@@ -12,5 +12,9 @@
   "selectTime": "Select time",
   "nameOfActivity": "Name of Activity",
   "details": "Details of Activity",
-  "add": "Add"
+  "add": "Add",
+  "recurring": "Make it recurring",
+  "everyDay": "Every Day",
+
+  "selected": "Selected"
 }
