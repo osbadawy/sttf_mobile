@@ -1,5 +1,6 @@
 import colors from "@/colors";
 import CustomButton, { ButtonColor } from "@/components/Button";
+import DateSelector from "@/components/DateSelector";
 import { ClockIcon } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import CustomSwitch from "@/components/Switch";
@@ -47,6 +48,7 @@ export default function CreateWorkoutMain({
   const [activityDetails, setActivityDetails] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(false);
   const [isRecurring, setIsRecurring] = useState<boolean>(false);
+  const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(null);
 
   const activity =
     selectedActivity === "custom" ? activityName : selectedActivity;
@@ -95,6 +97,10 @@ export default function CreateWorkoutMain({
           start: dateWithTime,
           recurring_days: recurranceDays,
         };
+
+        if (recurranceEndDate) {
+          body.recurrance.end = recurranceEndDate;
+        }
       }
 
       console.log(body);
@@ -159,66 +165,78 @@ export default function CreateWorkoutMain({
         <TimePicker value={time} onChange={setTime} />
       </View>
 
-      <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
-        <Text className="effra-medium text-base">{t("recurring")}</Text>
-        <CustomSwitch
-          value={isRecurring}
-          onValueChange={(v) => {
-            if (!v) {
-              setRecurranceDays([]); // reset the recurrance days
-            }
-            setIsRecurring(v);
-          }}
-        />
-      </View>
+      <View className="border-b border-gray-200">
+        <View className="flex-row items-center justify-between h-[56px]">
+          <Text className="effra-medium text-base">{t("recurring")}</Text>
+          <CustomSwitch
+            value={isRecurring}
+            onValueChange={(v) => {
+              if (!v) {
+                setRecurranceDays([]); // reset the recurrance days
+              }
+              setIsRecurring(v);
+            }}
+          />
+        </View>
 
-      {isRecurring && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View className="flex-row items-center" style={{ gap: 12 }}>
-            <TouchableHighlight
-              underlayColor={colors.primaryLight}
-              onPress={() => {
-                setRecurranceDays(
-                  recurranceDaysOptions.map((option) => option.value),
-                );
-              }}
-              className="px-6 py-2 bg-white rounded-lg"
-            >
-              <Text className="effra-medium text-base">{t("everyDay")}</Text>
-            </TouchableHighlight>
-
-            {recurranceDaysOptions.map(({ label, value }) => {
-              const isSelected = recurranceDays.includes(value);
-              return (
+        {isRecurring && (
+          <View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View className="flex-row items-center" style={{ gap: 12 }}>
                 <TouchableHighlight
                   underlayColor={colors.primaryLight}
-                  key={value}
                   onPress={() => {
-                    if (isSelected) {
-                      setRecurranceDays(
-                        recurranceDays.filter((d) => d !== value),
-                      );
-                    } else {
-                      setRecurranceDays([...recurranceDays, value]);
-                    }
+                    setRecurranceDays(
+                      recurranceDaysOptions.map((option) => option.value),
+                    );
                   }}
-                  className={`items-center justify-center rounded-lg ${isSelected ? "bg-primary" : "bg-white"}`}
-                  style={{
-                    width: 36,
-                    height: 36,
-                  }}
+                  className="px-6 py-2 bg-white rounded-lg"
                 >
-                  <Text
-                    className={`effra-medium text-base ${isSelected ? "text-white" : "text-primary"}`}
-                  >
-                    {label}
+                  <Text className="effra-medium text-base">
+                    {t("everyDay")}
                   </Text>
                 </TouchableHighlight>
-              );
-            })}
+
+                {recurranceDaysOptions.map(({ label, value }) => {
+                  const isSelected = recurranceDays.includes(value);
+                  return (
+                    <TouchableHighlight
+                      underlayColor={colors.primaryLight}
+                      key={value}
+                      onPress={() => {
+                        if (isSelected) {
+                          setRecurranceDays(
+                            recurranceDays.filter((d) => d !== value),
+                          );
+                        } else {
+                          setRecurranceDays([...recurranceDays, value]);
+                        }
+                      }}
+                      className={`items-center justify-center rounded-lg ${isSelected ? "bg-primary" : "bg-white"}`}
+                      style={{
+                        width: 36,
+                        height: 36,
+                      }}
+                    >
+                      <Text
+                        className={`effra-medium text-base ${isSelected ? "text-white" : "text-primary"}`}
+                      >
+                        {label}
+                      </Text>
+                    </TouchableHighlight>
+                  );
+                })}
+              </View>
+            </ScrollView>
+            <View style={{ paddingVertical: 24 }}>
+              <DateSelector
+                value={recurranceEndDate}
+                onChange={setRecurranceEndDate}
+              />
+            </View>
           </View>
-        </ScrollView>
-      )}
+        )}
+      </View>
 
       {selectedActivity === "custom" && (
         <TextInput

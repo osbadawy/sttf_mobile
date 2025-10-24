@@ -5,6 +5,7 @@ import ArrowBig from "./ArrowBig";
 import CheckIcon from "./Check";
 import { GreenCheckIcon } from "./CheckGreen";
 import ClockIcon from "./Clock";
+import ClockInvertedIcon from "./ClockInverted";
 import ExclamationMark from "./ExclamationMark";
 import FilterIcon from "./FilterIcon";
 import HeaderBgIcon from "./HeaderBgIcon";
@@ -27,6 +28,7 @@ export {
   ArrowBig,
   CheckIcon,
   ClockIcon,
+  ClockInvertedIcon,
   ExclamationMark,
   FilterIcon,
   GreenCheckIcon,
