@@ -18,5 +18,9 @@
   "everyDay": "كل يوم",
 
   "selected": "مختار",
-  "notSelected": "غير مختار"
+  "notSelected": "غير مختار",
+
+  "deleteMessage": "هل أنت متأكد من حذف هذا النشاط؟",
+  "delete": "حذف",
+  "back": "السابق"
 }
