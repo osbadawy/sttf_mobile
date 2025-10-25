@@ -1,26 +1,22 @@
 import { FilterIcon, ThinPlusIcon } from "@/components/icons";
-import DynamicActivityIcon from "@/components/icons/activities";
 import Modal from "@/components/Modal";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
-import DeletionConfirmation from "@/components/plan/workout/DeletionConfirmation";
-import PlannedActivityItem from "@/components/plan/workout/PlannedActivityItem";
-import PlayersSelection from "@/components/plan/workout/PlayersSelection";
+import CreateMealModal from "@/components/plan/meal/CreateMealModal";
+import DeletionConfirmation from "@/components/plan/meal/DeletionConfirmation";
+import PlannedMealItem from "@/components/plan/meal/PlannedMealItem";
+import PlayersSelection from "@/components/plan/meal/PlayersSelection";
 import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
+import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
-import { PlannedActivity } from "@/schemas/PlannedActivity";
+import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-export default function WorkoutPlan() {
-  const { t } = useLocalization("components.plan.workout");
-  const { t: tActivityCategories } = useLocalization(
-    "components.activities.activityTypes.categories",
-  );
+export default function MealPlan() {
+  const { t } = useLocalization("components.plan.meal");
   const { players } = useAllPlayers();
 
   // TODO: Get from params later
@@ -39,42 +35,39 @@ export default function WorkoutPlan() {
 
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
-  const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
+  const [showCreateMealModal, setShowCreateMealModal] = useState(false);
   const [showPlayersSelection, setShowPlayersSelection] = useState(false);
-  const [editingActivity, setEditingActivity] =
-    useState<PlannedActivity | null>(null);
-  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
-    null,
-  );
+  const [editingMeal, setEditingMeal] = useState<GetMealsResponse | null>(null);
+  const [selectedMealId, setSelectedMealId] = useState<string | null>(null);
   const [showDeletionConfirmation, setShowDeletionConfirmation] =
     useState(false);
-  const [activityToDelete, setActivityToDelete] =
-    useState<PlannedActivity | null>(null);
+  const [mealToDelete, setMealToDelete] = useState<GetMealsResponse | null>(
+    null,
+  );
   const { user } = useAuth();
 
-  // Fetch planned activities for the committed players and date
-  const { activities, loading, error, refetch, clearCache } =
-    usePlannedActivities({
-      users_assigned: committedPlayers,
-      day: date,
-    });
+  // Fetch planned meals for the committed players and date
+  const { meals, loading, error, refetch, clearCache } = usePlannedMeals({
+    users_assigned: committedPlayers,
+    day: date,
+  });
 
-  // Handle activity creation success
-  const handleActivityCreated = () => {
+  // Handle meal creation success
+  const handleMealCreated = () => {
     refetch(); // Refetch will clear the specific cache entry and fetch fresh data
   };
-  // Handle activity deletion
-  const handleDeleteActivity = async () => {
-    if (!user || !activityToDelete) {
-      Alert.alert("Error", "User or activity not found");
+  // Handle meal deletion
+  const handleDeleteMeal = async () => {
+    if (!user || !mealToDelete) {
+      Alert.alert("Error", "User or meal not found");
       return;
     }
 
     try {
-      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal`;
       const body = {
         users_assigned: committedPlayers, // Use original committed players
-        id: activityToDelete.id,
+        id: mealToDelete.id,
         day: date.toISOString().split("T")[0], // Format as YYYY-MM-DD
       };
 
@@ -96,17 +89,17 @@ export default function WorkoutPlan() {
           statusText: response.statusText,
           error: errorData,
         });
-        throw new Error(`Failed to delete activity: ${errorData.message}`);
+        throw new Error(`Failed to delete meal: ${errorData.message}`);
       }
 
-      // Close modal and refresh activities
+      // Close modal and refresh meals
       setShowDeletionConfirmation(false);
-      setShowCreateWorkoutModal(false);
-      setActivityToDelete(null);
+      setShowCreateMealModal(false);
+      setMealToDelete(null);
       refetch(); // Refetch will clear the specific cache entry and fetch fresh data
     } catch (error) {
-      console.error("Error deleting activity", error);
-      Alert.alert("Error", "Failed to delete activity");
+      console.error("Error deleting meal", error);
+      Alert.alert("Error", "Failed to delete meal");
     }
   };
 
@@ -135,23 +128,19 @@ export default function WorkoutPlan() {
         showNav={false}
         error={!!error}
       >
-        {/* Display planned activities */}
+        {/* Display planned meals */}
         {loading && (
           <View className="py-4">
-            <Text className="text-center text-gray-500">
-              Loading activities...
-            </Text>
+            <Text className="text-center text-gray-500">Loading meals...</Text>
           </View>
         )}
 
-        {!loading && !error && activities.length > 0 && (
+        {!loading && !error && meals.length > 0 && (
           <View>
             <View className="flex-row items-center justify-between">
               <View>
                 <Text className="effra-regular text-base">
-                  {categoryFilters
-                    .map((filter) => tActivityCategories(filter))
-                    .join(", ")}
+                  {categoryFilters.map((filter) => t(filter)).join(", ")}
                 </Text>
               </View>
               <TouchableOpacity
@@ -163,23 +152,23 @@ export default function WorkoutPlan() {
                 <FilterIcon />
               </TouchableOpacity>
             </View>
-            {activities.map((activity) => {
+            {meals.map((meal: GetMealsResponse) => {
               if (
                 categoryFilters.length > 0 &&
-                !categoryFilters.includes(activity.category)
+                !categoryFilters.includes(meal.category)
               ) {
                 return null;
               }
 
               return (
-                <PlannedActivityItem
-                  key={activity.id}
-                  activity={activity}
-                  isSelected={selectedActivityId === activity.id}
-                  onPress={(activity) => {
-                    setSelectedActivityId(activity.id);
-                    setEditingActivity(activity);
-                    setShowCreateWorkoutModal(true);
+                <PlannedMealItem
+                  key={meal.id}
+                  meal={meal}
+                  isSelected={selectedMealId === meal.id}
+                  onPress={(meal: GetMealsResponse) => {
+                    setSelectedMealId(meal.id);
+                    setEditingMeal(meal);
+                    setShowCreateMealModal(true);
                   }}
                 />
               );
@@ -193,33 +182,33 @@ export default function WorkoutPlan() {
             gap: 12,
             borderStyle: "dashed",
           }}
-          onPress={() => setShowCreateWorkoutModal(true)}
+          onPress={() => setShowCreateMealModal(true)}
         >
           <View style={{ transform: [{ scale: 1.5 }] }}>
             <ThinPlusIcon color="#45575E" />
           </View>
 
           <Text className="effra-semibold text-xl text-[#45575E]">
-            {t("addActivity")}
+            {t("addMeal")}
           </Text>
         </TouchableOpacity>
       </ParallaxScrollView>
 
-      {showCreateWorkoutModal && (
-        <CreateWorkoutModal
+      {showCreateMealModal && (
+        <CreateMealModal
           onClose={() => {
-            setEditingActivity(null);
-            setSelectedActivityId(null);
-            setShowCreateWorkoutModal(false);
+            setEditingMeal(null);
+            setSelectedMealId(null);
+            setShowCreateMealModal(false);
           }}
           allPlayers={players as Player[]}
           originalSelectedPlayers={committedPlayers}
           user={user}
-          onActivityCreated={handleActivityCreated}
+          onMealCreated={handleMealCreated}
           date={date}
-          editingActivity={editingActivity}
-          onDeleteActivity={(activity) => {
-            setActivityToDelete(activity);
+          editingMeal={editingMeal}
+          onDeleteMeal={(meal: GetMealsResponse) => {
+            setMealToDelete(meal);
             setShowDeletionConfirmation(true);
           }}
         />
@@ -256,19 +245,24 @@ export default function WorkoutPlan() {
           title={t("filter")}
           uniqueItems={[
             {
-              name: tActivityCategories("technical"),
-              value: "technical",
-              icon: <DynamicActivityIcon activityType="technical" />,
+              name: t("breakfast"),
+              value: "breakfast",
+              icon: null, // TODO: Add meal category icons
             },
             {
-              name: tActivityCategories("strength"),
-              value: "strength",
-              icon: <DynamicActivityIcon activityType="strength" />,
+              name: t("lunch"),
+              value: "lunch",
+              icon: null,
             },
             {
-              name: tActivityCategories("recovery"),
-              value: "recovery",
-              icon: <DynamicActivityIcon activityType="recovery" />,
+              name: t("dinner"),
+              value: "dinner",
+              icon: null,
+            },
+            {
+              name: t("snack"),
+              value: "snack",
+              icon: null,
             },
           ]}
           selectedItems={categoryFilters}
@@ -282,9 +276,9 @@ export default function WorkoutPlan() {
         isVisible={showDeletionConfirmation}
         onClose={() => {
           setShowDeletionConfirmation(false);
-          setActivityToDelete(null);
+          setMealToDelete(null);
         }}
-        onConfirm={handleDeleteActivity}
+        onConfirm={handleDeleteMeal}
       />
     </>
   );

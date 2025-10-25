@@ -231,6 +231,7 @@ export default function CreateWorkoutMain({
 
   return (
     <View>
+      {/* Header */}
       <View className="flex-row items-center justify-between border-b border-gray-200">
         <Text className="font-inter-regular text-base pb-2 pt-[24px]">
           {t("activitySelectionTitle")}
@@ -240,6 +241,7 @@ export default function CreateWorkoutMain({
         </TouchableOpacity>
       </View>
 
+      {/* Activity Selection */}
       <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
         <View className="flex-row items-center" style={{ gap: 12 }}>
           <DynamicActivityIcon activityType={selectedActivity} />
@@ -256,6 +258,7 @@ export default function CreateWorkoutMain({
         </TouchableOpacity>
       </View>
 
+      {/* Time Selection */}
       <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
         <View className="flex-row items-center" style={{ gap: 12 }}>
           <ClockIcon />
@@ -264,6 +267,7 @@ export default function CreateWorkoutMain({
         <TimePicker value={time} onChange={setTime} />
       </View>
 
+      {/* Players Selection */}
       <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
         <View className="flex-row items-center" style={{ gap: 12 }}>
           <ProfilePictureDefaultIcon fill={"black"} />
@@ -281,6 +285,7 @@ export default function CreateWorkoutMain({
         </TouchableOpacity>
       </View>
 
+      {/* Recurring Selection */}
       <View className="border-b border-gray-200">
         <View className="flex-row items-center justify-between h-[56px]">
           <Text className="effra-medium text-base">{t("recurring")}</Text>
@@ -354,6 +359,7 @@ export default function CreateWorkoutMain({
         )}
       </View>
 
+      {/* Custom Activity Name */}
       {selectedActivity === "custom" && (
         <TextInput
           className="effra-regular text-base bg-white rounded-lg px-4 py-3"
@@ -367,6 +373,7 @@ export default function CreateWorkoutMain({
         />
       )}
 
+      {/* Activity Details */}
       <TextInput
         className="effra-regular text-base bg-white rounded-lg px-4 py-3"
         placeholder={t("details")}
@@ -382,6 +389,7 @@ export default function CreateWorkoutMain({
         }}
       />
 
+      {/* Save Button */}
       <CustomButton
         title={editingActivity ? t("save") : t("add")}
         onPress={onPressAdd}

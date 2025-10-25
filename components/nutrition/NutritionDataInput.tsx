@@ -18,7 +18,7 @@ type Props = {
   onChange: (next: NutritionData) => void;
 };
 
-function MetricInput({
+export function MetricInput({
   placeholder,
   unit,
   value,
@@ -26,7 +26,7 @@ function MetricInput({
   LeadingIcon,
   color,
 }: {
-  placeholder: string;
+  placeholder?: string;
   unit: string;
   value?: number;
   onChange: (v?: number) => void;
@@ -36,21 +36,29 @@ function MetricInput({
   const { t } = useLocalization("components.nutrition.nutritionList");
 
   return (
-    <View className="flex-row items-center flex-1 bg-white rounded-xl border border-[#E8E8E8] px-3 py-3 mr-3 mb-3">
-      <LeadingIcon />
-      <TextInput
-        className="flex-1 text-[14px] ml-2 font-semibold"
-        keyboardType="numeric"
-        placeholder={t(placeholder)} // ✅ Localized placeholder
-        placeholderTextColor={color + "80"}
-        style={{ color }}
-        value={typeof value === "number" ? String(value) : ""}
-        onChangeText={(t) => {
-          const n = t.trim() === "" ? undefined : Number(t);
-          onChange(Number.isFinite(n) ? n : undefined);
-        }}
-      />
-      <Text style={{ color }} className="ml-1">
+    <View className="flex-row items-center flex-1 bg-white rounded-xl border border-[#E8E8E8] px-3 items-center justify-between">
+      <View className="flex-row items-center">
+        <View
+          className="items-center justify-center"
+          style={{ width: 28, height: 32 }}
+        >
+          <LeadingIcon />
+        </View>
+        <TextInput
+          className="text-base effra-regular"
+          keyboardType="numeric"
+          placeholder={placeholder ? t(placeholder) : undefined} // ✅ Localized placeholder
+          placeholderTextColor={color + "80"}
+          style={{ color }}
+          value={typeof value === "number" ? String(value) : ""}
+          onChangeText={(t) => {
+            const n = t.trim() === "" ? undefined : Number(t);
+            onChange(Number.isFinite(n) ? n : undefined);
+          }}
+        />
+      </View>
+
+      <Text style={{ color }} className="effra-regular text-base">
         {unit}
       </Text>
     </View>

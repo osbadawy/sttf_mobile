@@ -1,0 +1,35 @@
+{
+  "title": "إنشاء وجبة",
+  "players": "اللاعبين",
+  "addMeal": "إضافة وجبة",
+
+  "mealSelectionTitle": "اختر خيارك",
+  "makeYourOwn": "إنشاء وجبتك الخاصة",
+  "custom": "مخصص",
+  "selectFromList": "اختر من القائمة",
+
+  "edit": "تعديل",
+  "selectTime": "اختر الوقت",
+  "nameOfMeal": "اسم الوجبة",
+  "details": "تفاصيل الوجبة",
+  "add": "إضافة",
+  "save": "حفظ",
+  "recurring": "اجعله متكرر",
+  "everyDay": "كل يوم",
+
+  "selected": "مختار",
+  "notSelected": "غير مختار",
+
+  "deleteMessage": "هل أنت متأكد من حذف هذه الوجبة؟",
+  "delete": "حذف",
+  "back": "السابق",
+  "filter": "تصفية",
+
+  "grams": "جرام",
+  "name": "اسم",
+
+  "breakfast": "الفطار",
+  "lunch": "الغداء",
+  "dinner": "العشاء",
+  "snack": "الوجبات الخفيفة"
+}
