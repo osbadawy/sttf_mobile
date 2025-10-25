@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 export enum ButtonColor {
   primary = "bg-primary",
-  activity = "bg-activity",
+  red = "bg-red",
   white = "bg-white border border-primary",
 }
 

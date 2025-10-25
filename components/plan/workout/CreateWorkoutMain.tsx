@@ -57,7 +57,17 @@ export default function CreateWorkoutMain({
   onDeleteActivity,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(
-    editingActivity ? new Date(editingActivity.start) : null,
+    editingActivity
+      ? (() => {
+          const activityTime = new Date(editingActivity.start);
+          // Extract time components and create a new date in local timezone
+          const hours = activityTime.getHours();
+          const minutes = activityTime.getMinutes();
+          const localTime = new Date();
+          localTime.setHours(hours, minutes, 0, 0);
+          return localTime;
+        })()
+      : null,
   );
   const [activityName, setActivityName] = useState<string>(
     editingActivity?.is_custom ? editingActivity.activity_type : "",
@@ -91,6 +101,36 @@ export default function CreateWorkoutMain({
 
   const [recurranceDays, setRecurranceDays] = useState<string[]>([]);
 
+  // Helper function to delete player assignments
+  async function deletePlayerAssignment(
+    activityId: string,
+    playerIds: string[],
+    user: any,
+  ) {
+    const deleteUrl = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+    const deleteBody = {
+      id: activityId,
+      users_assigned: playerIds,
+      day: date,
+    };
+
+    const token = await user.getIdToken();
+    const response = await fetch(deleteUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deleteBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error deleting player assignments:", errorData);
+      throw new Error(`Failed to remove players: ${errorData.message}`);
+    }
+  }
+
   async function onPressAdd() {
     if (user == null) {
       Alert.alert("Error", "User not found");
@@ -98,16 +138,32 @@ export default function CreateWorkoutMain({
     }
     try {
       setDisabled(true);
+      // Create a new date with local time
       const dateWithTime = new Date(date);
-      dateWithTime.setHours(
-        time?.getHours() ?? 0,
-        time?.getMinutes() ?? 0,
-        time?.getSeconds() ?? 0,
-        0,
-      );
+      if (time) {
+        // Use local time from the time picker
+        dateWithTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
+      }
 
       const isEditing = !!editingActivity;
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+
+      // Handle player removals for editing
+      if (isEditing) {
+        // Find players that were removed
+        const removedPlayers = originalPlayers.filter(
+          (playerId) => !players.includes(playerId),
+        );
+
+        // Make a single DELETE request for all removed players
+        if (removedPlayers.length > 0) {
+          await deletePlayerAssignment(
+            editingActivity.id,
+            removedPlayers,
+            user,
+          );
+        }
+      }
 
       const body: any = {
         users_assigned: players,
@@ -134,8 +190,6 @@ export default function CreateWorkoutMain({
           body.recurrance.end = recurranceEndDate;
         }
       }
-
-      console.log(body);
 
       const token = await user.getIdToken();
 

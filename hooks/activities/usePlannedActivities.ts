@@ -1,56 +1,11 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { PlannedActivity } from "@/schemas/PlannedActivity";
 import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
-interface PlannedActivityAssignment {
-  id: string;
-  activity_id: string;
-  assigned_to: string;
-  assigned_at: Date;
-  removed_at?: Date;
-  created_at: Date;
-  updated_at: Date;
-  assigned_to_user: {
-    id: string;
-    firebase_id: string;
-    display_name?: string;
-    avatar_url?: string;
-  };
-}
-
-interface PlannedActivityRecurrence {
-  id: string;
-  planned_activity_id: string;
-  start: Date;
-  end: Date;
-  sun?: boolean;
-  mon?: boolean;
-  tue?: boolean;
-  wed?: boolean;
-  thu?: boolean;
-  fri?: boolean;
-  sat?: boolean;
-  created_at: Date;
-  updated_at: Date;
-}
-
-interface PlannedActivity {
-  id: string;
-  assigned_by: string;
-  category: "technical" | "strength" | "recovery";
-  activity_type: string;
-  is_custom: boolean;
-  notes?: string;
-  start: Date;
-  created_at: Date;
-  updated_at: Date;
-  players_assigned: PlannedActivityAssignment[];
-  recurrence_patterns: PlannedActivityRecurrence[];
-}
-
 interface UsePlannedActivitiesProps {
-  users_assigned: string[];
+  users_assigned?: string[];
   day: Date;
 }
 
@@ -75,12 +30,15 @@ export function usePlannedActivities({
   const [error, setError] = useState<string | null>(null);
 
   const fetchPlannedActivities = useCallback(async () => {
-    if (!user || !users_assigned.length) {
+    if (!user) {
       return;
     }
 
+    // If users_assigned is undefined, set it to [user.uid]
+    const assignedUsers = users_assigned || [user.uid];
+
     // Check cache first
-    const cacheKey = `${users_assigned.sort().join(",")}-${day.toISOString().split("T")[0]}`;
+    const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
     const cachedData = dataCache.get(cacheKey);
     if (cachedData) {
       setActivities(cachedData);
@@ -97,7 +55,7 @@ export function usePlannedActivities({
       params.append("day", day.toISOString());
 
       // Add multiple users_assigned parameters
-      users_assigned.forEach((userId) => {
+      assignedUsers.forEach((userId) => {
         params.append("users_assigned", userId);
       });
 
@@ -137,8 +95,14 @@ export function usePlannedActivities({
   }, [user, users_assigned, day]);
 
   const refetch = useCallback(async () => {
+    // Clear the specific cache key before refetching
+    const assignedUsers = users_assigned || [user?.uid];
+    if (assignedUsers.length > 0 && user) {
+      const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
+      dataCache.delete(cacheKey);
+    }
     await fetchPlannedActivities();
-  }, [fetchPlannedActivities]);
+  }, [fetchPlannedActivities, users_assigned, day, user]);
 
   const clearCache = useCallback(() => {
     dataCache.clear();

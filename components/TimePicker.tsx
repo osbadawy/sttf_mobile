@@ -10,10 +10,10 @@ interface TimePickerProps {
 export default function TimePicker({ value, onChange }: TimePickerProps) {
   const [showPicker, setShowPicker] = useState(false);
 
-  // Extract hours and minutes from the current value
+  // Extract hours and minutes from the current value, ensuring local time
   const currentTime = value || new Date();
-  const hours = currentTime.getHours();
-  const minutes = currentTime.getMinutes();
+  const hours = value ? currentTime.getHours() : 0;
+  const minutes = value ? currentTime.getMinutes() : 0;
 
   const handleTimeChange = (event: any, selectedDate?: Date) => {
     setShowPicker(Platform.OS === "ios");

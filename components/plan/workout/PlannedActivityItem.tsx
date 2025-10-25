@@ -1,10 +1,11 @@
 import DynamicActivityIcon from "@/components/icons/activities";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { PlannedActivity } from "@/schemas/PlannedActivity";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface PlannedActivityItemProps {
-  activity: any;
-  onPress: (activity: any) => void;
+  activity: PlannedActivity;
+  onPress: (activity: PlannedActivity) => void;
   isSelected?: boolean;
 }
 

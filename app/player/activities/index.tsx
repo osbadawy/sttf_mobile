@@ -1,11 +1,12 @@
+import colors from "@/colors";
 import ActivityCard from "@/components/activities/ActivityCard";
 import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
 import { HeaderColor } from "@/components/Header";
 import {
   ActivityFlameIcon,
   ActivityPageBg,
+  ArrowBig,
   FilterIcon,
-  ThinPlusIcon,
 } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -15,7 +16,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatDate, getUniqueActivityTypes } from "@/utils/activities";
-import { useLocalSearchParams } from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -142,9 +143,16 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
 
           <CustomButton
             title={isCoachViewing ? t("manageWorkouts") : t("yourWorkouts")}
-            onPress={() => {}}
-            icon={<ThinPlusIcon />}
-            color={ButtonColor.activity}
+            onPress={() =>
+              router.push({
+                pathname: "/player/activities/plan" as RelativePathString,
+                params: {
+                  date: date.toISOString(),
+                },
+              })
+            }
+            icon={<ArrowBig stroke={colors.red} direction="right" />}
+            color={ButtonColor.red}
             size={ButtonSize.sm}
           />
 
@@ -171,7 +179,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
             if (
               activityFilters.length > 0 &&
               !day.some((item: any) => {
-                console.log(item);
                 return activityFilters.includes(item.sport_name);
               })
             ) {

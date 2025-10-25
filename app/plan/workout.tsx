@@ -1,22 +1,25 @@
-import { ThinPlusIcon } from "@/components/icons";
+import { FilterIcon, ThinPlusIcon } from "@/components/icons";
+import DynamicActivityIcon from "@/components/icons/activities";
 import Modal from "@/components/Modal";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
 import DeletionConfirmation from "@/components/plan/workout/DeletionConfirmation";
 import PlannedActivityItem from "@/components/plan/workout/PlannedActivityItem";
 import PlayersSelection from "@/components/plan/workout/PlayersSelection";
+import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
+import { PlannedActivity } from "@/schemas/PlannedActivity";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function WorkoutPlan() {
   const { t } = useLocalization("components.plan.workout");
-  const { t: tActivityTypes } = useLocalization(
-    "components.activities.activityTypes",
+  const { t: tActivityCategories } = useLocalization(
+    "components.activities.activityTypes.categories",
   );
   const { players } = useAllPlayers();
 
@@ -38,13 +41,15 @@ export default function WorkoutPlan() {
   const [date, setDate] = dateState;
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [showPlayersSelection, setShowPlayersSelection] = useState(false);
-  const [editingActivity, setEditingActivity] = useState<any>(null);
+  const [editingActivity, setEditingActivity] =
+    useState<PlannedActivity | null>(null);
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null,
   );
   const [showDeletionConfirmation, setShowDeletionConfirmation] =
     useState(false);
-  const [activityToDelete, setActivityToDelete] = useState<any>(null);
+  const [activityToDelete, setActivityToDelete] =
+    useState<PlannedActivity | null>(null);
   const { user } = useAuth();
 
   // Fetch planned activities for the committed players and date
@@ -56,10 +61,8 @@ export default function WorkoutPlan() {
 
   // Handle activity creation success
   const handleActivityCreated = () => {
-    clearCache(); // Clear cache to force refetch
-    refetch(); // Refetch the activities
+    refetch(); // Refetch will clear the specific cache entry and fetch fresh data
   };
-
   // Handle activity deletion
   const handleDeleteActivity = async () => {
     if (!user || !activityToDelete) {
@@ -100,13 +103,17 @@ export default function WorkoutPlan() {
       setShowDeletionConfirmation(false);
       setShowCreateWorkoutModal(false);
       setActivityToDelete(null);
-      clearCache(); // Clear cache to force refetch
-      refetch(); // Refetch the activities
+      refetch(); // Refetch will clear the specific cache entry and fetch fresh data
     } catch (error) {
       console.error("Error deleting activity", error);
       Alert.alert("Error", "Failed to delete activity");
     }
   };
+
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+
+  console.log({ activityFilters: categoryFilters });
 
   return (
     <>
@@ -139,26 +146,46 @@ export default function WorkoutPlan() {
           </View>
         )}
 
-        {error && (
-          <View className="py-4">
-            <Text className="text-center text-red-500">Error: {error}</Text>
-          </View>
-        )}
+        {!loading && !error && activities.length > 0 && (
+          <View>
+            <View className="flex-row items-center justify-between">
+              <View>
+                <Text className="effra-regular text-base">
+                  {categoryFilters
+                    .map((filter) => tActivityCategories(filter))
+                    .join(", ")}
+                </Text>
+              </View>
+              <TouchableOpacity
+                className="flex-row items-center py-4 px-0"
+                onPress={() => setShowFilterDropdown(true)}
+                style={{ gap: 8 }}
+              >
+                <Text className="effra-light text-base">{t("filter")}</Text>
+                <FilterIcon />
+              </TouchableOpacity>
+            </View>
+            {activities.map((activity) => {
+              if (
+                categoryFilters.length > 0 &&
+                !categoryFilters.includes(activity.category)
+              ) {
+                return null;
+              }
 
-        {activities.length > 0 && (
-          <View className="mb-4">
-            {activities.map((activity) => (
-              <PlannedActivityItem
-                key={activity.id}
-                activity={activity}
-                isSelected={selectedActivityId === activity.id}
-                onPress={(activity) => {
-                  setSelectedActivityId(activity.id);
-                  setEditingActivity(activity);
-                  setShowCreateWorkoutModal(true);
-                }}
-              />
-            ))}
+              return (
+                <PlannedActivityItem
+                  key={activity.id}
+                  activity={activity}
+                  isSelected={selectedActivityId === activity.id}
+                  onPress={(activity) => {
+                    setSelectedActivityId(activity.id);
+                    setEditingActivity(activity);
+                    setShowCreateWorkoutModal(true);
+                  }}
+                />
+              );
+            })}
           </View>
         )}
 
@@ -224,6 +251,33 @@ export default function WorkoutPlan() {
             />
           </ScrollView>
         </Modal>
+      )}
+
+      {showFilterDropdown && (
+        <SelectionModal
+          title={t("filter")}
+          uniqueItems={[
+            {
+              name: tActivityCategories("technical"),
+              value: "technical",
+              icon: <DynamicActivityIcon activityType="technical" />,
+            },
+            {
+              name: tActivityCategories("strength"),
+              value: "strength",
+              icon: <DynamicActivityIcon activityType="strength" />,
+            },
+            {
+              name: tActivityCategories("recovery"),
+              value: "recovery",
+              icon: <DynamicActivityIcon activityType="recovery" />,
+            },
+          ]}
+          selectedItems={categoryFilters}
+          setSelectedItems={setCategoryFilters}
+          setShowSelectionModal={setShowFilterDropdown}
+          outerColor="rgba(0, 0, 0, 0.2)"
+        />
       )}
 
       <DeletionConfirmation
