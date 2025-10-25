@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
+import { PlannedActivity } from "@/schemas/PlannedActivity";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -38,13 +39,15 @@ export default function WorkoutPlan() {
   const [date, setDate] = dateState;
   const [showCreateWorkoutModal, setShowCreateWorkoutModal] = useState(false);
   const [showPlayersSelection, setShowPlayersSelection] = useState(false);
-  const [editingActivity, setEditingActivity] = useState<any>(null);
+  const [editingActivity, setEditingActivity] =
+    useState<PlannedActivity | null>(null);
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null,
   );
   const [showDeletionConfirmation, setShowDeletionConfirmation] =
     useState(false);
-  const [activityToDelete, setActivityToDelete] = useState<any>(null);
+  const [activityToDelete, setActivityToDelete] =
+    useState<PlannedActivity | null>(null);
   const { user } = useAuth();
 
   // Fetch planned activities for the committed players and date
