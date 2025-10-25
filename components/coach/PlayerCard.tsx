@@ -1,7 +1,7 @@
 import ReadinessBar from "@/components/coach/ReadinessBar";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import CountryFlag from "react-native-country-flag";
 
 export type Player = {
@@ -12,22 +12,45 @@ export type Player = {
   readiness: number;
   meal: boolean;
   workout: boolean;
-  nationality?: string; // ISO code
+  nationality?: string;
   photoUrl?: string;
+  firebase_id?: string;
+  display_name?: string;
+  profile_picture?: string;
+  display_picture?: string;
 };
 
 interface PlayerCardProps {
   p: Player;
+  onPress?: (p: Player) => void;
+  selected?: boolean;      // <-- NEW
+  selectMode?: boolean;    // <-- optional (if you want to adjust affordances)
 }
 
-export default function PlayerCard({ p }: PlayerCardProps) {
-  const R = 130; // circle diameter
+export default function PlayerCard({ p, onPress, selected = false }: PlayerCardProps) {
+  const R = 130;
   const offsetX = 26;
   const offsetY = 28;
 
   return (
-    <View className="w-[46%] mb-4">
-      <View className="rounded-2xl bg-white shadow-sm">
+    <TouchableOpacity
+      activeOpacity={0.85}
+      className="w-[46%] mb-4"
+      onPress={() => onPress?.(p)}
+    >
+      <View className="rounded-2xl bg-white shadow-sm overflow-hidden">
+        {/* light green highlight overlay when selected */}
+        {selected && (
+          <View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "rgba(0,140,70,0.10)", // subtle faded green
+            }}
+          />
+        )}
+
         <View className="rounded-2xl p-3">
           {/* --- CLIP ZONE --- */}
           <View className="overflow-hidden" style={{ paddingBottom: 4 }}>
@@ -53,10 +76,10 @@ export default function PlayerCard({ p }: PlayerCardProps) {
             </View>
 
             {/* Image + straight white fade */}
-            {p.photoUrl ? (
+            {(p.photoUrl || p.profile_picture || p.display_picture) ? (
               <View className="items-end relative">
                 <Image
-                  source={{ uri: p.photoUrl }}
+                  source={{ uri: p.photoUrl || p.profile_picture || p.display_picture }}
                   style={{
                     width: R,
                     height: R,
@@ -86,6 +109,6 @@ export default function PlayerCard({ p }: PlayerCardProps) {
           <ReadinessBar value={p.readiness} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

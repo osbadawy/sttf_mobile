@@ -2,17 +2,25 @@ import PlayerCard, { Player } from "@/components/coach/PlayerCard";
 import React from "react";
 import { Text, View } from "react-native";
 
+type Props = {
+  title: string;
+  colorClass: string;
+  players: Player[];
+  comparator: (a: Player, b: Player) => number;
+  onPlayerPress?: (p: Player) => void;
+  selectMode?: boolean;         // <-- NEW
+  selectedIds?: string[];       // <-- NEW
+};
+
 export default function PlayerSection({
   title,
   colorClass,
   players,
   comparator,
-}: {
-  title: string;
-  colorClass: string;
-  players: Player[];
-  comparator: (a: Player, b: Player) => number;
-}) {
+  onPlayerPress,
+  selectMode = false,
+  selectedIds = [],
+}: Props) {
   const sorted = React.useMemo(() => [...players].sort(comparator), [players, comparator]);
 
   return (
@@ -23,7 +31,20 @@ export default function PlayerSection({
       </View>
 
       <View className="flex-row flex-wrap justify-between">
-        {sorted.map((p) => <PlayerCard key={p.id} p={p} />)}
+        {sorted.map((p) => {
+          const id = (p as any).firebase_id ?? p.id;
+          const isSelected = selectMode && selectedIds.includes(id);
+          return (
+            <PlayerCard
+              key={id}
+              p={p}
+              onPress={onPlayerPress}
+              selected={isSelected}      // <-- NEW: visual highlight
+              selectMode={selectMode}    // <-- NEW (if you want to tweak UI in card)
+            />
+          );
+        })}
+
         {sorted.length === 0 && (
           <View className="w-full rounded-xl border border-dashed border-neutral-300 p-4 bg-white">
             <Text className="text-neutral-500">No players in this category.</Text>
@@ -33,3 +54,4 @@ export default function PlayerSection({
     </View>
   );
 }
+
