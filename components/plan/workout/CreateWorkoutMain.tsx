@@ -38,6 +38,12 @@ interface CreateWorkoutMainProps {
   editingActivity?: any; // Activity being edited
   originalPlayers?: string[]; // Original players for deletion
   onDeleteActivity?: (activity: any) => void;
+  clearCacheForRecurringDays: (
+    startDate: Date,
+    endDate: Date,
+    recurringDays: string[],
+    users?: string[],
+  ) => void;
 }
 
 export default function CreateWorkoutMain({
@@ -55,6 +61,7 @@ export default function CreateWorkoutMain({
   editingActivity,
   originalPlayers = [],
   onDeleteActivity,
+  clearCacheForRecurringDays,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(
     editingActivity
@@ -213,6 +220,18 @@ export default function CreateWorkoutMain({
           `Failed to ${isEditing ? "update" : "create"} activity: ${errorData.message}`,
         );
       }
+
+      // Clear cache for recurring dates if this is a recurring activity
+      if (isRecurring && recurranceDays.length > 0) {
+        const startDate = new Date(date);
+        // If no end date specified, clear cache for next 30 days to handle immediate future dates
+        // The cache expires after 1 minute anyway, so this covers the immediate need
+        const endDate =
+          recurranceEndDate ||
+          new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+        clearCacheForRecurringDays(startDate, endDate, recurranceDays, players);
+      }
+
       onActivityCreated?.(); // Call the callback to refresh the activities list
       onClose();
     } catch (error) {

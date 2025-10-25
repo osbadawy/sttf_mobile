@@ -23,6 +23,12 @@ interface CreateMealModalProps {
   date: Date;
   editingMeal?: GetMealsResponse | null; // Meal being edited
   onDeleteMeal?: (meal: GetMealsResponse) => void;
+  clearCacheForRecurringDays: (
+    startDate: Date,
+    endDate: Date,
+    recurringDays: string[],
+    users?: string[],
+  ) => void;
 }
 
 export default function CreateMealModal({
@@ -34,6 +40,7 @@ export default function CreateMealModal({
   onMealCreated,
   editingMeal,
   onDeleteMeal,
+  clearCacheForRecurringDays,
 }: CreateMealModalProps) {
   const { t, isRTL } = useLocalization("components.plan.meal");
 
@@ -83,6 +90,7 @@ export default function CreateMealModal({
         editingMeal={editingMeal}
         originalPlayers={originalSelectedPlayers}
         onDeleteMeal={onDeleteMeal}
+        clearCacheForRecurringDays={clearCacheForRecurringDays}
       />
     );
   }

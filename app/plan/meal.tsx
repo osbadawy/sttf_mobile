@@ -47,7 +47,14 @@ export default function MealPlan() {
   const { user } = useAuth();
 
   // Fetch planned meals for the committed players and date
-  const { meals, loading, error, refetch, clearCache } = usePlannedMeals({
+  const {
+    meals,
+    loading,
+    error,
+    refetch,
+    clearCache,
+    clearCacheForRecurringDays,
+  } = usePlannedMeals({
     users_assigned: committedPlayers,
     day: date,
   });
@@ -113,7 +120,7 @@ export default function MealPlan() {
           title: t("title"),
           showBackButton: true,
           showBGImage: false,
-          showCalendarIcon: false,
+          showCalendarIcon: true,
           showDateSelector: true,
           disableFutureDates: false,
           useDateState: dateState,
@@ -152,27 +159,33 @@ export default function MealPlan() {
                 <FilterIcon />
               </TouchableOpacity>
             </View>
-            {meals.map((meal: GetMealsResponse) => {
-              if (
-                categoryFilters.length > 0 &&
-                !categoryFilters.includes(meal.category)
-              ) {
-                return null;
-              }
+            {meals
+              .sort((a: GetMealsResponse, b: GetMealsResponse) => {
+                return (
+                  new Date(a.start).getTime() - new Date(b.start).getTime()
+                );
+              })
+              .map((meal: GetMealsResponse) => {
+                if (
+                  categoryFilters.length > 0 &&
+                  !categoryFilters.includes(meal.category)
+                ) {
+                  return null;
+                }
 
-              return (
-                <PlannedMealItem
-                  key={meal.id}
-                  meal={meal}
-                  isSelected={selectedMealId === meal.id}
-                  onPress={(meal: GetMealsResponse) => {
-                    setSelectedMealId(meal.id);
-                    setEditingMeal(meal);
-                    setShowCreateMealModal(true);
-                  }}
-                />
-              );
-            })}
+                return (
+                  <PlannedMealItem
+                    key={meal.id}
+                    meal={meal}
+                    isSelected={selectedMealId === meal.id}
+                    onPress={(meal: GetMealsResponse) => {
+                      setSelectedMealId(meal.id);
+                      setEditingMeal(meal);
+                      setShowCreateMealModal(true);
+                    }}
+                  />
+                );
+              })}
           </View>
         )}
 
@@ -211,6 +224,7 @@ export default function MealPlan() {
             setMealToDelete(meal);
             setShowDeletionConfirmation(true);
           }}
+          clearCacheForRecurringDays={clearCacheForRecurringDays}
         />
       )}
 

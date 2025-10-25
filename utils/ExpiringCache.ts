@@ -65,6 +65,15 @@ class ExpiringCache<T> {
       }
     }
   }
+
+  // Clear cache entries that match a pattern (useful for clearing recurring data)
+  clearMatching(pattern: RegExp): void {
+    for (const key of this.cache.keys()) {
+      if (pattern.test(key)) {
+        this.cache.delete(key);
+      }
+    }
+  }
 }
 
 export default ExpiringCache;

@@ -15,10 +15,16 @@ interface UsePlannedActivitiesReturn {
   error: string | null;
   refetch: () => Promise<void>;
   clearCache: () => void;
+  clearCacheForRecurringDays: (
+    startDate: Date,
+    endDate: Date,
+    recurringDays: string[],
+    users?: string[],
+  ) => void;
 }
 
-// Cache to store fetched data by users and date (expires after 10 minutes)
-const dataCache = new ExpiringCache<PlannedActivity[]>(10);
+// Cache to store fetched data by users and date (expires after 1 minutes)
+const dataCache = new ExpiringCache<PlannedActivity[]>(1);
 
 export function usePlannedActivities({
   users_assigned,
@@ -108,6 +114,48 @@ export function usePlannedActivities({
     dataCache.clear();
   }, []);
 
+  const clearCacheForRecurringDays = useCallback(
+    (
+      startDate: Date,
+      endDate: Date,
+      recurringDays: string[],
+      users?: string[],
+    ) => {
+      const usersToClear =
+        users || users_assigned || [user?.uid].filter(Boolean);
+      if (usersToClear.length === 0 || recurringDays.length === 0) return;
+
+      const sortedUsers = usersToClear.sort().join(",");
+
+      // Map day abbreviations to day numbers (0 = Sunday, 1 = Monday, etc.)
+      const dayMap: { [key: string]: number } = {
+        sun: 0,
+        mon: 1,
+        tue: 2,
+        wed: 3,
+        thu: 4,
+        fri: 5,
+        sat: 6,
+      };
+
+      const targetDays = recurringDays
+        .map((day) => dayMap[day])
+        .filter((day) => day !== undefined);
+
+      // Clear cache only for dates that match the recurring days
+      const currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+        const dayOfWeek = currentDate.getDay();
+        if (targetDays.includes(dayOfWeek)) {
+          const cacheKey = `${sortedUsers}-${currentDate.toISOString().split("T")[0]}`;
+          dataCache.delete(cacheKey);
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    },
+    [users_assigned, user],
+  );
+
   useEffect(() => {
     fetchPlannedActivities();
   }, [fetchPlannedActivities]);
@@ -118,5 +166,6 @@ export function usePlannedActivities({
     error,
     refetch,
     clearCache,
+    clearCacheForRecurringDays,
   };
 }

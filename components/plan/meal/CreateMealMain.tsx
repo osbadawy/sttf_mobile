@@ -42,6 +42,12 @@ interface CreateMealMainProps {
   editingMeal?: GetMealsResponse | null; // Meal being edited
   originalPlayers?: string[]; // Original players for deletion
   onDeleteMeal?: (meal: GetMealsResponse) => void;
+  clearCacheForRecurringDays: (
+    startDate: Date,
+    endDate: Date,
+    recurringDays: string[],
+    users?: string[],
+  ) => void;
 }
 
 export default function CreateMealMain({
@@ -57,6 +63,7 @@ export default function CreateMealMain({
   editingMeal,
   originalPlayers = [],
   onDeleteMeal,
+  clearCacheForRecurringDays,
 }: CreateMealMainProps) {
   const [mealName, setMealName] = useState(editingMeal ? editingMeal.name : "");
   const [weight, setWeight] = useState<number | null>(editingMeal ? 230 : null); // Default weight
@@ -69,8 +76,14 @@ export default function CreateMealMain({
   const [isPlanned, setIsPlanned] = useState(
     editingMeal ? editingMeal.is_planned : true,
   );
-  const [isRecurring, setIsRecurring] = useState(false);
-  const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(null);
+  const [isRecurring, setIsRecurring] = useState(
+    editingMeal ? editingMeal.recurrence_patterns.length > 0 : false,
+  );
+  const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(
+    editingMeal && editingMeal.recurrence_patterns.length > 0
+      ? new Date(editingMeal.recurrence_patterns[0].end)
+      : null,
+  );
   const [disabled, setDisabled] = useState<boolean>(false);
 
   const isButtonDisabled =
@@ -92,7 +105,22 @@ export default function CreateMealMain({
     { label: "Sa", value: "sat" },
     { label: "Su", value: "sun" },
   ];
-  const [recurranceDays, setRecurranceDays] = useState<string[]>([]);
+  const [recurranceDays, setRecurranceDays] = useState<string[]>(
+    editingMeal && editingMeal.recurrence_patterns.length > 0
+      ? (() => {
+          const pattern = editingMeal.recurrence_patterns[0];
+          const days: string[] = [];
+          if (pattern.sun) days.push("sun");
+          if (pattern.mon) days.push("mon");
+          if (pattern.tue) days.push("tue");
+          if (pattern.wed) days.push("wed");
+          if (pattern.thu) days.push("thu");
+          if (pattern.fri) days.push("fri");
+          if (pattern.sat) days.push("sat");
+          return days;
+        })()
+      : [],
+  );
 
   const handleSave = async () => {
     if (!user) {
@@ -180,6 +208,17 @@ export default function CreateMealMain({
         throw new Error(
           `Failed to ${editingMeal ? "update" : "create"} meal: ${errorData.message}`,
         );
+      }
+
+      // Clear cache for recurring dates if this is a recurring meal
+      if (isRecurring && recurranceDays.length > 0) {
+        const startDate = new Date(date);
+        // If no end date specified, clear cache for next 30 days to handle immediate future dates
+        // The cache expires after 1 minute anyway, so this covers the immediate need
+        const endDate =
+          recurranceEndDate ||
+          new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+        clearCacheForRecurringDays(startDate, endDate, recurranceDays, players);
       }
 
       Alert.alert(

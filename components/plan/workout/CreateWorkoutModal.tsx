@@ -47,6 +47,12 @@ interface CreateWorkoutModalProps {
   date: Date;
   editingActivity?: any; // Activity being edited
   onDeleteActivity?: (activity: any) => void;
+  clearCacheForRecurringDays: (
+    startDate: Date,
+    endDate: Date,
+    recurringDays: string[],
+    users?: string[],
+  ) => void;
 }
 export default function CreateWorkoutModal({
   date,
@@ -57,6 +63,7 @@ export default function CreateWorkoutModal({
   onActivityCreated,
   editingActivity,
   onDeleteActivity,
+  clearCacheForRecurringDays,
 }: CreateWorkoutModalProps) {
   const { t, isRTL } = useLocalization("components.plan.workout");
   const { t: tActivityTypes } = useLocalization(
@@ -124,6 +131,7 @@ export default function CreateWorkoutModal({
         editingActivity={editingActivity}
         originalPlayers={originalSelectedPlayers}
         onDeleteActivity={onDeleteActivity}
+        clearCacheForRecurringDays={clearCacheForRecurringDays}
       />
     );
   }

@@ -53,11 +53,17 @@ export default function WorkoutPlan() {
   const { user } = useAuth();
 
   // Fetch planned activities for the committed players and date
-  const { activities, loading, error, refetch, clearCache } =
-    usePlannedActivities({
-      users_assigned: committedPlayers,
-      day: date,
-    });
+  const {
+    activities,
+    loading,
+    error,
+    refetch,
+    clearCache,
+    clearCacheForRecurringDays,
+  } = usePlannedActivities({
+    users_assigned: committedPlayers,
+    day: date,
+  });
 
   // Handle activity creation success
   const handleActivityCreated = () => {
@@ -120,7 +126,7 @@ export default function WorkoutPlan() {
           title: t("title"),
           showBackButton: true,
           showBGImage: false,
-          showCalendarIcon: false,
+          showCalendarIcon: true,
           showDateSelector: true,
           disableFutureDates: false,
           useDateState: dateState,
@@ -163,27 +169,33 @@ export default function WorkoutPlan() {
                 <FilterIcon />
               </TouchableOpacity>
             </View>
-            {activities.map((activity) => {
-              if (
-                categoryFilters.length > 0 &&
-                !categoryFilters.includes(activity.category)
-              ) {
-                return null;
-              }
+            {activities
+              .sort((a: PlannedActivity, b: PlannedActivity) => {
+                return (
+                  new Date(a.start).getTime() - new Date(b.start).getTime()
+                );
+              })
+              .map((activity: PlannedActivity) => {
+                if (
+                  categoryFilters.length > 0 &&
+                  !categoryFilters.includes(activity.category)
+                ) {
+                  return null;
+                }
 
-              return (
-                <PlannedActivityItem
-                  key={activity.id}
-                  activity={activity}
-                  isSelected={selectedActivityId === activity.id}
-                  onPress={(activity) => {
-                    setSelectedActivityId(activity.id);
-                    setEditingActivity(activity);
-                    setShowCreateWorkoutModal(true);
-                  }}
-                />
-              );
-            })}
+                return (
+                  <PlannedActivityItem
+                    key={activity.id}
+                    activity={activity}
+                    isSelected={selectedActivityId === activity.id}
+                    onPress={(activity) => {
+                      setSelectedActivityId(activity.id);
+                      setEditingActivity(activity);
+                      setShowCreateWorkoutModal(true);
+                    }}
+                  />
+                );
+              })}
           </View>
         )}
 
@@ -222,6 +234,7 @@ export default function WorkoutPlan() {
             setActivityToDelete(activity);
             setShowDeletionConfirmation(true);
           }}
+          clearCacheForRecurringDays={clearCacheForRecurringDays}
         />
       )}
 

@@ -15,8 +15,8 @@ interface UseMultiPlayerWhoopDataProps {
   days?: number;
 }
 
-// Cache to store fetched data by firebase_id (expires after 10 minutes)
-const dataCache = new ExpiringCache<MultiDayWhoopMetrics>(10);
+// Cache to store fetched data by firebase_id (expires after 1 minutes)
+const dataCache = new ExpiringCache<MultiDayWhoopMetrics>(1);
 
 export function useMultiDayWhoopData({
   firebaseId,

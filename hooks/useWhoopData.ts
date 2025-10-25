@@ -9,8 +9,8 @@ interface UseWhoopDataProps {
   date?: Date;
 }
 
-// Cache to store fetched data by firebase_id and date (expires after 10 minutes)
-const dataCache = new ExpiringCache<WhoopMetrics>(10);
+// Cache to store fetched data by firebase_id and date (expires after 1 minutes)
+const dataCache = new ExpiringCache<WhoopMetrics>(1);
 
 export function useWhoopData({
   firebaseId,
