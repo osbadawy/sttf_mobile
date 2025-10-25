@@ -18,9 +18,6 @@ import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function WorkoutPlan() {
   const { t } = useLocalization("components.plan.workout");
-  const { t: tActivityTypes } = useLocalization(
-    "components.activities.activityTypes",
-  );
   const { t: tActivityCategories } = useLocalization(
     "components.activities.activityTypes.categories",
   );
