@@ -20,10 +20,9 @@ export default function PlayerPlannedActivitiesPage() {
     "components.activities.activityTypes",
   );
 
-  const { activities, loading, error, refetch, clearCache } =
-    usePlannedActivities({
-      day: date,
-    });
+  const { activities, loading, error } = usePlannedActivities({
+    day: date,
+  });
 
   const { user } = useAuth();
 
@@ -53,9 +52,12 @@ export default function PlayerPlannedActivitiesPage() {
             minute: "2-digit",
           });
 
-          const activityAssignment = activity.players_assigned.find((assignment) => assignment.assigned_to_user.firebase_id === user.uid);
+          const activityAssignment = activity.players_assigned.find(
+            (assignment) =>
+              assignment.assigned_to_user.firebase_id === user.uid,
+          );
           const isCompleted = activityAssignment?.performance !== null;
-          
+
           // Check if activity is in the future
           const activityDate = new Date(activity.start);
           const currentDate = new Date();
@@ -64,11 +66,20 @@ export default function PlayerPlannedActivitiesPage() {
           return (
             <LinearGradient
               key={activity.id}
-              colors={isCompleted ? ["white", "#D4FFEA"] : isFutureActivity ? ["#F5F5F5", "#F5F5F5"] : ["white", "white"]}
+              colors={
+                isCompleted
+                  ? ["white", "#D4FFEA"]
+                  : isFutureActivity
+                    ? ["#F5F5F5", "#F5F5F5"]
+                    : ["white", "white"]
+              }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               className="rounded-[16px] border-2 border-[#B5BCBF] p-6"
-              style={{ overflow: "hidden", opacity: isFutureActivity ? 0.6 : 1 }}
+              style={{
+                overflow: "hidden",
+                opacity: isFutureActivity ? 0.6 : 1,
+              }}
             >
               <View
                 className="flex-row items-center justify-between border-b pb-4"
@@ -84,7 +95,8 @@ export default function PlayerPlannedActivitiesPage() {
                   <TouchableOpacity
                     onPress={() => {
                       router.push({
-                        pathname: `/player/activities/plan/${activity.id}/self-assessment` as RelativePathString,
+                        pathname:
+                          `/player/activities/plan/${activity.id}/self-assessment` as RelativePathString,
                         params: {
                           date: date.toISOString(),
                         },
@@ -96,7 +108,7 @@ export default function PlayerPlannedActivitiesPage() {
                       borderWidth: isCompleted ? 0 : 1,
                       borderRadius: 6,
                       width: 26,
-                      height: 26, 
+                      height: 26,
                     }}
                   >
                     {isCompleted && <CheckIcon fill={"white"} />}

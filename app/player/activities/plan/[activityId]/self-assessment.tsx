@@ -4,21 +4,17 @@ import SelfAssessmentPage, {
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import Constants from "expo-constants";
-import {
-  RelativePathString,
-  router,
-  useLocalSearchParams,
-} from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 export default function PlayerActivitySelfAssessmentPage() {
   const { activityId, date } = useLocalSearchParams();
   const { t } = useLocalization("components.activities.selfAssessment");
   const [error, setError] = useState<boolean>(false);
-  
+
   // Get the planned activities hook to access refetch and clearCache functions
   const { refetch, clearCache } = usePlannedActivities({
-    day: new Date(date as string || new Date()),
+    day: new Date((date as string) || new Date()),
   });
 
   // Get the path to go back to the planned activities page
@@ -50,7 +46,7 @@ export default function PlayerActivitySelfAssessmentPage() {
       // Clear the cache and refetch activities data to reflect the updated completion status
       clearCache();
       await refetch();
-      
+
       // Use router.replace to ensure the previous page refreshes with new data
       router.replace(plannedActivitiesPath as RelativePathString);
       setError(false);

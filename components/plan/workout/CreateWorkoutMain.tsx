@@ -57,15 +57,17 @@ export default function CreateWorkoutMain({
   onDeleteActivity,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(
-    editingActivity ? (() => {
-      const activityTime = new Date(editingActivity.start);
-      // Extract time components and create a new date in local timezone
-      const hours = activityTime.getHours();
-      const minutes = activityTime.getMinutes();
-      const localTime = new Date();
-      localTime.setHours(hours, minutes, 0, 0);
-      return localTime;
-    })() : null,
+    editingActivity
+      ? (() => {
+          const activityTime = new Date(editingActivity.start);
+          // Extract time components and create a new date in local timezone
+          const hours = activityTime.getHours();
+          const minutes = activityTime.getMinutes();
+          const localTime = new Date();
+          localTime.setHours(hours, minutes, 0, 0);
+          return localTime;
+        })()
+      : null,
   );
   const [activityName, setActivityName] = useState<string>(
     editingActivity?.is_custom ? editingActivity.activity_type : "",
@@ -141,7 +143,6 @@ export default function CreateWorkoutMain({
           body.recurrance.end = recurranceEndDate;
         }
       }
-
 
       const token = await user.getIdToken();
 
