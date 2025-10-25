@@ -3,7 +3,7 @@ import Svg, { Path } from "react-native-svg";
 
 type SVGProps = React.ComponentProps<typeof Svg>;
 
-const FilterIcon: React.FC<SVGProps> = (props) => (
+const FilterIconLines: React.FC<SVGProps> = (props) => (
   <Svg
     width={20}
     height={20}
@@ -31,4 +31,4 @@ const FilterIcon: React.FC<SVGProps> = (props) => (
     />
   </Svg>
 );
-export default FilterIcon;
+export default FilterIconLines;

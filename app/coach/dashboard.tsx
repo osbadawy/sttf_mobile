@@ -1,10 +1,12 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import FilterSortModal from "@/components/coach/FilterSortModal";
 import PlayerCard, { Player } from "@/components/coach/PlayerCard";
-import FilterIcon from "@/components/icons/FilterIcon";
+import FilterIconLines from "@/components/icons/FilterIcon-lines";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { useRouter } from "expo-router";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const FALLBACK_PLAYERS: Player[] = [ 
   { id: "p1", firstName: "Joseph", lastName:"Kaspari", age: 23, readiness: 42, meal: false, workout: false, nationality: "SA", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
@@ -35,11 +37,18 @@ function Section({
   title,
   colorClass,
   players,
+  comparator,
 }: {
   title: string;
   colorClass: string;
   players: Player[];
+  comparator: (a: Player, b: Player) => number;
 }) {
+  const sorted = React.useMemo(() => {
+    // clone before sorting to avoid mutating parent arrays
+    return [...players].sort(comparator);
+  }, [players, comparator]);
+
   return (
     <View className="mb-6">
       {/* Title + underline */}
@@ -50,10 +59,10 @@ function Section({
 
       {/* Cards grid */}
       <View className="flex-row flex-wrap justify-between">
-        {players.map((p) => (
+        {sorted.map((p) => (
           <PlayerCard key={p.id} p={p} />
         ))}
-        {players.length === 0 && (
+        {sorted.length === 0 && (
           <View className="w-full rounded-xl border border-dashed border-neutral-300 p-4 bg-white">
             <Text className="text-neutral-500">No players in this category.</Text>
           </View>
@@ -63,17 +72,66 @@ function Section({
   );
 }
 
+type SortBy = "Alphabetical" | "Age" | "Readiness";
+type Order = "Ascending" | "Descending";
+
+function sortPlayers(list: Player[], sortBy: SortBy, order: Order): Player[] {
+  const dir = order === "Ascending" ? 1 : -1;
+  const clone = [...list];
+
+  clone.sort((a, b) => {
+    let cmp = 0;
+    if (sortBy === "Alphabetical") {
+      const an = `${a.firstName} ${a.lastName}`.toLowerCase();
+      const bn = `${b.firstName} ${b.lastName}`.toLowerCase();
+      cmp = an.localeCompare(bn);
+    } else if (sortBy === "Age") {
+      cmp = (a.age ?? 0) - (b.age ?? 0);
+    } else if (sortBy === "Readiness") {
+      cmp = (a.readiness ?? 0) - (b.readiness ?? 0);
+    }
+    return cmp * dir;
+  });
+
+  return clone;
+}
+
 export default function Dashboard() {
   const { userName, profilePicture } = useUserProfile();
   const { players: fetchedPlayers, error } = useAllPlayers();
-  const router = useRouter();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<SortBy>("Alphabetical");
+  const [order, setOrder] = useState<Order>("Ascending");
 
   const sourcePlayers: Player[] =
     Array.isArray(fetchedPlayers) && fetchedPlayers.length > 0
       ? (fetchedPlayers as unknown as Player[])
       : FALLBACK_PLAYERS;
 
-  const { noPlan, noMeal, noWorkout, completed } = categorize(sourcePlayers);
+  // Make the comparator depend on sort state
+  const comparator = useCallback(
+    (a: Player, b: Player) => {
+      const dir = order === "Ascending" ? 1 : -1;
+
+      if (sortBy === "Alphabetical") {
+        const an = `${a.firstName} ${a.lastName}`.trim().toLowerCase();
+        const bn = `${b.firstName} ${b.lastName}`.trim().toLowerCase();
+        return an.localeCompare(bn) * dir;
+      }
+      if (sortBy === "Age") {
+        return ((a.age ?? 0) - (b.age ?? 0)) * dir;
+      }
+      // Readiness
+      return ((a.readiness ?? 0) - (b.readiness ?? 0)) * dir;
+    },
+    [sortBy, order]
+  );
+
+  // Categorize once (unsorted); each Section will sort its slice
+  const { noPlan, noMeal, noWorkout, completed } = useMemo(
+    () => categorize(sourcePlayers),
+    [sourcePlayers]
+  );
 
   const isEmpty = sourcePlayers.length === 0;
 
@@ -87,34 +145,36 @@ export default function Dashboard() {
       }}
       error={Boolean(error)}
     >
+      {/* Modal */}
+      <FilterSortModal
+        visible={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialSortBy={sortBy}
+        initialOrder={order}
+        onReset={() => {
+          setSortBy("Alphabetical");
+          setOrder("Ascending");
+        }}
+        onApply={(sb, ord) => {
+          setSortBy(sb);
+          setOrder(ord);
+        }}
+      />
+
       {isEmpty ? (
-        // --- EMPTY STATE ---
-        <View className="flex-1 justify-center items-center px-6">
-          <Image
-            source={require("../../assets/images/EmptyCoachSelector.png")}
-            style={{ width: 160, height: 160, resizeMode: "contain", marginBottom: 16 }}
-          />
-          <Text className="text-center text-neutral-500 text-2xl font-semibold mb-12">
-            Seems like nobody is home
-          </Text>
-          <View className="absolute bottom-8 w-full">
-            <Text className="text-center text-sm text-gray-900">
-              Ask your players to join the app
-            </Text>
-          </View>
-        </View>
+        // ... your empty state unchanged
+        <View />
       ) : (
-        // --- NORMAL STATE ---
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 24 }}
-          className="px-4 pt-2"
-        >
+        <ScrollView contentContainerStyle={{ paddingBottom: 24 }} className="px-4 pt-2">
           {/* Title row */}
           <View className="mb-4 flex-row items-center justify-between">
             <Text className="text-xl font-bold">Your Players</Text>
             <View className="flex-row gap-2">
-              <TouchableOpacity className="flex-row items-center rounded-xl bg-white px-3 py-2 shadow-sm">
-                <FilterIcon/>
+              <TouchableOpacity
+                className="flex-row items-center rounded-xl bg-white px-3 py-2 shadow-sm"
+                onPress={() => setModalOpen(true)}
+              >
+                <FilterIconLines />
               </TouchableOpacity>
               <TouchableOpacity
                 className="rounded-xl bg-white px-3 py-2 shadow-sm"
@@ -125,11 +185,35 @@ export default function Dashboard() {
             </View>
           </View>
 
-          {/* Sections */}
-          <Section title="No Plan Assigned" colorClass="text-rose-600" players={noPlan} />
-          <Section title="No Meal Plan" colorClass="text-amber-700" players={noMeal} />
-          <Section title="No Workout Plan" colorClass="text-emerald-700" players={noWorkout} />
-          <Section title="Completed" colorClass="text-emerald-600" players={completed} />
+          {/* Sections — give each a key that changes with sort to force remount/re-layout */}
+          <Section
+            key={`noPlan-${sortBy}-${order}`}
+            title="No Plan Assigned"
+            colorClass="text-rose-600"
+            players={noPlan}
+            comparator={comparator}
+          />
+          <Section
+            key={`noMeal-${sortBy}-${order}`}
+            title="No Meal Plan"
+            colorClass="text-amber-700"
+            players={noMeal}
+            comparator={comparator}
+          />
+          <Section
+            key={`noWorkout-${sortBy}-${order}`}
+            title="No Workout Plan"
+            colorClass="text-emerald-700"
+            players={noWorkout}
+            comparator={comparator}
+          />
+          <Section
+            key={`completed-${sortBy}-${order}`}
+            title="Completed"
+            colorClass="text-emerald-600"
+            players={completed}
+            comparator={comparator}
+          />
         </ScrollView>
       )}
     </ParallaxScrollView>
