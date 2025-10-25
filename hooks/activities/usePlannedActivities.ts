@@ -95,8 +95,14 @@ export function usePlannedActivities({
   }, [user, users_assigned, day]);
 
   const refetch = useCallback(async () => {
+    // Clear the specific cache key before refetching
+    const assignedUsers = users_assigned || [user?.uid];
+    if (assignedUsers.length > 0 && user) {
+      const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
+      dataCache.delete(cacheKey);
+    }
     await fetchPlannedActivities();
-  }, [fetchPlannedActivities]);
+  }, [fetchPlannedActivities, users_assigned, day, user]);
 
   const clearCache = useCallback(() => {
     dataCache.clear();

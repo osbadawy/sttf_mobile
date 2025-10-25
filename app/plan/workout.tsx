@@ -59,10 +59,8 @@ export default function WorkoutPlan() {
 
   // Handle activity creation success
   const handleActivityCreated = () => {
-    clearCache(); // Clear cache to force refetch
-    refetch(); // Refetch the activities
+    refetch(); // Refetch will clear the specific cache entry and fetch fresh data
   };
-
   // Handle activity deletion
   const handleDeleteActivity = async () => {
     if (!user || !activityToDelete) {
@@ -103,8 +101,7 @@ export default function WorkoutPlan() {
       setShowDeletionConfirmation(false);
       setShowCreateWorkoutModal(false);
       setActivityToDelete(null);
-      clearCache(); // Clear cache to force refetch
-      refetch(); // Refetch the activities
+      refetch(); // Refetch will clear the specific cache entry and fetch fresh data
     } catch (error) {
       console.error("Error deleting activity", error);
       Alert.alert("Error", "Failed to delete activity");
@@ -148,7 +145,7 @@ export default function WorkoutPlan() {
           </View>
         )}
 
-        {activities.length > 0 && (
+        {!loading && !error && activities.length > 0 && (
           <View className="mb-4">
             {activities.map((activity) => (
               <PlannedActivityItem
