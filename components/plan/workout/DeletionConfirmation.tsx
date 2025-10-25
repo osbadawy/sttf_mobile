@@ -46,7 +46,7 @@ export default function DeletionConfirmation({
           <CustomButton
             title={t("delete")}
             onPress={onConfirm}
-            color={ButtonColor.activity}
+            color={ButtonColor.red}
             size={ButtonSize.sm}
           />
         </View>

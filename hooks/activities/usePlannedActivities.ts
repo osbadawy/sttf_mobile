@@ -5,7 +5,7 @@ import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
 interface UsePlannedActivitiesProps {
-  users_assigned: string[];
+  users_assigned?: string[];
   day: Date;
 }
 
@@ -30,12 +30,15 @@ export function usePlannedActivities({
   const [error, setError] = useState<string | null>(null);
 
   const fetchPlannedActivities = useCallback(async () => {
-    if (!user || !users_assigned.length) {
+    if (!user) {
       return;
     }
 
+    // If users_assigned is undefined, set it to [user.uid]
+    const assignedUsers = users_assigned || [user.uid];
+
     // Check cache first
-    const cacheKey = `${users_assigned.sort().join(",")}-${day.toISOString().split("T")[0]}`;
+    const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
     const cachedData = dataCache.get(cacheKey);
     if (cachedData) {
       setActivities(cachedData);
@@ -52,7 +55,7 @@ export function usePlannedActivities({
       params.append("day", day.toISOString());
 
       // Add multiple users_assigned parameters
-      users_assigned.forEach((userId) => {
+      assignedUsers.forEach((userId) => {
         params.append("users_assigned", userId);
       });
 
