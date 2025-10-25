@@ -1,8 +1,9 @@
 {
   "title": "النشاطات",
   "burntToday": "محروق اليوم",
-  "addActivity": "إضافة نشاط",
-  "allActivities": "جميع النشاطات",
+  "yourWorkouts": "اسماء التمرينات الي تم إضافتها",
+  "manageWorkouts": "إدارة التمارين",
+  "whoopDetected": "تم الكشف عن Whoop",
   "filterActivities": "تصفية النشاطات",
   "selectCategory": "اختر الفئة"
 }

@@ -1,6 +1,7 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { CheckIcon } from "./icons";
+import Modal from "./Modal";
 
 interface Item {
   name: string;
@@ -20,6 +21,43 @@ interface SelectionModalProps {
   showClearButton?: boolean;
 }
 
+interface ModalItemProps {
+  item: Item;
+  isSelected: boolean;
+  onPress: () => void;
+  showIcons: boolean;
+  isRTL: boolean;
+  isFirstItem?: boolean;
+}
+
+export function ModalItem({
+  item,
+  isSelected,
+  onPress,
+  showIcons,
+  isRTL,
+  isFirstItem = false,
+}: ModalItemProps) {
+  return (
+    <TouchableOpacity
+      key={item.value}
+      onPress={onPress}
+      className={`border-b border-gray-200 h-[56px] items-center justify-between ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+      style={{ borderTopWidth: isFirstItem ? 1 : 0 }}
+    >
+      <View className="flex-row items-center" style={{ gap: 10 }}>
+        {showIcons && (
+          <View className="w-10 h-7 items-center justify-center">
+            {item.icon}
+          </View>
+        )}
+        <Text>{item.name}</Text>
+      </View>
+      {isSelected && <CheckIcon />}
+    </TouchableOpacity>
+  );
+}
+
 export default function SelectionModal({
   title,
   uniqueItems,
@@ -34,68 +72,51 @@ export default function SelectionModal({
   const { isRTL } = useLocalization();
 
   return (
-    <TouchableOpacity
-      className="bg-transparent w-screen h-screen absolute z-100 bottom-0"
-      onPress={() => setShowSelectionModal(false)}
-    >
+    <Modal onClose={() => setShowSelectionModal(false)}>
       <View
-        className="bg-white absolute bottom-0 w-screen rounded-3xl px-12 pt-2 pb-12"
-        style={{
-          maxHeight: "70%",
-        }}
+        className={`items-center justify-between py-3 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
       >
-        <View
-          className={`items-center justify-between py-3 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
-        >
-          <Text className="font-inter-regular text-base">{title}</Text>
-          {showClearButton && (
-            <TouchableOpacity onPress={() => setSelectedItems([])}>
-              <Text className="font-inter-regular text-base underline">
-                clear
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        <View className="w-full h-0 border-b border-gray-200" />
-        <ScrollView>
-          {uniqueItems.map((item) => {
-            const isSelected = selectedItems.includes(item.value);
-            const onPress = () => {
-              if (customOnPress) {
-                customOnPress(item);
-                return;
-              }
-              if (isSelected) {
-                setSelectedItems(
-                  selectedItems.filter(
-                    (selectedItem) => selectedItem !== item.value,
-                  ),
-                );
-              } else {
-                setSelectedItems([...selectedItems, item.value]);
-              }
-            };
-            return (
-              <TouchableOpacity
-                key={item.value}
-                onPress={onPress}
-                className={`border-b border-gray-200 h-[56px] items-center justify-between ${isRTL ? "flex-row-reverse" : "flex-row"}`}
-              >
-                <View className="flex-row items-center" style={{ gap: 10 }}>
-                  {showIcons && (
-                    <View className="w-10 h-7 items-center justify-center">
-                      {item.icon}
-                    </View>
-                  )}
-                  <Text>{item.name}</Text>
-                </View>
-                {isSelected && <CheckIcon />}
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <Text className="font-inter-regular text-base">{title}</Text>
+        {showClearButton && (
+          <TouchableOpacity onPress={() => setSelectedItems([])}>
+            <Text className="font-inter-regular text-base underline">
+              clear
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
-    </TouchableOpacity>
+
+      <View className="w-full h-0 border-b border-gray-200" />
+      <ScrollView>
+        {uniqueItems.map((item) => {
+          const isSelected = selectedItems.includes(item.value);
+          const onPress = () => {
+            if (customOnPress) {
+              customOnPress(item);
+              return;
+            }
+            if (isSelected) {
+              setSelectedItems(
+                selectedItems.filter(
+                  (selectedItem) => selectedItem !== item.value,
+                ),
+              );
+            } else {
+              setSelectedItems([...selectedItems, item.value]);
+            }
+          };
+          return (
+            <ModalItem
+              key={item.value}
+              item={item}
+              isSelected={isSelected}
+              onPress={onPress}
+              showIcons={showIcons}
+              isRTL={isRTL}
+            />
+          );
+        })}
+      </ScrollView>
+    </Modal>
   );
 }

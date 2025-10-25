@@ -15,6 +15,7 @@ import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
 import arHeart from "../locales/ar/components/heart/index.json";
 import arNutritionList from "../locales/ar/components/nutrition/nutritionList.json";
+import arPlanWorkout from "../locales/ar/components/plan/workout/index.json";
 import arSelfAssessmentReadiness from "../locales/ar/components/self-assessment/Readiness.json";
 import arSelfAssessmentTiredness from "../locales/ar/components/self-assessment/Tiredness.json";
 import arWellbeingSleep from "../locales/ar/components/wellbeing/sleep.json";
@@ -36,6 +37,7 @@ import enSleepSection from "../locales/en/components/dashboard/SleepSection.json
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
 import enHeart from "../locales/en/components/heart/index.json";
 import enNutritionList from "../locales/en/components/nutrition/nutritionList.json";
+import enPlanWorkout from "../locales/en/components/plan/workout/index.json";
 import enDashboardSelfAssessmentReadiness from "../locales/en/components/self-assessment/Readiness.json";
 import enDashboardSelfAssessmentTiredness from "../locales/en/components/self-assessment/Tiredness.json";
 import enWellbeingSleep from "../locales/en/components/wellbeing/sleep.json";
@@ -55,6 +57,9 @@ export const resources = {
     activities: enActivities,
     error: enError,
     components: {
+      plan: {
+        workout: enPlanWorkout,
+      },
       selfAssessment: {
         readiness: enDashboardSelfAssessmentReadiness,
         tiredness: enDashboardSelfAssessmentTiredness,
@@ -89,6 +94,9 @@ export const resources = {
     activities: arActivities,
     error: arError,
     components: {
+      plan: {
+        workout: arPlanWorkout,
+      },
       selfAssessment: {
         readiness: arSelfAssessmentReadiness,
         tiredness: arSelfAssessmentTiredness,

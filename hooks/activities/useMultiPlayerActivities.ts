@@ -1,5 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { seperateDataByDay } from "@/utils/activities";
+import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
@@ -32,11 +33,11 @@ interface UseMultiPlayerActivitiesReturn {
   refetchSelectedPlayer: () => Promise<void>;
 }
 
-// Cache to store fetched data by firebase_id and date range
-const dataCache = new Map<
-  string,
-  { data: Record<number, any[]>; dataRange: DataRange }
->();
+// Cache to store fetched data by firebase_id and date range (expires after 10 minutes)
+const dataCache = new ExpiringCache<{
+  data: Record<number, any[]>;
+  dataRange: DataRange;
+}>(10);
 
 export function useMultiPlayerActivities({
   primaryFirebaseId,
@@ -82,8 +83,8 @@ export function useMultiPlayerActivities({
 
       // Check cache first
       const cacheKey = `${firebaseId}-${startDate.toISOString()}-${endDate.toISOString()}`;
-      if (dataCache.has(cacheKey)) {
-        const cachedData = dataCache.get(cacheKey)!;
+      const cachedData = dataCache.get(cacheKey);
+      if (cachedData) {
         if (isSelectedPlayer) {
           setSelectedPlayerData(cachedData.data);
           setSelectedPlayerDataRange(cachedData.dataRange);
