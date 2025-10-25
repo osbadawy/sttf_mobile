@@ -7,6 +7,7 @@ import ManageButton from "@/components/coach/ManageButton";
 import { Player } from "@/components/coach/PlayerCard";
 import PlayerSection from "@/components/coach/PlayerSection";
 import FilterIconLines from "@/components/icons/FilterIcon-lines";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useCategorizedPlayers } from "@/hooks/useCategorizedPlayers";
 import { usePlayerSort } from "@/hooks/usePlayerSort";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -16,34 +17,103 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const FALLBACK_PLAYERS: Player[] = [
-  { id: "p1", firstName: "Joseph", lastName: "Kaspari", age: 23, readiness: 42, meal: false, workout: false, nationality: "SA", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
-  { id: "p2", firstName: "Samuel", lastName: "Maédoc", age: 22, readiness: 71, meal: true, workout: true, nationality: "SA", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
-  { id: "p3", firstName: "Chung ", lastName: "Burnett", age: 33, readiness: 90, meal: false, workout: true, nationality: "SA", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
-  { id: "p4", firstName: "Lionel", lastName: "Scott", age: 27, readiness: 20, meal: true, workout: false, nationality: "SE", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
-  { id: "p5", firstName: "Jamaal", lastName: "Miller", age: 33, readiness: 90, meal: true, workout: true, nationality: "QA", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
-  { id: "p6", firstName: "Carroll", lastName: "Small", age: 27, readiness: 20, meal: false, workout: true, nationality: "EG", photoUrl: "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg" },
+  {
+    id: "p1",
+    firstName: "Joseph",
+    lastName: "Kaspari",
+    age: 23,
+    readiness: 42,
+    meal: false,
+    workout: false,
+    nationality: "SA",
+    photoUrl:
+      "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg",
+  },
+  {
+    id: "p2",
+    firstName: "Samuel",
+    lastName: "Maédoc",
+    age: 22,
+    readiness: 71,
+    meal: true,
+    workout: true,
+    nationality: "SA",
+    photoUrl:
+      "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg",
+  },
+  {
+    id: "p3",
+    firstName: "Chung ",
+    lastName: "Burnett",
+    age: 33,
+    readiness: 90,
+    meal: false,
+    workout: true,
+    nationality: "SA",
+    photoUrl:
+      "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg",
+  },
+  {
+    id: "p4",
+    firstName: "Lionel",
+    lastName: "Scott",
+    age: 27,
+    readiness: 20,
+    meal: true,
+    workout: false,
+    nationality: "SE",
+    photoUrl:
+      "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg",
+  },
+  {
+    id: "p5",
+    firstName: "Jamaal",
+    lastName: "Miller",
+    age: 33,
+    readiness: 90,
+    meal: true,
+    workout: true,
+    nationality: "QA",
+    photoUrl:
+      "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg",
+  },
+  {
+    id: "p6",
+    firstName: "Carroll",
+    lastName: "Small",
+    age: 27,
+    readiness: 20,
+    meal: false,
+    workout: true,
+    nationality: "EG",
+    photoUrl:
+      "https://jcpportraits.com/wp-content/uploads/2024/03/Untitled-design-2.jpg",
+  },
 ];
 
 export default function Dashboard() {
+  const { t } = useLocalization("components.nutrition.nutritionList");
   const { userName, profilePicture } = useUserProfile();
   const [modalOpen, setModalOpen] = useState(false);
-  const [managing, setManaging] = useState(false); 
+  const [managing, setManaging] = useState(false);
   const insets = useSafeAreaInsets();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   // sort/comparator
-  const { sortBy, order, setSortBy, setOrder, comparator, reset } = usePlayerSort();
+  const { sortBy, order, setSortBy, setOrder, comparator, reset } =
+    usePlayerSort();
 
   // categorized groups (unsorted slices; each section sorts with comparator)
-  const { noPlan, noMeal, noWorkout, completed } = useCategorizedPlayers(FALLBACK_PLAYERS);
+  const { noPlan, noMeal, noWorkout, completed } =
+    useCategorizedPlayers(FALLBACK_PLAYERS);
   const isEmpty = FALLBACK_PLAYERS.length === 0;
 
   // leave space in scroll content so it doesn't hide behind the floating bar
   const bottomPad = useMemo(
     () => (managing ? insets.bottom + 110 : 24),
-    [managing, insets.bottom]
+    [managing, insets.bottom],
   );
 
-    const handlePlayerPress = (player: Player) => {
+  const handlePlayerPress = (player: Player) => {
     // Normalize fields according to your mapping (#3)
     const firebase_id = (player as any).firebase_id ?? player.id;
     const display_name =
@@ -76,7 +146,9 @@ export default function Dashboard() {
       "";
 
     const path = "/player/dashboard";
-    const params = { player: JSON.stringify({ firebase_id, display_name, profile_picture }) };
+    const params = {
+      player: JSON.stringify({ firebase_id, display_name, profile_picture }),
+    };
     router.push({ pathname: path as RelativePathString, params });
   };
 
@@ -87,7 +159,7 @@ export default function Dashboard() {
     if (managing) {
       // toggle selection (no redirect)
       setSelectedIds((prev) =>
-        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
       );
       return;
     }
@@ -122,7 +194,7 @@ export default function Dashboard() {
         />
 
         {isEmpty ? (
-            <EmptyCoachDashboard />
+          <EmptyCoachDashboard />
         ) : (
           <ScrollView
             contentContainerStyle={{ paddingBottom: bottomPad }}
@@ -130,7 +202,7 @@ export default function Dashboard() {
           >
             {/* Title Row */}
             <View className="mb-4 flex-row items-center justify-between">
-              <Text className="text-xl font-bold">Your Players</Text>
+              <Text className="text-xl font-bold">{t("you players")}</Text>
               <View className="flex-row gap-2">
                 {/* Filter */}
                 <TouchableOpacity
@@ -140,16 +212,16 @@ export default function Dashboard() {
                   <FilterIconLines />
                 </TouchableOpacity>
 
-            {/* Manage / Done toggle */}
-            {!managing ? (
-              <ManageButton setManaging={setManaging} />
-            ) : (
-              <ManageDoneButton setManaging={setManaging} />
-            )}
+                {/* Manage / Done toggle */}
+                {!managing ? (
+                  <ManageButton setManaging={setManaging} />
+                ) : (
+                  <ManageDoneButton setManaging={setManaging} />
+                )}
               </View>
             </View>
 
-             {/* Sections — now pass select state + press handler */}
+            {/* Sections — now pass select state + press handler */}
             <PlayerSection
               key={`noPlan-${sortBy}-${order}`}
               title="No Plan Assigned"
@@ -197,7 +269,7 @@ export default function Dashboard() {
       {/* Screen-fixed EditPlanPicker (like a bottom nav bar) */}
       {managing && (
         <EditPlanPicker
-          playerIds={selectedIds}              // <-- NEW: live selection
+          playerIds={selectedIds}
           insetBottom={insets.bottom}
           title={
             selectedIds.length
@@ -209,44 +281,3 @@ export default function Dashboard() {
     </View>
   );
 }
-
-
-
-
-// --- IGNORE ---
-
-      {/* {loading && (
-        <View>
-          <Text>Loading players...</Text>
-        </View>
-      )}
-      {error && (
-        <View>
-          <Text>Error: {error}</Text>
-        </View>
-      )} 
-      {players &&
-        players.map((player) => {
-          return (
-            <View key={player.firebase_id}>
-              <CustomButton
-                title={player.display_name}
-                onPress={() => {
-                  const path = "/player/dashboard";
-                  const params = {
-                    player: JSON.stringify({
-                      firebase_id: player.firebase_id,
-                      display_name: player.display_name,
-                      profile_picture: player.profile_picture,
-                    }),
-                  };
-                  router.push({
-                    pathname: path,
-                    params: params,
-                  });
-                }}
-                color={ButtonColor.primary}
-              />
-            </View>
-          );
-        })} */}

@@ -23,11 +23,15 @@ export type Player = {
 interface PlayerCardProps {
   p: Player;
   onPress?: (p: Player) => void;
-  selected?: boolean;      // <-- NEW
-  selectMode?: boolean;    // <-- optional (if you want to adjust affordances)
+  selected?: boolean; // <-- NEW
+  selectMode?: boolean; // <-- optional (if you want to adjust affordances)
 }
 
-export default function PlayerCard({ p, onPress, selected = false }: PlayerCardProps) {
+export default function PlayerCard({
+  p,
+  onPress,
+  selected = false,
+}: PlayerCardProps) {
   const R = 130;
   const offsetX = 26;
   const offsetY = 28;
@@ -46,7 +50,7 @@ export default function PlayerCard({ p, onPress, selected = false }: PlayerCardP
             style={{
               position: "absolute",
               inset: 0,
-              backgroundColor: "rgba(0,140,70,0.10)", // subtle faded green
+              backgroundColor: "rgba(0,140,70,0.10)",
             }}
           />
         )}
@@ -60,7 +64,10 @@ export default function PlayerCard({ p, onPress, selected = false }: PlayerCardP
                 <Text className="text-base font-semibold" numberOfLines={1}>
                   {p.firstName}
                 </Text>
-                <Text className="text-base font-semibold -mt-0.5" numberOfLines={1}>
+                <Text
+                  className="text-base font-semibold -mt-0.5"
+                  numberOfLines={1}
+                >
                   {p.lastName}
                 </Text>
                 <Text className="text-neutral-600 text-lg mt-0.5">
@@ -69,22 +76,31 @@ export default function PlayerCard({ p, onPress, selected = false }: PlayerCardP
               </View>
 
               {p.nationality ? (
-                <CountryFlag isoCode={p.nationality} size={18} style={{ marginLeft: 8 }} />
+                <CountryFlag
+                  isoCode={p.nationality}
+                  size={18}
+                  style={{ marginLeft: 8 }}
+                />
               ) : (
                 <Ionicons name="globe-outline" size={18} color="#9ca3af" />
               )}
             </View>
 
             {/* Image + straight white fade */}
-            {(p.photoUrl || p.profile_picture || p.display_picture) ? (
+            {p.photoUrl || p.profile_picture || p.display_picture ? (
               <View className="items-end relative">
                 <Image
-                  source={{ uri: p.photoUrl || p.profile_picture || p.display_picture }}
+                  source={{
+                    uri: p.photoUrl || p.profile_picture || p.display_picture,
+                  }}
                   style={{
                     width: R,
                     height: R,
                     borderRadius: R / 2,
-                    transform: [{ translateX: offsetX }, { translateY: offsetY }],
+                    transform: [
+                      { translateX: offsetX },
+                      { translateY: offsetY },
+                    ],
                   }}
                   resizeMode="cover"
                 />

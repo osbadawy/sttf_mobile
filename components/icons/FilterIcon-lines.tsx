@@ -4,13 +4,7 @@ import Svg, { Path } from "react-native-svg";
 type SVGProps = React.ComponentProps<typeof Svg>;
 
 const FilterIconLines: React.FC<SVGProps> = (props) => (
-  <Svg
-    width={20}
-    height={20}
-    viewBox="0 0 20 20"
-    fill="none"
-    {...props}
-  >
+  <Svg width={20} height={20} viewBox="0 0 20 20" fill="none" {...props}>
     <Path
       d="M16.6 9.58203H3.41797C3.14219 9.58203 2.91797 9.80546 2.91797 10.082C2.91797 10.3578 3.14219 10.582 3.41797 10.582H16.6C16.8758 10.582 17.1 10.3578 17.1 10.082C17.1 9.80546 16.8758 9.58203 16.6 9.58203Z"
       fill="black"

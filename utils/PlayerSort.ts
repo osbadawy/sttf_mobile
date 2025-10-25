@@ -1,7 +1,11 @@
 import { Player } from "@/components/coach/PlayerCard";
 import { Order, SortBy } from "@/utils/PlayerTypes";
 
-export const sortPlayers = (list: Player[], sortBy: SortBy, order: Order): Player[] => {
+export const sortPlayers = (
+  list: Player[],
+  sortBy: SortBy,
+  order: Order,
+): Player[] => {
   const dir = order === "Ascending" ? 1 : -1;
   return [...list].sort((a, b) => {
     if (sortBy === "Alphabetical") {

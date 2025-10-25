@@ -1,4 +1,5 @@
 import PlayerCard, { Player } from "@/components/coach/PlayerCard";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import React from "react";
 import { Text, View } from "react-native";
 
@@ -8,8 +9,8 @@ type Props = {
   players: Player[];
   comparator: (a: Player, b: Player) => number;
   onPlayerPress?: (p: Player) => void;
-  selectMode?: boolean;         // <-- NEW
-  selectedIds?: string[];       // <-- NEW
+  selectMode?: boolean; // <-- NEW
+  selectedIds?: string[]; // <-- NEW
 };
 
 export default function PlayerSection({
@@ -21,7 +22,11 @@ export default function PlayerSection({
   selectMode = false,
   selectedIds = [],
 }: Props) {
-  const sorted = React.useMemo(() => [...players].sort(comparator), [players, comparator]);
+  const { t } = useLocalization("components.nutrition.nutritionList");
+  const sorted = React.useMemo(
+    () => [...players].sort(comparator),
+    [players, comparator],
+  );
 
   return (
     <View className="mb-6">
@@ -39,19 +44,18 @@ export default function PlayerSection({
               key={id}
               p={p}
               onPress={onPlayerPress}
-              selected={isSelected}      // <-- NEW: visual highlight
-              selectMode={selectMode}    // <-- NEW (if you want to tweak UI in card)
+              selected={isSelected} // <-- NEW: visual highlight
+              selectMode={selectMode} // <-- NEW (if you want to tweak UI in card)
             />
           );
         })}
 
         {sorted.length === 0 && (
           <View className="w-full rounded-xl border border-dashed border-neutral-300 p-4 bg-white">
-            <Text className="text-neutral-500">No players in this category.</Text>
+            <Text className="text-neutral-500">{t("no players in cat")}</Text>
           </View>
         )}
       </View>
     </View>
   );
 }
-

@@ -36,7 +36,10 @@ const EditPlanPicker = memo(function EditPlanPicker({
   const go = (path: PlanPath): void => {
     if (disabled) return;
     const q = encodeURIComponent(JSON.stringify(playerIds));
-    router.push({ pathname: path as RelativePathString, params: { players: q } });
+    router.push({
+      pathname: path as RelativePathString,
+      params: { players: q },
+    });
   };
 
   const Item = ({ def }: { def: NavItem }) => {
@@ -44,7 +47,10 @@ const EditPlanPicker = memo(function EditPlanPicker({
 
     // Safe props snapshot
     const props = icon.props ?? {};
-    const supportsClassName = Object.prototype.hasOwnProperty.call(props, "className");
+    const supportsClassName = Object.prototype.hasOwnProperty.call(
+      props,
+      "className",
+    );
 
     // Narrow the element type before cloning so TS knows className exists
     let tintedIcon: ReactElement = icon;
@@ -64,7 +70,9 @@ const EditPlanPicker = memo(function EditPlanPicker({
         style={{ opacity: disabled ? 0.35 : 1 }}
       >
         <View>{tintedIcon}</View>
-        <Text className={`mt-1 text-sm ${disabled ? "text-neutral-300" : "text-black"}`}>
+        <Text
+          className={`mt-1 text-sm ${disabled ? "text-neutral-300" : "text-black"}`}
+        >
           {label}
         </Text>
       </TouchableOpacity>
@@ -98,7 +106,9 @@ const EditPlanPicker = memo(function EditPlanPicker({
       >
         <View className={`relative items-center ${className}`}>
           <View className="absolute -top-3 z-10 rounded-2xl bg-white px-4 py-1">
-            <Text className="text-[13px] font-medium text-neutral-700">{title}</Text>
+            <Text className="text-[13px] font-medium text-neutral-700">
+              {title}
+            </Text>
           </View>
 
           <View
@@ -120,5 +130,3 @@ const EditPlanPicker = memo(function EditPlanPicker({
 });
 
 export default EditPlanPicker;
-
-

@@ -1,5 +1,13 @@
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useMemo, useState } from "react";
-import { Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 type SortBy = "Alphabetical" | "Age" | "Readiness";
 type Order = "Ascending" | "Descending";
@@ -12,7 +20,7 @@ export interface FilterSortModalProps {
   onApply: (sortBy: SortBy, order: Order) => void;
   onReset?: () => void;
 }
-
+const { t } = useLocalization("components.coach.dashboard");
 const OPTIONS_SORT: SortBy[] = ["Alphabetical", "Age", "Readiness"];
 const OPTIONS_ORDER: Order[] = ["Ascending", "Descending"];
 
@@ -80,11 +88,19 @@ export default function FilterSortModal({
   };
 
   return (
-    <Modal transparent animationType="fade" visible={visible} onRequestClose={onClose}>
+    <Modal
+      transparent
+      animationType="fade"
+      visible={visible}
+      onRequestClose={onClose}
+    >
       {/* backdrop */}
       <Pressable className="flex-1 bg-black/40" onPress={onClose} />
       {/* bottom sheet */}
-      <View className="bg-white px-4 pb-6 pt-4 rounded-t-3xl" style={{ position: "absolute", left: 0, right: 0, bottom: 0 }}>
+      <View
+        className="bg-white px-4 pb-6 pt-4 rounded-t-3xl"
+        style={{ position: "absolute", left: 0, right: 0, bottom: 0 }}
+      >
         <View className="mb-4 flex-row items-center justify-between">
           <Text className="text-lg font-bold">Sort</Text>
           <TouchableOpacity
@@ -94,18 +110,18 @@ export default function FilterSortModal({
               onReset?.();
             }}
           >
-            <Text className="text-neutral-500 underline">Reset</Text>
+            <Text className="text-neutral-500 underline">{t("reset")}</Text>
           </TouchableOpacity>
         </View>
 
         <Select
-          label="Sort by"
+          label={t("Sort By")}
           value={sortBy}
           options={OPTIONS_SORT}
           onSelect={(v: SortBy) => setSortBy(v)}
         />
         <Select
-          label="Order"
+          label={t("order")}
           value={order}
           options={OPTIONS_ORDER}
           onSelect={(v: Order) => setOrder(v)}
@@ -116,7 +132,7 @@ export default function FilterSortModal({
             onPress={onClose}
             className="flex-1 items-center justify-center rounded-2xl border border-neutral-300 bg-white px-4 py-3"
           >
-            <Text>Cancel</Text>
+            <Text>{t("cancel")}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
@@ -125,7 +141,7 @@ export default function FilterSortModal({
             }}
             className="flex-1 items-center justify-center rounded-2xl bg-emerald-600 px-4 py-3"
           >
-            <Text className="font-semibold text-white">Apply</Text>
+            <Text className="font-semibold text-white">{t("Apply")}</Text>
           </TouchableOpacity>
         </View>
       </View>
