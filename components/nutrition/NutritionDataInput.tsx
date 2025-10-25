@@ -71,7 +71,7 @@ export default function NutritionDataInput({ value, onChange }: Props) {
 
   return (
     <View className="flex-1 gap-4 overflow-hidden">
-      <View className="flex-row">
+      <View className="flex-row gap-4">
         <MetricInput
           placeholder="carbs" // ✅ match translation key
           unit="g"
@@ -90,7 +90,7 @@ export default function NutritionDataInput({ value, onChange }: Props) {
         />
       </View>
 
-      <View className="flex-row">
+      <View className="flex-row gap-4">
         <MetricInput
           placeholder="fat"
           unit="g"

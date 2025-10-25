@@ -4,7 +4,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -18,14 +18,6 @@ import {
 type MealType = "breakfast" | "lunch" | "snack" | "dinner";
 
 const UI_MEAL_LABELS = ["Breakfast", "Lunch", "Dinner", "Snacks"] as const;
-type UiMealLabel = (typeof UI_MEAL_LABELS)[number];
-
-const labelToMealType: Record<UiMealLabel, MealType> = {
-  Breakfast: "breakfast",
-  Lunch: "lunch",
-  Dinner: "dinner",
-  Snacks: "snack",
-};
 
 export default function MealLogPage() {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
@@ -35,10 +27,6 @@ export default function MealLogPage() {
   const playerData = JSON.parse((player as string) || "{}");
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
-
-  const [mealFilters, setMealFilters] = useState<string[]>([]);
-  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [showNewMealDropdown, setShowNewMealDropdown] = useState(false);
 
   const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 

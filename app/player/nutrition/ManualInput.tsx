@@ -16,6 +16,7 @@ import {
   View,
 } from "react-native";
 
+import CustomButton, { ButtonColor } from "@/components/Button";
 import NutritionDataInput, {
   NutritionData,
 } from "@/components/nutrition/NutritionDataInput";
@@ -255,16 +256,12 @@ export default function ManualInputDesign() {
 
             {/* Confirm button (kept simple) */}
             <View className="px-4 pb-6 bg-[#F3F6EE]">
-              <TouchableOpacity
+              <CustomButton
+                title={t("confirm")}
                 onPress={handleConfirm}
                 disabled={!canConfirm}
-                activeOpacity={canConfirm ? 0.9 : 1}
-                className={`h-14 rounded-xl items-center justify-center ${canConfirm ? "bg-green-600" : "bg-gray-300"}`}
-              >
-                <Text className="text-white text-lg font-semibold">
-                  {t("confirm")}
-                </Text>
-              </TouchableOpacity>
+                color={canConfirm ? ButtonColor.primary : ButtonColor.white}
+              />
             </View>
           </View>
         </ScrollView>

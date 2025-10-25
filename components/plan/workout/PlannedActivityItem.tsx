@@ -30,26 +30,33 @@ export default function PlannedActivityItem({
     : tActivityTypes(activity.activity_type);
 
   return (
-    <TouchableOpacity
+    <View
       key={activity.id}
-      className={`bg-white border-2 rounded-[16px] px-[24px] py-[20px] mb-3 flex-row items-center ${
+      className={`bg-white border-2 rounded-[16px] px-[24px] py-[20px] mb-3 flex-row items-center justify-between ${
         isSelected ? "border-primary" : "border-[#B5BCBF]"
       }`}
       style={{
         backgroundColor: "rgba(255, 255, 255, 0.5)",
       }}
-      onPress={() => onPress(activity)}
     >
-      <DynamicActivityIcon activityType={activity.activity_type} />
+      <View className="flex-row items-center">
+        <DynamicActivityIcon activityType={activity.activity_type} />
 
-      <View className="pl-4">
-        <Text>
-          {activityName} · {time}
-        </Text>
-        <Text className="effra-regular text-base" style={{ opacity: 0.6 }}>
-          {activity.players_assigned.length} {t("players")}
-        </Text>
+        <View className="pl-4">
+          <Text>
+            {activityName} · {time}
+          </Text>
+          <Text className="effra-regular text-base" style={{ opacity: 0.6 }}>
+            {activity.players_assigned.length} {t("players")}
+          </Text>
+        </View>
       </View>
-    </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => onPress(activity)} className="pl-4">
+        <Text className="effra-regular text-base underline text-primary">
+          {t("edit")}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }

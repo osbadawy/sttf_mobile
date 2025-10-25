@@ -25,27 +25,34 @@ export default function PlannedMealItem({
   const mealName = meal.name;
 
   return (
-    <TouchableOpacity
+    <View
       key={meal.id}
-      className={`bg-white border-2 rounded-[16px] px-[24px] py-[20px] mb-3 flex-row items-center ${
+      className={`bg-white border-2 rounded-[16px] px-[24px] py-[20px] mb-3 flex-row items-center justify-between ${
         isSelected ? "border-primary" : "border-[#B5BCBF]"
       }`}
       style={{
         backgroundColor: "rgba(255, 255, 255, 0.5)",
       }}
-      onPress={() => onPress(meal)}
     >
-      <DynamicMealIcon
-        mealType={meal.category as "breakfast" | "lunch" | "dinner" | "snack"}
-      />
+      <View className="flex-row items-center">
+        <DynamicMealIcon
+          mealType={meal.category as "breakfast" | "lunch" | "dinner" | "snack"}
+        />
 
-      <View className="pl-4 flex-1">
-        <Text className="font-inter-semibold text-base">{mealName}</Text>
-        <Text className="effra-regular text-sm" style={{ opacity: 0.6 }}>
-          {meal.players_assigned.length} {t("players")} ·{" "}
-          {Math.round(meal.grams)}g · {Math.round(meal.kilojoule / 4.184)}kcal
-        </Text>
+        <View className="pl-4">
+          <Text className="font-inter-semibold text-base">{mealName}</Text>
+          <Text className="effra-regular text-sm" style={{ opacity: 0.6 }}>
+            {meal.players_assigned.length} {t("players")} ·{" "}
+            {Math.round(meal.grams)}g · {Math.round(meal.kilojoule / 4.184)}kcal
+          </Text>
+        </View>
       </View>
-    </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => onPress(meal)} className="pl-4">
+        <Text className="effra-regular text-base underline text-primary">
+          {t("edit")}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 }

@@ -1,4 +1,4 @@
-import { FilterIcon, ThinPlusIcon } from "@/components/icons";
+import { ThinPlusIcon } from "@/components/icons";
 import Modal from "@/components/Modal";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateMealModal from "@/components/plan/meal/CreateMealModal";
@@ -14,6 +14,8 @@ import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+type MealType = "breakfast" | "lunch" | "snack" | "dinner";
 
 export default function MealPlan() {
   const { t } = useLocalization("components.plan.meal");
@@ -113,6 +115,19 @@ export default function MealPlan() {
   const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
+  const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
+  const organisedMeals: { type: MealType; meals: GetMealsResponse[] }[] =
+    mealTypes.map((m) => {
+      return {
+        type: m,
+        meals: meals
+          .filter((meal: GetMealsResponse) => meal.category === m)
+          .sort((a: GetMealsResponse, b: GetMealsResponse) => {
+            return new Date(a.start).getTime() - new Date(b.start).getTime();
+          }),
+      };
+    });
+
   return (
     <>
       <ParallaxScrollView
@@ -142,52 +157,43 @@ export default function MealPlan() {
           </View>
         )}
 
-        {!loading && !error && meals.length > 0 && (
-          <View>
-            <View className="flex-row items-center justify-between">
-              <View>
-                <Text className="effra-regular text-base">
-                  {categoryFilters.map((filter) => t(filter)).join(", ")}
-                </Text>
-              </View>
-              <TouchableOpacity
-                className="flex-row items-center py-4 px-0"
-                onPress={() => setShowFilterDropdown(true)}
-                style={{ gap: 8 }}
-              >
-                <Text className="effra-light text-base">{t("filter")}</Text>
-                <FilterIcon />
-              </TouchableOpacity>
-            </View>
-            {meals
-              .sort((a: GetMealsResponse, b: GetMealsResponse) => {
-                return (
-                  new Date(a.start).getTime() - new Date(b.start).getTime()
-                );
-              })
-              .map((meal: GetMealsResponse) => {
-                if (
-                  categoryFilters.length > 0 &&
-                  !categoryFilters.includes(meal.category)
-                ) {
-                  return null;
-                }
+        {!loading &&
+          !error &&
+          meals.length > 0 &&
+          organisedMeals.map((m) => {
+            if (m.meals.length === 0) {
+              return null;
+            }
 
-                return (
-                  <PlannedMealItem
-                    key={meal.id}
-                    meal={meal}
-                    isSelected={selectedMealId === meal.id}
-                    onPress={(meal: GetMealsResponse) => {
-                      setSelectedMealId(meal.id);
-                      setEditingMeal(meal);
-                      setShowCreateMealModal(true);
-                    }}
-                  />
-                );
-              })}
-          </View>
-        )}
+            return (
+              <View key={m.type}>
+                <Text className="effra-regular text-base pl-4 pb-2">
+                  {t(m.type)}
+                </Text>
+                {m.meals.map((meal: GetMealsResponse) => {
+                  if (
+                    categoryFilters.length > 0 &&
+                    !categoryFilters.includes(meal.category)
+                  ) {
+                    return null;
+                  }
+
+                  return (
+                    <PlannedMealItem
+                      key={meal.id}
+                      meal={meal}
+                      isSelected={selectedMealId === meal.id}
+                      onPress={(meal: GetMealsResponse) => {
+                        setSelectedMealId(meal.id);
+                        setEditingMeal(meal);
+                        setShowCreateMealModal(true);
+                      }}
+                    />
+                  );
+                })}
+              </View>
+            );
+          })}
 
         <TouchableOpacity
           className="w-full border-[#B5BCBF] border-2 rounded-[16px] py-[30px] items-center justify-center flex-row bg-white/50"
