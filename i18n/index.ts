@@ -9,6 +9,7 @@ import arActivitiesActivityCard from "../locales/ar/components/activities/Activi
 import arActivitiesActivityTypes from "../locales/ar/components/activities/ActivityTypes.json";
 import arActivitiesActivityView from "../locales/ar/components/activities/ActivityView.json";
 import arActivitiesNewActivity from "../locales/ar/components/activities/NewActivity.json";
+import arPlannedActivities from "../locales/ar/components/activities/PlannedActivities.json";
 import arActivitiesSelfAssessment from "../locales/ar/components/activities/SelfAssessment.json";
 import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json";
 import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
@@ -31,6 +32,7 @@ import enActivitiesActivityCard from "../locales/en/components/activities/Activi
 import enActivitiesActivityTypes from "../locales/en/components/activities/ActivityTypes.json";
 import enActivitiesActivityView from "../locales/en/components/activities/ActivityView.json";
 import enActivitiesNewActivity from "../locales/en/components/activities/NewActivity.json";
+import enPlannedActivities from "../locales/en/components/activities/PlannedActivities.json";
 import enActivitiesSelfAssessment from "../locales/en/components/activities/SelfAssessment.json";
 import enHeartSection from "../locales/en/components/dashboard/HeartSection.json";
 import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
@@ -79,6 +81,7 @@ export const resources = {
         newActivity: enActivitiesNewActivity,
         activityView: enActivitiesActivityView,
         selfAssessment: enActivitiesSelfAssessment,
+        plan: enPlannedActivities,
       },
       nutrition: {
         nutritionList: enNutritionList,
@@ -116,6 +119,7 @@ export const resources = {
         newActivity: arActivitiesNewActivity,
         activityView: arActivitiesActivityView,
         selfAssessment: arActivitiesSelfAssessment,
+        plan: arPlannedActivities,
       },
       nutrition: {
         nutritionList: arNutritionList,

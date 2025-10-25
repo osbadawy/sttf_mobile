@@ -2,24 +2,23 @@ import SelfAssessmentPage, {
   SelfAssessmentOnPressProps,
 } from "@/components/SelfAssessment";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import Constants from "expo-constants";
-import {
-  RelativePathString,
-  router,
-  useLocalSearchParams,
-  usePathname,
-} from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 export default function PlayerActivitySelfAssessmentPage() {
-  const { playerActivityId, activityType } = useLocalSearchParams();
+  const { activityId, date } = useLocalSearchParams();
   const { t } = useLocalization("components.activities.selfAssessment");
-  const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
   const [error, setError] = useState<boolean>(false);
 
-  let pathname = usePathname();
-  pathname = pathname.split("/").slice(0, -1).join("/");
+  // Get the planned activities hook to access refetch and clearCache functions
+  const { refetch, clearCache } = usePlannedActivities({
+    day: new Date((date as string) || new Date()),
+  });
+
+  // Get the path to go back to the planned activities page
+  const plannedActivitiesPath = "/player/activities/plan";
 
   const onPress = async ({
     value,
@@ -27,16 +26,12 @@ export default function PlayerActivitySelfAssessmentPage() {
     setDisableButton,
   }: SelfAssessmentOnPressProps) => {
     const body: any = {
-      player_activity_id: playerActivityId,
+      id: activityId,
       self_assessment_score: value,
     };
 
-    if (activityType) {
-      body.activity_type = activityType;
-    }
-
     const response = await fetch(
-      `${Constants.expoConfig?.extra?.BACKEND_URL}/player-activity/self-assessment`,
+      `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity/player-self-assessment`,
       {
         method: "POST",
         headers: {
@@ -48,7 +43,12 @@ export default function PlayerActivitySelfAssessmentPage() {
     );
 
     if (response.ok) {
-      router.replace(`${pathname}` as RelativePathString);
+      // Clear the cache and refetch activities data to reflect the updated completion status
+      clearCache();
+      await refetch();
+
+      // Use router.replace to ensure the previous page refreshes with new data
+      router.replace(plannedActivitiesPath as RelativePathString);
       setError(false);
     } else {
       const errorData = await response.json();
@@ -75,9 +75,6 @@ export default function PlayerActivitySelfAssessmentPage() {
         buttonText: t("done"),
       }}
       error={Boolean(error)}
-      customBackPath={
-        `player/dashboard?player=${JSON.stringify(playerData)}` as RelativePathString
-      }
     />
   );
 }
