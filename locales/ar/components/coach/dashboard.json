@@ -1,0 +1,17 @@
+{
+  "managePlayers": "Manage Players",
+  "selectPlayersToEditPlan": "Select players to edit their training plans.",
+  "editPlan": "Edit Plan",
+  "empty state dashboard coach": "يبدو أنه لم تتم إضافة أي لاعبين بعد.",
+  "ask players": "اطلب من اللاعبين الانضمام إلى فريقك للبدء.",
+  "Apply": "تطبيق",
+  "Sort By": "ترتيب حسب",
+  "reset": "أعاد التشغيل",
+  "cancel": "إلغاء",
+  "order": "ترتيب",
+  "your players": "اللاعبين",
+  "manage": "إدارة",
+  "done": "الانتهاء",
+  "no players in cat": "لا يوجد لاعبين في هذه الفئة.",
+  "readiness": "الاستعداد"
+}
