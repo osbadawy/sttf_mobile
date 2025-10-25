@@ -1,10 +1,18 @@
 import MealCard from "@/components/nutrition/MealCard";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
+import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 // ---- Types & mappings ----
 type MealType = "breakfast" | "lunch" | "snack" | "dinner";
@@ -19,118 +27,34 @@ const labelToMealType: Record<UiMealLabel, MealType> = {
   Snacks: "snack",
 };
 
-type Meal = { food: string; amount: string; calories: number };
-type GroupedMeals = Partial<Record<UiMealLabel, Meal[]>>;
-
 export default function MealLogPage() {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   const [manualPressed, setManualPressed] = useState(false);
 
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
+  const dateState = useState(new Date());
+  const [date, setDate] = dateState;
 
-  const [meals, setMeals] = useState<
-    Array<{
-      meal_type: UiMealLabel;
-      food: string;
-      calories: number;
-      amount: string;
-    }>
-  >([]);
   const [mealFilters, setMealFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showNewMealDropdown, setShowNewMealDropdown] = useState(false);
 
-  useEffect(() => {
-    const fetchMeals = async () => {
-      const data: Array<{
-        meal_type: UiMealLabel;
-        food: string;
-        calories: number;
-        amount: string;
-      }> = [
-        {
-          meal_type: "Breakfast",
-          food: "Oatmeal",
-          calories: 150,
-          amount: "1 bowl",
-        },
-        {
-          meal_type: "Breakfast",
-          food: "Scrambled Eggs",
-          calories: 200,
-          amount: "2 eggs",
-        },
-        {
-          meal_type: "Lunch",
-          food: "Chicken Salad",
-          calories: 350,
-          amount: "1 plate",
-        },
-        {
-          meal_type: "Lunch",
-          food: "Quinoa Bowl",
-          calories: 400,
-          amount: "1 bowl",
-        },
-        {
-          meal_type: "Dinner",
-          food: "Grilled Salmon",
-          calories: 500,
-          amount: "1 fillet",
-        },
-        {
-          meal_type: "Dinner",
-          food: "Steamed Vegetables",
-          calories: 100,
-          amount: "1 cup",
-        },
-        {
-          meal_type: "Snacks",
-          food: "Almonds",
-          calories: 150,
-          amount: "1 handful",
-        },
-        {
-          meal_type: "Snacks",
-          food: "Greek Yogurt",
-          calories: 120,
-          amount: "1 cup",
-        },
-      ];
-      setMeals(data);
-    };
+  const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 
-    fetchMeals();
-  }, []);
+  const { meals, loading, error } = usePlannedMeals({
+    users_assigned:
+      Object.keys(playerData).length > 0 ? [playerData.firebase_id] : undefined,
+    day: date,
+  });
 
-  const groupedMeals: GroupedMeals = meals.reduce<GroupedMeals>((acc, meal) => {
-    const { meal_type, food, calories, amount } = meal;
-    if (!acc[meal_type]) acc[meal_type] = [];
-    acc[meal_type]!.push({ food, calories, amount });
-    return acc;
-  }, {});
-
-  // Only labels that have meals
-  const presentLabels: UiMealLabel[] = UI_MEAL_LABELS.filter(
-    (label) => (groupedMeals[label]?.length ?? 0) > 0,
-  );
-
-  // ✅ Localize section titles BEFORE mapping/render
-  const localizedLabel: Record<UiMealLabel, string> = {
-    Breakfast: t("breakfast"),
-    Lunch: t("lunch"),
-    Dinner: t("dinner"),
-    Snacks: t("snacks"),
-  };
-
-  // Build sections to render: keeps stable key (label), adds localized title + normalized mealType
-  const sections = presentLabels.map((label) => ({
-    label,
-    title: localizedLabel[label],
-    mealType: labelToMealType[label],
-    items: groupedMeals[label] ?? [],
-  }));
+  const organisedMeals: { type: MealType; meals: GetMealsResponse[] }[] =
+    mealTypes.map((m) => {
+      return {
+        type: m,
+        meals: meals.filter((meal) => meal.category === m),
+      };
+    });
 
   const titleAlign = isRTL ? "text-right" : "text-left";
 
@@ -139,10 +63,13 @@ export default function MealLogPage() {
       headerProps={{
         title: t("title"),
         showBackButton: true,
-        showDateSelector: false,
+        showDateSelector: true,
         showBGImage: false,
-        showCalendarIcon: false,
+        showCalendarIcon: true,
+        useDateState: dateState,
+        disableFutureDates: false,
       }}
+      error={!!error}
     >
       <View className="p-5">
         <View className="mt-4 flex-row items-center justify-between">
@@ -151,7 +78,15 @@ export default function MealLogPage() {
           </Text>
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => router.push("/player/nutrition/NutritionDashboard")}
+            onPress={() =>
+              router.push({
+                pathname:
+                  "/player/nutrition/NutritionDashboard" as RelativePathString,
+                params: {
+                  player: player,
+                },
+              })
+            }
           >
             <Text
               className={`text-base font-normal text-[#008C46] underline ${titleAlign}`}
@@ -161,25 +96,37 @@ export default function MealLogPage() {
           </TouchableOpacity>
         </View>
 
+        {loading && (
+          <View className="items-center justify-center py-10">
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        )}
+
         <ScrollView className="mt-5">
-          {sections.length > 0 ? (
-            sections.map((section) => (
-              <View key={section.label} className="mb-5">
-                <Text className={`text-xl font-normal mb-2 ${titleAlign}`}>
-                  {section.title}
-                </Text>
-                <View className="h-[1px] bg-gray-300 w-full" />
-                {section.items.map((meal, idx) => (
-                  <MealCard
-                    key={`${section.label}-${idx}-${meal.food}`}
-                    name={meal.food}
-                    amount={meal.amount}
-                    calories={meal.calories}
-                    type={section.mealType}
-                  />
-                ))}
-              </View>
-            ))
+          {meals.length > 0 ? (
+            organisedMeals.map((m) => {
+              if (m.meals.length === 0) {
+                return null;
+              }
+
+              return (
+                <View key={m.type} className="mb-5">
+                  <Text className={`text-xl font-normal mb-2 ${titleAlign}`}>
+                    {t(m.type)}
+                  </Text>
+                  <View className="h-[1px] bg-gray-300 w-full" />
+                  {m.meals.map((meal, idx) => (
+                    <MealCard
+                      key={`${m.type}-${idx}-${meal.name}`}
+                      name={meal.name}
+                      amount={Math.round(meal.grams)}
+                      calories={Math.round(meal.kilojoule * 4.184)}
+                      type={m.type}
+                    />
+                  ))}
+                </View>
+              );
+            })
           ) : (
             // Empty state when there are no meals at all
             <View className="items-center justify-center py-10">

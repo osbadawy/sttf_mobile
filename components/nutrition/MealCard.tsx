@@ -15,7 +15,7 @@ type MealType = "breakfast" | "lunch" | "snack" | "dinner";
 
 interface MealCardProps {
   name: string;
-  amount: string; // e.g., "230g"
+  amount: number; // e.g., 230
   calories: number; // e.g., 534
   type?: MealType; // may be omitted
 }
@@ -90,7 +90,7 @@ export default function MealCard({
                   {name}
                 </Text>
                 <Text className="text-[14px] text-neutral-600">
-                  {amount} • {calories} kcal
+                  {amount}g • {Math.round(calories)}kcal
                 </Text>
               </View>
             </View>
@@ -115,7 +115,7 @@ export default function MealCard({
                 {name}
               </Text>
               <Text className="text-[14px] text-neutral-600">
-                {amount} • {calories} kcal
+                {amount}g • {calories}kcal
               </Text>
             </View>
           </View>
