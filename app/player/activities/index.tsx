@@ -179,7 +179,6 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
             if (
               activityFilters.length > 0 &&
               !day.some((item: any) => {
-                console.log(item);
                 return activityFilters.includes(item.sport_name);
               })
             ) {

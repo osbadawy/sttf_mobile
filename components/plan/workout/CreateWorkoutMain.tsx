@@ -57,7 +57,15 @@ export default function CreateWorkoutMain({
   onDeleteActivity,
 }: CreateWorkoutMainProps) {
   const [time, setTime] = useState<Date | null>(
-    editingActivity ? new Date(editingActivity.start) : null,
+    editingActivity ? (() => {
+      const activityTime = new Date(editingActivity.start);
+      // Extract time components and create a new date in local timezone
+      const hours = activityTime.getHours();
+      const minutes = activityTime.getMinutes();
+      const localTime = new Date();
+      localTime.setHours(hours, minutes, 0, 0);
+      return localTime;
+    })() : null,
   );
   const [activityName, setActivityName] = useState<string>(
     editingActivity?.is_custom ? editingActivity.activity_type : "",
@@ -98,13 +106,12 @@ export default function CreateWorkoutMain({
     }
     try {
       setDisabled(true);
+      // Create a new date with local time
       const dateWithTime = new Date(date);
-      dateWithTime.setHours(
-        time?.getHours() ?? 0,
-        time?.getMinutes() ?? 0,
-        time?.getSeconds() ?? 0,
-        0,
-      );
+      if (time) {
+        // Use local time from the time picker
+        dateWithTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
+      }
 
       const isEditing = !!editingActivity;
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
@@ -135,7 +142,6 @@ export default function CreateWorkoutMain({
         }
       }
 
-      console.log(body);
 
       const token = await user.getIdToken();
 
