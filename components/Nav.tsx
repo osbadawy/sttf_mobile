@@ -1,32 +1,32 @@
 import NavBarSvg from "@/components/icons/NavBarSvg"; // <-- adjust path to where you saved it
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { getIoniconName } from "@/utils/getIoniconName";
-import { Ionicons } from "@expo/vector-icons";
 import { Link, RelativePathString, usePathname } from "expo-router";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIcon, AnalyticsIcon, HomeIcon, NutritionIcon } from "./icons";
 
 interface NavItem {
   href: RelativePathString;
   label: string;
-  icon: keyof typeof Ionicons.glyphMap;
+  icon: React.ReactNode;
 }
 
 const playerNavItems: NavItem[] = [
-  { href: "/" as RelativePathString, label: "Home", icon: "home-outline" },
+  { href: "/" as RelativePathString, label: "Home", icon: <HomeIcon /> },
   {
     href: "/player/dashboard" as RelativePathString,
     label: "Dashboard",
-    icon: "analytics-outline",
+    icon: <AnalyticsIcon />,
   },
   {
     href: "/player/activities" as RelativePathString,
     label: "Activities",
-    icon: "fitness-outline",
+    icon: <ActivityIcon />,
   },
   {
     href: "/player/nutrition" as RelativePathString,
     label: "Add",
-    icon: "nutrition-outline",
+    icon: <NutritionIcon />,
   },
 ];
 
@@ -105,11 +105,9 @@ export default function Nav() {
                   elevation: isActive ? 10 : 4,
                 }}
               >
-                <Ionicons
-                  name={getIoniconName(item.icon, isActive)}
-                  size={25}
-                  color={isActive ? "#FFFFFF" : "#000000ff"}
-                />
+                {React.cloneElement(item.icon as React.ReactElement<any>, {
+                  color: isActive ? "#FFFFFF" : undefined,
+                })}
                 {/* keep labels hidden as before */}
                 <Text className="text-[11px] leading-4 opacity-0 h-0 mt-0">
                   {item.label}
