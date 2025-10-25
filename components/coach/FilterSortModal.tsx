@@ -20,7 +20,7 @@ export interface FilterSortModalProps {
   onApply: (sortBy: SortBy, order: Order) => void;
   onReset?: () => void;
 }
-const { t } = useLocalization("components.coach.dashboard");
+
 const OPTIONS_SORT: SortBy[] = ["Alphabetical", "Age", "Readiness"];
 const OPTIONS_ORDER: Order[] = ["Ascending", "Descending"];
 
@@ -32,6 +32,7 @@ export default function FilterSortModal({
   onApply,
   onReset,
 }: FilterSortModalProps) {
+  const { t } = useLocalization("components.coach.dashboard");
   const [sortBy, setSortBy] = useState<SortBy>(initialSortBy);
   const [order, setOrder] = useState<Order>(initialOrder);
 
