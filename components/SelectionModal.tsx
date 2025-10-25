@@ -15,10 +15,11 @@ interface SelectionModalProps {
   selectedItems?: string[];
   setSelectedItems?: (selectedItems: string[]) => void;
   setShowSelectionModal: (showSelectionModal: boolean) => void;
-  checkMark?: React.ReactNode;
+  checkMark?: boolean;
   showIcons?: boolean;
   customOnPress?: (item: Item) => void;
   showClearButton?: boolean;
+  outerColor?: string;
 }
 
 interface ModalItemProps {
@@ -44,6 +45,7 @@ export function ModalItem({
       onPress={onPress}
       className={`border-b border-gray-200 h-[56px] items-center justify-between ${isRTL ? "flex-row-reverse" : "flex-row"}`}
       style={{ borderTopWidth: isFirstItem ? 1 : 0 }}
+      activeOpacity={0.9}
     >
       <View className="flex-row items-center" style={{ gap: 10 }}>
         {showIcons && (
@@ -53,7 +55,7 @@ export function ModalItem({
         )}
         <Text>{item.name}</Text>
       </View>
-      {isSelected && <CheckIcon />}
+      {isSelected && <CheckIcon fill={"#000"} />}
     </TouchableOpacity>
   );
 }
@@ -68,11 +70,15 @@ export default function SelectionModal({
   showIcons = true,
   customOnPress,
   showClearButton = true,
+  outerColor,
 }: SelectionModalProps) {
   const { isRTL } = useLocalization();
 
   return (
-    <Modal onClose={() => setShowSelectionModal(false)}>
+    <Modal
+      onClose={() => setShowSelectionModal(false)}
+      outterColor={outerColor}
+    >
       <View
         className={`items-center justify-between py-3 ${isRTL ? "flex-row-reverse" : "flex-row"}`}
       >

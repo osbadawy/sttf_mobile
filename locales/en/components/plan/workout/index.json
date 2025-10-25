@@ -22,5 +22,6 @@
 
   "deleteMessage": "Are you sure you want to delete this activity?",
   "delete": "Delete",
-  "back": "Back"
+  "back": "Back",
+  "filter": "Filter"
 }
