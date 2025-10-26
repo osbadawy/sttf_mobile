@@ -1,19 +1,14 @@
 import { Arrow } from "@/components/icons";
 import ProfilePictureDefaultIcon from "@/components/icons/ProfilePictureDefault";
-import { useLocalization } from "@/contexts/LocalizationContext";
+import Player from "@/schemas/Player";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-
-interface Player {
-  firebase_id: string;
-  display_name: string;
-  avatar_url: string;
-}
 
 interface PlayersSelectionProps {
   allPlayers: Player[] | undefined;
   selectedPlayers: string[];
   onSelectPlayers: (players: string[]) => void;
   onClickBack: () => void;
+  t: (key: string, options?: any) => string;
 }
 
 export default function PlayersSelection({
@@ -21,9 +16,8 @@ export default function PlayersSelection({
   selectedPlayers,
   onSelectPlayers,
   onClickBack,
+  t,
 }: PlayersSelectionProps) {
-  const { t } = useLocalization("components.plan.workout");
-
   const handleAddPlayer = (firebaseId: string) => {
     const newSelectedPlayers = [...selectedPlayers, firebaseId];
     onSelectPlayers(newSelectedPlayers);

@@ -1,11 +1,11 @@
-import { Player } from "@/components/coach/PlayerCard";
+import { CoachDashboardPlayer } from "@/components/coach/PlayerCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFocusEffect } from "@react-navigation/native";
 import Constants from "expo-constants";
 import { useCallback, useMemo, useState } from "react";
 
 export function useCategorizedPlayers() {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<CoachDashboardPlayer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
@@ -51,10 +51,10 @@ export function useCategorizedPlayers() {
   );
 
   const categorized = useMemo(() => {
-    const noPlan: Player[] = [];
-    const noMeal: Player[] = [];
-    const noWorkout: Player[] = [];
-    const completed: Player[] = [];
+    const noPlan: CoachDashboardPlayer[] = [];
+    const noMeal: CoachDashboardPlayer[] = [];
+    const noWorkout: CoachDashboardPlayer[] = [];
+    const completed: CoachDashboardPlayer[] = [];
 
     if (!players || !Array.isArray(players)) {
       return { noPlan, noMeal, noWorkout, completed };

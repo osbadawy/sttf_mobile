@@ -1,12 +1,13 @@
 import Modal from "@/components/Modal";
+import PlayersSelection from "@/components/plan/PlayersSelection";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import Player from "@/schemas/Player";
 import { User } from "firebase/auth";
 import { useState } from "react";
 import { ScrollView } from "react-native";
 import ActivitySelection from "./ActivitySelection";
 import CategorySelection from "./CategorySelection";
 import CreateWorkoutMain from "./CreateWorkoutMain";
-import PlayersSelection from "./PlayersSelection";
 
 // Function to determine category based on activity type
 function getCategoryFromActivityType(
@@ -30,12 +31,6 @@ function getCategoryFromActivityType(
   } else {
     return "strength";
   }
-}
-
-interface Player {
-  firebase_id: string;
-  display_name: string;
-  profile_picture: string;
 }
 
 interface CreateWorkoutModalProps {
@@ -98,6 +93,7 @@ export default function CreateWorkoutModal({
         selectedPlayers={players}
         onSelectPlayers={setPlayers}
         onClickBack={() => setShowPlayersSelection(false)}
+        t={t}
       />
     );
   } else if (category == null) {

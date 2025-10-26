@@ -1,11 +1,11 @@
-import { Player } from "@/components/coach/PlayerCard";
+import { CoachDashboardPlayer } from "@/components/coach/PlayerCard";
 import { Order, SortBy } from "@/utils/PlayerTypes";
 
 export const sortPlayers = (
-  list: Player[],
+  list: CoachDashboardPlayer[],
   sortBy: SortBy,
   order: Order,
-): Player[] => {
+): CoachDashboardPlayer[] => {
   const dir = order === "Ascending" ? 1 : -1;
   return [...list].sort((a, b) => {
     if (sortBy === "Alphabetical") {
@@ -20,7 +20,7 @@ export const sortPlayers = (
 
 export const makeComparator = (sortBy: SortBy, order: Order) => {
   const dir = order === "Ascending" ? 1 : -1;
-  return (a: Player, b: Player) => {
+  return (a: CoachDashboardPlayer, b: CoachDashboardPlayer) => {
     if (sortBy === "Alphabetical") {
       const an = `${a.firstName} ${a.lastName}`.trim().toLowerCase();
       const bn = `${b.firstName} ${b.lastName}`.trim().toLowerCase();

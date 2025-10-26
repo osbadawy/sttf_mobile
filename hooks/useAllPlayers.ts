@@ -1,12 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
+import Player from "@/schemas/Player";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
-
-export interface Player {
-  firebase_id: string;
-  display_name: string;
-  profile_picture: string;
-}
 
 interface UseAllPlayersReturn {
   players: Player[];

@@ -4,7 +4,7 @@ import EditPlanPicker from "@/components/coach/EditPlanPicker";
 import EmptyCoachDashboard from "@/components/coach/EmptyCoachDashboard";
 import FilterSortModal from "@/components/coach/FilterSortModal";
 import ManageButton from "@/components/coach/ManageButton";
-import { Player } from "@/components/coach/PlayerCard";
+import { CoachDashboardPlayer } from "@/components/coach/PlayerCard";
 import PlayerSection from "@/components/coach/PlayerSection";
 import FilterIconLines from "@/components/icons/FilterIcon-lines";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -45,7 +45,7 @@ export default function Dashboard() {
   );
 
   // Existing redirect (normal mode)
-  const redirectToPlayer = (player: Player) => {
+  const redirectToPlayer = (player: CoachDashboardPlayer) => {
     const firebase_id = player.id!;
     const display_name = player.display_name;
     const profile_picture = player.photo_url;
@@ -58,7 +58,7 @@ export default function Dashboard() {
   };
 
   // Unified press handler for cards
-  const handleCardPress = (player: Player) => {
+  const handleCardPress = (player: CoachDashboardPlayer) => {
     const id = player.id!;
 
     if (managing) {

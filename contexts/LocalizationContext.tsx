@@ -13,7 +13,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-interface LocalizationContextType {
+export interface LocalizationContextType {
   currentLanguage: string;
   isRTL: boolean;
   switchLanguage: (language: string) => void;

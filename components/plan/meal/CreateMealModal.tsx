@@ -1,18 +1,13 @@
 import Modal from "@/components/Modal";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
+import Player from "@/schemas/Player";
 import { User } from "firebase/auth";
 import { useState } from "react";
 import { ScrollView } from "react-native";
+import PlayersSelection from "../PlayersSelection";
 import CategorySelection from "./CategorySelection";
 import CreateMealMain from "./CreateMealMain";
-import PlayersSelection from "./PlayersSelection";
-
-interface Player {
-  firebase_id: string;
-  display_name: string;
-  profile_picture: string;
-}
 
 interface CreateMealModalProps {
   onClose: () => void;
@@ -69,6 +64,7 @@ export default function CreateMealModal({
         selectedPlayers={players}
         onSelectPlayers={setPlayers}
         onClickBack={() => setShowPlayersSelection(false)}
+        t={t}
       />
     );
   } else if (category == null) {

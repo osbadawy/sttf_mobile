@@ -4,7 +4,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import CreateMealModal from "@/components/plan/meal/CreateMealModal";
 import DeletionConfirmation from "@/components/plan/meal/DeletionConfirmation";
 import PlannedMealItem from "@/components/plan/meal/PlannedMealItem";
-import PlayersSelection from "@/components/plan/meal/PlayersSelection";
+import PlayersSelection from "@/components/plan/PlayersSelection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
@@ -244,6 +244,7 @@ export default function MealPlan() {
                 setCommittedPlayers(selectedPlayers);
                 setShowPlayersSelection(false);
               }}
+              t={t}
             />
           </ScrollView>
         </Modal>

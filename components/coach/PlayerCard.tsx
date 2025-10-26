@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import CountryFlag from "react-native-country-flag";
 
-export type Player = {
+export type CoachDashboardPlayer = {
   id: string;
   age?: number;
   readiness: number;
@@ -16,8 +16,8 @@ export type Player = {
 };
 
 interface PlayerCardProps {
-  p: Player;
-  onPress?: (p: Player) => void;
+  p: CoachDashboardPlayer;
+  onPress?: (p: CoachDashboardPlayer) => void;
   selected?: boolean; // <-- NEW
   selectMode?: boolean; // <-- optional (if you want to adjust affordances)
 }

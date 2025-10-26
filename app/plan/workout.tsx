@@ -2,10 +2,10 @@ import { FilterIcon, ThinPlusIcon } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import Modal from "@/components/Modal";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PlayersSelection from "@/components/plan/PlayersSelection";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
 import DeletionConfirmation from "@/components/plan/workout/DeletionConfirmation";
 import PlannedActivityItem from "@/components/plan/workout/PlannedActivityItem";
-import PlayersSelection from "@/components/plan/workout/PlayersSelection";
 import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -259,6 +259,7 @@ export default function WorkoutPlan() {
                 setCommittedPlayers(selectedPlayers);
                 setShowPlayersSelection(false);
               }}
+              t={t}
             />
           </ScrollView>
         </Modal>

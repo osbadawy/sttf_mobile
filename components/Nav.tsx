@@ -95,6 +95,7 @@ export default function Nav() {
                   params: { player },
                 })
               }
+              key={item.label}
             >
               {React.cloneElement(item.icon as React.ReactElement<any>, {
                 color: isActive ? "#FFFFFF" : undefined,

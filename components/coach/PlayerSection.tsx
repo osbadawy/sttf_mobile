@@ -1,4 +1,6 @@
-import PlayerCard, { Player } from "@/components/coach/PlayerCard";
+import PlayerCard, {
+  CoachDashboardPlayer,
+} from "@/components/coach/PlayerCard";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import React from "react";
 import { Text, View } from "react-native";
@@ -6,9 +8,9 @@ import { Text, View } from "react-native";
 type Props = {
   title: string;
   colorClass: string;
-  players: Player[];
-  comparator: (a: Player, b: Player) => number;
-  onPlayerPress?: (p: Player) => void;
+  players: CoachDashboardPlayer[];
+  comparator: (a: CoachDashboardPlayer, b: CoachDashboardPlayer) => number;
+  onPlayerPress?: (p: CoachDashboardPlayer) => void;
   selectMode?: boolean; // <-- NEW
   selectedIds?: string[]; // <-- NEW
 };
