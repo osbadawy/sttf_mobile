@@ -13,6 +13,7 @@ import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
 import { PlannedActivity } from "@/schemas/PlannedActivity";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -23,11 +24,10 @@ export default function WorkoutPlan() {
   );
   const { players } = useAllPlayers();
 
-  // TODO: Get from params later
-  const originalSelectedPlayers = [
-    "j3qvXziHUwbzVkKpR0OcG35axWV2",
-    "oCK9lOmTSeZsx28W5E9QZJhe7Yy1",
-  ];
+  let localSearchParams = useLocalSearchParams();
+  const originalSelectedPlayers = localSearchParams.players
+    ? JSON.parse(localSearchParams.players as string)
+    : [];
 
   const [selectedPlayers, setSelectedPlayers] = useState(
     originalSelectedPlayers,

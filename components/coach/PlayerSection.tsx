@@ -22,7 +22,7 @@ export default function PlayerSection({
   selectMode = false,
   selectedIds = [],
 }: Props) {
-  const { t } = useLocalization("components.nutrition.nutritionList");
+  const { t } = useLocalization("components.coach.coachDashboard");
   const sorted = React.useMemo(
     () => [...players].sort(comparator),
     [players, comparator],
@@ -37,7 +37,7 @@ export default function PlayerSection({
 
       <View className="flex-row flex-wrap justify-between">
         {sorted.map((p) => {
-          const id = (p as any).firebase_id ?? p.id;
+          const id = p.id!;
           const isSelected = selectMode && selectedIds.includes(id);
           return (
             <PlayerCard

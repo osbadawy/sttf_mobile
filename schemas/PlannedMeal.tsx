@@ -46,7 +46,8 @@ export interface GetMealsResponse {
   category: string;
   name: string;
   kilojoule: number;
-  grams: number;
+  amount_unit: string;
+  amount: number;
   protein: number;
   carbohydrates: number;
   fat: number;

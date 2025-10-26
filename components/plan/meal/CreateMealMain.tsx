@@ -27,6 +27,8 @@ import {
   View,
 } from "react-native";
 
+import { Picker } from "@react-native-picker/picker";
+
 interface CreateMealMainProps {
   players: string[];
   t: (key: string) => string;
@@ -66,7 +68,8 @@ export default function CreateMealMain({
   clearCacheForRecurringDays,
 }: CreateMealMainProps) {
   const [mealName, setMealName] = useState(editingMeal ? editingMeal.name : "");
-  const [weight, setWeight] = useState<number | null>(editingMeal ? 230 : null); // Default weight
+  const [amount, setAmount] = useState<number | null>(null);
+  const [amountUnit, setAmountUnit] = useState<string>("Na");
   const [nutritionData, setNutritionData] = useState({
     calories: editingMeal ? editingMeal.kilojoule / 4.184 : undefined, // Convert kJ to kcal
     carbs: editingMeal ? editingMeal.carbohydrates : undefined,
@@ -86,10 +89,20 @@ export default function CreateMealMain({
   );
   const [disabled, setDisabled] = useState<boolean>(false);
 
+  const amountUnits = [
+    "Na", // none
+    "g", // grams
+    "mg", // milligrams
+    "ml", // milliliters
+    "l", // liters
+    "oz", // ounces
+    "lbs", // pounds
+  ];
+
   const isButtonDisabled =
     disabled ||
-    weight === null ||
-    weight === undefined ||
+    amount === null ||
+    amount === undefined ||
     mealName === "" ||
     nutritionData.calories === undefined ||
     nutritionData.protein === undefined ||
@@ -168,7 +181,7 @@ export default function CreateMealMain({
         carbohydrates: nutritionData.carbs!,
         fat: nutritionData.fat!,
         is_planned: isPlanned,
-        grams: weight,
+        grams: amount,
       };
 
       if (isEditing) {
@@ -402,13 +415,19 @@ export default function CreateMealMain({
           >
             <TextInput
               className="text-base effra-regular"
-              placeholder={t("grams")}
-              value={weight ? Math.round(weight).toString() : ""}
-              onChangeText={(text) => setWeight(Number(text))}
+              placeholder={t("amount")}
+              value={amount ? Math.round(amount).toString() : ""}
+              onChangeText={(text) => setAmount(Number(text))}
               keyboardType="numeric"
             />
           </View>
         </View>
+
+        <Picker selectedValue={amountUnit} onValueChange={setAmountUnit}>
+          {amountUnits.map((unit) => (
+            <Picker.Item key={unit} label={unit} value={unit} />
+          ))}
+        </Picker>
 
         {/* Calories & Carbs Row */}
         <View className="flex-row" style={{ gap: 8 }}>

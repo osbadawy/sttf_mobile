@@ -1,3 +1,4 @@
+import colors from "@/colors";
 import MealCard from "@/components/nutrition/MealCard";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -77,7 +78,7 @@ export default function MealLogPage() {
             }
           >
             <Text
-              className={`text-base font-normal text-[#008C46] underline ${titleAlign}`}
+              className={`text-base font-normal text-primary underline ${titleAlign}`}
             >
               {t("show data")}
             </Text>
@@ -86,7 +87,7 @@ export default function MealLogPage() {
 
         {loading && (
           <View className="items-center justify-center py-10">
-            <ActivityIndicator size="large" color="#0000ff" />
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
         )}
 
@@ -107,7 +108,7 @@ export default function MealLogPage() {
                     <MealCard
                       key={`${m.type}-${idx}-${meal.name}`}
                       name={meal.name}
-                      amount={Math.round(meal.grams)}
+                      amount={Math.round(meal.amount)}
                       calories={Math.round(meal.kilojoule * 4.184)}
                       type={m.type}
                     />

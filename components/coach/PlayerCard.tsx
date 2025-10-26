@@ -6,18 +6,13 @@ import CountryFlag from "react-native-country-flag";
 
 export type Player = {
   id: string;
-  firstName: string;
-  lastName: string;
-  age: number;
+  age?: number;
   readiness: number;
   meal: boolean;
   workout: boolean;
   nationality?: string;
-  photoUrl?: string;
-  firebase_id?: string;
+  photo_url?: string;
   display_name?: string;
-  profile_picture?: string;
-  display_picture?: string;
 };
 
 interface PlayerCardProps {
@@ -61,14 +56,8 @@ export default function PlayerCard({
             {/* Header: name stack + flag */}
             <View className="flex-row items-start justify-between">
               <View className="flex-1">
-                <Text className="text-base font-semibold" numberOfLines={1}>
-                  {p.firstName}
-                </Text>
-                <Text
-                  className="text-base font-semibold -mt-0.5"
-                  numberOfLines={1}
-                >
-                  {p.lastName}
+                <Text className="text-base font-semibold">
+                  {p.display_name}
                 </Text>
                 <Text className="text-neutral-600 text-lg mt-0.5">
                   Age <Text className="font-bold text-gray-700">{p.age}</Text>
@@ -87,11 +76,11 @@ export default function PlayerCard({
             </View>
 
             {/* Image + straight white fade */}
-            {p.photoUrl || p.profile_picture || p.display_picture ? (
+            {p.photo_url ? (
               <View className="items-end relative">
                 <Image
                   source={{
-                    uri: p.photoUrl || p.profile_picture || p.display_picture,
+                    uri: p.photo_url,
                   }}
                   style={{
                     width: R,

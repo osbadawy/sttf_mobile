@@ -32,7 +32,7 @@ export default function FilterSortModal({
   onApply,
   onReset,
 }: FilterSortModalProps) {
-  const { t } = useLocalization("components.coach.dashboard");
+  const { t } = useLocalization("components.coach.coachDashboard");
   const [sortBy, setSortBy] = useState<SortBy>(initialSortBy);
   const [order, setOrder] = useState<Order>(initialOrder);
 

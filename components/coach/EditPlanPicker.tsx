@@ -28,7 +28,7 @@ const EditPlanPicker = memo(function EditPlanPicker({
   const disabled = playerIds.length === 0;
 
   const items: NavItem[] = [
-    { label: "Meals", icon: <NutritionIcon />, path: "/plan/meals" },
+    { label: "Meals", icon: <NutritionIcon />, path: "/plan/meal" },
     { label: "Workout", icon: <ActivityIcon />, path: "/plan/workout" },
     { label: "Body", icon: <AnalyticsIcon />, path: "/plan/body" },
   ];
