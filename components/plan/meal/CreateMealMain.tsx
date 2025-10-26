@@ -68,13 +68,13 @@ export default function CreateMealMain({
   clearCacheForRecurringDays,
 }: CreateMealMainProps) {
   const [mealName, setMealName] = useState(editingMeal ? editingMeal.name : "");
-  const [amount, setAmount] = useState<number | null>(null);
-  const [amountUnit, setAmountUnit] = useState<string>("Na");
   const [nutritionData, setNutritionData] = useState({
     calories: editingMeal ? editingMeal.kilojoule / 4.184 : undefined, // Convert kJ to kcal
     carbs: editingMeal ? editingMeal.carbohydrates : undefined,
     protein: editingMeal ? editingMeal.protein : undefined,
     fat: editingMeal ? editingMeal.fat : undefined,
+    amount: editingMeal ? editingMeal.amount : undefined,
+    amount_unit: editingMeal ? editingMeal.amount_unit : "Na",
   });
   const [isPlanned, setIsPlanned] = useState(
     editingMeal ? editingMeal.is_planned : true,
@@ -101,9 +101,8 @@ export default function CreateMealMain({
 
   const isButtonDisabled =
     disabled ||
-    amount === null ||
-    amount === undefined ||
     mealName === "" ||
+    nutritionData.amount === undefined ||
     nutritionData.calories === undefined ||
     nutritionData.protein === undefined ||
     nutritionData.carbs === undefined ||
@@ -181,7 +180,8 @@ export default function CreateMealMain({
         carbohydrates: nutritionData.carbs!,
         fat: nutritionData.fat!,
         is_planned: isPlanned,
-        grams: amount,
+        amount: nutritionData.amount,
+        amount_unit: nutritionData.amount_unit,
       };
 
       if (isEditing) {
@@ -284,9 +284,11 @@ export default function CreateMealMain({
         <Text className="font-inter-regular text-base pb-2 pt-[24px]">
           {t("mealSelectionTitle")}
         </Text>
-        <TouchableOpacity onPress={() => onDeleteMeal?.(editingMeal!)}>
-          <TrashIcon />
-        </TouchableOpacity>
+        {editingMeal && (
+          <TouchableOpacity onPress={() => onDeleteMeal?.(editingMeal!)}>
+            <TrashIcon />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Category Selection */}
@@ -397,18 +399,19 @@ export default function CreateMealMain({
       {/* Meal Card */}
       <View className="bg-[#F8F9F2] rounded-2xl mb-6 py-4" style={{ gap: 8 }}>
         {/* Meal Name and Weight Row */}
-        <View className="flex-row " style={{ gap: 8 }}>
-          <View
-            className="bg-white rounded-xl border border-[#E8E8E8] px-4"
-            style={{ flex: 2 }}
-          >
-            <TextInput
-              className="text-base effra-regular"
-              placeholder={t("name")}
-              value={mealName}
-              onChangeText={setMealName}
-            />
-          </View>
+        <View
+          className="bg-white rounded-xl border border-[#E8E8E8] px-4"
+          style={{ flex: 1 }}
+        >
+          <TextInput
+            className="text-base effra-regular"
+            placeholder={t("name")}
+            value={mealName}
+            onChangeText={setMealName}
+          />
+        </View>
+
+        <View className="flex-row" style={{ gap: 8 }}>
           <View
             className="bg-white rounded-xl border border-[#E8E8E8] px-4"
             style={{ flex: 1 }}
@@ -416,18 +419,35 @@ export default function CreateMealMain({
             <TextInput
               className="text-base effra-regular"
               placeholder={t("amount")}
-              value={amount ? Math.round(amount).toString() : ""}
-              onChangeText={(text) => setAmount(Number(text))}
+              value={
+                nutritionData.amount
+                  ? Math.round(nutritionData.amount).toString()
+                  : ""
+              }
+              onChangeText={(text) =>
+                setNutritionData({ ...nutritionData, amount: Number(text) })
+              }
               keyboardType="numeric"
             />
           </View>
-        </View>
 
-        <Picker selectedValue={amountUnit} onValueChange={setAmountUnit}>
-          {amountUnits.map((unit) => (
-            <Picker.Item key={unit} label={unit} value={unit} />
-          ))}
-        </Picker>
+          <View
+            className="bg-white rounded-xl border border-[#E8E8E8] px-2"
+            style={{ width: 120, height: 45 }}
+          >
+            <Picker
+              selectedValue={nutritionData.amount_unit}
+              onValueChange={(v) =>
+                setNutritionData({ ...nutritionData, amount_unit: v })
+              }
+              mode="dropdown"
+            >
+              {amountUnits.map((unit) => (
+                <Picker.Item key={unit} label={unit} value={unit} />
+              ))}
+            </Picker>
+          </View>
+        </View>
 
         {/* Calories & Carbs Row */}
         <View className="flex-row" style={{ gap: 8 }}>

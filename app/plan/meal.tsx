@@ -5,13 +5,13 @@ import CreateMealModal from "@/components/plan/meal/CreateMealModal";
 import DeletionConfirmation from "@/components/plan/meal/DeletionConfirmation";
 import PlannedMealItem from "@/components/plan/meal/PlannedMealItem";
 import PlayersSelection from "@/components/plan/meal/PlayersSelection";
-import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -21,11 +21,10 @@ export default function MealPlan() {
   const { t } = useLocalization("components.plan.meal");
   const { players } = useAllPlayers();
 
-  // TODO: Get from params later
-  const originalSelectedPlayers = [
-    "j3qvXziHUwbzVkKpR0OcG35axWV2",
-    "oCK9lOmTSeZsx28W5E9QZJhe7Yy1",
-  ];
+  let localSearchParams = useLocalSearchParams();
+  const originalSelectedPlayers = localSearchParams.players
+    ? JSON.parse(localSearchParams.players as string)
+    : [];
 
   const [selectedPlayers, setSelectedPlayers] = useState(
     originalSelectedPlayers,
@@ -112,9 +111,6 @@ export default function MealPlan() {
     }
   };
 
-  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
-  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-
   const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
   const organisedMeals: { type: MealType; meals: GetMealsResponse[] }[] =
     mealTypes.map((m) => {
@@ -171,13 +167,6 @@ export default function MealPlan() {
                   {t(m.type)}
                 </Text>
                 {m.meals.map((meal: GetMealsResponse) => {
-                  if (
-                    categoryFilters.length > 0 &&
-                    !categoryFilters.includes(meal.category)
-                  ) {
-                    return null;
-                  }
-
                   return (
                     <PlannedMealItem
                       key={meal.id}
@@ -258,38 +247,6 @@ export default function MealPlan() {
             />
           </ScrollView>
         </Modal>
-      )}
-
-      {showFilterDropdown && (
-        <SelectionModal
-          title={t("filter")}
-          uniqueItems={[
-            {
-              name: t("breakfast"),
-              value: "breakfast",
-              icon: null, // TODO: Add meal category icons
-            },
-            {
-              name: t("lunch"),
-              value: "lunch",
-              icon: null,
-            },
-            {
-              name: t("dinner"),
-              value: "dinner",
-              icon: null,
-            },
-            {
-              name: t("snack"),
-              value: "snack",
-              icon: null,
-            },
-          ]}
-          selectedItems={categoryFilters}
-          setSelectedItems={setCategoryFilters}
-          setShowSelectionModal={setShowFilterDropdown}
-          outerColor="rgba(0, 0, 0, 0.2)"
-        />
       )}
 
       <DeletionConfirmation

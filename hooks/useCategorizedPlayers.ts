@@ -1,7 +1,8 @@
 import { Player } from "@/components/coach/PlayerCard";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
 import Constants from "expo-constants";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export function useCategorizedPlayers() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -43,9 +44,11 @@ export function useCategorizedPlayers() {
     }
   }, [user]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData]),
+  );
 
   const categorized = useMemo(() => {
     const noPlan: Player[] = [];

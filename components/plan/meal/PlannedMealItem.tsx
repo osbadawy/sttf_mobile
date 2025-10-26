@@ -43,7 +43,9 @@ export default function PlannedMealItem({
           <Text className="font-inter-semibold text-base">{mealName}</Text>
           <Text className="effra-regular text-sm" style={{ opacity: 0.6 }}>
             {meal.players_assigned.length} {t("players")} ·{" "}
-            {Math.round(meal.grams)}g · {Math.round(meal.kilojoule / 4.184)}kcal
+            {Math.round(meal.amount)}
+            {meal.amount_unit === "Na" ? "" : meal.amount_unit} ·{" "}
+            {Math.round(meal.kilojoule / 4.184)}kcal
           </Text>
         </View>
       </View>
