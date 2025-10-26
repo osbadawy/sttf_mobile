@@ -33,11 +33,15 @@ export default function PasswordResetInfo({
       {/* Centered icon and text */}
       <View className="flex-1 items-center justify-center px-6">
         <EmailIcon />
-        <Text className="mt-6 text-2xl font-semibold text-black">Reset your Password</Text>
+        <Text className="mt-6 text-2xl font-semibold text-black">
+          Reset your Password
+        </Text>
         <Text className="mt-3 text-center text-sm text-neutral-500">
           You will receive the reset instructions here:
         </Text>
-        <Text className="mt-1 text-center text-base font-semibold text-black">{email}</Text>
+        <Text className="mt-1 text-center text-base font-semibold text-black">
+          {email}
+        </Text>
       </View>
 
       {/* Bottom button */}
@@ -46,7 +50,9 @@ export default function PasswordResetInfo({
           onPress={handlePress}
           className="w-full items-center justify-center rounded-2xl bg-[#008C46] py-4"
         >
-          <Text className="text-base font-semibold text-white">{buttonLabel}</Text>
+          <Text className="text-base font-semibold text-white">
+            {buttonLabel}
+          </Text>
         </Pressable>
       </View>
     </View>

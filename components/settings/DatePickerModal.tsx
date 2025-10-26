@@ -30,8 +30,13 @@ export default function DatePickerModal({
       {/* Backdrop */}
       <Pressable className="flex-1 bg-black/30" onPress={onClose}>
         {/* Stop backdrop presses from closing when interacting with the sheet */}
-        <Pressable className="mt-auto rounded-t-2xl bg-white px-4 pb-6 pt-4" onPress={() => {}}>
-          <Text className="mb-3 text-base font-semibold text-black">{title}</Text>
+        <Pressable
+          className="mt-auto rounded-t-2xl bg-white px-4 pb-6 pt-4"
+          onPress={() => {}}
+        >
+          <Text className="mb-3 text-base font-semibold text-black">
+            {title}
+          </Text>
 
           <View className="items-center">
             <DateTimePicker
@@ -60,7 +65,10 @@ export default function DatePickerModal({
           {/* iOS explicit Done; on Android we already close in onChange */}
           {Platform.OS === "ios" && (
             <View className="mt-4 flex-row justify-end">
-              <Pressable className="rounded-xl bg-neutral-900 px-4 py-2" onPress={onClose}>
+              <Pressable
+                className="rounded-xl bg-neutral-900 px-4 py-2"
+                onPress={onClose}
+              >
                 <Text className="text-white">Done</Text>
               </Pressable>
             </View>

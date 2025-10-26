@@ -3,10 +3,10 @@ import countriesData from "world-countries";
 
 type Demonyms = { eng?: { m?: string; f?: string } };
 type CountryRec = {
-  cca2: string;                   // ISO alpha-2 (e.g., "IT", "SA")
+  cca2: string; // ISO alpha-2 (e.g., "IT", "SA")
   name: { common: string };
   demonyms?: Demonyms;
-  demonym?: string;               // some versions still expose this
+  demonym?: string; // some versions still expose this
 };
 
 export type CountryOption = { label: string; value: string }; // label = demonym, value = cca2
@@ -24,7 +24,9 @@ export const buildNationalityOptions = (): CountryOption[] => {
   return list;
 };
 
-export const buildNationalityLabelMap = (options: CountryOption[]): Map<string, string> => {
+export const buildNationalityLabelMap = (
+  options: CountryOption[],
+): Map<string, string> => {
   const m = new Map<string, string>();
   for (const o of options) m.set(o.value, o.label);
   return m;

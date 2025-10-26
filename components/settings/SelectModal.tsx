@@ -31,7 +31,12 @@ export default function SelectModal({
   );
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <Pressable className="flex-1" onPress={onClose}>
         <View className="mt-auto rounded-t-2xl bg-white pb-6">
           <View className="px-4 pt-4">

@@ -1,5 +1,8 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { buildNationalityLabelMap, buildNationalityOptions } from "@/components/settings/countryOptions";
+import {
+  buildNationalityLabelMap,
+  buildNationalityOptions,
+} from "@/components/settings/countryOptions";
 import DateField from "@/components/settings/DateField";
 import DatePickerModal from "@/components/settings/DatePickerModal";
 import Divider from "@/components/settings/Divider";
@@ -42,12 +45,16 @@ export default function Settings() {
   const [localAvatarUri, setLocalAvatarUri] = useState<string | null>(null);
 
   // Nationality
-  const nationalityOptions = useMemo<Option[]>(() => buildNationalityOptions(), []);
+  const nationalityOptions = useMemo<Option[]>(
+    () => buildNationalityOptions(),
+    [],
+  );
   const nationalityLabelByCode = useMemo(
     () => buildNationalityLabelMap(nationalityOptions),
-    [nationalityOptions]
+    [nationalityOptions],
   );
-  const nationalityLabel = nationalityLabelByCode.get(nationalityCode) ?? "Select...";
+  const nationalityLabel =
+    nationalityLabelByCode.get(nationalityCode) ?? "Select...";
 
   const handOptions: Option[] = [
     { label: "Right Hand", value: "right" },
@@ -61,23 +68,28 @@ export default function Settings() {
   // ✅ fallback: use local asset if no remote/local URL
   const imageSource =
     (localAvatarUri && { uri: localAvatarUri }) ||
-    (profilePicture && profilePicture.trim().length > 0 ? { uri: profilePicture } : require("@/assets/images/logo.png"));
+    (profilePicture && profilePicture.trim().length > 0
+      ? { uri: profilePicture }
+      : require("@/assets/images/logo.png"));
 
   // ✅ open library, pick one image, preview it, and console.log for upload
   const handlePickImage = async (): Promise<void> => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission required", "Please allow photo library access to choose a profile picture.");
+      Alert.alert(
+        "Permission required",
+        "Please allow photo library access to choose a profile picture.",
+      );
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],      // square crop for avatar
+      aspect: [1, 1], // square crop for avatar
       quality: 0.9,
-      base64: false,       // flip to true if your uploader needs base64
-      selectionLimit: 1,   // iOS 14+; ignored on Android but we only handle first asset anyway
+      base64: false, // flip to true if your uploader needs base64
+      selectionLimit: 1, // iOS 14+; ignored on Android but we only handle first asset anyway
     });
 
     if (result.canceled) return;
@@ -115,7 +127,11 @@ export default function Settings() {
       {/* PROFILE HEADER */}
       <View className="px-4 pt-4">
         <View className="flex-row items-center gap-3">
-          <Image source={imageSource} className="h-14 w-14 rounded-full" resizeMode="cover" />
+          <Image
+            source={imageSource}
+            className="h-14 w-14 rounded-full"
+            resizeMode="cover"
+          />
           <View className="flex-1">
             <Text className="text-lg font-semibold text-black">
               {userName || `${firstName} ${lastName}`}
@@ -213,12 +229,16 @@ export default function Settings() {
 
         <SettingsRow
           label="Change password"
-          onPress={() => router.push("/settings/change-password" as RelativePathString)}
+          onPress={() =>
+            router.push("/settings/change-password" as RelativePathString)
+          }
         />
         <Divider />
         <SettingsRow
           label="Manage Players"
-          onPress={() => router.push("/settings/manage-players" as RelativePathString)}
+          onPress={() =>
+            router.push("/settings/manage-players" as RelativePathString)
+          }
         />
         <Divider />
         <SettingsRow
@@ -235,4 +255,3 @@ export default function Settings() {
     </ParallaxScrollView>
   );
 }
-

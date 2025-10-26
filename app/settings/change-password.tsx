@@ -3,7 +3,13 @@ import PasswordResetInfo from "@/components/settings/PasswordResetInfo";
 import { useAuth } from "@/contexts/AuthContext";
 import { updatePassword } from "firebase/auth";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ChangePassword() {
@@ -18,7 +24,7 @@ export default function ChangePassword() {
 
   const canSubmit = useMemo<boolean>(
     () => pw1.length >= 6 && pw2.length >= 6 && !loading,
-    [pw1.length, pw2.length, loading]
+    [pw1.length, pw2.length, loading],
   );
 
   const handleDone = async (): Promise<void> => {
@@ -51,7 +57,7 @@ export default function ChangePassword() {
 
       if (message.includes("requires-recent-login")) {
         setError(
-          "For security, please sign in again and then try updating your password."
+          "For security, please sign in again and then try updating your password.",
         );
       } else {
         setError(message);
@@ -110,7 +116,9 @@ export default function ChangePassword() {
         </View>
 
         {/* Confirm Password */}
-        <Text className="mt-4 mb-2 text-xs text-neutral-700">Confirm Password</Text>
+        <Text className="mt-4 mb-2 text-xs text-neutral-700">
+          Confirm Password
+        </Text>
         <View className="rounded-2xl bg-white shadow-sm">
           <TextInput
             value={pw2}
