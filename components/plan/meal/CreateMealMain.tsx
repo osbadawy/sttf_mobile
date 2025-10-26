@@ -6,11 +6,7 @@ import {
   ProfilePictureDefaultIcon,
   TrashIcon,
 } from "@/components/icons";
-import CalorieIcon from "@/components/icons/nutrition/CaloriesIcon";
-import FatIcon from "@/components/icons/nutrition/FatIcon";
-import GrainIcon from "@/components/icons/nutrition/GrainIcon";
-import ProteinIcon from "@/components/icons/nutrition/ProteinIcon";
-import { MetricInput } from "@/components/nutrition/NutritionDataInput";
+import NutritionDataInput from "@/components/nutrition/NutritionDataInput";
 import DynamicMealIcon from "@/components/plan/meal/DynamicMealIcon";
 import CustomSwitch from "@/components/Switch";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
@@ -26,8 +22,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import { Picker } from "@react-native-picker/picker";
 
 interface CreateMealMainProps {
   players: string[];
@@ -88,16 +82,6 @@ export default function CreateMealMain({
       : null,
   );
   const [disabled, setDisabled] = useState<boolean>(false);
-
-  const amountUnits = [
-    "Na", // none
-    "g", // grams
-    "mg", // milligrams
-    "ml", // milliliters
-    "l", // liters
-    "oz", // ounces
-    "lbs", // pounds
-  ];
 
   const isButtonDisabled =
     disabled ||
@@ -398,7 +382,7 @@ export default function CreateMealMain({
 
       {/* Meal Card */}
       <View className="bg-[#F8F9F2] rounded-2xl mb-6 py-4" style={{ gap: 8 }}>
-        {/* Meal Name and Weight Row */}
+        {/* Meal Name */}
         <View
           className="bg-white rounded-xl border border-[#E8E8E8] px-4"
           style={{ flex: 1 }}
@@ -411,97 +395,20 @@ export default function CreateMealMain({
           />
         </View>
 
-        <View className="flex-row" style={{ gap: 8 }}>
-          <View
-            className="bg-white rounded-xl border border-[#E8E8E8] px-4"
-            style={{ flex: 1 }}
-          >
-            <TextInput
-              className="text-base effra-regular"
-              placeholder={t("amount")}
-              value={
-                nutritionData.amount
-                  ? Math.round(nutritionData.amount).toString()
-                  : ""
-              }
-              onChangeText={(text) =>
-                setNutritionData({ ...nutritionData, amount: Number(text) })
-              }
-              keyboardType="numeric"
-            />
-          </View>
-
-          <View
-            className="bg-white rounded-xl border border-[#E8E8E8] px-2"
-            style={{ width: 120, height: 45 }}
-          >
-            <Picker
-              selectedValue={nutritionData.amount_unit}
-              onValueChange={(v) =>
-                setNutritionData({ ...nutritionData, amount_unit: v })
-              }
-              mode="dropdown"
-            >
-              {amountUnits.map((unit) => (
-                <Picker.Item key={unit} label={unit} value={unit} />
-              ))}
-            </Picker>
-          </View>
-        </View>
-
-        {/* Calories & Carbs Row */}
-        <View className="flex-row" style={{ gap: 8 }}>
-          <MetricInput
-            placeholder="calories"
-            unit="Kcal"
-            value={
-              nutritionData.calories
-                ? Math.round(nutritionData.calories)
-                : undefined
-            }
-            onChange={(v) =>
-              setNutritionData({ ...nutritionData, calories: v })
-            }
-            LeadingIcon={CalorieIcon}
-            color="#E53935"
-          />
-          <MetricInput
-            placeholder="carbs"
-            unit="g"
-            value={
-              nutritionData.carbs ? Math.round(nutritionData.carbs) : undefined
-            }
-            onChange={(v) => setNutritionData({ ...nutritionData, carbs: v })}
-            LeadingIcon={GrainIcon}
-            color="#E5A300"
-          />
-        </View>
-
-        {/* Fat & Protein Row */}
-        <View className="flex-row" style={{ gap: 8 }}>
-          <MetricInput
-            placeholder="fat"
-            unit="g"
-            value={
-              nutritionData.fat ? Math.round(nutritionData.fat) : undefined
-            }
-            onChange={(v) => setNutritionData({ ...nutritionData, fat: v })}
-            LeadingIcon={FatIcon}
-            color="#E56A00"
-          />
-          <MetricInput
-            placeholder="protein"
-            unit="g"
-            value={
-              nutritionData.protein
-                ? Math.round(nutritionData.protein)
-                : undefined
-            }
-            onChange={(v) => setNutritionData({ ...nutritionData, protein: v })}
-            LeadingIcon={ProteinIcon}
-            color="#009F78"
-          />
-        </View>
+        {/* Nutrition Data Input */}
+        <NutritionDataInput
+          value={nutritionData}
+          onChange={(data) =>
+            setNutritionData({
+              carbs: data.carbs,
+              protein: data.protein,
+              fat: data.fat,
+              calories: data.calories,
+              amount: data.amount,
+              amount_unit: data.amount_unit || "Na",
+            })
+          }
+        />
       </View>
 
       {/* Save Button */}

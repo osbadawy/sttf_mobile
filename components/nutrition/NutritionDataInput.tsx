@@ -4,6 +4,7 @@ import FatIcon from "@/components/icons/nutrition/FatIcon";
 import GrainIcon from "@/components/icons/nutrition/GrainIcon";
 import ProteinIcon from "@/components/icons/nutrition/ProteinIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { Picker } from "@react-native-picker/picker";
 import { Text, TextInput, View } from "react-native";
 
 export type NutritionData = {
@@ -11,6 +12,8 @@ export type NutritionData = {
   protein?: number;
   fat?: number;
   calories?: number;
+  amount?: number;
+  amount_unit?: string;
 };
 
 type Props = {
@@ -69,11 +72,57 @@ export default function NutritionDataInput({ value, onChange }: Props) {
   const { t } = useLocalization("components.nutrition.nutritionList");
   const safe = value ?? {};
 
+  const amountUnits = [
+    "Na", // none
+    "g", // grams
+    "mg", // milligrams
+    "ml", // milliliters
+    "l", // liters
+    "oz", // ounces
+    "lbs", // pounds
+  ];
+
   return (
     <View className="flex-1 gap-4 overflow-hidden">
+      {/* Amount */}
+      <View className="flex-row gap-4">
+        <View
+          className="bg-white rounded-xl border border-[#E8E8E8] px-4"
+          style={{ flex: 1 }}
+        >
+          <TextInput
+            className="text-base effra-regular"
+            placeholder={t("amount")}
+            value={
+              safe.amount ? Math.round(safe.amount).toString() : ""
+            }
+            onChangeText={(text) =>
+              onChange({ ...safe, amount: text ? Number(text) : undefined })
+            }
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View
+          className="bg-white rounded-xl border border-[#E8E8E8] px-2"
+          style={{ width: 120, height: 45 }}
+        >
+          <Picker
+            selectedValue={safe.amount_unit}
+            onValueChange={(v) => onChange({ ...safe, amount_unit: v })}
+            mode="dropdown"
+          >
+            {amountUnits.map((unit) => (
+              <Picker.Item key={unit} label={unit} value={unit} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+
+      {/* Nutrition Fields */}
       <View className="flex-row gap-4">
         <MetricInput
-          placeholder="carbs" // ✅ match translation key
+          placeholder="carbs"
           unit="g"
           value={safe.carbs}
           onChange={(v) => onChange({ ...safe, carbs: v })}
