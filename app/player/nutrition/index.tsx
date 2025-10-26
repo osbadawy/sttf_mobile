@@ -26,6 +26,8 @@ export default function MealLogPage() {
 
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
+  const isCoachViewing = Object.keys(playerData).length > 0;
+
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
 
@@ -85,11 +87,7 @@ export default function MealLogPage() {
           </TouchableOpacity>
         </View>
 
-        {loading && (
-          <View className="items-center justify-center py-10">
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        )}
+        {loading && <ActivityIndicator size="large" color={colors.primary} />}
 
         <ScrollView className="mt-5">
           {meals.length > 0 ? (
@@ -125,46 +123,49 @@ export default function MealLogPage() {
               </Text>
             </View>
           )}
-          {/* OR divider */}
-          <View
-            className="my-6 flex-row items-center"
-            accessible
-            accessibilityRole="text"
-            accessibilityLabel="or separator"
-          >
-            <View className="flex-1 h-[1px] bg-neutral-300" />
-            <Text className="mx-3 text-neutral-600 font-medium text-xl">
-              {t("or")}
-            </Text>
-            <View className="flex-1 h-[1px] bg-neutral-300" />
-          </View>
-          {/* Add Meal Manually button */}
-          <TouchableOpacity
-            activeOpacity={0.95}
-            onPressIn={() => setManualPressed(true)}
-            onPressOut={() => setManualPressed(false)}
-            onPress={() => router.push("/player/nutrition/ManualInput")}
-            className={`
+          {!isCoachViewing && (
+            <>
+              <View
+                className="my-6 flex-row items-center"
+                accessible
+                accessibilityRole="text"
+                accessibilityLabel="or separator"
+              >
+                <View className="flex-1 h-[1px] bg-neutral-300" />
+                <Text className="mx-3 text-neutral-600 font-medium text-xl">
+                  {t("or")}
+                </Text>
+                <View className="flex-1 h-[1px] bg-neutral-300" />
+              </View>
+              {/* Add Meal Manually button */}
+              <TouchableOpacity
+                activeOpacity={0.95}
+                onPressIn={() => setManualPressed(true)}
+                onPressOut={() => setManualPressed(false)}
+                onPress={() => router.push("/player/nutrition/ManualInput")}
+                className={`
               flex-row items-center justify-center rounded-2xl px-4 py-6
               border-[1px] border-dotted
               ${manualPressed ? "border-emerald-500 bg-emerald-50" : "border-neutral-300 bg-transparent"}
             `}
-            accessibilityRole="button"
-            accessibilityLabel="Add meal manually"
-          >
-            <Ionicons
-              name="add"
-              size={18}
-              color={manualPressed ? "#047857" : "#475569"}
-            />
-            <Text
-              className={`ml-2 text-[16px] font-semibold ${
-                manualPressed ? "text-emerald-700" : "text-slate-600"
-              }`}
-            >
-              {t("add meal")}
-            </Text>
-          </TouchableOpacity>
+                accessibilityRole="button"
+                accessibilityLabel="Add meal manually"
+              >
+                <Ionicons
+                  name="add"
+                  size={18}
+                  color={manualPressed ? "#047857" : "#475569"}
+                />
+                <Text
+                  className={`ml-2 text-[16px] font-semibold ${
+                    manualPressed ? "text-emerald-700" : "text-slate-600"
+                  }`}
+                >
+                  {t("add meal")}
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
           <View className="h-6" />
           <View className="h-6" /> {/* bottom spacer */}
         </ScrollView>

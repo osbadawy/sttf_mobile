@@ -9,7 +9,7 @@ import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 export default function PlayerPlannedActivitiesPage() {
   const { t } = useLocalization("components.activities.plan");
@@ -20,12 +20,19 @@ export default function PlayerPlannedActivitiesPage() {
   const dateState = useState(new Date((dateParam as string) || new Date()));
   const [date, setDate] = dateState;
 
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
+  const isCoachViewing = Object.keys(playerData).length > 0;
+
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
 
   const { activities, loading, error } = usePlannedActivities({
     day: date,
+    users_assigned: playerData.firebase_id
+      ? [playerData.firebase_id]
+      : undefined,
   });
 
   const { user } = useAuth();
@@ -48,7 +55,7 @@ export default function PlayerPlannedActivitiesPage() {
         }}
         error={!!error}
       >
-        {loading && <Text>Loading...</Text>}
+        {loading && <ActivityIndicator size="large" color={colors.primary} />}
 
         <View className="flex-row items-center justify-between">
           <View>
@@ -92,7 +99,7 @@ export default function PlayerPlannedActivitiesPage() {
                 (assignment) =>
                   assignment.assigned_to_user.firebase_id === user.uid,
               );
-              const isCompleted = activityAssignment?.performance !== null;
+              const isCompleted = Boolean(activityAssignment?.performance);
 
               // Check if activity is in the future
               const activityDate = new Date(activity.start);
@@ -129,7 +136,7 @@ export default function PlayerPlannedActivitiesPage() {
                         {activityName} · {time}
                       </Text>
                     </View>
-                    {!isFutureActivity && (
+                    {!isFutureActivity && !isCoachViewing && (
                       <TouchableOpacity
                         onPress={() => {
                           router.push({

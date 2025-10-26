@@ -20,11 +20,7 @@ import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-interface ActivitiesPageProps {
-  user_id?: string;
-}
-
-export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
+export default function ActivitiesPage() {
   const { user } = useAuth();
   const { t, isRTL, currentLanguage } = useLocalization("activities");
   const { t: tActivityTypes } = useLocalization(
@@ -43,7 +39,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const [date, setDate] = useDateState;
 
   const { data, dataRange, fetchAdditionalData, error } = usePlayerActivities({
-    user_id,
+    user_id: playerData.firebase_id || user?.uid || undefined,
     initialDaysBack: 14,
   });
 
@@ -101,7 +97,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
         fetchAdditionalData(newStartDate, selectedDate);
       }
     }
-  }, [date, dataRange, user, user_id]);
+  }, [date, dataRange, user]);
 
   return (
     <>
@@ -151,6 +147,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                 pathname: "/player/activities/plan" as RelativePathString,
                 params: {
                   date: date.toISOString(),
+                  player: JSON.stringify(playerData),
                 },
               })
             }

@@ -63,7 +63,7 @@ export default function NutritionDashboard() {
       headerProps={{
         title: t("nutritionDashboard"),
         showBackButton: true,
-        showDateSelector: false,
+        showDateSelector: true,
         showBGImage: false,
         showCalendarIcon: true,
         useDateState: dateState,
