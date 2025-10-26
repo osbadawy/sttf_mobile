@@ -2,6 +2,9 @@ export function getAvgValue<T extends Record<string, any>>(
   data: Record<string, T> | T[],
   keys: string[],
 ): number {
+  if (!data || Object.keys(data).length === 0) {
+    return 0;
+  }
   const dataValues = Array.isArray(data) ? data : Object.values(data);
   const total = dataValues.reduce((sum, val) => {
     // Navigate to the most nested value using the keys array

@@ -35,7 +35,9 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const playerData = JSON.parse((player as string) || "{}");
   const isCoachViewing = Object.keys(playerData).length > 0;
 
-  const { userName, profilePicture } = useUserProfile();
+  console.log(playerData);
+
+  const { userName, profilePicture, access } = useUserProfile();
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
@@ -105,8 +107,9 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
     <>
       <ParallaxScrollView
         headerProps={{
-          name: userName || "User",
-          profilePicture: profilePicture,
+          name: (playerData.display_name as string) || userName || access,
+          profilePicture:
+            (playerData.profile_picture as string) || profilePicture,
           color: HeaderColor.BG,
           showDateSelector: true,
           useDateState: useDateState,

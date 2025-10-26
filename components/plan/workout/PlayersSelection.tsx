@@ -6,7 +6,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 interface Player {
   firebase_id: string;
   display_name: string;
-  profile_picture: string;
+  avatar_url: string;
 }
 
 interface PlayersSelectionProps {
@@ -52,9 +52,9 @@ export default function PlayersSelection({
       style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.16)" }}
     >
       <View className="w-10 h-10 rounded-full items-center justify-center">
-        {player.profile_picture ? (
+        {player.avatar_url ? (
           <Image
-            source={{ uri: player.profile_picture }}
+            source={{ uri: player.avatar_url }}
             className="w-10 h-10 rounded-full"
           />
         ) : (

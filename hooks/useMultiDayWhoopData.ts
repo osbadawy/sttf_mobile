@@ -46,8 +46,12 @@ export function useMultiDayWhoopData({
               Authorization: `Bearer ${await user.getIdToken()}`,
             },
           });
-          const data = await response.json();
-          setMetrics(data);
+          if (response.ok) {
+            const data = await response.json();
+            setMetrics(data);
+          } else {
+            throw new Error(`${response.status}: ${response.statusText}`);
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
           setError(
@@ -127,16 +131,18 @@ export function useMultiPlayerWhoopData({
             Authorization: `Bearer ${await user.getIdToken()}`,
           },
         });
-        const data = await response.json();
-
-        // Cache the data
-        dataCache.set(cacheKey, data);
-
-        // Set the appropriate state
-        if (isSelectedPlayer) {
-          setSelectedPlayerMetrics(data);
+        if (response.ok) {
+          const data = await response.json();
+          // Cache the data
+          dataCache.set(cacheKey, data);
+          // Set the appropriate state
+          if (isSelectedPlayer) {
+            setSelectedPlayerMetrics(data);
+          } else {
+            setPrimaryMetrics(data);
+          }
         } else {
-          setPrimaryMetrics(data);
+          throw new Error(`${response.status}: ${response.statusText}`);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
