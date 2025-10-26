@@ -35,8 +35,6 @@ export function usePlannedActivities({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log({ users_assigned });
-
   const fetchPlannedActivities = useCallback(async () => {
     if (!user) {
       return;

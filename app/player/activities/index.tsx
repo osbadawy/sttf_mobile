@@ -31,8 +31,6 @@ export default function ActivitiesPage() {
   const playerData = JSON.parse((player as string) || "{}");
   const isCoachViewing = Object.keys(playerData).length > 0;
 
-  console.log(playerData);
-
   const { userName, profilePicture, access } = useUserProfile();
 
   const useDateState = useState(new Date());

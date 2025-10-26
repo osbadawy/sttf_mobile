@@ -21,7 +21,7 @@ export interface MealAssignmentResponse {
   assigned_at: Date;
   removed_at: Date | null;
   assigned_to_user: UserResponse;
-  performance: MealResultsResponse | null;
+  completions: MealResultsResponse[];
 }
 
 export interface MealRecurrenceResponse {

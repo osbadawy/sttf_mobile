@@ -23,7 +23,7 @@ export interface PlannedActivityAssignment {
   created_at: Date;
   updated_at: Date;
   assigned_to_user: PlannedActivityPlayer;
-  performance?: PlannedActivityPerformance;
+  completions: PlannedActivityPerformance[];
 }
 
 export interface PlannedActivityRecurrence {

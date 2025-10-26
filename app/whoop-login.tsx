@@ -32,11 +32,6 @@ export default function WhoopLoginPage() {
         if (token) {
           try {
             const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`;
-            console.log("🔍 Attempting to fetch whoop user from:", url);
-            console.log(
-              "🔑 Using access token (first 20 chars):",
-              token.substring(0, 20) + "...",
-            );
 
             const response = await fetch(url, {
               method: "GET",
@@ -44,12 +39,6 @@ export default function WhoopLoginPage() {
                 Authorization: `Bearer ${token}`,
               },
             });
-
-            console.log(
-              "📡 Response status:",
-              response.status,
-              response.statusText,
-            );
 
             if (response.status !== 200) {
               const errorText = await response.text();
@@ -59,7 +48,6 @@ export default function WhoopLoginPage() {
               );
             }
             const data = await response.json();
-            console.log("✅ Successfully fetched whoop user data");
 
             setUserName(data.display_name || data.access);
             setProfilePicture(data.avatar_url || "");

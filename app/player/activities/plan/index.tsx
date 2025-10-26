@@ -99,10 +99,26 @@ export default function PlayerPlannedActivitiesPage() {
                 (assignment) =>
                   assignment.assigned_to_user.firebase_id === user.uid,
               );
-              const isCompleted = Boolean(activityAssignment?.performance);
+              const isCompleted = Boolean(
+                activityAssignment!.completions.length > 0,
+              );
 
               // Check if activity is in the future
-              const activityDate = new Date(activity.start);
+              const startTime = new Date(activity.start);
+              const activityDate = new Date(date);
+              activityDate.setHours(
+                startTime.getHours(),
+                startTime.getMinutes(),
+                startTime.getSeconds(),
+                startTime.getMilliseconds(),
+              );
+
+              console.log({
+                start: activity.start,
+                startTime,
+                activityDate,
+                date,
+              });
               const currentDate = new Date();
               const isFutureActivity = activityDate > currentDate;
 
