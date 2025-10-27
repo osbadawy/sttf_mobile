@@ -1,8 +1,9 @@
 import ItemContainer from "@/components/icons/playerIndexPage/ItemContainer";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import DynamicIcon from "../icons/playerIndexPage/DynamicIcon";
 
-export type TableItemType = "meal" | "workout" | "daily";
+export type TableItemType = "meal" | "workout" | "assessment";
 
 interface TableItemProps {
   type: TableItemType;
@@ -15,6 +16,8 @@ interface TableItemProps {
   disabled?: boolean;
   onPositionMeasured?: (y: number) => void;
   id: number;
+  isComplete?: boolean;
+  category?: string;
 }
 
 export default function TableItem({
@@ -28,6 +31,8 @@ export default function TableItem({
   disabled = false,
   onPositionMeasured,
   id,
+  isComplete = false,
+  category,
 }: TableItemProps) {
   const [itemView, setItemView] = useState<View | null>(null);
   const [basePosition, setBasePosition] = useState({ x: 0, y: 0 });
@@ -67,7 +72,8 @@ export default function TableItem({
   // Calculate scale and translation based on position in viewport
   // Creates a tilted table effect
   const calculateTransform = () => {
-    if (!parentHeight) return { scale: 1, translateX: 0, translateY: 0 };
+    if (!parentHeight)
+      return { scale: 1, translateX: 0, translateY: 0, opacity: 1 };
 
     // Position relative to the visible viewport
     const relativeY = basePosition.y - scrollY;
@@ -85,7 +91,13 @@ export default function TableItem({
     const lateralOffset = parentWidth * 0.3; // Distance from center (35% of width)
 
     // Base position offset (negative = left, positive = right)
-    const baseOffsetX = type === "meal" ? -lateralOffset : lateralOffset;
+    // const baseOffsetX = type === "meal" ? -lateralOffset : lateralOffset;
+    let baseOffsetX = 0;
+    if (type === "meal") {
+      baseOffsetX = -lateralOffset;
+    } else if (type === "workout") {
+      baseOffsetX = lateralOffset;
+    }
 
     // Progressive movement: converge toward center when above center of viewport
     let progress = 0;
@@ -112,10 +124,16 @@ export default function TableItem({
       translateY = -itemIndex * 15; // 15px compression per item position
     }
 
-    return { scale, translateX, translateY };
+    let opacity = 1;
+    const opacityThreshold = 0.4;
+    if (normalizedY < opacityThreshold) {
+      opacity = normalizedY / opacityThreshold;
+    }
+
+    return { scale, translateX, translateY, opacity };
   };
 
-  const { scale, translateX, translateY } = calculateTransform();
+  const { scale, translateX, translateY, opacity } = calculateTransform();
 
   // Register with parent
   useEffect(() => {
@@ -166,12 +184,28 @@ export default function TableItem({
         alignItems: "center",
         borderRadius: 16,
         transform: [{ scale }, { translateX }, { translateY }],
-        opacity: visible ? 1 : 0,
+        opacity: visible ? opacity : 0,
         pointerEvents: visible ? "auto" : "none",
       }}
     >
-      <ItemContainer type={type} disabled={disabled} />
-      <Text>{id.toString()}</Text>
+      <View>
+        <ItemContainer
+          type={type}
+          disabled={disabled}
+          isComplete={isComplete}
+        />
+        <View
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <DynamicIcon category={category} isComplete={isComplete} />
+        </View>
+      </View>
     </View>
   );
 }

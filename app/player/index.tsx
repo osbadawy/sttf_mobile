@@ -1,4 +1,5 @@
 import TableBg from "@/components/icons/playerIndexPage/TableBg";
+import Nav from "@/components/Nav";
 import TableItem from "@/components/playerIndexPage/TableItem";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -42,20 +43,90 @@ export default function PlayerIndexPage() {
 
   // Labels for items (for demonstration)
   const items = [
-    { id: 1, type: "meal", label: "Meal 1" },
-    { id: 2, type: "workout", label: "Workout 1" },
-    { id: 3, type: "meal", label: "Meal 2" },
-    { id: 4, type: "workout", label: "Workout 2" },
-    { id: 5, type: "meal", label: "Meal 3" },
-    { id: 6, type: "workout", label: "Workout 3" },
-    { id: 7, type: "workout", label: "Workout 4" },
-    { id: 8, type: "workout", label: "Workout 5" },
-    { id: 9, type: "workout", label: "Workout 6" },
-    { id: 10, type: "workout", label: "Workout 7" },
-    { id: 11, type: "meal", label: "Meal 4" },
-    { id: 12, type: "meal", label: "Meal 5" },
-    { id: 13, type: "meal", label: "Meal 6" },
-    { id: 14, type: "meal", label: "Meal 7" },
+    {
+      id: 1,
+      type: "meal",
+      label: "Meal 1",
+      isComplete: false,
+      category: "breakfast",
+    },
+    {
+      id: 2,
+      type: "meal",
+      label: "Meal 2",
+      isComplete: false,
+      category: "lunch",
+    },
+    {
+      id: 3,
+      type: "meal",
+      label: "Meal 3",
+      isComplete: false,
+      category: "dinner",
+    },
+    {
+      id: 4,
+      type: "meal",
+      label: "Meal 4",
+      isComplete: false,
+      category: "snack",
+    },
+    {
+      id: 5,
+      type: "assessment",
+      label: "Assessment 1",
+      isComplete: false,
+      category: "assessment",
+    },
+    {
+      id: 6,
+      type: "workout",
+      label: "Workout 1",
+      isComplete: false,
+      category: "technical",
+    },
+    {
+      id: 7,
+      type: "workout",
+      label: "Workout 2",
+      isComplete: false,
+      category: "strength",
+    },
+    {
+      id: 8,
+      type: "workout",
+      label: "Workout 3",
+      isComplete: false,
+      category: "recovery",
+    },
+    {
+      id: 9,
+      type: "workout",
+      label: "Workout 4",
+      isComplete: false,
+      category: "workout",
+    },
+    {
+      id: 10,
+      type: "meal",
+      label: "Workout 5",
+      isComplete: true,
+      category: "workout",
+    },
+    {
+      id: 11,
+      type: "workout",
+      label: "Workout 6",
+      isComplete: true,
+      category: "workout",
+    },
+    {
+      id: 12,
+      type: "workout",
+      label: "Workout 7",
+      isComplete: true,
+      category: "workout",
+    },
   ];
 
   // Store item position when measured (only if it changed)
@@ -75,7 +146,7 @@ export default function PlayerIndexPage() {
       const itemY = itemPositions[id];
       if (itemY !== undefined) {
         // Position the item 100 pixels above the bottom of the viewport
-        const targetOffset = Math.max(0, itemY - tableHeight + 100);
+        const targetOffset = Math.max(0, itemY - tableHeight + 200);
 
         if (!animated) {
           setScrollOffset(targetOffset);
@@ -244,6 +315,8 @@ export default function PlayerIndexPage() {
                 refCallback={(fn: () => void) => registerMeasure(idx, fn)}
                 parentHeight={tableHeight}
                 parentWidth={tableWidth}
+                isComplete={item.isComplete}
+                category={item.category}
                 onPositionMeasured={(y: number) =>
                   handleItemPositionMeasured(item.id, y)
                 }
@@ -251,6 +324,7 @@ export default function PlayerIndexPage() {
             ))}
           </View>
         </ScrollView>
+        <Nav />
       </View>
     </LinearGradient>
   );

@@ -11,11 +11,13 @@ interface ItemContainerProps {
   svgProps?: SvgProps;
   type: TableItemType;
   disabled?: boolean;
+  isComplete?: boolean;
 }
 export default function ItemContainer({
   svgProps,
   type,
   disabled = false,
+  isComplete = false,
 }: ItemContainerProps) {
   const colors = {
     workout: {
@@ -28,7 +30,7 @@ export default function ItemContainer({
       color2: "#F9A87B",
       shadowColor: "#893A0D",
     },
-    daily: {
+    assessment: {
       color1: "#FABB00",
       color2: "#FFD659",
       shadowColor: "#654C00",
@@ -47,7 +49,13 @@ export default function ItemContainer({
     : colors[type].shadowColor;
 
   return (
-    <Svg width={100} height={79} fill="none" {...svgProps}>
+    <Svg
+      width={100}
+      height={79}
+      fill="none"
+      {...svgProps}
+      style={{ opacity: isComplete ? 0.5 : 1 }}
+    >
       <Path
         fill={shadowColor}
         d="M99.885 44C98.72 63.297 77.551 79 50 79 22.45 79 .115 63.33.115 44-1.881 10.944 22.449 9 50 9c27.55 0 51.881 1.944 49.885 35Z"
