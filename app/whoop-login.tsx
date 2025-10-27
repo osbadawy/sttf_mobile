@@ -32,14 +32,21 @@ export default function WhoopLoginPage() {
         if (token) {
           try {
             const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`;
+
             const response = await fetch(url, {
               method: "GET",
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
-            if (response.status !== 200)
-              throw new Error(`${response.status} ${response.statusText}`);
+
+            if (response.status !== 200) {
+              const errorText = await response.text();
+              console.error("❌ Error response body:", errorText);
+              throw new Error(
+                `${response.status} ${response.statusText}: ${errorText}`,
+              );
+            }
             const data = await response.json();
 
             setUserName(data.display_name || data.access);
@@ -58,7 +65,14 @@ export default function WhoopLoginPage() {
               setWhoopUserExists(false);
             }
           } catch (error) {
-            console.error("Error getting whoop user:", error);
+            console.error("❌ Error getting whoop user:", error);
+            console.error("🔍 Error details:", {
+              name: error instanceof Error ? error.name : "Unknown",
+              message: error instanceof Error ? error.message : String(error),
+              stack: error instanceof Error ? error.stack : undefined,
+              url: `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`,
+              backendUrl: Constants.expoConfig?.extra?.BACKEND_URL,
+            });
           }
         }
       }

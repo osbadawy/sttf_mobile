@@ -33,11 +33,11 @@ interface UseMultiPlayerActivitiesReturn {
   refetchSelectedPlayer: () => Promise<void>;
 }
 
-// Cache to store fetched data by firebase_id and date range (expires after 10 minutes)
+// Cache to store fetched data by firebase_id and date range (expires after 1 minutes)
 const dataCache = new ExpiringCache<{
   data: Record<number, any[]>;
   dataRange: DataRange;
-}>(10);
+}>(1);
 
 export function useMultiPlayerActivities({
   primaryFirebaseId,

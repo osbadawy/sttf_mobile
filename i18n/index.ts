@@ -17,7 +17,8 @@ import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
 import arHeart from "../locales/ar/components/heart/index.json";
 import arNutritionList from "../locales/ar/components/nutrition/nutritionList.json";
-import arPlanWorkout from "../locales/ar/components/plan/workout/index.json";
+import arPlanMeal from "../locales/ar/components/plan/meal.json";
+import arPlanWorkout from "../locales/ar/components/plan/workout.json";
 import arSelfAssessmentReadiness from "../locales/ar/components/self-assessment/Readiness.json";
 import arSelfAssessmentTiredness from "../locales/ar/components/self-assessment/Tiredness.json";
 import arWellbeingSleep from "../locales/ar/components/wellbeing/sleep.json";
@@ -41,7 +42,8 @@ import enSleepSection from "../locales/en/components/dashboard/SleepSection.json
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
 import enHeart from "../locales/en/components/heart/index.json";
 import enNutritionList from "../locales/en/components/nutrition/nutritionList.json";
-import enPlanWorkout from "../locales/en/components/plan/workout/index.json";
+import enPlanMeal from "../locales/en/components/plan/meal.json";
+import enPlanWorkout from "../locales/en/components/plan/workout.json";
 import enDashboardSelfAssessmentReadiness from "../locales/en/components/self-assessment/Readiness.json";
 import enDashboardSelfAssessmentTiredness from "../locales/en/components/self-assessment/Tiredness.json";
 import enWellbeingSleep from "../locales/en/components/wellbeing/sleep.json";
@@ -63,6 +65,7 @@ export const resources = {
     components: {
       plan: {
         workout: enPlanWorkout,
+        meal: enPlanMeal,
       },
       selfAssessment: {
         readiness: enDashboardSelfAssessmentReadiness,
@@ -104,6 +107,7 @@ export const resources = {
     components: {
       plan: {
         workout: arPlanWorkout,
+        meal: arPlanMeal,
       },
       selfAssessment: {
         readiness: arSelfAssessmentReadiness,

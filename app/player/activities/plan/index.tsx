@@ -9,7 +9,7 @@ import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 export default function PlayerPlannedActivitiesPage() {
   const { t } = useLocalization("components.activities.plan");
@@ -20,12 +20,23 @@ export default function PlayerPlannedActivitiesPage() {
   const dateState = useState(new Date((dateParam as string) || new Date()));
   const [date, setDate] = dateState;
 
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  const isToday = date.toDateString() === today.toDateString();
+
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
+  const isCoachViewing = Object.keys(playerData).length > 0;
+
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
 
   const { activities, loading, error } = usePlannedActivities({
     day: date,
+    users_assigned: playerData.firebase_id
+      ? [playerData.firebase_id]
+      : undefined,
   });
 
   const { user } = useAuth();
@@ -48,7 +59,7 @@ export default function PlayerPlannedActivitiesPage() {
         }}
         error={!!error}
       >
-        {loading && <Text>Loading...</Text>}
+        {loading && <ActivityIndicator size="large" color={colors.primary} />}
 
         <View className="flex-row items-center justify-between">
           <View>
@@ -90,31 +101,25 @@ export default function PlayerPlannedActivitiesPage() {
 
               const activityAssignment = activity.players_assigned.find(
                 (assignment) =>
-                  assignment.assigned_to_user.firebase_id === user.uid,
+                  assignment.assigned_to_user.firebase_id ===
+                    playerData.firebase_id || user.uid,
               );
-              const isCompleted = activityAssignment?.performance !== null;
-
-              // Check if activity is in the future
-              const activityDate = new Date(activity.start);
-              const currentDate = new Date();
-              const isFutureActivity = activityDate > currentDate;
+              const isCompleted = Boolean(
+                activityAssignment && activityAssignment.completions.length > 0,
+              );
 
               return (
                 <LinearGradient
                   key={activity.id}
                   colors={
-                    isCompleted
-                      ? ["white", "#D4FFEA"]
-                      : isFutureActivity
-                        ? ["#F5F5F5", "#F5F5F5"]
-                        : ["white", "white"]
+                    isCompleted ? ["white", "#D4FFEA"] : ["white", "white"]
                   }
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   className="rounded-[16px] border-2 border-[#B5BCBF] p-6"
                   style={{
                     overflow: "hidden",
-                    opacity: isFutureActivity ? 0.6 : 1,
+                    opacity: 1,
                   }}
                 >
                   <View
@@ -129,7 +134,7 @@ export default function PlayerPlannedActivitiesPage() {
                         {activityName} · {time}
                       </Text>
                     </View>
-                    {!isFutureActivity && (
+                    {isToday && !isCoachViewing && !isCompleted && (
                       <TouchableOpacity
                         onPress={() => {
                           router.push({

@@ -10,6 +10,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useWhoopData } from "@/hooks/useWhoopData";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+import { ActivityIndicator } from "react-native";
 
 export default function Dashboard() {
   const { userName, profilePicture, access } = useUserProfile();
@@ -36,8 +37,9 @@ export default function Dashboard() {
       }}
       error={Boolean(error)}
     >
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
       <WellbeingSection
-        performance={metrics.basic.performance || 0}
+        performance={metrics.basic.performance}
         strain={metrics.basic.strain}
         stress={metrics.basic.stress}
         animationDuration={1000}

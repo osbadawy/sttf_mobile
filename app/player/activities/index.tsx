@@ -20,11 +20,7 @@ import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-interface ActivitiesPageProps {
-  user_id?: string;
-}
-
-export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
+export default function ActivitiesPage() {
   const { user } = useAuth();
   const { t, isRTL, currentLanguage } = useLocalization("activities");
   const { t: tActivityTypes } = useLocalization(
@@ -35,13 +31,13 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
   const playerData = JSON.parse((player as string) || "{}");
   const isCoachViewing = Object.keys(playerData).length > 0;
 
-  const { userName, profilePicture } = useUserProfile();
+  const { userName, profilePicture, access } = useUserProfile();
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
   const { data, dataRange, fetchAdditionalData, error } = usePlayerActivities({
-    user_id,
+    user_id: playerData.firebase_id || user?.uid || undefined,
     initialDaysBack: 14,
   });
 
@@ -99,14 +95,15 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
         fetchAdditionalData(newStartDate, selectedDate);
       }
     }
-  }, [date, dataRange, user, user_id]);
+  }, [date, dataRange, user]);
 
   return (
     <>
       <ParallaxScrollView
         headerProps={{
-          name: userName || "User",
-          profilePicture: profilePicture,
+          name: (playerData.display_name as string) || userName || access,
+          profilePicture:
+            (playerData.profile_picture as string) || profilePicture,
           color: HeaderColor.BG,
           showDateSelector: true,
           useDateState: useDateState,
@@ -148,6 +145,7 @@ export default function ActivitiesPage({ user_id }: ActivitiesPageProps) {
                 pathname: "/player/activities/plan" as RelativePathString,
                 params: {
                   date: date.toISOString(),
+                  player: JSON.stringify(playerData),
                 },
               })
             }

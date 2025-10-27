@@ -4,6 +4,7 @@ import FatIcon from "@/components/icons/nutrition/FatIcon";
 import GrainIcon from "@/components/icons/nutrition/GrainIcon";
 import ProteinIcon from "@/components/icons/nutrition/ProteinIcon";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { Picker } from "@react-native-picker/picker";
 import { Text, TextInput, View } from "react-native";
 
 export type NutritionData = {
@@ -11,6 +12,8 @@ export type NutritionData = {
   protein?: number;
   fat?: number;
   calories?: number;
+  amount?: number;
+  amount_unit?: string;
 };
 
 type Props = {
@@ -18,7 +21,7 @@ type Props = {
   onChange: (next: NutritionData) => void;
 };
 
-function MetricInput({
+export function MetricInput({
   placeholder,
   unit,
   value,
@@ -26,7 +29,7 @@ function MetricInput({
   LeadingIcon,
   color,
 }: {
-  placeholder: string;
+  placeholder?: string;
   unit: string;
   value?: number;
   onChange: (v?: number) => void;
@@ -36,21 +39,29 @@ function MetricInput({
   const { t } = useLocalization("components.nutrition.nutritionList");
 
   return (
-    <View className="flex-row items-center flex-1 bg-white rounded-xl border border-[#E8E8E8] px-3 py-3 mr-3 mb-3">
-      <LeadingIcon />
-      <TextInput
-        className="flex-1 text-[14px] ml-2 font-semibold"
-        keyboardType="numeric"
-        placeholder={t(placeholder)} // ✅ Localized placeholder
-        placeholderTextColor={color + "80"}
-        style={{ color }}
-        value={typeof value === "number" ? String(value) : ""}
-        onChangeText={(t) => {
-          const n = t.trim() === "" ? undefined : Number(t);
-          onChange(Number.isFinite(n) ? n : undefined);
-        }}
-      />
-      <Text style={{ color }} className="ml-1">
+    <View className="flex-row items-center flex-1 bg-white rounded-xl border border-[#E8E8E8] px-3 items-center justify-between">
+      <View className="flex-row items-center">
+        <View
+          className="items-center justify-center"
+          style={{ width: 28, height: 32 }}
+        >
+          <LeadingIcon />
+        </View>
+        <TextInput
+          className="text-base effra-regular"
+          keyboardType="numeric"
+          placeholder={placeholder ? t(placeholder) : undefined} // ✅ Localized placeholder
+          placeholderTextColor={color + "80"}
+          style={{ color }}
+          value={typeof value === "number" ? String(value) : ""}
+          onChangeText={(t) => {
+            const n = t.trim() === "" ? undefined : Number(t);
+            onChange(Number.isFinite(n) ? n : undefined);
+          }}
+        />
+      </View>
+
+      <Text style={{ color }} className="effra-regular text-base">
         {unit}
       </Text>
     </View>
@@ -61,11 +72,55 @@ export default function NutritionDataInput({ value, onChange }: Props) {
   const { t } = useLocalization("components.nutrition.nutritionList");
   const safe = value ?? {};
 
+  const amountUnits = [
+    "Na", // none
+    "g", // grams
+    "mg", // milligrams
+    "ml", // milliliters
+    "l", // liters
+    "oz", // ounces
+    "lbs", // pounds
+  ];
+
   return (
     <View className="flex-1 gap-4 overflow-hidden">
-      <View className="flex-row">
+      {/* Amount */}
+      <View className="flex-row gap-4">
+        <View
+          className="bg-white rounded-xl border border-[#E8E8E8] px-4"
+          style={{ flex: 1 }}
+        >
+          <TextInput
+            className="text-base effra-regular"
+            placeholder={t("amount")}
+            value={safe.amount ? Math.round(safe.amount).toString() : ""}
+            onChangeText={(text) =>
+              onChange({ ...safe, amount: text ? Number(text) : undefined })
+            }
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View
+          className="bg-white rounded-xl border border-[#E8E8E8] px-2"
+          style={{ width: 120, height: 45 }}
+        >
+          <Picker
+            selectedValue={safe.amount_unit}
+            onValueChange={(v) => onChange({ ...safe, amount_unit: v })}
+            mode="dropdown"
+          >
+            {amountUnits.map((unit) => (
+              <Picker.Item key={unit} label={unit} value={unit} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+
+      {/* Nutrition Fields */}
+      <View className="flex-row gap-4">
         <MetricInput
-          placeholder="carbs" // ✅ match translation key
+          placeholder="carbs"
           unit="g"
           value={safe.carbs}
           onChange={(v) => onChange({ ...safe, carbs: v })}
@@ -82,7 +137,7 @@ export default function NutritionDataInput({ value, onChange }: Props) {
         />
       </View>
 
-      <View className="flex-row">
+      <View className="flex-row gap-4">
         <MetricInput
           placeholder="fat"
           unit="g"

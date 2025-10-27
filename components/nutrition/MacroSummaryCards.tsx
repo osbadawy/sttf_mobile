@@ -48,12 +48,12 @@ function MacroCard({
 
       {/* Total */}
       <Text className="text-3xl font-bold text-neutral-900 leading-tight text-center">
-        {total}
+        {goal}
       </Text>
 
       {/* Goal */}
       <Text className="text-[12px] text-neutral-400 mt-1 text-center">
-        / {goal} g
+        / {total} g
       </Text>
     </View>
   );

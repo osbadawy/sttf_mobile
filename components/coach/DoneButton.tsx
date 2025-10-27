@@ -5,7 +5,7 @@ export default function ManageDoneButton({
 }: {
   setManaging: (managing: boolean) => void;
 }) {
-  const { t } = useLocalization("components.nutrition.nutritionList");
+  const { t } = useLocalization("components.coach.coachDashboard");
   return (
     <TouchableOpacity
       activeOpacity={0.8}

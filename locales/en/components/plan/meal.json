@@ -1,0 +1,36 @@
+{
+  "title": "Create Workout",
+  "players": "Players",
+  "addMeal": "Add Meal",
+
+  "mealSelectionTitle": "Choose your option",
+  "makeYourOwn": "Make your own",
+  "custom": "Custom",
+  "selectFromList": "Select from list",
+
+  "edit": "Edit",
+  "selectTime": "Select time",
+  "nameOfMeal": "Name of Meal",
+  "details": "Details of Meal",
+  "add": "Add",
+  "save": "Save",
+  "recurring": "Make it recurring",
+  "everyDay": "Every Day",
+
+  "selected": "Selected",
+  "notSelected": "Not Selected",
+
+  "deleteMessage": "Are you sure you want to delete this Meal?",
+  "delete": "Delete",
+  "back": "Back",
+  "filter": "Filter",
+
+  "grams": "Grams",
+  "amount": "Amount",
+  "name": "Name",
+
+  "breakfast": "Breakfast",
+  "lunch": "Lunch",
+  "dinner": "Dinner",
+  "snack": "Snack"
+}

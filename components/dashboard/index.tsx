@@ -1,5 +1,3 @@
-import HeartSection from "./HeartSection";
-import SleepSection from "./SleepSection";
-import WellbeingSection from "./WellbeingSection";
-
-export { HeartSection, SleepSection, WellbeingSection };
+export { default as HeartSection } from "./HeartSection";
+export { default as SleepSection } from "./SleepSection";
+export { default as WellbeingSection } from "./WellbeingSection";

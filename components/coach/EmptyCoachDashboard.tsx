@@ -2,7 +2,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { Image, Text, View } from "react-native";
 
 export default function EmptyCoachDashboard() {
-  const { t } = useLocalization("components.coach.dashboard");
+  const { t } = useLocalization("components.coach.coachDashboard");
   return (
     <View className="flex-1 justify-center items-center px-6">
       <Image

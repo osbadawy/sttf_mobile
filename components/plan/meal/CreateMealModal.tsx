@@ -1,47 +1,23 @@
 import Modal from "@/components/Modal";
-import PlayersSelection from "@/components/plan/PlayersSelection";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Player from "@/schemas/Player";
 import { User } from "firebase/auth";
 import { useState } from "react";
 import { ScrollView } from "react-native";
-import ActivitySelection from "./ActivitySelection";
+import PlayersSelection from "../PlayersSelection";
 import CategorySelection from "./CategorySelection";
-import CreateWorkoutMain from "./CreateWorkoutMain";
+import CreateMealMain from "./CreateMealMain";
 
-// Function to determine category based on activity type
-function getCategoryFromActivityType(
-  activityType: string,
-): "technical" | "strength" | "recovery" {
-  const technicalActivities = [
-    "warm-up",
-    "serve",
-    "recieve",
-    "stroke-technique",
-    "footwork",
-    "pattern-play",
-  ];
-
-  const recoveryActivities = ["yoga"];
-
-  if (technicalActivities.includes(activityType)) {
-    return "technical";
-  } else if (recoveryActivities.includes(activityType)) {
-    return "recovery";
-  } else {
-    return "strength";
-  }
-}
-
-interface CreateWorkoutModalProps {
+interface CreateMealModalProps {
   onClose: () => void;
   allPlayers: Player[] | undefined;
   originalSelectedPlayers: string[];
   user: User | null;
-  onActivityCreated?: () => void;
+  onMealCreated?: () => void;
   date: Date;
-  editingActivity?: any; // Activity being edited
-  onDeleteActivity?: (activity: any) => void;
+  editingMeal?: GetMealsResponse | null; // Meal being edited
+  onDeleteMeal?: (meal: GetMealsResponse) => void;
   clearCacheForRecurringDays: (
     startDate: Date,
     endDate: Date,
@@ -49,37 +25,32 @@ interface CreateWorkoutModalProps {
     users?: string[],
   ) => void;
 }
-export default function CreateWorkoutModal({
+
+export default function CreateMealModal({
   date,
   onClose,
   allPlayers,
   originalSelectedPlayers = [],
   user,
-  onActivityCreated,
-  editingActivity,
-  onDeleteActivity,
+  onMealCreated,
+  editingMeal,
+  onDeleteMeal,
   clearCacheForRecurringDays,
-}: CreateWorkoutModalProps) {
-  const { t, isRTL } = useLocalization("components.plan.workout");
-  const { t: tActivityTypes } = useLocalization(
-    "components.activities.activityTypes",
-  );
+}: CreateMealModalProps) {
+  const { t, isRTL } = useLocalization("components.plan.meal");
 
   const [category, setCategory] = useState<
-    "technical" | "strength" | "recovery" | null
+    "breakfast" | "lunch" | "dinner" | "snack" | null
   >(
-    editingActivity
-      ? getCategoryFromActivityType(editingActivity.activity_type)
+    editingMeal
+      ? (editingMeal.category as "breakfast" | "lunch" | "dinner" | "snack")
       : null,
-  );
-  const [selectedActivity, setSelectedActivity] = useState<string | null>(
-    editingActivity ? editingActivity.activity_type : null,
   );
   const [showPlayersSelection, setShowPlayersSelection] =
     useState<boolean>(false);
   const [players, setPlayers] = useState<string[]>(
-    editingActivity
-      ? editingActivity.players_assigned
+    editingMeal
+      ? editingMeal.players_assigned
           .filter((assignment: any) => !assignment.removed_at)
           .map((assignment: any) => assignment.assigned_to_user.firebase_id)
       : originalSelectedPlayers,
@@ -100,33 +71,21 @@ export default function CreateWorkoutModal({
     modalContent = (
       <CategorySelection setCategory={setCategory} t={t} isRTL={isRTL} />
     );
-  } else if (selectedActivity == null) {
-    modalContent = (
-      <ActivitySelection
-        category={category}
-        setSelectedActivity={setSelectedActivity}
-        t={t}
-        isRTL={isRTL}
-        tActivityTypes={tActivityTypes}
-      />
-    );
   } else {
     modalContent = (
-      <CreateWorkoutMain
+      <CreateMealMain
         date={date}
         players={players}
-        selectedActivity={selectedActivity}
-        setSelectedActivity={setSelectedActivity}
         t={t}
-        tActivityTypes={tActivityTypes}
         category={category}
+        setCategory={setCategory}
         onClose={onClose}
         user={user}
-        onActivityCreated={onActivityCreated}
+        onMealCreated={onMealCreated}
         onOpenPlayersSelection={() => setShowPlayersSelection(true)}
-        editingActivity={editingActivity}
+        editingMeal={editingMeal}
         originalPlayers={originalSelectedPlayers}
-        onDeleteActivity={onDeleteActivity}
+        onDeleteMeal={onDeleteMeal}
         clearCacheForRecurringDays={clearCacheForRecurringDays}
       />
     );
@@ -138,7 +97,6 @@ export default function CreateWorkoutModal({
       outterColor="rgba(0, 0, 0, 0.2)"
       onClose={() => {
         setCategory(null);
-        setSelectedActivity(null);
         onClose();
       }}
       maxHeight={"80%"}

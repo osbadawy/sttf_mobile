@@ -6,7 +6,7 @@ interface ReadinessBarProps {
 }
 
 export default function ReadinessBar({ value }: ReadinessBarProps) {
-  const { t } = useLocalization("components.nutrition.nutritionList");
+  const { t } = useLocalization("components.coach.coachDashboard");
   const clamped = Math.max(0, Math.min(100, value));
 
   // Choose bar color based on readiness level

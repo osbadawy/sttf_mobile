@@ -3,13 +3,13 @@ import CustomButton, { ButtonColor } from "@/components/Button";
 import DateSelector from "@/components/DateSelector";
 import {
   Arrow,
-  ClockIcon,
   ProfilePictureDefaultIcon,
   TrashIcon,
 } from "@/components/icons";
-import DynamicActivityIcon from "@/components/icons/activities";
+import NutritionDataInput from "@/components/nutrition/NutritionDataInput";
+import DynamicMealIcon from "@/components/plan/meal/DynamicMealIcon";
 import CustomSwitch from "@/components/Switch";
-import TimePicker from "@/components/TimePicker";
+import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Constants from "expo-constants";
 import { User } from "firebase/auth";
 import { useState } from "react";
@@ -23,21 +23,21 @@ import {
   View,
 } from "react-native";
 
-interface CreateWorkoutMainProps {
+interface CreateMealMainProps {
   players: string[];
-  selectedActivity: string;
-  setSelectedActivity: (activity: string | null) => void;
   t: (key: string) => string;
-  tActivityTypes: (key: string) => string;
-  category: "technical" | "strength" | "recovery";
+  category: "breakfast" | "lunch" | "dinner" | "snack";
+  setCategory: (
+    category: "breakfast" | "lunch" | "dinner" | "snack" | null,
+  ) => void;
   onClose: () => void;
   user: User | null;
-  onActivityCreated?: () => void;
+  onMealCreated?: () => void;
   date: Date;
   onOpenPlayersSelection: () => void;
-  editingActivity?: any; // Activity being edited
+  editingMeal?: GetMealsResponse | null; // Meal being edited
   originalPlayers?: string[]; // Original players for deletion
-  onDeleteActivity?: (activity: any) => void;
+  onDeleteMeal?: (meal: GetMealsResponse) => void;
   clearCacheForRecurringDays: (
     startDate: Date,
     endDate: Date,
@@ -46,55 +46,51 @@ interface CreateWorkoutMainProps {
   ) => void;
 }
 
-export default function CreateWorkoutMain({
+export default function CreateMealMain({
   date,
   players,
-  selectedActivity,
-  setSelectedActivity,
   t,
-  tActivityTypes,
   category,
+  setCategory,
   onClose,
   user,
-  onActivityCreated,
+  onMealCreated,
   onOpenPlayersSelection,
-  editingActivity,
+  editingMeal,
   originalPlayers = [],
-  onDeleteActivity,
+  onDeleteMeal,
   clearCacheForRecurringDays,
-}: CreateWorkoutMainProps) {
-  const [time, setTime] = useState<Date | null>(
-    editingActivity
-      ? (() => {
-          const activityTime = new Date(editingActivity.start);
-          // Extract time components and create a new date in local timezone
-          const hours = activityTime.getHours();
-          const minutes = activityTime.getMinutes();
-          const localTime = new Date();
-          localTime.setHours(hours, minutes, 0, 0);
-          return localTime;
-        })()
-      : null,
+}: CreateMealMainProps) {
+  const [mealName, setMealName] = useState(editingMeal ? editingMeal.name : "");
+  const [nutritionData, setNutritionData] = useState({
+    calories: editingMeal ? editingMeal.kilojoule / 4.184 : undefined, // Convert kJ to kcal
+    carbs: editingMeal ? editingMeal.carbohydrates : undefined,
+    protein: editingMeal ? editingMeal.protein : undefined,
+    fat: editingMeal ? editingMeal.fat : undefined,
+    amount: editingMeal ? editingMeal.amount : undefined,
+    amount_unit: editingMeal ? editingMeal.amount_unit : "Na",
+  });
+  const [isPlanned, setIsPlanned] = useState(
+    editingMeal ? editingMeal.is_planned : true,
   );
-  const [activityName, setActivityName] = useState<string>(
-    editingActivity?.is_custom ? editingActivity.activity_type : "",
-  );
-  const [activityDetails, setActivityDetails] = useState<string>(
-    editingActivity?.notes || "",
-  );
-  const [disabled, setDisabled] = useState<boolean>(false);
-  const [isRecurring, setIsRecurring] = useState<boolean>(
-    editingActivity?.recurrence_patterns?.length > 0 || false,
+  const [isRecurring, setIsRecurring] = useState(
+    editingMeal ? editingMeal.recurrence_patterns.length > 0 : false,
   );
   const [recurranceEndDate, setRecurranceEndDate] = useState<Date | null>(
-    editingActivity?.recurrence_patterns?.[0]?.end || null,
+    editingMeal && editingMeal.recurrence_patterns.length > 0
+      ? new Date(editingMeal.recurrence_patterns[0].end)
+      : null,
   );
-
-  const activity =
-    selectedActivity === "custom" ? activityName : selectedActivity;
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const isButtonDisabled =
-    disabled || time === null || activityDetails === "" || activity === "";
+    disabled ||
+    mealName === "" ||
+    nutritionData.amount === undefined ||
+    nutritionData.calories === undefined ||
+    nutritionData.protein === undefined ||
+    nutritionData.carbs === undefined ||
+    nutritionData.fat === undefined;
 
   const recurranceDaysOptions = [
     { label: "Mo", value: "mon" },
@@ -105,18 +101,145 @@ export default function CreateWorkoutMain({
     { label: "Sa", value: "sat" },
     { label: "Su", value: "sun" },
   ];
+  const [recurranceDays, setRecurranceDays] = useState<string[]>(
+    editingMeal && editingMeal.recurrence_patterns.length > 0
+      ? (() => {
+          const pattern = editingMeal.recurrence_patterns[0];
+          const days: string[] = [];
+          if (pattern.sun) days.push("sun");
+          if (pattern.mon) days.push("mon");
+          if (pattern.tue) days.push("tue");
+          if (pattern.wed) days.push("wed");
+          if (pattern.thu) days.push("thu");
+          if (pattern.fri) days.push("fri");
+          if (pattern.sat) days.push("sat");
+          return days;
+        })()
+      : [],
+  );
 
-  const [recurranceDays, setRecurranceDays] = useState<string[]>([]);
+  const handleSave = async () => {
+    if (!user) {
+      Alert.alert("Error", "User not found");
+      return;
+    }
+
+    try {
+      setDisabled(true);
+      const isEditing = !!editingMeal;
+
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal`;
+
+      // Handle meal removals for editing
+      if (isEditing) {
+        // Find players that were removed
+        const removedPlayers = originalPlayers.filter(
+          (playerId) => !players.includes(playerId),
+        );
+
+        // Make a single DELETE request for all removed players
+        if (removedPlayers.length > 0) {
+          await deleteMeal(editingMeal.id, removedPlayers, user);
+        }
+      }
+
+      const start = new Date(date);
+      if (category === "breakfast") {
+        start.setHours(6, 0, 0, 0);
+      } else if (category === "lunch") {
+        start.setHours(11, 0, 0, 0);
+      } else if (category === "dinner") {
+        start.setHours(7, 0, 0, 0);
+      } else if (category === "snack") {
+        start.setHours(0, 0, 0, 0);
+      }
+
+      const body: any = {
+        users_assigned: players,
+        start: start,
+        category: category,
+        name: mealName,
+        kilojoule: nutritionData.calories! * 4.184, // Convert kcal to kJ
+        protein: nutritionData.protein!,
+        carbohydrates: nutritionData.carbs!,
+        fat: nutritionData.fat!,
+        is_planned: isPlanned,
+        amount: nutritionData.amount,
+        amount_unit: nutritionData.amount_unit,
+      };
+
+      if (isEditing) {
+        body.id = editingMeal.id;
+        body.day = date;
+      }
+
+      if (isRecurring && recurranceDays.length > 0) {
+        body.recurrance = {
+          start: start,
+          recurring_days: recurranceDays,
+        };
+
+        if (recurranceEndDate) {
+          body.recurrance.end = recurranceEndDate;
+        }
+      }
+
+      const token = await user.getIdToken();
+
+      const response = await fetch(url, {
+        method: editingMeal ? "PATCH" : "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData,
+        });
+        throw new Error(
+          `Failed to ${editingMeal ? "update" : "create"} meal: ${errorData.message}`,
+        );
+      }
+
+      // Clear cache for recurring dates if this is a recurring meal
+      if (isRecurring && recurranceDays.length > 0) {
+        const startDate = new Date(date);
+        // If no end date specified, clear cache for next 30 days to handle immediate future dates
+        // The cache expires after 1 minute anyway, so this covers the immediate need
+        const endDate =
+          recurranceEndDate ||
+          new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+        clearCacheForRecurringDays(startDate, endDate, recurranceDays, players);
+      }
+
+      Alert.alert(
+        "Success",
+        `Meal ${editingMeal ? "updated" : "created"} successfully`,
+      );
+      onMealCreated?.();
+      onClose();
+    } catch (error) {
+      console.error("Error saving meal", error);
+      Alert.alert(
+        "Error",
+        `Failed to ${editingMeal ? "update" : "create"} meal`,
+      );
+    } finally {
+      setDisabled(false);
+    }
+  };
 
   // Helper function to delete player assignments
-  async function deletePlayerAssignment(
-    activityId: string,
-    playerIds: string[],
-    user: any,
-  ) {
-    const deleteUrl = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
+  async function deleteMeal(mealId: string, playerIds: string[], user: any) {
+    const deleteUrl = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal`;
     const deleteBody = {
-      id: activityId,
+      id: mealId,
       users_assigned: playerIds,
       day: date,
     };
@@ -138,154 +261,31 @@ export default function CreateWorkoutMain({
     }
   }
 
-  async function onPressAdd() {
-    if (user == null) {
-      Alert.alert("Error", "User not found");
-      return;
-    }
-    try {
-      setDisabled(true);
-      // Create a new date with local time
-      const dateWithTime = new Date(date);
-      if (time) {
-        // Use local time from the time picker
-        dateWithTime.setHours(time.getHours(), time.getMinutes(), 0, 0);
-      }
-
-      const isEditing = !!editingActivity;
-      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity`;
-
-      // Handle player removals for editing
-      if (isEditing) {
-        // Find players that were removed
-        const removedPlayers = originalPlayers.filter(
-          (playerId) => !players.includes(playerId),
-        );
-
-        // Make a single DELETE request for all removed players
-        if (removedPlayers.length > 0) {
-          await deletePlayerAssignment(
-            editingActivity.id,
-            removedPlayers,
-            user,
-          );
-        }
-      }
-
-      const body: any = {
-        users_assigned: players,
-        start: dateWithTime,
-        category: category,
-        activity_type: activity,
-        is_custom: selectedActivity === "custom",
-        notes: activityDetails,
-      };
-
-      // Add id for editing
-      if (isEditing) {
-        body.id = editingActivity.id;
-        body.day = date;
-      }
-
-      if (isRecurring && recurranceDays.length > 0) {
-        body.recurrance = {
-          start: dateWithTime,
-          recurring_days: recurranceDays,
-        };
-
-        if (recurranceEndDate) {
-          body.recurrance.end = recurranceEndDate;
-        }
-      }
-
-      const token = await user.getIdToken();
-
-      const response = await fetch(url, {
-        method: isEditing ? "PATCH" : "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("API Error:", {
-          status: response.status,
-          statusText: response.statusText,
-          error: errorData,
-        });
-        throw new Error(
-          `Failed to ${isEditing ? "update" : "create"} activity: ${errorData.message}`,
-        );
-      }
-
-      // Clear cache for recurring dates if this is a recurring activity
-      if (isRecurring && recurranceDays.length > 0) {
-        const startDate = new Date(date);
-        // If no end date specified, clear cache for next 30 days to handle immediate future dates
-        // The cache expires after 1 minute anyway, so this covers the immediate need
-        const endDate =
-          recurranceEndDate ||
-          new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000);
-        clearCacheForRecurringDays(startDate, endDate, recurranceDays, players);
-      }
-
-      onActivityCreated?.(); // Call the callback to refresh the activities list
-      onClose();
-    } catch (error) {
-      console.error(
-        `Error ${editingActivity ? "updating" : "creating"} activity`,
-        error,
-      );
-      Alert.alert(
-        "Error",
-        `Failed to ${editingActivity ? "update" : "create"} activity`,
-      );
-    } finally {
-      setDisabled(false);
-    }
-  }
-
   return (
     <View>
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-gray-200">
         <Text className="font-inter-regular text-base pb-2 pt-[24px]">
-          {t("activitySelectionTitle")}
+          {t("mealSelectionTitle")}
         </Text>
-        {editingActivity && (
-          <TouchableOpacity onPress={() => onDeleteActivity?.(editingActivity)}>
+        {editingMeal && (
+          <TouchableOpacity onPress={() => onDeleteMeal?.(editingMeal!)}>
             <TrashIcon />
           </TouchableOpacity>
         )}
       </View>
 
-      {/* Activity Selection */}
+      {/* Category Selection */}
       <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
         <View className="flex-row items-center" style={{ gap: 12 }}>
-          <DynamicActivityIcon activityType={selectedActivity} />
-          <Text className="effra-medium text-base">
-            {selectedActivity === "custom"
-              ? t("custom")
-              : tActivityTypes(selectedActivity)}
-          </Text>
+          <DynamicMealIcon mealType={category} />
+          <Text className="effra-medium text-base">{t(category)}</Text>
         </View>
-        <TouchableOpacity onPress={() => setSelectedActivity(null)}>
+        <TouchableOpacity onPress={() => setCategory(null)}>
           <Text className="effra-regular underline text-base text-primary">
             {t("edit")}
           </Text>
         </TouchableOpacity>
-      </View>
-
-      {/* Time Selection */}
-      <View className="flex-row items-center justify-between border-b border-gray-200 h-[56px]">
-        <View className="flex-row items-center" style={{ gap: 12 }}>
-          <ClockIcon />
-          <Text className="effra-medium text-base">{t("selectTime")}</Text>
-        </View>
-        <TimePicker value={time} onChange={setTime} />
       </View>
 
       {/* Players Selection */}
@@ -380,40 +380,41 @@ export default function CreateWorkoutMain({
         )}
       </View>
 
-      {/* Custom Activity Name */}
-      {selectedActivity === "custom" && (
-        <TextInput
-          className="effra-regular text-base bg-white rounded-lg px-4 py-3"
-          placeholder={t("nameOfActivity")}
-          value={activityName}
-          onChangeText={setActivityName}
-          style={{
-            boxShadow: "0px 2px 12px 0px rgba(0, 0, 0, 0.08)",
-            marginTop: 32,
-          }}
-        />
-      )}
+      {/* Meal Card */}
+      <View className="bg-[#F8F9F2] rounded-2xl mb-6 py-4" style={{ gap: 8 }}>
+        {/* Meal Name */}
+        <View
+          className="bg-white rounded-xl border border-[#E8E8E8] px-4"
+          style={{ flex: 1 }}
+        >
+          <TextInput
+            className="text-base effra-regular"
+            placeholder={t("name")}
+            value={mealName}
+            onChangeText={setMealName}
+          />
+        </View>
 
-      {/* Activity Details */}
-      <TextInput
-        className="effra-regular text-base bg-white rounded-lg px-4 py-3"
-        placeholder={t("details")}
-        value={activityDetails}
-        onChangeText={setActivityDetails}
-        multiline={true}
-        textAlignVertical="top"
-        style={{
-          boxShadow: "0px 2px 12px 0px rgba(0, 0, 0, 0.08)",
-          height: 212,
-          marginTop: 24,
-          marginBottom: 40,
-        }}
-      />
+        {/* Nutrition Data Input */}
+        <NutritionDataInput
+          value={nutritionData}
+          onChange={(data) =>
+            setNutritionData({
+              carbs: data.carbs,
+              protein: data.protein,
+              fat: data.fat,
+              calories: data.calories,
+              amount: data.amount,
+              amount_unit: data.amount_unit || "Na",
+            })
+          }
+        />
+      </View>
 
       {/* Save Button */}
       <CustomButton
-        title={editingActivity ? t("save") : t("add")}
-        onPress={onPressAdd}
+        title={editingMeal ? t("save") : t("add")}
+        onPress={handleSave}
         color={isButtonDisabled ? ButtonColor.white : ButtonColor.primary}
         disabled={isButtonDisabled}
       />

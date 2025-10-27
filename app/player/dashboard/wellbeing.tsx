@@ -34,6 +34,10 @@ export default function WellbeingPage() {
 
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0)).toISOString();
 
+  const primaryMetricsExist = Object.keys(primaryMetrics).length > 0;
+  const selectedPlayerMetricsExist =
+    Object.keys(selectedPlayerMetrics).length > 0;
+
   return (
     <ParallaxScrollView
       headerProps={{
@@ -76,9 +80,13 @@ export default function WellbeingPage() {
       <StrainSection
         p1Name={playerData.display_name}
         p2Name={selectedPlayer?.display_name}
-        p1StrainToday={Math.round(primaryMetrics[today]?.basic.strain * 21)}
+        p1StrainToday={
+          primaryMetricsExist
+            ? Math.round(primaryMetrics[today]?.basic.strain * 21)
+            : 0
+        }
         p2StrainToday={
-          selectedPlayer
+          selectedPlayer && selectedPlayerMetricsExist
             ? Math.round(selectedPlayerMetrics[today]?.basic.strain * 21)
             : undefined
         }
@@ -96,9 +104,13 @@ export default function WellbeingPage() {
       <StressSection
         p1Name={playerData.display_name}
         p2Name={selectedPlayer?.display_name}
-        p1StressToday={Math.round(primaryMetrics[today]?.basic.stress * 10)}
+        p1StressToday={
+          primaryMetricsExist
+            ? Math.round(primaryMetrics[today]?.basic.stress * 10)
+            : 0
+        }
         p2StressToday={
-          selectedPlayer
+          selectedPlayer && selectedPlayerMetricsExist
             ? Math.round(selectedPlayerMetrics[today]?.basic.stress * 10)
             : undefined
         }
@@ -116,9 +128,13 @@ export default function WellbeingPage() {
       <SleepSection
         p1Name={playerData.display_name}
         p2Name={selectedPlayer?.display_name}
-        p1Score={Number(primaryMetrics[today]?.sleep.score || 0)}
+        p1Score={
+          primaryMetricsExist
+            ? Number(primaryMetrics[today]?.sleep.score || 0)
+            : 0
+        }
         p2Score={
-          selectedPlayer
+          selectedPlayer && selectedPlayerMetricsExist
             ? Number(selectedPlayerMetrics[today]?.sleep.score || 0)
             : undefined
         }

@@ -1,4 +1,6 @@
-import PlayerCard, { Player } from "@/components/coach/PlayerCard";
+import PlayerCard, {
+  CoachDashboardPlayer,
+} from "@/components/coach/PlayerCard";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import React from "react";
 import { Text, View } from "react-native";
@@ -6,9 +8,9 @@ import { Text, View } from "react-native";
 type Props = {
   title: string;
   colorClass: string;
-  players: Player[];
-  comparator: (a: Player, b: Player) => number;
-  onPlayerPress?: (p: Player) => void;
+  players: CoachDashboardPlayer[];
+  comparator: (a: CoachDashboardPlayer, b: CoachDashboardPlayer) => number;
+  onPlayerPress?: (p: CoachDashboardPlayer) => void;
   selectMode?: boolean; // <-- NEW
   selectedIds?: string[]; // <-- NEW
 };
@@ -22,7 +24,7 @@ export default function PlayerSection({
   selectMode = false,
   selectedIds = [],
 }: Props) {
-  const { t } = useLocalization("components.nutrition.nutritionList");
+  const { t } = useLocalization("components.coach.coachDashboard");
   const sorted = React.useMemo(
     () => [...players].sort(comparator),
     [players, comparator],
@@ -37,7 +39,7 @@ export default function PlayerSection({
 
       <View className="flex-row flex-wrap justify-between">
         {sorted.map((p) => {
-          const id = (p as any).firebase_id ?? p.id;
+          const id = p.id!;
           const isSelected = selectMode && selectedIds.includes(id);
           return (
             <PlayerCard

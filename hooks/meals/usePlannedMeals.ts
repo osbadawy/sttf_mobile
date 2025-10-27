@@ -1,16 +1,16 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { PlannedActivity } from "@/schemas/PlannedActivity";
+import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 
-interface UsePlannedActivitiesProps {
+interface UsePlannedMealsProps {
   users_assigned?: string[];
   day: Date;
 }
 
-interface UsePlannedActivitiesReturn {
-  activities: PlannedActivity[];
+interface UsePlannedMealsReturn {
+  meals: GetMealsResponse[];
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
@@ -24,18 +24,18 @@ interface UsePlannedActivitiesReturn {
 }
 
 // Cache to store fetched data by users and date (expires after 1 minutes)
-const dataCache = new ExpiringCache<PlannedActivity[]>(1);
+const dataCache = new ExpiringCache<GetMealsResponse[]>(1);
 
-export function usePlannedActivities({
+export function usePlannedMeals({
   users_assigned,
   day,
-}: UsePlannedActivitiesProps): UsePlannedActivitiesReturn {
+}: UsePlannedMealsProps): UsePlannedMealsReturn {
   const { user } = useAuth();
-  const [activities, setActivities] = useState<PlannedActivity[]>([]);
+  const [meals, setMeals] = useState<GetMealsResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPlannedActivities = useCallback(async () => {
+  const fetchPlannedMeals = useCallback(async () => {
     if (!user) {
       return;
     }
@@ -47,7 +47,7 @@ export function usePlannedActivities({
     const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
     const cachedData = dataCache.get(cacheKey);
     if (cachedData) {
-      setActivities(cachedData);
+      setMeals(cachedData);
       return;
     }
 
@@ -65,7 +65,7 @@ export function usePlannedActivities({
         params.append("users_assigned", userId);
       });
 
-      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/planned-activity?${params}`;
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal?${params}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -83,22 +83,20 @@ export function usePlannedActivities({
       }
 
       const data = await response.json();
-      const activitiesData = Array.isArray(data) ? data : [];
+      const mealsData = Array.isArray(data) ? data : [];
 
       // Cache the data
-      dataCache.set(cacheKey, activitiesData);
-      setActivities(activitiesData);
+      dataCache.set(cacheKey, mealsData);
+      setMeals(mealsData);
     } catch (err) {
       const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Failed to fetch planned activities";
-      console.error("Error fetching planned activities:", err);
+        err instanceof Error ? err.message : "Failed to fetch planned meals";
+      console.error("Error fetching planned meals:", err);
       setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }, [user, day]);
+  }, [user, users_assigned, day]);
 
   const refetch = useCallback(async () => {
     // Clear the specific cache key before refetching
@@ -107,8 +105,8 @@ export function usePlannedActivities({
       const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
       dataCache.delete(cacheKey);
     }
-    await fetchPlannedActivities();
-  }, [fetchPlannedActivities, users_assigned, day, user]);
+    await fetchPlannedMeals();
+  }, [fetchPlannedMeals, users_assigned, day, user]);
 
   const clearCache = useCallback(() => {
     dataCache.clear();
@@ -157,11 +155,11 @@ export function usePlannedActivities({
   );
 
   useEffect(() => {
-    fetchPlannedActivities();
-  }, [fetchPlannedActivities]);
+    fetchPlannedMeals();
+  }, [fetchPlannedMeals]);
 
   return {
-    activities,
+    meals,
     loading,
     error,
     refetch,

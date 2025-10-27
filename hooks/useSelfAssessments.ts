@@ -9,8 +9,8 @@ interface UseSelfAssessmentsProps {
   date?: Date;
 }
 
-// Cache to store fetched data by firebase_id and date (expires after 10 minutes)
-const dataCache = new ExpiringCache<SelfAssessmentData[] | undefined>(10);
+// Cache to store fetched data by firebase_id and date (expires after 1 minutes)
+const dataCache = new ExpiringCache<SelfAssessmentData[] | undefined>(1);
 
 export function useSelfAssessments({
   firebaseId,

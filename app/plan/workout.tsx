@@ -2,10 +2,10 @@ import { FilterIcon, ThinPlusIcon } from "@/components/icons";
 import DynamicActivityIcon from "@/components/icons/activities";
 import Modal from "@/components/Modal";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import PlayersSelection from "@/components/plan/PlayersSelection";
 import CreateWorkoutModal from "@/components/plan/workout/CreateWorkoutModal";
 import DeletionConfirmation from "@/components/plan/workout/DeletionConfirmation";
 import PlannedActivityItem from "@/components/plan/workout/PlannedActivityItem";
-import PlayersSelection from "@/components/plan/workout/PlayersSelection";
 import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
@@ -13,6 +13,7 @@ import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
 import { PlannedActivity } from "@/schemas/PlannedActivity";
 import Constants from "expo-constants";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -23,11 +24,10 @@ export default function WorkoutPlan() {
   );
   const { players } = useAllPlayers();
 
-  // TODO: Get from params later
-  const originalSelectedPlayers = [
-    "j3qvXziHUwbzVkKpR0OcG35axWV2",
-    "oCK9lOmTSeZsx28W5E9QZJhe7Yy1",
-  ];
+  let localSearchParams = useLocalSearchParams();
+  const originalSelectedPlayers = localSearchParams.players
+    ? JSON.parse(localSearchParams.players as string)
+    : [];
 
   const [selectedPlayers, setSelectedPlayers] = useState(
     originalSelectedPlayers,
@@ -53,11 +53,17 @@ export default function WorkoutPlan() {
   const { user } = useAuth();
 
   // Fetch planned activities for the committed players and date
-  const { activities, loading, error, refetch, clearCache } =
-    usePlannedActivities({
-      users_assigned: committedPlayers,
-      day: date,
-    });
+  const {
+    activities,
+    loading,
+    error,
+    refetch,
+    clearCache,
+    clearCacheForRecurringDays,
+  } = usePlannedActivities({
+    users_assigned: committedPlayers,
+    day: date,
+  });
 
   // Handle activity creation success
   const handleActivityCreated = () => {
@@ -113,8 +119,6 @@ export default function WorkoutPlan() {
   const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
-  console.log({ activityFilters: categoryFilters });
-
   return (
     <>
       <ParallaxScrollView
@@ -122,7 +126,7 @@ export default function WorkoutPlan() {
           title: t("title"),
           showBackButton: true,
           showBGImage: false,
-          showCalendarIcon: false,
+          showCalendarIcon: true,
           showDateSelector: true,
           disableFutureDates: false,
           useDateState: dateState,
@@ -165,27 +169,33 @@ export default function WorkoutPlan() {
                 <FilterIcon />
               </TouchableOpacity>
             </View>
-            {activities.map((activity) => {
-              if (
-                categoryFilters.length > 0 &&
-                !categoryFilters.includes(activity.category)
-              ) {
-                return null;
-              }
+            {activities
+              .sort((a: PlannedActivity, b: PlannedActivity) => {
+                return (
+                  new Date(a.start).getTime() - new Date(b.start).getTime()
+                );
+              })
+              .map((activity: PlannedActivity) => {
+                if (
+                  categoryFilters.length > 0 &&
+                  !categoryFilters.includes(activity.category)
+                ) {
+                  return null;
+                }
 
-              return (
-                <PlannedActivityItem
-                  key={activity.id}
-                  activity={activity}
-                  isSelected={selectedActivityId === activity.id}
-                  onPress={(activity) => {
-                    setSelectedActivityId(activity.id);
-                    setEditingActivity(activity);
-                    setShowCreateWorkoutModal(true);
-                  }}
-                />
-              );
-            })}
+                return (
+                  <PlannedActivityItem
+                    key={activity.id}
+                    activity={activity}
+                    isSelected={selectedActivityId === activity.id}
+                    onPress={(activity) => {
+                      setSelectedActivityId(activity.id);
+                      setEditingActivity(activity);
+                      setShowCreateWorkoutModal(true);
+                    }}
+                  />
+                );
+              })}
           </View>
         )}
 
@@ -224,6 +234,7 @@ export default function WorkoutPlan() {
             setActivityToDelete(activity);
             setShowDeletionConfirmation(true);
           }}
+          clearCacheForRecurringDays={clearCacheForRecurringDays}
         />
       )}
 
@@ -248,6 +259,7 @@ export default function WorkoutPlan() {
                 setCommittedPlayers(selectedPlayers);
                 setShowPlayersSelection(false);
               }}
+              t={t}
             />
           </ScrollView>
         </Modal>

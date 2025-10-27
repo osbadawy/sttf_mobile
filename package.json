@@ -57,7 +57,8 @@
     "react-native-worklets": "^0.5.1",
     "tailwindcss": "^3.4.17",
     "victory-native": "^37.3.6",
-    "world-countries": "^5.1.0"
+    "world-countries": "^5.1.0",
+    "@react-native-picker/picker": "2.11.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
