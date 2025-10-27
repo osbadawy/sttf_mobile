@@ -1,18 +1,18 @@
 import Svg, { Path, SvgProps } from "react-native-svg";
 export default function TableBg(props: SvgProps) {
   return (
-    <Svg width={393} height={569} fill="none" {...props}>
+    <Svg width={1103} height={706} fill="none" {...props}>
       <Path
         fill="#008C46"
         fillRule="evenodd"
-        d="M509 292 345.337 5.046A10 10 0 0 0 336.65 0H57.35a10 10 0 0 0-8.687 5.046L-115 292v414h624V292ZM177 647 197 0l20 647h-40Z"
+        d="M1102.04 706 699.364 5.019A9.999 9.999 0 0 0 690.693 0H411.351c-3.58 0-6.887 1.914-8.671 5.019L0 706h1102.04Zm-571.018 0 20-706 20 706h-40Z"
         clipRule="evenodd"
       />
-      <Path fill="#fff" d="m197 0-20 647h40L197 0Z" />
+      <Path fill="#fff" d="m551.022 0-20 706h40l-20-706Z" />
       <Path
         stroke="#fff"
         strokeWidth={12}
-        d="M57.35 6h133.462l-19.809 640.814-.191 6.186h52.376l-.191-6.186L203.188 6H336.65a4 4 0 0 1 3.475 2.019L503 293.59V700h-612V293.591L53.875 8.019A4 4 0 0 1 57.35 6Zm153.462 635h-27.624L197 194.19 210.812 641Z"
+        d="M411.352 6H544.85l-19.661 694H10.365L407.883 8.008A4 4 0 0 1 411.352 6Zm279.341 0a4 4 0 0 1 3.469 2.008L1091.68 700H576.854L557.195 6h133.498ZM564.85 700h-27.656l13.827-488.104L564.85 700Z"
       />
     </Svg>
   );

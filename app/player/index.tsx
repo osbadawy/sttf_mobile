@@ -1,19 +1,32 @@
 import TableBg from "@/components/icons/playerIndexPage/TableBg";
 import TableItem from "@/components/playerIndexPage/TableItem";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useRef, useState } from "react";
-import { LayoutChangeEvent, ScrollView, Text, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  LayoutChangeEvent,
+  ScrollView,
+  Text,
+  View,
+  useWindowDimensions,
+} from "react-native";
 
 export default function PlayerIndexPage() {
+  const { width: viewportWidth, height: viewportHeight } =
+    useWindowDimensions();
   const [tableHeight, setTableHeight] = useState(0);
   const [tableWidth, setTableWidth] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [contentContainer, setContentContainer] = useState<View | null>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const [itemPositions, setItemPositions] = useState<Record<number, number>>(
+    {},
+  );
 
   // Refs for TableItem measurement functions
   const itemMeasureRefs = useRef<(() => void)[]>([]);
+  const hasScrolledToItem = useRef(false);
+  const animationFrameRef = useRef<number | null>(null);
 
   // Call all measure functions on scroll
   const handleScroll = (event: any) => {
@@ -45,13 +58,109 @@ export default function PlayerIndexPage() {
     { id: 14, type: "meal", label: "Meal 7" },
   ];
 
-  // Auto-scroll to bottom when content is ready
+  // Store item position when measured (only if it changed)
+  const handleItemPositionMeasured = useCallback((id: number, y: number) => {
+    setItemPositions((prev) => {
+      // Only update if the position actually changed
+      if (prev[id] !== y) {
+        return { ...prev, [id]: y };
+      }
+      return prev;
+    });
+  }, []);
+
+  // Animated scroll to a specific item by ID
+  const scrollToItem = useCallback(
+    (id: number, animated: boolean = true) => {
+      const itemY = itemPositions[id];
+      if (itemY !== undefined) {
+        // Position the item 100 pixels above the bottom of the viewport
+        const targetOffset = Math.max(0, itemY - tableHeight + 100);
+
+        if (!animated) {
+          setScrollOffset(targetOffset);
+          console.log(
+            `Scrolling to item ${id} at position ${itemY}, offset: ${targetOffset}`,
+          );
+          return;
+        }
+
+        // Cancel any ongoing animation
+        if (animationFrameRef.current !== null) {
+          cancelAnimationFrame(animationFrameRef.current);
+        }
+
+        // Capture current scroll offset at the time of the call
+        setScrollOffset((currentOffset) => {
+          const startOffset = currentOffset;
+          const distance = targetOffset - startOffset;
+          const duration = 2000; // Animation duration in milliseconds
+          const startTime = Date.now();
+
+          const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Ease-out cubic easing function for smooth deceleration
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+            const newOffset = startOffset + distance * easeProgress;
+            setScrollOffset(newOffset);
+
+            if (progress < 1) {
+              animationFrameRef.current = requestAnimationFrame(animate);
+            } else {
+              animationFrameRef.current = null;
+              console.log(
+                `Scrolled to item ${id} at position ${itemY}, offset: ${targetOffset}`,
+              );
+            }
+          };
+
+          animationFrameRef.current = requestAnimationFrame(animate);
+          return currentOffset; // Don't change offset in this setState call
+        });
+      } else {
+        console.warn(`Item ${id} position not yet measured`);
+      }
+    },
+    [itemPositions, tableHeight],
+  );
+
+  // Auto-scroll to bottom when content is ready (only once)
   useEffect(() => {
     if (contentHeight > 0 && tableHeight > 0) {
       const targetOffset = contentHeight - tableHeight;
       setScrollOffset(targetOffset);
     }
   }, [contentHeight, tableHeight]);
+
+  // Cleanup animation on unmount
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
+  // Extract item 7 position to avoid object reference issues
+  const item7Position = itemPositions[7];
+
+  // Auto-scroll to item 7 after initial load (only once)
+  useEffect(() => {
+    if (
+      !hasScrolledToItem.current &&
+      item7Position !== undefined &&
+      tableHeight > 0
+    ) {
+      hasScrolledToItem.current = true;
+      const timer = setTimeout(() => {
+        scrollToItem(7);
+      }, 200); // Wait 2 seconds after scrolling to bottom
+      return () => clearTimeout(timer);
+    }
+  }, [item7Position, tableHeight, scrollToItem]);
 
   return (
     <LinearGradient
@@ -60,15 +169,34 @@ export default function PlayerIndexPage() {
       end={{ x: 0, y: 1 }}
       style={{ flex: 1 }}
     >
-      <Text>Player Index Page</Text>
+      <View style={{ padding: 20, gap: 10 }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          Player Index Page
+        </Text>
+      </View>
 
-      <TableBg
-        style={{ position: "absolute", bottom: 0 }}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: viewportWidth,
+          height: viewportHeight * 0.7,
+          overflow: "hidden",
+          alignSelf: "center",
+        }}
         onLayout={({ nativeEvent }: LayoutChangeEvent) => {
           setTableHeight(nativeEvent.layout.height);
           setTableWidth(nativeEvent.layout.width);
         }}
-      />
+      >
+        <TableBg
+          style={{
+            width: viewportWidth,
+            height: "100%",
+            alignSelf: "center",
+          }}
+        />
+      </View>
 
       <View
         style={{
@@ -76,6 +204,7 @@ export default function PlayerIndexPage() {
           bottom: 0,
           height: tableHeight,
           width: tableWidth,
+          alignSelf: "center",
         }}
       >
         <ScrollView
@@ -88,7 +217,10 @@ export default function PlayerIndexPage() {
           onScroll={handleScroll}
           scrollEventThrottle={16}
           decelerationRate={0}
-          onContentSizeChange={(contentWidth: number, contentHeightValue: number) => {
+          onContentSizeChange={(
+            contentWidth: number,
+            contentHeightValue: number,
+          ) => {
             setContentHeight(contentHeightValue);
           }}
         >
@@ -112,6 +244,9 @@ export default function PlayerIndexPage() {
                 refCallback={(fn: () => void) => registerMeasure(idx, fn)}
                 parentHeight={tableHeight}
                 parentWidth={tableWidth}
+                onPositionMeasured={(y: number) =>
+                  handleItemPositionMeasured(item.id, y)
+                }
               />
             ))}
           </View>

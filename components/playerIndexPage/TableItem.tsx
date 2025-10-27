@@ -48,10 +48,10 @@ export default function TableItem({
   };
 
   // Update position when scroll changes
-//   useEffect(() => {
-//     const relativeY = basePosition.y - scrollY;
-//     setPosition({ x: basePosition.x, y: relativeY });
-//   }, [scrollY, basePosition]);
+  //   useEffect(() => {
+  //     const relativeY = basePosition.y - scrollY;
+  //     setPosition({ x: basePosition.x, y: relativeY });
+  //   }, [scrollY, basePosition]);
 
   // Check if item is visible in viewport (with buffer for transforms)
   const isVisible = () => {
@@ -78,11 +78,11 @@ export default function TableItem({
     normalizedY = Math.max(-0.5, Math.min(1.5, normalizedY));
 
     // Scale: smaller at top (0.5), larger at bottom (1.0)
-    const scale = Math.max(0.5, Math.min(1.0, 0.5 + 0.5 * normalizedY)) * 1.2;
+    const scale = Math.max(0.5, Math.min(1.0, 0.5 + 0.5 * normalizedY));
 
     // Position based on type: meals on left, workouts on right
     // Items start centered, we'll use translateX to move them left/right
-    const lateralOffset = parentWidth * 0.35; // Distance from center (35% of width)
+    const lateralOffset = parentWidth * 0.3; // Distance from center (35% of width)
 
     // Base position offset (negative = left, positive = right)
     const baseOffsetX = type === "meal" ? -lateralOffset : lateralOffset;
