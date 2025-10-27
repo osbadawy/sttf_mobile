@@ -1,27 +1,7 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import FAQItem, { type FAQEntry } from "@/components/settings/FAQItem";
+import FAQItem from "@/components/settings/FAQItem";
 import { View } from "react-native";
-
-const FAQ_DATA: FAQEntry[] = [
-  {
-    id: "1",
-    question: "How do I log a training session or match?",
-    answer:
-      "Go to the Training tab, tap the + button, and choose Session or Match. Fill in the details like duration, intensity, and notes, then tap Save.",
-  },
-  {
-    id: "2",
-    question: "How do I log my meals properly?",
-    answer:
-      "Open the Meals tab, tap + to add a meal, then select items from your plan or search. Adjust portions and confirm. You can also add photos for better tracking.",
-  },
-  {
-    id: "3",
-    question: "Can my coach see what I have planned?",
-    answer:
-      "Yes. Your coach can view your planned sessions and meals once they are scheduled. You can adjust sharing in Settings → Privacy if needed.",
-  },
-];
+import { FAQ_DATA } from "../../utils/faqEntry";
 
 export default function FAQ() {
   return (
