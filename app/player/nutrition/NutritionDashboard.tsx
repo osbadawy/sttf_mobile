@@ -31,7 +31,7 @@ export default function NutritionDashboard() {
     const assinedEntry = meal.players_assigned.find(
       (player) => player.assigned_to_user.firebase_id === firebaseId,
     );
-    return assinedEntry?.performance !== null;
+    return assinedEntry && assinedEntry.completions.length > 0;
   });
 
   const calories = Math.round(

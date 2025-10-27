@@ -2,7 +2,6 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import { router } from "expo-router";
 import { useState } from "react";
 import {
   Alert,
@@ -20,6 +19,9 @@ import CustomButton, { ButtonColor } from "@/components/Button";
 import NutritionDataInput, {
   NutritionData,
 } from "@/components/nutrition/NutritionDataInput";
+import { useAuth } from "@/contexts/AuthContext";
+import Constants from "expo-constants";
+import { router } from "expo-router";
 
 const shadow = Platform.select({
   ios: {
@@ -31,15 +33,15 @@ const shadow = Platform.select({
   android: { elevation: 4 },
 });
 
-type MealWhen = "Breakfast" | "Lunch" | "Dinner" | "snacks";
-const WHEN_OPTIONS: MealWhen[] = ["Breakfast", "Lunch", "Dinner", "snacks"];
+type MealWhen = "breakfast" | "lunch" | "dinner" | "snack";
+const WHEN_OPTIONS: MealWhen[] = ["breakfast", "lunch", "dinner", "snack"];
 
 // Map internal values -> i18n keys
 const WHEN_I18N_KEY: Record<MealWhen, string> = {
-  Breakfast: "breakfast",
-  Lunch: "lunch",
-  Dinner: "dinner",
-  snacks: "snacks",
+  breakfast: "breakfast",
+  lunch: "lunch",
+  dinner: "dinner",
+  snack: "snack",
 };
 
 export default function ManualInputDesign() {
@@ -55,6 +57,7 @@ export default function ManualInputDesign() {
   const [nutrition, setNutrition] = useState<NutritionData>({});
 
   const canConfirm = Boolean(imageUri && mealName.trim() && whenValue);
+  const { user } = useAuth();
 
   const handleAddPicture = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -83,9 +86,53 @@ export default function ManualInputDesign() {
     }
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!canConfirm) return;
-    router.push("/player/nutrition/NutritionDashboard");
+    try {
+      if (!user) {
+        Alert.alert("Error", "User not found");
+        return;
+      }
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal`;
+
+
+      const body: any = {
+        users_assigned: [user.uid],
+        start: new Date(),
+        category: whenValue,
+        name: mealName,
+        kilojoule: nutrition.calories ? nutrition.calories * 4.184 : undefined, // Convert kcal to kJ
+        protein: nutrition.protein,
+        carbohydrates: nutrition.carbs,
+        fat: nutrition.fat,
+        is_planned: false,
+        amount: nutrition.amount,
+        amount_unit: nutrition.amount_unit,
+        completion: {
+          image_uri: imageUri,
+          is_completed: true,
+        }
+      };
+
+
+      const token = await user.getIdToken();
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log({ data: JSON.stringify(data, null, 2) });
+        router.replace("/player/nutrition/NutritionDashboard")
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const localizedWhen = (val: MealWhen | null) =>

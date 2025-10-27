@@ -18,6 +18,7 @@ interface MealCardProps {
   amount: number; // e.g., 230
   calories: number; // e.g., 534
   type?: MealType; // may be omitted
+  isCoachViewing?: boolean;
 }
 
 export default function MealCard({
@@ -25,6 +26,7 @@ export default function MealCard({
   amount,
   calories,
   type = "lunch",
+  isCoachViewing = false,
 }: MealCardProps) {
   const { t } = useLocalization("components.nutrition.nutritionList");
 
@@ -121,7 +123,7 @@ export default function MealCard({
           </View>
 
           {/* Right: Add */}
-          <TouchableOpacity
+          {!isCoachViewing && <TouchableOpacity
             onPress={toggleOpen}
             activeOpacity={0.8}
             className="flex-row items-center"
@@ -137,6 +139,7 @@ export default function MealCard({
               style={{ marginLeft: 4 }}
             />
           </TouchableOpacity>
+          }
         </View>
       )}
 

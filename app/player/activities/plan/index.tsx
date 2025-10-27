@@ -96,11 +96,13 @@ export default function PlayerPlannedActivitiesPage() {
               });
 
               const activityAssignment = activity.players_assigned.find(
-                (assignment) =>
-                  assignment.assigned_to_user.firebase_id === user.uid,
+                assignment =>
+                  assignment.assigned_to_user.firebase_id === playerData.firebase_id || user.uid,
               );
+              console.log({ activity: JSON.stringify(activity, null, 2) });
+              console.log({ activityAssignment: JSON.stringify(activityAssignment, null, 2) });
               const isCompleted = Boolean(
-                activityAssignment!.completions.length > 0,
+                activityAssignment && activityAssignment.completions.length > 0,
               );
 
               // Check if activity is in the future

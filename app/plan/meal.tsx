@@ -8,7 +8,7 @@ import PlayersSelection from "@/components/plan/PlayersSelection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
-import { Player, useAllPlayers } from "@/hooks/useAllPlayers";
+import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Constants from "expo-constants";
 import { useLocalSearchParams } from "expo-router";
@@ -236,7 +236,7 @@ export default function MealPlan() {
         >
           <ScrollView showsVerticalScrollIndicator={false}>
             <PlayersSelection
-              allPlayers={players as Player[]}
+              allPlayers={players}
               selectedPlayers={selectedPlayers}
               onSelectPlayers={setSelectedPlayers}
               onClickBack={() => {

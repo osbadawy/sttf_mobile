@@ -109,6 +109,7 @@ export default function MealLogPage() {
                       amount={Math.round(meal.amount)}
                       calories={Math.round(meal.kilojoule * 4.184)}
                       type={m.type}
+                      isCoachViewing={isCoachViewing}
                     />
                   ))}
                 </View>
