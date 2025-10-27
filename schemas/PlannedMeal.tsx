@@ -3,8 +3,8 @@ export interface MealResultsResponse {
   assignment_id: string;
   img_url: string | null;
   points_assigned: number;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface UserResponse {
@@ -36,8 +36,8 @@ export interface MealRecurrenceResponse {
   thu: boolean;
   fri: boolean;
   sat: boolean;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface GetMealsResponse {
@@ -53,8 +53,8 @@ export interface GetMealsResponse {
   fat: number;
   is_planned: boolean;
   start: Date;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
   players_assigned: MealAssignmentResponse[];
   recurrence_patterns: MealRecurrenceResponse[];
 }
