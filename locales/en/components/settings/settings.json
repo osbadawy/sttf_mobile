@@ -1,0 +1,17 @@
+{
+    "settings": "Settings",
+    "account": "Account",
+    "edit": "Edit",
+    "first name":"First Name",
+    "last name": "Last Name",
+    "nationality": "Nationality",
+    "select nationality": "Select Nationality",
+    "date of birth":"Date of Birth",
+    "select data of birth": "Select Date of Birth",
+    "dominant hand": "Dominant Hand",
+    "select dominant hand": "Select Dominant Hand",
+    "change password": "Change Password",
+    "manage players": "Manage Players",
+    "FAQ": "FAQ",
+    "log out": "Log Out"
+}

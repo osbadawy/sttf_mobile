@@ -1,0 +1,17 @@
+{
+    "settings": "الإعدادات",
+    "account": "الحساب",
+    "edit": "تعديل",
+    "first name": "الاسم الأول",
+    "last name": "اسم العائلة",
+    "nationality": "الجنسية",
+    "select nationality": "اختر الجنسية",
+    "date of birth": "تاريخ الميلاد",
+    "select date of birth": "اختر تاريخ الميلاد",
+    "dominant hand": "اليد المهيمنة",
+    "select dominant hand": "حدد اليد المهيمنة",
+    "change password": "تغيير كلمة السر",
+    "manage players": "إدارة اللاعبين",
+    "FAQ": "الأسئلة الشائعة",
+    "log out": "تسجيل الخروج"
+}

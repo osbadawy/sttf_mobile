@@ -1,17 +1,17 @@
 {
   "title": "إنشاء خطة تدريب",
   "players": "اللاعبين",
-  "addActivity": "إضافة نشاط",
+  "addActivity": "إضافة التدريب",
 
-  "activitySelectionTitle": "اختر خيارك",
-  "makeYourOwn": "إنشاء نشاطك الخاص",
+  "activitySelectionTitle": "اختر التدريب",
+  "makeYourOwn": "تصميم تدريبك الخاص",
   "custom": "مخصص",
   "selectFromList": "اختر من القائمة",
 
   "edit": "تعديل",
   "selectTime": "اختر الوقت",
-  "nameOfActivity": "اسم النشاط",
-  "details": "تفاصيل النشاط",
+  "nameOfActivity": "اسم التدريب",
+  "details": "تفاصيل التدريب",
   "add": "إضافة",
   "save": "حفظ",
   "recurring": "اجعله متكرر",

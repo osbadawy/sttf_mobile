@@ -1,3 +1,4 @@
+import LogOutIcon from "@/components/icons/settings/LogOutIcon";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import {
   buildNationalityLabelMap,
@@ -12,6 +13,7 @@ import SelectField from "@/components/settings/SelectField";
 import SelectModal from "@/components/settings/SelectModal";
 import SettingsRow from "@/components/settings/SettingsRow";
 import type { Option, PlayHand } from "@/components/settings/types";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import * as ImagePicker from "expo-image-picker";
 import { RelativePathString, router } from "expo-router";
@@ -27,6 +29,7 @@ const formatDateDDMMYYYY = (d: Date): string => {
 };
 
 export default function Settings() {
+  const { t, isRTL } = useLocalization("components.Settings.settings");
   const { userName, profilePicture } = useUserProfile();
 
   // --- form state ---
@@ -88,8 +91,8 @@ export default function Settings() {
       allowsEditing: true,
       aspect: [1, 1], // square crop for avatar
       quality: 0.9,
-      base64: false, // flip to true if your uploader needs base64
-      selectionLimit: 1, // iOS 14+; ignored on Android but we only handle first asset anyway
+      base64: false,
+      selectionLimit: 1,
     });
 
     if (result.canceled) return;
@@ -109,9 +112,13 @@ export default function Settings() {
       mimeType: asset.mimeType,
       fileSize: asset.fileSize,
     });
-    // TODO: upload to your storage, get a public URL, then persist to user profile
-    // After a successful upload, you could also clear localAvatarUri and update profilePicture source of truth.
   };
+
+  // ------- RTL helpers -------
+  const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
+  const textDir = isRTL ? "text-right" : "text-left";
+  const padInlineStart = isRTL ? "pr-4" : "pl-4";
+  const padInlineEnd = isRTL ? "pl-4" : "pr-4";
 
   return (
     <ParallaxScrollView
@@ -126,57 +133,82 @@ export default function Settings() {
     >
       {/* PROFILE HEADER */}
       <View className="px-4 pt-4">
-        <View className="flex-row items-center gap-3">
+        <View className={`${rowDir} items-center gap-3`}>
           <Image
             source={imageSource}
             className="h-14 w-14 rounded-full"
             resizeMode="cover"
           />
           <View className="flex-1">
-            <Text className="text-lg font-semibold text-black">
+            <Text className={`text-lg font-semibold text-black ${textDir}`}>
               {userName || `${firstName} ${lastName}`}
-            </Text>
-            <Text className="text-sm text-neutral-600">
-              joseph.kaspari@covelant.com
             </Text>
           </View>
         </View>
 
-        <Pressable className="mt-3 pl-4 w-12" onPress={handlePickImage}>
-          <Text className="text-[#0E7A3E] underline">Edit</Text>
+        <Pressable className={`mt-3 w-12 ${padInlineStart}`} onPress={handlePickImage}>
+          <Text className="text-[#0E7A3E] underline">{t("edit")}</Text>
         </Pressable>
       </View>
 
       {/* ACCOUNT SECTION */}
       <View className="mt-5 px-4">
-        <SectionHeader title="Account" />
+        <SectionHeader title={t("account")} isRTL={isRTL} />
 
-        {/* Row: First / Last Name */}
-        <View className="mt-3 flex-row gap-3">
-          <LabeledInput
-            label="First Name"
-            value={firstName}
-            onChangeText={setFirstName}
-            placeholder="First name"
-            containerClass="flex-1"
-          />
-          <LabeledInput
-            label="Last Name"
-            value={lastName}
-            onChangeText={setLastName}
-            placeholder="Last name"
-            containerClass="flex-1"
-          />
+        {/* Row: First / Last Name (mirror order in RTL) */}
+        <View className={`mt-3 ${rowDir} gap-3`}>
+          {/* In RTL show LastName on the right visually by rendering it first */}
+          {isRTL ? (
+            <>
+              <LabeledInput
+                isRTL={isRTL}
+                label={t("last name")}
+                value={lastName}
+                onChangeText={setLastName}
+                placeholder="Last name"
+                containerClass="flex-1"
+              />
+              <LabeledInput
+                isRTL={isRTL}
+                label={t("first name")}
+                value={firstName}
+                onChangeText={setFirstName}
+                placeholder="First name"
+                containerClass="flex-1"
+              />
+            </>
+          ) : (
+            <>
+              <LabeledInput
+                isRTL={isRTL}
+                label={t("first name")}
+                value={firstName}
+                onChangeText={setFirstName}
+                placeholder="First name"
+                containerClass="flex-1"
+              />
+              <LabeledInput
+                isRTL={isRTL}
+                label={t("last name")}
+                value={lastName}
+                onChangeText={setLastName}
+                placeholder="Last name"
+                containerClass="flex-1"
+              />
+            </>
+          )}
         </View>
 
-        {/* Nationality (select by code; show demonym) */}
+        {/* Nationality */}
         <SelectField
-          label="Nationality"
+          isRTL={isRTL}
+          label={t("nationality")}
           valueLabel={nationalityLabel}
           onPress={() => setNationalityOpen(true)}
         />
         <SelectModal
-          title="Select Nationality"
+          isRTL={isRTL}
+          title={t("select nationality")}
           visible={nationalityOpen}
           onClose={() => setNationalityOpen(false)}
           options={nationalityOptions}
@@ -186,30 +218,34 @@ export default function Settings() {
           }}
         />
 
-        {/* Date of Birth (Date picker) */}
+        {/* Date of Birth */}
         <DateField
-          label="Date of Birth"
+          isRTL={isRTL}
+          label={t("date of birth")}
           valueLabel={formatDateDDMMYYYY(dob)}
           onPress={() => setDobOpen(true)}
         />
         <DatePickerModal
-          title="Select Date of Birth"
+          isRTL={isRTL}
+          title={t("select date of birth")}
           visible={dobOpen}
           onClose={() => setDobOpen(false)}
           date={dob}
           onChange={setDob}
-          maximumDate={new Date()} // no future dates
-          minimumDate={new Date(1900, 0, 1)} // lower bound
+          maximumDate={new Date()}
+          minimumDate={new Date(1900, 0, 1)}
         />
 
-        {/* Play Hand (select) */}
+        {/* Play Hand */}
         <SelectField
-          label="Play Hand"
+          isRTL={isRTL}
+          label={t("dominant hand")}
           valueLabel={hand === "right" ? "Right Hand" : "Left Hand"}
           onPress={() => setHandOpen(true)}
         />
         <SelectModal
-          title="Select Play Hand"
+          isRTL={isRTL}
+          title={t("select dominant hand")}
           visible={handOpen}
           onClose={() => setHandOpen(false)}
           options={handOptions}
@@ -222,34 +258,43 @@ export default function Settings() {
 
       {/* SETTINGS MENU */}
       <View className="mt-7 ">
-        <View className="px-4 py-3">
-          <Text className="text-lg font-normal text-neutral-700">Settings</Text>
+        <View className={`px-4 py-3 ${rowDir}`}>
+          <Text className={`text-lg font-normal text-neutral-700 ${textDir}`}>
+            {t("settings")}
+          </Text>
         </View>
         <View className="h-px bg-neutral-200" />
 
         <SettingsRow
-          label="Change password"
+          isRTL={isRTL}
+          label={t("change password")}
           onPress={() =>
             router.push("/settings/change-password" as RelativePathString)
           }
         />
         <Divider />
         <SettingsRow
-          label="Manage Players"
+          isRTL={isRTL}
+          label={t("manage players")}
           onPress={() =>
             router.push("/settings/manage-players" as RelativePathString)
           }
         />
         <Divider />
         <SettingsRow
-          label="FAQ"
+          isRTL={isRTL}
+          label={t("FAQ")}
           onPress={() => router.push("/settings/faq" as RelativePathString)}
         />
         <Divider />
 
-        <Pressable className="flex-row items-center justify-between px-4 py-4">
-          <Text className="text-[#E53935]">Log Out</Text>
-          <Text className="text-[#E53935]">⎋</Text>
+        {/* Logout row mirrors icon/text sides */}
+        <Pressable
+          onPress={onLogout}
+          className={`${rowDir} items-center justify-between px-4 py-4`}
+        >
+          <Text className={`text-[#E53935] ${textDir}`}>{t("log out")}</Text>
+          <LogOutIcon />
         </Pressable>
       </View>
     </ParallaxScrollView>
