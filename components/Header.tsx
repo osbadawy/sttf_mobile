@@ -192,13 +192,21 @@ export default function Header({
                 >
                   {profilePicture !== undefined &&
                     (profilePicture !== "" ? (
-                      <Image
-                        source={{ uri: profilePicture }}
-                        className="w-[40px] h-[40px] rounded-full mx-4"
-                      />
+                      <TouchableOpacity
+                        onPress={() => router.push("/settings")}
+                      >
+                        <Image
+                          source={{ uri: profilePicture }}
+                          className="w-[40px] h-[40px] rounded-full mx-4"
+                        />
+                      </TouchableOpacity>
                     ) : (
                       <View className="w-[40px] h-[40px] rounded-full mx-4 items-center justify-center bg-[#E5E5E5]">
-                        <ProfilePictureDefaultIcon />
+                        <TouchableOpacity
+                          onPress={() => router.push("/settings")}
+                        >
+                          <ProfilePictureDefaultIcon />
+                        </TouchableOpacity>
                       </View>
                     ))}
                   <View>
