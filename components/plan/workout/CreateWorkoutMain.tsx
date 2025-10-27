@@ -255,9 +255,11 @@ export default function CreateWorkoutMain({
         <Text className="font-inter-regular text-base pb-2 pt-[24px]">
           {t("activitySelectionTitle")}
         </Text>
-        <TouchableOpacity onPress={() => onDeleteActivity?.(editingActivity)}>
-          <TrashIcon />
-        </TouchableOpacity>
+        {editingActivity && (
+          <TouchableOpacity onPress={() => onDeleteActivity?.(editingActivity)}>
+            <TrashIcon />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Activity Selection */}

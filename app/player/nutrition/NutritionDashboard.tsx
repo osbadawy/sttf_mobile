@@ -48,7 +48,7 @@ export default function NutritionDashboard() {
   );
 
   const totalCalories = Math.round(
-    meals.reduce((acc, meal) => acc + meal.kilojoule / 4.184, 2000),
+    meals.reduce((acc, meal) => acc + meal.kilojoule / 4.184, 0),
   );
   const totalCarbs = Math.round(
     meals.reduce((acc, meal) => acc + meal.carbohydrates, 0),
@@ -83,7 +83,7 @@ export default function NutritionDashboard() {
         <View className="mt-10">
           <NutritionProgress
             consumed={calories}
-            goal={totalCalories}
+            goal={totalCalories || 2000}
             unit="Kcal"
           />
         </View>

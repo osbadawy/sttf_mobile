@@ -1,14 +1,17 @@
 import colors from "@/colors";
 import MealCard from "@/components/nutrition/MealCard";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import { Ionicons } from "@expo/vector-icons";
+import Constants from "expo-constants";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -33,7 +36,7 @@ export default function MealLogPage() {
 
   const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 
-  const { meals, loading, error } = usePlannedMeals({
+  const { meals, loading, error, refetch } = usePlannedMeals({
     users_assigned:
       Object.keys(playerData).length > 0 ? [playerData.firebase_id] : undefined,
     day: date,
@@ -48,6 +51,50 @@ export default function MealLogPage() {
     });
 
   const titleAlign = isRTL ? "text-right" : "text-left";
+
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  const isToday = date.toDateString() === today.toDateString();
+
+  const { user } = useAuth();
+
+  const handleConfirm = async (photoUri: string | null, mealId: string) => {
+    if (!user) {
+      Alert.alert("Error", "User not found");
+      return;
+    }
+
+    try {
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal/complete`;
+      const body = {
+        id: mealId,
+        // img_url: photoUri, //TODO: Handle img with firebase bucket
+      };
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${await user.getIdToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData,
+        });
+        throw new Error(`Failed to confirm meal: ${errorData.message}`);
+      }
+      const data = await response.json();
+      console.log({ data: JSON.stringify(data, null, 2) });
+      await refetch();
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Failed to confirm meal");
+    }
+  };
 
   return (
     <ParallaxScrollView
@@ -90,28 +137,45 @@ export default function MealLogPage() {
         {loading && <ActivityIndicator size="large" color={colors.primary} />}
 
         <ScrollView className="mt-5">
-          {meals.length > 0 ? (
+          {meals.length > 0 && user ? (
             organisedMeals.map((m) => {
               if (m.meals.length === 0) {
                 return null;
               }
-
               return (
                 <View key={m.type} className="mb-5">
                   <Text className={`text-xl font-normal mb-2 ${titleAlign}`}>
                     {t(m.type)}
                   </Text>
                   <View className="h-[1px] bg-gray-300 w-full" />
-                  {m.meals.map((meal, idx) => (
-                    <MealCard
-                      key={`${m.type}-${idx}-${meal.name}`}
-                      name={meal.name}
-                      amount={Math.round(meal.amount)}
-                      calories={Math.round(meal.kilojoule * 4.184)}
-                      type={m.type}
-                      isCoachViewing={isCoachViewing}
-                    />
-                  ))}
+
+                  {m.meals.map((meal, idx) => {
+                    const mealAssignment = meal.players_assigned.find(
+                      (assignment) =>
+                        assignment.assigned_to_user.firebase_id ===
+                          playerData.firebase_id || user.uid,
+                    );
+                    const isCompleted = Boolean(
+                      mealAssignment && mealAssignment.completions.length > 0,
+                    );
+                    console.log({ isToday });
+
+                    return (
+                      <MealCard
+                        key={`${m.type}-${idx}-${meal.name}`}
+                        id={meal.id}
+                        name={meal.name}
+                        amount={Math.round(meal.amount)}
+                        amount_unit={meal.amount_unit}
+                        calories={Math.round(meal.kilojoule / 4.184)}
+                        type={m.type}
+                        isCoachViewing={isCoachViewing}
+                        isCompleted={isCompleted}
+                        showAddButton={isToday}
+                        onConfirm={handleConfirm}
+                      />
+                    );
+                  })}
                 </View>
               );
             })

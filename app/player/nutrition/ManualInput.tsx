@@ -95,7 +95,6 @@ export default function ManualInputDesign() {
       }
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal`;
 
-
       const body: any = {
         users_assigned: [user.uid],
         start: new Date(),
@@ -111,9 +110,8 @@ export default function ManualInputDesign() {
         completion: {
           image_uri: imageUri,
           is_completed: true,
-        }
+        },
       };
-
 
       const token = await user.getIdToken();
       const response = await fetch(url, {
@@ -128,7 +126,7 @@ export default function ManualInputDesign() {
       if (response.ok) {
         const data = await response.json();
         console.log({ data: JSON.stringify(data, null, 2) });
-        router.replace("/player/nutrition/NutritionDashboard")
+        router.replace("/player/nutrition/NutritionDashboard");
       }
     } catch (error) {
       console.error(error);

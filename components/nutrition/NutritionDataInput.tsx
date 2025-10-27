@@ -93,9 +93,7 @@ export default function NutritionDataInput({ value, onChange }: Props) {
           <TextInput
             className="text-base effra-regular"
             placeholder={t("amount")}
-            value={
-              safe.amount ? Math.round(safe.amount).toString() : ""
-            }
+            value={safe.amount ? Math.round(safe.amount).toString() : ""}
             onChangeText={(text) =>
               onChange({ ...safe, amount: text ? Number(text) : undefined })
             }
