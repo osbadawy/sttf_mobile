@@ -2,9 +2,10 @@ import Header from "@/components/Header";
 import TableBg from "@/components/icons/playerDayPlan/TableBg";
 import TrophyIcon from "@/components/icons/playerDayPlan/TrophyIcon";
 import Nav from "@/components/Nav";
-import TableItem, {
-  TableItemType,
-} from "@/components/playerDayPlan/TableItem";
+import TableItem, { TableItemType } from "@/components/playerDayPlan/TableItem";
+import TableItemModal, {
+  TableItemModalContentProps,
+} from "@/components/playerDayPlan/TableItemModal";
 import { usePlayerDay } from "@/hooks/usePlayerDay";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,6 +22,10 @@ export default function PlayerIndexPage() {
   const [itemPositions, setItemPositions] = useState<Record<number, number>>(
     {},
   );
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] =
+    useState<TableItemModalContentProps | null>(null);
 
   const { userName, profilePicture, access } = useUserProfile();
 
@@ -231,6 +236,14 @@ export default function PlayerIndexPage() {
           >
             {data.map((item, idx) => (
               <TableItem
+                onPress={() => {
+                  setShowModal(true);
+                  setModalContent({
+                    type: item.type as TableItemType,
+                    category: item.category,
+                    data: item.data,
+                  });
+                }}
                 key={idx}
                 type={item.type as TableItemType}
                 contentContainer={contentContainer}
@@ -250,6 +263,14 @@ export default function PlayerIndexPage() {
         </ScrollView>
         <Nav />
       </View>
+
+      {showModal && (
+        <TableItemModal
+          visible={showModal}
+          content={modalContent}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </LinearGradient>
   );
 }

@@ -1,9 +1,9 @@
-import SnackIcon from "./SnackIcon";
 import AssessmentIcon from "./AssessmentIcon";
 import BreakfastIcon from "./BreakfastIcon";
 import CompletedIcon from "./CompleteIcon";
 import LunchAndDinnerIcon from "./LunchAndDinnerIcon";
 import RecoveryIcon from "./RecoveryIcon";
+import SnackIcon from "./SnackIcon";
 import StrengthIcon from "./StrengthIcon";
 import TechnicalIcon from "./TechnicalIcon";
 
@@ -32,7 +32,7 @@ export default function DynamicIcon({
     return <TechnicalIcon />;
   } else if (category === "recovery") {
     return <RecoveryIcon />;
-  } else if (category === "assessment") {
+  } else if (category === "readiness" || category === "tiredness") {
     return <AssessmentIcon />;
   }
 }

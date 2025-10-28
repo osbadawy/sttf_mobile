@@ -3,7 +3,7 @@ import { PlannedActivity } from "@/schemas/PlannedActivity";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import { PlayerSelfAssessment } from "@/schemas/PlayerSelfAssessment";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import DynamicIcon from "../icons/playerDayPlan/DynamicIcon";
 export type TableItemType = "meal" | "activity" | "assessment";
 
@@ -19,6 +19,7 @@ interface TableItemProps {
   isComplete?: boolean;
   category?: string;
   data: PlannedActivity | GetMealsResponse | PlayerSelfAssessment | null;
+  onPress: () => void;
 }
 
 export default function TableItem({
@@ -32,6 +33,7 @@ export default function TableItem({
   onPositionMeasured,
   isComplete = false,
   category,
+  onPress,
 }: TableItemProps) {
   const [itemView, setItemView] = useState<View | null>(null);
   const [basePosition, setBasePosition] = useState({ x: 0, y: 0 });
@@ -161,9 +163,9 @@ export default function TableItem({
   const visible = isVisible();
 
   return (
-    <View
+    <TouchableOpacity
       ref={setRef}
-      collapsable={false}
+      onPress={onPress}
       onLayout={handleLayout}
       style={{
         width: 100,
@@ -196,6 +198,6 @@ export default function TableItem({
           <DynamicIcon category={category} isComplete={isComplete} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

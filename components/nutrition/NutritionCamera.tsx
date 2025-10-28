@@ -1,15 +1,8 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
 import { useMemo, useRef, useState } from "react";
-import {
-  Animated,
-  Image,
-  PanResponder,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Animated, PanResponder, Text, View } from "react-native";
+import CameraInput from "./CameraInput";
 
 interface NutritionCameraProps {
   /** Called when user successfully swipes to confirm; passes the taken photo URI (or null). */
@@ -64,19 +57,8 @@ export default function NutritionCamera({
     [photoUri],
   );
 
-  async function openCamera() {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      console.warn("Camera permission not granted");
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 0.7,
-    });
-    if (!result.canceled && result.assets?.[0]?.uri) {
-      setPhotoUri(result.assets[0].uri);
-    }
+  function handleImageCapture(uri: string) {
+    setPhotoUri(uri);
   }
 
   return (
@@ -119,35 +101,8 @@ export default function NutritionCamera({
           )}
 
           {/* Camera button / preview */}
-          <TouchableOpacity
-            onPress={openCamera}
-            className="ml-auto items-center"
-          >
-            <View className="rounded-full p-1">
-              <View
-                className="size-12 rounded-full items-center justify-center bg-white overflow-hidden"
-                style={{
-                  borderWidth: 1,
-                  borderStyle: "dashed",
-                  borderColor: "#D1D5DB",
-                  shadowColor: "#000",
-                  shadowOpacity: 0.1,
-                  shadowRadius: 16,
-                  shadowOffset: { width: 2, height: 2 },
-                  elevation: 2,
-                }}
-              >
-                {photoUri ? (
-                  <Image
-                    source={{ uri: photoUri }}
-                    className="w-full h-full rounded-full"
-                    resizeMode="cover"
-                  />
-                ) : (
-                  <Ionicons name="camera-outline" size={20} color="#546E7A" />
-                )}
-              </View>
-            </View>
+          <View className="ml-auto items-center">
+            <CameraInput onImageCapture={handleImageCapture} />
 
             {/* 👇 Right label: only show when swipe is NOT active */}
             {!isSwipeActive && (
@@ -155,7 +110,7 @@ export default function NutritionCamera({
                 {t("tap here")}
               </Text>
             )}
-          </TouchableOpacity>
+          </View>
 
           {/* Swipe pill (logic unchanged) — only visible when swipe is active AND not hidden */}
           <Animated.View
