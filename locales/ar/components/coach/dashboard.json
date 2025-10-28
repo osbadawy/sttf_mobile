@@ -1,7 +1,7 @@
 {
-  "managePlayers": "Manage Players",
-  "selectPlayersToEditPlan": "Select players to edit their training plans.",
-  "editPlan": "Edit Plan",
+  "managePlayers": "إدارة اللاعبين",
+  "selectPlayersToEditPlan": "اختر اللاعبين لتحرير خطط تدريبهم",
+  "editPlan": "تحرير الخطة",
   "empty state dashboard coach": "يبدو أنه لم تتم إضافة أي لاعبين بعد.",
   "ask players": "اطلب من اللاعبين الانضمام إلى فريقك للبدء.",
   "Apply": "تطبيق",

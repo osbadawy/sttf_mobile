@@ -22,6 +22,7 @@ type Props = {
   placeholder?: string;
   keyboardType?: KeyboardKinds;
   containerClass?: string;
+  isRTL: boolean;
 };
 
 export default function LabeledInput({
@@ -31,6 +32,7 @@ export default function LabeledInput({
   placeholder,
   keyboardType = "default",
   containerClass = "",
+  isRTL,
 }: Props) {
   return (
     <View className={`flex-1 ${containerClass}`}>

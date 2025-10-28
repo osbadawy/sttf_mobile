@@ -15,6 +15,7 @@ type Props = {
   onClose: () => void;
   options: Option[];
   onSelect: (opt: Option) => void;
+  isRTL: boolean;
 };
 
 export default function SelectModal({
@@ -23,6 +24,7 @@ export default function SelectModal({
   onClose,
   options,
   onSelect,
+  isRTL,
 }: Props) {
   const renderItem: ListRenderItem<Option> = ({ item }) => (
     <Pressable className="px-4 py-4" onPress={() => onSelect(item)}>

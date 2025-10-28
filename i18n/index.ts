@@ -21,6 +21,7 @@ import arPlanMeal from "../locales/ar/components/plan/meal.json";
 import arPlanWorkout from "../locales/ar/components/plan/workout.json";
 import arSelfAssessmentReadiness from "../locales/ar/components/self-assessment/Readiness.json";
 import arSelfAssessmentTiredness from "../locales/ar/components/self-assessment/Tiredness.json";
+import arSettings from "../locales/ar/components/settings/settings.json";
 import arWellbeingSleep from "../locales/ar/components/wellbeing/sleep.json";
 import arError from "../locales/ar/error.json";
 import arIndex from "../locales/ar/index.json";
@@ -46,6 +47,7 @@ import enPlanMeal from "../locales/en/components/plan/meal.json";
 import enPlanWorkout from "../locales/en/components/plan/workout.json";
 import enDashboardSelfAssessmentReadiness from "../locales/en/components/self-assessment/Readiness.json";
 import enDashboardSelfAssessmentTiredness from "../locales/en/components/self-assessment/Tiredness.json";
+import enSettings from "../locales/en/components/settings/settings.json";
 import enWellbeingSleep from "../locales/en/components/wellbeing/sleep.json";
 import enError from "../locales/en/error.json";
 import enIndex from "../locales/en/index.json";
@@ -94,6 +96,9 @@ export const resources = {
       coach: {
         coachDashboard: enCoachDashboard,
       },
+      Settings: {
+        settings: enSettings,
+      },
     },
   },
   ar: {
@@ -135,6 +140,9 @@ export const resources = {
       },
       coach: {
         coachDashboard: arCoachDashboard,
+      },
+      Settings: {
+        settings: arSettings,
       },
     },
   },
