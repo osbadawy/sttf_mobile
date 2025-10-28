@@ -1,5 +1,6 @@
 // contexts/AuthContext.tsx
 import { auth } from "@/utils/firebase";
+import { router } from "expo-router"; // ✅ import router for navigation
 import {
   User,
   onAuthStateChanged,
@@ -21,6 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
 
+  // 🔄 Keep user state in sync with Firebase auth
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -28,12 +30,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => unsubscribe();
   }, []);
 
+  // ✅ Login
   const login = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
+  // ✅ Logout
   const logout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);            // 1️⃣ Firebase logout
+      setUser(null);                  // 2️⃣ Clear local user state
+      router.replace("/login");  // 3️⃣ Redirect to login
+      console.log("User signed out successfully.");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      throw error;
+    }
   };
 
   return (

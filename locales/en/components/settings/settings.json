@@ -13,5 +13,12 @@
     "change password": "Change Password",
     "manage players": "Manage Players",
     "FAQ": "FAQ",
-    "log out": "Log Out"
+    "log out": "Log Out",
+    "right hand": "Right Hand",
+    "left hand": "Left Hand",
+    "new password": "New Password",
+    "confirm password": "Cofirm Password",
+    "enter new password": "Enter new password",
+    "Re-enter new password": "Re-enter new password",
+    "done": "Done"
 }

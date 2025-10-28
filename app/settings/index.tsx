@@ -13,6 +13,7 @@ import SelectField from "@/components/settings/SelectField";
 import SelectModal from "@/components/settings/SelectModal";
 import SettingsRow from "@/components/settings/SettingsRow";
 import type { Option, PlayHand } from "@/components/settings/types";
+import { useAuth } from "@/contexts/AuthContext"; // ✅ use the hook, not auth
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import * as ImagePicker from "expo-image-picker";
@@ -31,12 +32,13 @@ const formatDateDDMMYYYY = (d: Date): string => {
 export default function Settings() {
   const { t, isRTL } = useLocalization("components.Settings.settings");
   const { userName, profilePicture } = useUserProfile();
+  const { logout } = useAuth(); // ✅ get logout from context
 
   // --- form state ---
   const [firstName, setFirstName] = useState<string>("Joseph");
   const [lastName, setLastName] = useState<string>("Kaspari");
   const [nationalityCode, setNationalityCode] = useState<string>("SA");
-  const [dob, setDob] = useState<Date>(new Date(2001, 8, 19)); // 19 Sept 2001
+  const [dob, setDob] = useState<Date>(new Date(2001, 8, 19));
   const [hand, setHand] = useState<PlayHand>("right");
 
   // --- modal state ---
@@ -44,38 +46,39 @@ export default function Settings() {
   const [handOpen, setHandOpen] = useState<boolean>(false);
   const [dobOpen, setDobOpen] = useState<boolean>(false);
 
-  // --- avatar state (local selection overrides remote profilePicture) ---
+  // --- avatar state ---
   const [localAvatarUri, setLocalAvatarUri] = useState<string | null>(null);
 
   // Nationality
-  const nationalityOptions = useMemo<Option[]>(
-    () => buildNationalityOptions(),
-    [],
-  );
+  const nationalityOptions = useMemo<Option[]>(() => buildNationalityOptions(), []);
   const nationalityLabelByCode = useMemo(
     () => buildNationalityLabelMap(nationalityOptions),
     [nationalityOptions],
   );
-  const nationalityLabel =
-    nationalityLabelByCode.get(nationalityCode) ?? "Select...";
+  const nationalityLabel = nationalityLabelByCode.get(nationalityCode) ?? "Select...";
 
   const handOptions: Option[] = [
-    { label: "Right Hand", value: "right" },
-    { label: "Left Hand", value: "left" },
+    { label: t("right hand"), value: "right" },
+    { label: t("left hand"), value: "left" },
   ];
 
-  const onLogout = (): void => {
-    // router.push("/auth/logout" as RelativePathString);
+  // ✅ Use context logout (handles Firebase signOut + redirect)
+  const onLogout = async (): Promise<void> => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
-  // ✅ fallback: use local asset if no remote/local URL
+  // ✅ image source
   const imageSource =
     (localAvatarUri && { uri: localAvatarUri }) ||
     (profilePicture && profilePicture.trim().length > 0
       ? { uri: profilePicture }
       : require("@/assets/images/logo.png"));
 
-  // ✅ open library, pick one image, preview it, and console.log for upload
+  // ✅ pick image
   const handlePickImage = async (): Promise<void> => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -89,7 +92,7 @@ export default function Settings() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], // square crop for avatar
+      aspect: [1, 1],
       quality: 0.9,
       base64: false,
       selectionLimit: 1,
@@ -98,12 +101,9 @@ export default function Settings() {
     if (result.canceled) return;
 
     const asset: ImagePicker.ImagePickerAsset | undefined = result.assets?.[0];
-    if (!asset || !asset.uri) return;
+    if (!asset?.uri) return;
 
-    // Show immediately
     setLocalAvatarUri(asset.uri);
-
-    // Placeholder upload hook
     console.log("Selected image for upload:", {
       uri: asset.uri,
       width: asset.width,
@@ -118,7 +118,6 @@ export default function Settings() {
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
   const textDir = isRTL ? "text-right" : "text-left";
   const padInlineStart = isRTL ? "pr-4" : "pl-4";
-  const padInlineEnd = isRTL ? "pl-4" : "pr-4";
 
   return (
     <ParallaxScrollView
@@ -134,11 +133,7 @@ export default function Settings() {
       {/* PROFILE HEADER */}
       <View className="px-4 pt-4">
         <View className={`${rowDir} items-center gap-3`}>
-          <Image
-            source={imageSource}
-            className="h-14 w-14 rounded-full"
-            resizeMode="cover"
-          />
+          <Image source={imageSource} className="h-14 w-14 rounded-full" resizeMode="cover" />
           <View className="flex-1">
             <Text className={`text-lg font-semibold text-black ${textDir}`}>
               {userName || `${firstName} ${lastName}`}
@@ -146,7 +141,7 @@ export default function Settings() {
           </View>
         </View>
 
-        <Pressable className={`mt-3 w-12 ${padInlineStart}`} onPress={handlePickImage}>
+        <Pressable className={`mt-3 w-12 ${padInlineStart} ${textDir}`} onPress={handlePickImage}>
           <Text className="text-[#0E7A3E] underline">{t("edit")}</Text>
         </Pressable>
       </View>
@@ -155,9 +150,8 @@ export default function Settings() {
       <View className="mt-5 px-4">
         <SectionHeader title={t("account")} isRTL={isRTL} />
 
-        {/* Row: First / Last Name (mirror order in RTL) */}
+        {/* Row: First / Last Name */}
         <View className={`mt-3 ${rowDir} gap-3`}>
-          {/* In RTL show LastName on the right visually by rendering it first */}
           {isRTL ? (
             <>
               <LabeledInput
@@ -240,7 +234,7 @@ export default function Settings() {
         <SelectField
           isRTL={isRTL}
           label={t("dominant hand")}
-          valueLabel={hand === "right" ? "Right Hand" : "Left Hand"}
+          valueLabel={hand === "right" ? t("right hand") : t("left hand")}
           onPress={() => setHandOpen(true)}
         />
         <SelectModal
@@ -268,17 +262,13 @@ export default function Settings() {
         <SettingsRow
           isRTL={isRTL}
           label={t("change password")}
-          onPress={() =>
-            router.push("/settings/change-password" as RelativePathString)
-          }
+          onPress={() => router.push("/settings/change-password" as RelativePathString)}
         />
         <Divider />
         <SettingsRow
           isRTL={isRTL}
           label={t("manage players")}
-          onPress={() =>
-            router.push("/settings/manage-players" as RelativePathString)
-          }
+          onPress={() => router.push("/settings/manage-players" as RelativePathString)}
         />
         <Divider />
         <SettingsRow
@@ -289,10 +279,7 @@ export default function Settings() {
         <Divider />
 
         {/* Logout row mirrors icon/text sides */}
-        <Pressable
-          onPress={onLogout}
-          className={`${rowDir} items-center justify-between px-4 py-4`}
-        >
+        <Pressable onPress={onLogout} className={`${rowDir} items-center justify-between px-4 py-4`}>
           <Text className={`text-[#E53935] ${textDir}`}>{t("log out")}</Text>
           <LogOutIcon />
         </Pressable>

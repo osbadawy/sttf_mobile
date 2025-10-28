@@ -1,6 +1,7 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import PasswordResetInfo from "@/components/settings/PasswordResetInfo";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { updatePassword } from "firebase/auth";
 import { useMemo, useState } from "react";
 import {
@@ -13,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ChangePassword() {
+  const { t, isRTL } = useLocalization("components.Settings.settings");
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
 
@@ -70,7 +72,7 @@ export default function ChangePassword() {
     return (
       <ParallaxScrollView
         headerProps={{
-          title: "Change Password",
+          title: t("change password"),
           showBackButton: true,
           showDateSelector: false,
           showCalendarIcon: false,
@@ -100,12 +102,12 @@ export default function ChangePassword() {
     >
       <View className="px-4 pt-6">
         {/* New Password */}
-        <Text className="mb-2 text-xs text-neutral-700">New Password</Text>
+        <Text className="mb-2 text-xs text-neutral-700">{t("new password")}</Text>
         <View className="rounded-2xl bg-white shadow-sm">
           <TextInput
             value={pw1}
             onChangeText={setPw1}
-            placeholder="Enter new password"
+            placeholder={t("enter new password")}
             placeholderTextColor="#9CA3AF"
             secureTextEntry
             textContentType="newPassword"
@@ -123,7 +125,7 @@ export default function ChangePassword() {
           <TextInput
             value={pw2}
             onChangeText={setPw2}
-            placeholder="Re-enter new password"
+            placeholder={t("Re-enter new password")}
             placeholderTextColor="#9CA3AF"
             secureTextEntry
             textContentType="password"
@@ -155,7 +157,7 @@ export default function ChangePassword() {
           {loading ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text className="text-base font-semibold text-white">Done</Text>
+            <Text className="text-base font-semibold text-white">{t("done")}</Text>
           )}
         </Pressable>
       </View>
