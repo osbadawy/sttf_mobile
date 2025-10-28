@@ -1,3 +1,6 @@
+import colors from "@/colors";
+import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
+import { ArrowBig } from "@/components/icons";
 import BodyMetricsCard from "@/components/nutrition/BodyMetricsCard";
 import MacroCircleProgress from "@/components/nutrition/MacroCircleProgress";
 import MacroSummaryCards from "@/components/nutrition/MacroSummaryCards";
@@ -7,7 +10,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
-import { useLocalSearchParams } from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
@@ -106,6 +109,24 @@ export default function NutritionDashboard() {
             fatPercent={12.2}
             musclePercent={35.6}
           />
+          <View className="mt-10 mb-6">
+            <CustomButton
+              title="Working title"
+              onPress={() =>
+                router.push({
+                  pathname: "/player/body/[player_id]" as RelativePathString,
+                  params: {
+                    player_id: String(playerData.id),
+                    date: date.toISOString(),
+                    player: JSON.stringify(playerData),
+                  },
+                })
+              }
+              icon={<ArrowBig stroke={colors.primary} direction="right" />}
+              color={ButtonColor.primary}
+              size={ButtonSize.sm}
+            />
+          </View>
         </View>
         <View className="mt-10 mb-6">
           <MealLog />
