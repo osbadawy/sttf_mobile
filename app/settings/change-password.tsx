@@ -102,7 +102,9 @@ export default function ChangePassword() {
     >
       <View className="px-4 pt-6">
         {/* New Password */}
-        <Text className="mb-2 text-xs text-neutral-700">{t("new password")}</Text>
+        <Text className="mb-2 text-xs text-neutral-700">
+          {t("new password")}
+        </Text>
         <View className="rounded-2xl bg-white shadow-sm">
           <TextInput
             value={pw1}
@@ -157,7 +159,9 @@ export default function ChangePassword() {
           {loading ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text className="text-base font-semibold text-white">{t("done")}</Text>
+            <Text className="text-base font-semibold text-white">
+              {t("done")}
+            </Text>
           )}
         </Pressable>
       </View>

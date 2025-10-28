@@ -1,7 +1,7 @@
 import { type FAQEntry } from "@/components/settings/FAQItem";
 
 export const FAQ_DATA: FAQEntry[] = [
-{
+  {
     id: "1",
     question: "How do I view my athletes' workout logs?",
     answer:
@@ -51,7 +51,8 @@ export const FAQ_DATA: FAQEntry[] = [
   },
   {
     id: "9",
-    question: "what happens when a coach forgets to log in a players workout, meal, or body metrics?",
+    question:
+      "what happens when a coach forgets to log in a players workout, meal, or body metrics?",
     answer:
       "The athletes will not receive any new activities or meal plans to follow. However preformance data from the whoop device will still be tracked and available for review by the coach. But the lack of logged workouts and meals may impact the athletes overall progress and results.",
   },
@@ -63,23 +64,25 @@ export const FAQ_DATA: FAQEntry[] = [
   },
   {
     id: "11",
-    question: "My whoop data is connected but I can't see any new data, what should I do?",
+    question:
+      "My whoop data is connected but I can't see any new data, what should I do?",
     answer:
       "Whoop takes 30 days to fully sync with your biometrics. If you have recently connected your whoop device, please allow up to 30 days for all data to appear in the app. If after this period you still do not see new data, try syncing your device again or contact support for assistance.",
   },
   {
     id: "12",
-    question: "As a coach how do I know if my athletes are following their meal/workout plans?",
+    question:
+      "As a coach how do I know if my athletes are following their meal/workout plans?",
     answer:
       "coaches can view their athletes adherence to meal and workout plans by navigating to the athletes profile from the home page. From there coaches can see a summary of completed workouts and meals logged against the assigned plans, allowing them to monitor compliance and make adjustments as needed.",
   },
- {
+  {
     id: "13",
     question: "How can I add a new player or coach",
     answer:
       "you can add a new player or coach by going to your profile page on the upper right corner of the screen. From there go to Manage Players and add the email associated with the new player or coach account and select what role they will have.",
   },
-{
+  {
     id: "14",
     question: "My app is not updating with the latest data, what should I do?",
     answer:

@@ -96,10 +96,9 @@ export const resources = {
       coach: {
         coachDashboard: enCoachDashboard,
       },
-      Settings:
-      {
-        settings: enSettings
-      }
+      Settings: {
+        settings: enSettings,
+      },
     },
   },
   ar: {
@@ -142,10 +141,9 @@ export const resources = {
       coach: {
         coachDashboard: arCoachDashboard,
       },
-      Settings:
-      {
-        settings: arSettings
-      }
+      Settings: {
+        settings: arSettings,
+      },
     },
   },
 };

@@ -38,9 +38,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // ✅ Logout
   const logout = async () => {
     try {
-      await signOut(auth);            // 1️⃣ Firebase logout
-      setUser(null);                  // 2️⃣ Clear local user state
-      router.replace("/login");  // 3️⃣ Redirect to login
+      await signOut(auth); // 1️⃣ Firebase logout
+      setUser(null); // 2️⃣ Clear local user state
+      router.replace("/login"); // 3️⃣ Redirect to login
       console.log("User signed out successfully.");
     } catch (error) {
       console.error("Error signing out:", error);

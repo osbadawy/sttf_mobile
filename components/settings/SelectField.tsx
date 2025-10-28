@@ -7,7 +7,12 @@ type Props = {
   isRTL: boolean;
 };
 
-export default function SelectField({ label, valueLabel, onPress, isRTL }: Props) {
+export default function SelectField({
+  label,
+  valueLabel,
+  onPress,
+  isRTL,
+}: Props) {
   return (
     <View className="mt-3">
       <Text className="mb-1 text-xs text-neutral-600">{label}</Text>

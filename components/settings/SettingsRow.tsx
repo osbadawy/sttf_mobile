@@ -1,6 +1,6 @@
 import { Pressable, Text } from "react-native";
 
-type Props = { label: string; isRTL:boolean; onPress: () => void };
+type Props = { label: string; isRTL: boolean; onPress: () => void };
 
 export default function SettingsRow({ label, onPress, isRTL }: Props) {
   return (

@@ -9,7 +9,7 @@ type Props = {
   onClose: () => void;
   minimumDate?: Date;
   maximumDate?: Date;
-  isRTL:boolean;
+  isRTL: boolean;
 };
 
 export default function DatePickerModal({

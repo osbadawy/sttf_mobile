@@ -50,12 +50,16 @@ export default function Settings() {
   const [localAvatarUri, setLocalAvatarUri] = useState<string | null>(null);
 
   // Nationality
-  const nationalityOptions = useMemo<Option[]>(() => buildNationalityOptions(), []);
+  const nationalityOptions = useMemo<Option[]>(
+    () => buildNationalityOptions(),
+    [],
+  );
   const nationalityLabelByCode = useMemo(
     () => buildNationalityLabelMap(nationalityOptions),
     [nationalityOptions],
   );
-  const nationalityLabel = nationalityLabelByCode.get(nationalityCode) ?? "Select...";
+  const nationalityLabel =
+    nationalityLabelByCode.get(nationalityCode) ?? "Select...";
 
   const handOptions: Option[] = [
     { label: t("right hand"), value: "right" },
@@ -133,7 +137,11 @@ export default function Settings() {
       {/* PROFILE HEADER */}
       <View className="px-4 pt-4">
         <View className={`${rowDir} items-center gap-3`}>
-          <Image source={imageSource} className="h-14 w-14 rounded-full" resizeMode="cover" />
+          <Image
+            source={imageSource}
+            className="h-14 w-14 rounded-full"
+            resizeMode="cover"
+          />
           <View className="flex-1">
             <Text className={`text-lg font-semibold text-black ${textDir}`}>
               {userName || `${firstName} ${lastName}`}
@@ -141,7 +149,10 @@ export default function Settings() {
           </View>
         </View>
 
-        <Pressable className={`mt-3 w-12 ${padInlineStart} ${textDir}`} onPress={handlePickImage}>
+        <Pressable
+          className={`mt-3 w-12 ${padInlineStart} ${textDir}`}
+          onPress={handlePickImage}
+        >
           <Text className="text-[#0E7A3E] underline">{t("edit")}</Text>
         </Pressable>
       </View>
@@ -262,13 +273,17 @@ export default function Settings() {
         <SettingsRow
           isRTL={isRTL}
           label={t("change password")}
-          onPress={() => router.push("/settings/change-password" as RelativePathString)}
+          onPress={() =>
+            router.push("/settings/change-password" as RelativePathString)
+          }
         />
         <Divider />
         <SettingsRow
           isRTL={isRTL}
           label={t("manage players")}
-          onPress={() => router.push("/settings/manage-players" as RelativePathString)}
+          onPress={() =>
+            router.push("/settings/manage-players" as RelativePathString)
+          }
         />
         <Divider />
         <SettingsRow
@@ -279,7 +294,10 @@ export default function Settings() {
         <Divider />
 
         {/* Logout row mirrors icon/text sides */}
-        <Pressable onPress={onLogout} className={`${rowDir} items-center justify-between px-4 py-4`}>
+        <Pressable
+          onPress={onLogout}
+          className={`${rowDir} items-center justify-between px-4 py-4`}
+        >
           <Text className={`text-[#E53935] ${textDir}`}>{t("log out")}</Text>
           <LogOutIcon />
         </Pressable>

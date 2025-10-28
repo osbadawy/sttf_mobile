@@ -28,7 +28,8 @@ export default function FAQ() {
 
       <View className="w-full pt-2">
         <Text className="text-center text-sm text-neutral-500 mb-4">
-          Can't find the answer you're looking for? Contact our support team at support@covelant.com
+          Cannot find the answer you are looking for? Contact our support team at
+          support@covelant.com
         </Text>
       </View>
     </ParallaxScrollView>
