@@ -1,7 +1,9 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
-import { Text, View } from "react-native";
+import Constants from "expo-constants";
+import { User } from "firebase/auth";
+import { Alert, Text, View } from "react-native";
 import CameraInput from "../nutrition/CameraInput";
 import MacroSummaryCards from "../nutrition/MacroSummaryCards";
 import DynamicMealIcon from "../plan/meal/DynamicMealIcon";
@@ -9,11 +11,21 @@ import DynamicMealIcon from "../plan/meal/DynamicMealIcon";
 interface MealModalContentProps {
   meal: GetMealsResponse;
   category: string;
+  onImageCapture?: (photoUri: string | null) => void;
+  user: User | null;
+  imageUrl: string | null;
+  onClose: () => void;
+  onRefetch: () => void;
 }
 
 export default function MealModalContent({
   meal,
   category,
+  onImageCapture,
+  user,
+  imageUrl,
+  onClose,
+  onRefetch,
 }: MealModalContentProps) {
   const { t: tMeal } = useLocalization("components.nutrition.nutritionList");
   const { t } = useLocalization("components.dayPlan");
@@ -36,6 +48,51 @@ export default function MealModalContent({
   if (completions && completions.length > 0) {
     start = completions[0].createdAt;
   }
+
+  const handleComplete = async () => {
+    if (!user) {
+      Alert.alert("Error", "User not found");
+      return false;
+    }
+
+    try {
+      const token = await user.getIdToken();
+      const backendUrl = Constants.expoConfig?.extra?.BACKEND_URL;
+      const url = `${backendUrl}/meal/complete`;
+      const body = {
+        id: meal.id,
+        // img_url: imageUrl,
+      };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("API Error:", {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData,
+        });
+        throw new Error(`Failed to complete meal: ${errorData.message}`);
+      }
+
+      Alert.alert("Success", "Meal completed successfully!");
+      onClose();
+      onRefetch();
+      return true;
+    } catch (error) {
+      console.error("Error completing meal:", error);
+      Alert.alert("Error", "Failed to complete meal. Please try again.");
+      return false;
+    }
+  };
 
   return {
     subtitle,
@@ -72,7 +129,9 @@ export default function MealModalContent({
           <Text className="text-base effra-regular">{t("takePicture")}</Text>
           <CameraInput
             onImageCapture={(photoUri) => {
-              console.log(photoUri);
+              if (onImageCapture) {
+                onImageCapture(photoUri);
+              }
             }}
           />
         </View>
@@ -87,5 +146,6 @@ export default function MealModalContent({
     points: 20,
     startTime: start,
     calories: Math.round(meal.kilojoule / 4.184),
+    onComplete: handleComplete,
   };
 }

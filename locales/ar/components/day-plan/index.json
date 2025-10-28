@@ -3,8 +3,20 @@
   "activity": "نشاط",
   "assessment": "تقييم",
 
-  "selfAssessment": "تقييم شخصي",
+  "foodInformation": "معلومات الغذاء",
+  "takePicture": "أخذ صورة من وجبتك",
+
+  "selfAssessment": "تقييم ذاتي",
+  "selfAssessmentActivity": "اختر كيف تشعر بعد التمرين.",
+  "selfAssessmentMeal": "ما مدى رضاك عن هذه الوجبة؟",
+  "selfAssessmentTiredness": "كيف تشعر بعد التمرين؟",
+  "selfAssessmentReadiness": "كيف تشعر في نهاية اليوم؟",
+
+  "sliderLeft": "متعب",
+  "sliderRight": "مستعد!",
+
   "points": "نقاط",
   "startTime": "وقت البدء",
+  "calories": "سعرات حرارية",
   "complete": "إكمال"
 }

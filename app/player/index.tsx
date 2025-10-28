@@ -29,7 +29,7 @@ export default function PlayerIndexPage() {
 
   const { userName, profilePicture, access } = useUserProfile();
 
-  const { data, error, loading } = usePlayerDay({
+  const { data, error, loading, refetch } = usePlayerDay({
     day: new Date(),
   });
 
@@ -92,7 +92,7 @@ export default function PlayerIndexPage() {
         setScrollOffset((currentOffset) => {
           const startOffset = currentOffset;
           const distance = targetOffset - startOffset;
-          const duration = 2000; // Animation duration in milliseconds
+          const duration = 1000; // Animation duration in milliseconds
           const startTime = Date.now();
 
           const animate = () => {
@@ -266,9 +266,9 @@ export default function PlayerIndexPage() {
 
       {showModal && (
         <TableItemModal
-          visible={showModal}
           content={modalContent}
           onClose={() => setShowModal(false)}
+          onRefetch={refetch}
         />
       )}
     </LinearGradient>
