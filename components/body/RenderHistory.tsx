@@ -3,17 +3,35 @@ import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 type HistoryRow = {
-  dateISO: string;     // e.g., "2025-09-02"
-  weightKg: number;    // e.g., 82
-  bmi: number;         // e.g., 20.5
-  fatPct: number;      // e.g., 12.5
-  musclePct: number;   // e.g., 82.5
+  dateISO: string; // e.g., "2025-09-02"
+  weightKg: number; // e.g., 82
+  bmi: number; // e.g., 20.5
+  fatPct: number; // e.g., 12.5
+  musclePct: number; // e.g., 82.5
 };
 
 const mockData: HistoryRow[] = [
-  { dateISO: "2025-09-02", weightKg: 82, bmi: 20.5, fatPct: 12.5, musclePct: 82.5 },
-  { dateISO: "2025-09-01", weightKg: 82, bmi: 20.5, fatPct: 12.5, musclePct: 82.5 },
-  { dateISO: "2025-08-31", weightKg: 81, bmi: 20.4, fatPct: 12.3, musclePct: 81.8 },
+  {
+    dateISO: "2025-09-02",
+    weightKg: 82,
+    bmi: 20.5,
+    fatPct: 12.5,
+    musclePct: 82.5,
+  },
+  {
+    dateISO: "2025-09-01",
+    weightKg: 82,
+    bmi: 20.5,
+    fatPct: 12.5,
+    musclePct: 82.5,
+  },
+  {
+    dateISO: "2025-08-31",
+    weightKg: 81,
+    bmi: 20.4,
+    fatPct: 12.3,
+    musclePct: 81.8,
+  },
 ];
 
 const formatDate = (iso: string) => {
@@ -47,11 +65,11 @@ function StatCell({
 export default function RenderHistory() {
   // TODO: replace mockData with fetched data from backend
   const rows = mockData;
-    const { player_id, date, player } = useLocalSearchParams<{
-      player_id: string;
-      date?: string;
-      player?: string;
-    }>();
+  const { player_id, date, player } = useLocalSearchParams<{
+    player_id: string;
+    date?: string;
+    player?: string;
+  }>();
 
   return (
     <View className="w-full px-4 py-6">
@@ -64,15 +82,20 @@ export default function RenderHistory() {
         <View key={row.dateISO}>
           {/* Header line with date + Edit */}
           <View className="flex-row items-center justify-between py-3">
-            <Text className="text-xs text-neutral-500">{formatDate(row.dateISO)}</Text>
-            <Pressable onPress={() =>
-                          router.push({
-                            pathname: "/player/body/[player_id]/BodyData" as RelativePathString,
-                            params: {
-                              player_id: String(player_id),
-                            },
-                          })
-                        }>
+            <Text className="text-xs text-neutral-500">
+              {formatDate(row.dateISO)}
+            </Text>
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname:
+                    "/player/body/[player_id]/BodyData" as RelativePathString,
+                  params: {
+                    player_id: String(player_id),
+                  },
+                })
+              }
+            >
               <Text className="text-emerald-700 underline">Edit</Text>
             </Pressable>
           </View>
@@ -86,7 +109,9 @@ export default function RenderHistory() {
           </View>
 
           {/* Separator (skip after last) */}
-          {idx < rows.length - 1 && <View className="h-px bg-neutral-200 mt-4" />}
+          {idx < rows.length - 1 && (
+            <View className="h-px bg-neutral-200 mt-4" />
+          )}
         </View>
       ))}
     </View>

@@ -13,7 +13,8 @@ type BodyStatsProps = {
 function StatCard({ label, value }: StatCardProps) {
   // Add % only for Fat % and Muscle %
   const displayValue =
-    label.toLowerCase().includes("fat") || label.toLowerCase().includes("muscle")
+    label.toLowerCase().includes("fat") ||
+    label.toLowerCase().includes("muscle")
       ? `${value}%`
       : `${value}`;
 

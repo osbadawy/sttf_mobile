@@ -16,13 +16,7 @@ export default function HistoryGraphSelector({
   const [active, setActive] = useState<"history" | "graph">(initialTab);
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
 
-  const Seg = ({
-    id,
-    label,
-  }: {
-    id: "history" | "graph";
-    label: string;
-  }) => {
+  const Seg = ({ id, label }: { id: "history" | "graph"; label: string }) => {
     const selected = active === id;
     return (
       <Pressable
@@ -37,7 +31,9 @@ export default function HistoryGraphSelector({
         accessibilityState={{ selected }}
       >
         <Text
-          className={selected ? "text-black font-medium" : "text-neutral-500 font-medium"}
+          className={
+            selected ? "text-black font-medium" : "text-neutral-500 font-medium"
+          }
         >
           {label}
         </Text>

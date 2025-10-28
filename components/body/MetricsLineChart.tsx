@@ -6,21 +6,24 @@ import Svg, { Circle, Line, Polyline, Text as SvgText } from "react-native-svg";
 type ChartType = "Weight" | "Fat" | "BMI" | "Muscle";
 
 type Props = {
-  data: number[];              // daily values in order
+  data: number[]; // daily values in order
   type: ChartType;
-  width?: number;              // optional, default 320
-  height?: number;             // optional, default 160
-  style?: any;                 // container style
+  width?: number; // optional, default 320
+  height?: number; // optional, default 160
+  style?: any; // container style
 };
 
 const GREEN = "#0E7A3E";
 const GRID = "rgba(0,0,0,0.08)";
 
-const Y_RANGES: Record<ChartType, { min: number; max: number; unit?: "%" | "" }> = {
-  Weight: { min: 0,  max: 90, unit: ""  },
-  BMI:    { min: 15, max: 32, unit: ""  },
-  Fat:    { min: 0,  max: 35, unit: "%" },
-  Muscle: { min: 0,  max: 100, unit: "%" },
+const Y_RANGES: Record<
+  ChartType,
+  { min: number; max: number; unit?: "%" | "" }
+> = {
+  Weight: { min: 0, max: 90, unit: "" },
+  BMI: { min: 15, max: 32, unit: "" },
+  Fat: { min: 0, max: 35, unit: "%" },
+  Muscle: { min: 0, max: 100, unit: "%" },
 };
 
 export default function MetricsLineChart({
@@ -30,7 +33,7 @@ export default function MetricsLineChart({
   height = 160,
   style,
 }: Props) {
-  const PADDING_L = 36; 
+  const PADDING_L = 36;
   const PADDING_R = 12;
   const PADDING_T = 12;
   const PADDING_B = 16;
@@ -55,32 +58,37 @@ export default function MetricsLineChart({
       const x = PADDING_L + i * dx;
       const clamped = Math.min(yMax, Math.max(yMin, v));
       const t = (clamped - yMin) / (yMax - yMin); // 0..1
-      const y = PADDING_T + innerH * (1 - t);     // invert for SVG coords
+      const y = PADDING_T + innerH * (1 - t); // invert for SVG coords
       return { x, y };
     });
   }, [data, innerW, innerH, yMin, yMax]);
 
-  const polylinePoints = points.map(p => `${p.x},${p.y}`).join(" ");
+  const polylinePoints = points.map((p) => `${p.x},${p.y}`).join(" ");
 
   return (
     <View style={[{ width, height }, style]}>
       <Svg width={width} height={height}>
         {/* outer top & bottom borders (as in mock) */}
         <Line
-          x1={PADDING_L} y1={PADDING_T}
-          x2={width - PADDING_R} y2={PADDING_T}
-          stroke={GRID} strokeWidth={1}
+          x1={PADDING_L}
+          y1={PADDING_T}
+          x2={width - PADDING_R}
+          y2={PADDING_T}
+          stroke={GRID}
+          strokeWidth={1}
         />
         <Line
-          x1={PADDING_L} y1={height - PADDING_B}
-          x2={width - PADDING_R} y2={height - PADDING_B}
-          stroke={GRID} strokeWidth={1}
+          x1={PADDING_L}
+          y1={height - PADDING_B}
+          x2={width - PADDING_R}
+          y2={height - PADDING_B}
+          stroke={GRID}
+          strokeWidth={1}
         />
 
         {/* horizontal grid */}
         {ticks.map((t, i) => {
-          const y =
-            PADDING_T + innerH - (innerH * (t - yMin)) / (yMax - yMin);
+          const y = PADDING_T + innerH - (innerH * (t - yMin)) / (yMax - yMin);
           return (
             <Line
               key={`h-${i}`}
@@ -97,8 +105,7 @@ export default function MetricsLineChart({
 
         {/* y-axis labels */}
         {ticks.map((t, i) => {
-          const y =
-            PADDING_T + innerH - (innerH * (t - yMin)) / (yMax - yMin);
+          const y = PADDING_T + innerH - (innerH * (t - yMin)) / (yMax - yMin);
           return (
             <SvgText
               key={`lbl-${i}`}
