@@ -1,21 +1,19 @@
 import TableBg from "@/components/icons/playerIndexPage/TableBg";
+import TrophyIcon from "@/components/icons/playerIndexPage/TrophyIcon";
 import Nav from "@/components/Nav";
 import TableItem from "@/components/playerIndexPage/TableItem";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  LayoutChangeEvent,
   ScrollView,
   Text,
   View,
-  useWindowDimensions,
+  useWindowDimensions
 } from "react-native";
 
 export default function PlayerIndexPage() {
   const { width: viewportWidth, height: viewportHeight } =
     useWindowDimensions();
-  const [tableHeight, setTableHeight] = useState(0);
-  const [tableWidth, setTableWidth] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [contentContainer, setContentContainer] = useState<View | null>(null);
   const [contentHeight, setContentHeight] = useState(0);
@@ -23,6 +21,8 @@ export default function PlayerIndexPage() {
   const [itemPositions, setItemPositions] = useState<Record<number, number>>(
     {},
   );
+
+  const tableHeight = viewportHeight * 0.7
 
   // Refs for TableItem measurement functions
   const itemMeasureRefs = useRef<(() => void)[]>([]);
@@ -251,15 +251,18 @@ export default function PlayerIndexPage() {
           position: "absolute",
           bottom: 0,
           width: viewportWidth,
-          height: viewportHeight * 0.7,
-          overflow: "hidden",
+          height: tableHeight,
+          overflowX: "hidden",
           alignSelf: "center",
         }}
-        onLayout={({ nativeEvent }: LayoutChangeEvent) => {
-          setTableHeight(nativeEvent.layout.height);
-          setTableWidth(nativeEvent.layout.width);
-        }}
       >
+        <TrophyIcon
+        style={{
+          position: "absolute",
+          top: -131,
+          alignSelf: "center"
+        }}
+        />
         <TableBg
           style={{
             width: viewportWidth,
@@ -274,7 +277,7 @@ export default function PlayerIndexPage() {
           position: "absolute",
           bottom: 0,
           height: tableHeight,
-          width: tableWidth,
+          width: viewportWidth,
           alignSelf: "center",
         }}
       >
@@ -283,7 +286,7 @@ export default function PlayerIndexPage() {
           style={{
             position: "relative",
             height: tableHeight,
-            width: tableWidth,
+            width: viewportWidth,
           }}
           onScroll={handleScroll}
           scrollEventThrottle={16}
@@ -299,10 +302,10 @@ export default function PlayerIndexPage() {
             ref={setContentContainer}
             collapsable={false}
             style={{
-              width: tableWidth,
+              width: viewportWidth,
               alignItems: "center",
               justifyContent: "center",
-              paddingVertical: tableHeight / 2,
+              paddingTop: tableHeight / 2,
             }}
           >
             {items.map((item, idx) => (
@@ -315,7 +318,7 @@ export default function PlayerIndexPage() {
                 scrollY={scrollY}
                 refCallback={(fn: () => void) => registerMeasure(idx, fn)}
                 parentHeight={tableHeight}
-                parentWidth={tableWidth}
+                parentWidth={viewportWidth}
                 isComplete={item.isComplete}
                 category={item.category}
                 onPositionMeasured={(y: number) =>
