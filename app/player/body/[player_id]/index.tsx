@@ -50,7 +50,7 @@ export default function Body() {
             title="Add Measurements"
             onPress={() =>
               router.push({
-                pathname: "/player/body/[player_id]" as RelativePathString,
+                pathname: "/player/body/[player_id]/BodyData" as RelativePathString,
                 params: {
                   player_id: String(player_id),
                 },
