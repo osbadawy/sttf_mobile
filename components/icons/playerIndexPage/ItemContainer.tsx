@@ -20,7 +20,7 @@ export default function ItemContainer({
   isComplete = false,
 }: ItemContainerProps) {
   const colors = {
-    workout: {
+    activity: {
       color1: "#009FA0",
       color2: "#00BBBD",
       shadowColor: "#004646",
@@ -54,7 +54,7 @@ export default function ItemContainer({
       height={79}
       fill="none"
       {...svgProps}
-      style={{ opacity: isComplete ? 0.5 : 1 }}
+      style={{ opacity: isComplete ? 0.8 : 1 }}
     >
       <Path
         fill={shadowColor}

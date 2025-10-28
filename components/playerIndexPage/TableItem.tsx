@@ -1,36 +1,35 @@
 import ItemContainer from "@/components/icons/playerIndexPage/ItemContainer";
+import { PlannedActivity } from "@/schemas/PlannedActivity";
+import { GetMealsResponse } from "@/schemas/PlannedMeal";
+import { PlayerSelfAssessment } from "@/schemas/PlayerSelfAssessment";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import DynamicIcon from "../icons/playerIndexPage/DynamicIcon";
-
-export type TableItemType = "meal" | "workout" | "assessment";
+export type TableItemType = "meal" | "activity" | "assessment";
 
 interface TableItemProps {
   type: TableItemType;
   contentContainer: View | null;
-  label: string;
   scrollY: number;
   refCallback: (fn: () => void) => void;
   parentHeight: number;
   parentWidth: number;
   disabled?: boolean;
   onPositionMeasured?: (y: number) => void;
-  id: number;
   isComplete?: boolean;
   category?: string;
+  data: PlannedActivity | GetMealsResponse | PlayerSelfAssessment | null;
 }
 
 export default function TableItem({
   type,
   contentContainer,
-  label,
   scrollY,
   refCallback,
   parentHeight,
   parentWidth,
   disabled = false,
   onPositionMeasured,
-  id,
   isComplete = false,
   category,
 }: TableItemProps) {
@@ -46,7 +45,7 @@ export default function TableItem({
           setBasePosition({ x, y });
         },
         () => {
-          console.warn(`[${label}] Measure failed`);
+          console.warn(` Measure failed`);
         },
       );
     }
@@ -72,8 +71,7 @@ export default function TableItem({
   // Calculate scale and translation based on position in viewport
   // Creates a tilted table effect
   const calculateTransform = () => {
-    if (!parentHeight)
-      return { scale: 1, translateX: 0, translateY: 0, opacity: 1 };
+    if (!parentHeight) return { scale: 1, translateX: 0, translateY: 0 };
 
     // Position relative to the visible viewport
     const relativeY = basePosition.y - scrollY;
@@ -95,7 +93,7 @@ export default function TableItem({
     let baseOffsetX = 0;
     if (type === "meal") {
       baseOffsetX = -lateralOffset;
-    } else if (type === "workout") {
+    } else if (type === "activity") {
       baseOffsetX = lateralOffset;
     }
 
@@ -124,16 +122,10 @@ export default function TableItem({
       translateY = -itemIndex * 15; // 15px compression per item position
     }
 
-    let opacity = 1;
-    const opacityThreshold = 0.4;
-    if (normalizedY < opacityThreshold) {
-      opacity = normalizedY / opacityThreshold;
-    }
-
-    return { scale, translateX, translateY, opacity };
+    return { scale, translateX, translateY };
   };
 
-  const { scale, translateX, translateY, opacity } = calculateTransform();
+  const { scale, translateX, translateY } = calculateTransform();
 
   // Register with parent
   useEffect(() => {
@@ -163,7 +155,6 @@ export default function TableItem({
   // Callback ref
   const setRef = (ref: View | null) => {
     if (ref) {
-      console.log(`[${label}] setRef called`);
       setItemView(ref);
     }
   };
@@ -184,7 +175,7 @@ export default function TableItem({
         alignItems: "center",
         borderRadius: 16,
         transform: [{ scale }, { translateX }, { translateY }],
-        opacity: visible ? opacity : 0,
+        opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
       }}
     >

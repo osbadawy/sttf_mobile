@@ -1,15 +1,13 @@
 import TableBg from "@/components/icons/playerIndexPage/TableBg";
 import TrophyIcon from "@/components/icons/playerIndexPage/TrophyIcon";
 import Nav from "@/components/Nav";
-import TableItem from "@/components/playerIndexPage/TableItem";
+import TableItem, {
+  TableItemType,
+} from "@/components/playerIndexPage/TableItem";
+import { usePlayerDay } from "@/hooks/usePlayerDay";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ScrollView,
-  Text,
-  View,
-  useWindowDimensions
-} from "react-native";
+import { ScrollView, Text, View, useWindowDimensions } from "react-native";
 
 export default function PlayerIndexPage() {
   const { width: viewportWidth, height: viewportHeight } =
@@ -22,7 +20,14 @@ export default function PlayerIndexPage() {
     {},
   );
 
-  const tableHeight = viewportHeight * 0.7
+  const { data, error, loading } = usePlayerDay({
+    day: new Date(),
+  });
+
+  const oldestIncompleteItemIndex =
+    data.length - [...data].findIndex((item) => !item.isCompleted);
+
+  const tableHeight = viewportHeight * 0.7;
 
   // Refs for TableItem measurement functions
   const itemMeasureRefs = useRef<(() => void)[]>([]);
@@ -40,94 +45,6 @@ export default function PlayerIndexPage() {
   const registerMeasure = (index: number, fn: () => void) => {
     itemMeasureRefs.current[index] = fn;
   };
-
-  // Labels for items (for demonstration)
-  const items = [
-    {
-      id: 1,
-      type: "meal",
-      label: "Meal 1",
-      isComplete: false,
-      category: "breakfast",
-    },
-    {
-      id: 2,
-      type: "meal",
-      label: "Meal 2",
-      isComplete: false,
-      category: "lunch",
-    },
-    {
-      id: 3,
-      type: "meal",
-      label: "Meal 3",
-      isComplete: false,
-      category: "dinner",
-    },
-    {
-      id: 4,
-      type: "meal",
-      label: "Meal 4",
-      isComplete: false,
-      category: "snack",
-    },
-    {
-      id: 5,
-      type: "assessment",
-      label: "Assessment 1",
-      isComplete: false,
-      category: "assessment",
-    },
-    {
-      id: 6,
-      type: "workout",
-      label: "Workout 1",
-      isComplete: false,
-      category: "technical",
-    },
-    {
-      id: 7,
-      type: "workout",
-      label: "Workout 2",
-      isComplete: false,
-      category: "strength",
-    },
-    {
-      id: 8,
-      type: "workout",
-      label: "Workout 3",
-      isComplete: false,
-      category: "recovery",
-    },
-    {
-      id: 9,
-      type: "workout",
-      label: "Workout 4",
-      isComplete: false,
-      category: "workout",
-    },
-    {
-      id: 10,
-      type: "meal",
-      label: "Workout 5",
-      isComplete: true,
-      category: "workout",
-    },
-    {
-      id: 11,
-      type: "workout",
-      label: "Workout 6",
-      isComplete: true,
-      category: "workout",
-    },
-    {
-      id: 12,
-      type: "workout",
-      label: "Workout 7",
-      isComplete: true,
-      category: "workout",
-    },
-  ];
 
   // Store item position when measured (only if it changed)
   const handleItemPositionMeasured = useCallback((id: number, y: number) => {
@@ -147,6 +64,7 @@ export default function PlayerIndexPage() {
       if (itemY !== undefined) {
         // Position the item 100 pixels above the bottom of the viewport
         const targetOffset = Math.max(0, itemY - tableHeight + 200);
+        console.log({ itemY, tableHeight, targetOffset });
 
         if (!animated) {
           setScrollOffset(targetOffset);
@@ -182,9 +100,6 @@ export default function PlayerIndexPage() {
               animationFrameRef.current = requestAnimationFrame(animate);
             } else {
               animationFrameRef.current = null;
-              console.log(
-                `Scrolled to item ${id} at position ${itemY}, offset: ${targetOffset}`,
-              );
             }
           };
 
@@ -215,23 +130,22 @@ export default function PlayerIndexPage() {
     };
   }, []);
 
-  // Extract item 7 position to avoid object reference issues
-  const item7Position = itemPositions[7];
+  const oldestIncompleteItemPosition = itemPositions[oldestIncompleteItemIndex];
 
-  // Auto-scroll to item 7 after initial load (only once)
+  // Auto-scroll to item
   useEffect(() => {
     if (
       !hasScrolledToItem.current &&
-      item7Position !== undefined &&
+      oldestIncompleteItemPosition !== undefined &&
       tableHeight > 0
     ) {
       hasScrolledToItem.current = true;
       const timer = setTimeout(() => {
-        scrollToItem(7);
+        scrollToItem(oldestIncompleteItemIndex);
       }, 200); // Wait 2 seconds after scrolling to bottom
       return () => clearTimeout(timer);
     }
-  }, [item7Position, tableHeight, scrollToItem]);
+  }, [oldestIncompleteItemPosition, tableHeight, scrollToItem]);
 
   return (
     <LinearGradient
@@ -244,6 +158,9 @@ export default function PlayerIndexPage() {
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>
           Player Index Page
         </Text>
+        {error && (
+          <Text style={{ color: "red", fontSize: 14 }}>Error: {error}</Text>
+        )}
       </View>
 
       <View
@@ -257,11 +174,11 @@ export default function PlayerIndexPage() {
         }}
       >
         <TrophyIcon
-        style={{
-          position: "absolute",
-          top: -131,
-          alignSelf: "center"
-        }}
+          style={{
+            position: "absolute",
+            top: -131,
+            alignSelf: "center",
+          }}
         />
         <TableBg
           style={{
@@ -308,21 +225,20 @@ export default function PlayerIndexPage() {
               paddingTop: tableHeight / 2,
             }}
           >
-            {items.map((item, idx) => (
+            {data.map((item, idx) => (
               <TableItem
-                key={item.id}
-                id={item.id}
-                type={item.type as "meal" | "workout"}
-                label={item.label}
+                key={idx}
+                type={item.type as TableItemType}
                 contentContainer={contentContainer}
                 scrollY={scrollY}
                 refCallback={(fn: () => void) => registerMeasure(idx, fn)}
                 parentHeight={tableHeight}
                 parentWidth={viewportWidth}
-                isComplete={item.isComplete}
+                isComplete={item.isCompleted}
                 category={item.category}
+                data={item.data}
                 onPositionMeasured={(y: number) =>
-                  handleItemPositionMeasured(item.id, y)
+                  handleItemPositionMeasured(idx, y)
                 }
               />
             ))}
