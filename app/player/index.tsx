@@ -1,13 +1,15 @@
-import TableBg from "@/components/icons/playerIndexPage/TableBg";
-import TrophyIcon from "@/components/icons/playerIndexPage/TrophyIcon";
+import Header from "@/components/Header";
+import TableBg from "@/components/icons/playerDayPlan/TableBg";
+import TrophyIcon from "@/components/icons/playerDayPlan/TrophyIcon";
 import Nav from "@/components/Nav";
 import TableItem, {
   TableItemType,
-} from "@/components/playerIndexPage/TableItem";
+} from "@/components/playerDayPlan/TableItem";
 import { usePlayerDay } from "@/hooks/usePlayerDay";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
 
 export default function PlayerIndexPage() {
   const { width: viewportWidth, height: viewportHeight } =
@@ -19,6 +21,8 @@ export default function PlayerIndexPage() {
   const [itemPositions, setItemPositions] = useState<Record<number, number>>(
     {},
   );
+
+  const { userName, profilePicture, access } = useUserProfile();
 
   const { data, error, loading } = usePlayerDay({
     day: new Date(),
@@ -154,14 +158,14 @@ export default function PlayerIndexPage() {
       end={{ x: 0, y: 1 }}
       style={{ flex: 1 }}
     >
-      <View style={{ padding: 20, gap: 10 }}>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-          Player Index Page
-        </Text>
-        {error && (
-          <Text style={{ color: "red", fontSize: 14 }}>Error: {error}</Text>
-        )}
-      </View>
+      <Header
+        name={userName || access}
+        profilePicture={profilePicture}
+        showDateSelector={false}
+        showBackButton={false}
+        showBGImage={false}
+        showCalendarIcon={false}
+      />
 
       <View
         style={{

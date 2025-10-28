@@ -1,4 +1,4 @@
-import { TableItemType } from "@/components/playerIndexPage/TableItem";
+import { TableItemType } from "@/components/playerDayPlan/TableItem";
 import Svg, {
   Defs,
   LinearGradient,

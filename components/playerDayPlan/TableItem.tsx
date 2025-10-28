@@ -1,10 +1,10 @@
-import ItemContainer from "@/components/icons/playerIndexPage/ItemContainer";
+import ItemContainer from "@/components/icons/playerDayPlan/ItemContainer";
 import { PlannedActivity } from "@/schemas/PlannedActivity";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import { PlayerSelfAssessment } from "@/schemas/PlayerSelfAssessment";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import DynamicIcon from "../icons/playerIndexPage/DynamicIcon";
+import DynamicIcon from "../icons/playerDayPlan/DynamicIcon";
 export type TableItemType = "meal" | "activity" | "assessment";
 
 interface TableItemProps {
@@ -35,7 +35,6 @@ export default function TableItem({
 }: TableItemProps) {
   const [itemView, setItemView] = useState<View | null>(null);
   const [basePosition, setBasePosition] = useState({ x: 0, y: 0 });
-  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const measurePosition = () => {
     if (itemView && contentContainer) {
