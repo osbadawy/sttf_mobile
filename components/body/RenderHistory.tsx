@@ -1,4 +1,5 @@
 // components/body/RenderHistory.tsx
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 type HistoryRow = {
@@ -46,6 +47,11 @@ function StatCell({
 export default function RenderHistory() {
   // TODO: replace mockData with fetched data from backend
   const rows = mockData;
+    const { player_id, date, player } = useLocalSearchParams<{
+      player_id: string;
+      date?: string;
+      player?: string;
+    }>();
 
   return (
     <View className="w-full px-4 py-6">
@@ -59,7 +65,14 @@ export default function RenderHistory() {
           {/* Header line with date + Edit */}
           <View className="flex-row items-center justify-between py-3">
             <Text className="text-xs text-neutral-500">{formatDate(row.dateISO)}</Text>
-            <Pressable onPress={() => { /* TODO: open edit modal */ }}>
+            <Pressable onPress={() =>
+                          router.push({
+                            pathname: "/player/body/[player_id]/BodyData" as RelativePathString,
+                            params: {
+                              player_id: String(player_id),
+                            },
+                          })
+                        }>
               <Text className="text-emerald-700 underline">Edit</Text>
             </Pressable>
           </View>
