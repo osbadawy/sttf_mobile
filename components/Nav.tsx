@@ -16,10 +16,19 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
+const homePageHref = (access: string): RelativePathString => {
+  if (access === "coach") {
+    return "/coach/dashboard" as RelativePathString;
+  } else if (access === "player") {
+    return "/player" as RelativePathString;
+  }
+  return "/login" as RelativePathString;
+};
+
 const playerNavItems = (access: string): NavItem[] => [
-  { href: "/" as RelativePathString, label: "Home", icon: <HomeIcon /> },
+  { href: homePageHref(access), label: "Home", icon: <HomeIcon /> },
   {
-    href: `/${access}/dashboard` as RelativePathString,
+    href: `/player/dashboard` as RelativePathString,
     label: "Dashboard",
     icon: <AnalyticsIcon />,
   },

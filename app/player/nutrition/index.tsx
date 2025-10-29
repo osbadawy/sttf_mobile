@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
+import { uploadToFirebase } from "@/utils/uploadToFirebase";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
@@ -65,10 +66,27 @@ export default function MealLogPage() {
     }
 
     try {
+      let uploadedImageUrl: string | null = null;
+
+      // Upload image to Firebase Storage if imageUrl exists
+      if (photoUri) {
+        try {
+          uploadedImageUrl = await uploadToFirebase({
+            folderName: "sttf/nutrition",
+            id: user.uid,
+            includeDate: true,
+            imageUri: photoUri,
+          });
+        } catch (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          throw new Error("Failed to upload image");
+        }
+      }
+
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal/complete`;
       const body = {
         id: mealId,
-        // img_url: photoUri, //TODO: Handle img with firebase bucket
+        img_url: uploadedImageUrl,
       };
       const response = await fetch(url, {
         method: "POST",

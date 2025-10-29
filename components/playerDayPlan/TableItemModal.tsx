@@ -183,9 +183,7 @@ export default function TableItemModal({
             <Text className="text-2xl effra-semibold">{title}</Text>
           </View>
 
-          <View className="pt-0 pb-4">
-            {contentElement}
-          </View>
+          <View className="pt-0 pb-4">{contentElement}</View>
 
           {selfAssessmentText && !isComplete && !isFutureEvent && (
             <View>
