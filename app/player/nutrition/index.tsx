@@ -175,7 +175,6 @@ export default function MealLogPage() {
                     const isCompleted = Boolean(
                       mealAssignment && mealAssignment.completions.length > 0,
                     );
-                    console.log({ isToday });
 
                     return (
                       <MealCard

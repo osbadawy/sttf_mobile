@@ -46,8 +46,6 @@ export function useUser(firebase_id?: string): UseFirebaseUserReturn {
     // If firebase_id is undefined, use the current user's uid
     const userId = firebase_id || user.uid;
 
-    console.log({ userId });
-
     // Check cache first
     const cacheKey = userId;
     const cachedData = dataCache.get(cacheKey);

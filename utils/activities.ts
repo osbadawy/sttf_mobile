@@ -1,10 +1,10 @@
-export function seperateDataByDay(data: any): Record<number, any[]> {
-  const date_seperated_data: Record<number, any[]> = {};
+export function seperateDataByDay(data: any): Record<string, any[]> {
+  const date_seperated_data: Record<string, any[]> = {};
 
   for (const item of data) {
     const date = new Date(item.start);
     date.setHours(0, 0, 0, 0);
-    const timestamp = date.getTime();
+    const timestamp = date.toISOString();
     if (date_seperated_data[timestamp] === undefined) {
       date_seperated_data[timestamp] = [];
     }

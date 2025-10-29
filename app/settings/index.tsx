@@ -82,7 +82,6 @@ export default function Settings() {
 
   useEffect(() => {
     if (data) {
-      console.log({ data });
       setName(data.display_name || userName || "");
       setNationalityCode(data.nationality || "SA");
       setDob(
@@ -192,14 +191,6 @@ export default function Settings() {
     if (!asset?.uri) return;
 
     setLocalAvatarUri(asset.uri);
-    console.log("Selected image for upload:", {
-      uri: asset.uri,
-      width: asset.width,
-      height: asset.height,
-      fileName: asset.fileName,
-      mimeType: asset.mimeType,
-      fileSize: asset.fileSize,
-    });
   };
 
   // ------- RTL helpers -------
