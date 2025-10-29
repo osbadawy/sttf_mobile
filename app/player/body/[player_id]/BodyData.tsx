@@ -1,11 +1,9 @@
-// app/player/body/[player_id]/body-data.tsx (or wherever you want it)
-// If you prefer a different path, keep the component export as default.
-
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import DateField from "@/components/settings/DateField";
 import DatePickerModal from "@/components/settings/DatePickerModal";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { useMemo, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -27,21 +25,43 @@ export default function BodyData() {
   const { t, isRTL } = useLocalization("components.plan.meal");
   const insets = useSafeAreaInsets();
 
-  // date state
+  // read incoming params (optional)
+  const params = useLocalSearchParams<{
+    player_id?: string;
+    dateISO?: string;
+    weightKg?: string;
+    bmi?: string;
+    fatPct?: string;
+    musclePct?: string;
+  }>();
+
+  // local state
   const [date, setDate] = useState<Date>(new Date());
   const [dateOpen, setDateOpen] = useState(false);
 
-  // inputs
   const [weight, setWeight] = useState<string>("");
   const [bmi, setBmi] = useState<string>("");
   const [fat, setFat] = useState<string>("");
   const [muscle, setMuscle] = useState<string>("");
+
+  // hydrate from params (if provided)
+  useEffect(() => {
+    if (params?.dateISO) {
+      const d = new Date(params.dateISO as string);
+      if (!isNaN(d.getTime())) setDate(d);
+    }
+    if (params?.weightKg != null) setWeight(String(params.weightKg));
+    if (params?.bmi != null) setBmi(String(params.bmi));
+    if (params?.fatPct != null) setFat(String(params.fatPct));
+    if (params?.musclePct != null) setMuscle(String(params.musclePct));
+  }, [params?.dateISO, params?.weightKg, params?.bmi, params?.fatPct, params?.musclePct]);
 
   const dateLabel = useMemo(() => formatDateDDMMYYYY(date), [date]);
 
   const onConfirm = () => {
     // TODO: call backend with parsed numbers
     const payload = {
+      playerId: params.player_id ?? null,
       date: date.toISOString(),
       weightKg: Number(weight),
       bmi: Number(bmi),
@@ -51,7 +71,6 @@ export default function BodyData() {
     console.log("Submitting Body Data:", payload);
   };
 
-  // shared card style
   const cardClass =
     "flex-1 rounded-2xl bg-white border border-neutral-200 px-4 py-3 shadow-sm";
 
@@ -71,7 +90,7 @@ export default function BodyData() {
         style={{ flex: 1 }}
       >
         <View className="flex-1 px-4 pt-4 pb-4">
-          {/* Date selector (top) */}
+          {/* Date selector */}
           <View className="mb-5">
             <DateField
               label=""
@@ -91,7 +110,7 @@ export default function BodyData() {
             />
           </View>
 
-          {/* Inputs grid: 2 x 2 */}
+          {/* Inputs grid */}
           <View className="gap-3">
             <View className="flex-row gap-3">
               <View className={cardClass}>
@@ -147,7 +166,7 @@ export default function BodyData() {
           </View>
         </View>
 
-        {/* Sticky confirm button */}
+        {/* Sticky confirm */}
         <View
           style={{ paddingBottom: Math.max(insets.bottom, 16) }}
           className="px-4 pt-2"
