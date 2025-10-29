@@ -4,9 +4,15 @@ type Props = {
   label: string;
   valueLabel: string;
   onPress: () => void;
+  isRTL: boolean;
 };
 
-export default function SelectField({ label, valueLabel, onPress }: Props) {
+export default function SelectField({
+  label,
+  valueLabel,
+  onPress,
+  isRTL,
+}: Props) {
   return (
     <View className="mt-3">
       <Text className="mb-1 text-xs text-neutral-600">{label}</Text>

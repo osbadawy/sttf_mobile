@@ -10,6 +10,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
+import Player from "@/schemas/Player";
 import Constants from "expo-constants";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
