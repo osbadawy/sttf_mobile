@@ -36,9 +36,6 @@ export default function PlayerIndexPage() {
 
   const oldestIncompleteItemIndex =
     data.length - [...data].reverse().findIndex((item) => !item.isCompleted);
-
-  console.log({ oldestIncompleteItemIndex });
-
   const tableHeight = viewportHeight * 0.7;
 
   // Refs for TableItem measurement functions
@@ -75,7 +72,7 @@ export default function PlayerIndexPage() {
       const itemY = itemPositions[id];
       if (itemY !== undefined) {
         // Position the item 100 pixels above the bottom of the viewport
-        const targetOffset = Math.max(0, itemY - tableHeight + 200);
+        const targetOffset = Math.max(0, itemY - tableHeight);
 
         if (!animated) {
           setScrollOffset(targetOffset);
