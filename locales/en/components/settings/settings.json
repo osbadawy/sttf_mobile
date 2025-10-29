@@ -25,5 +25,6 @@
   "save": "Save",
   "error": "Error",
   "success": "Success",
-  "settings saved successfully": "Settings saved successfully"
+  "settings saved successfully": "Settings saved successfully",
+  "height (cm)": "Height (cm)"
 }

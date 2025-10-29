@@ -13,6 +13,7 @@ interface UserData {
   display_name: string | null;
   player_stats: {
     dominant_hand: "right" | "left";
+    height_cm: number;
     win_rate: number | null;
     matches_played: number | null;
     serve_win_percentage: number | null;

@@ -25,5 +25,6 @@
   "save": "حفظ",
   "error": "خطأ",
   "success": "نجح",
-  "settings saved successfully": "تم حفظ الإعدادات بنجاح"
+  "settings saved successfully": "تم حفظ الإعدادات بنجاح",
+  "height (cm)": "الطول (سم)"
 }

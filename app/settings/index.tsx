@@ -54,6 +54,7 @@ export default function Settings() {
   const [nationalityCode, setNationalityCode] = useState<string>("SA");
   const [dob, setDob] = useState<Date>(new Date(2000, 1, 1));
   const [hand, setHand] = useState<PlayHand>("right");
+  const [height, setHeight] = useState<number>(180);
 
   // --- modal state ---
   const [nationalityOpen, setNationalityOpen] = useState<boolean>(false);
@@ -82,12 +83,14 @@ export default function Settings() {
 
   useEffect(() => {
     if (data) {
+      console.log("data", data);
       setName(data.display_name || userName || "");
       setNationalityCode(data.nationality || "SA");
       setDob(
         data.birth_date ? new Date(data.birth_date) : new Date(2000, 1, 1),
       );
       setHand(data.player_stats?.dominant_hand || "right");
+      setHeight(data.player_stats?.height_cm || 180);
     }
   }, [data]);
 
@@ -125,6 +128,7 @@ export default function Settings() {
         nationality: nationalityCode,
         birth_date: dob.toISOString(),
         dominant_hand: hand,
+        height_cm: height,
         avatar_url: uploadedImageUrl,
       };
 
@@ -304,6 +308,19 @@ export default function Settings() {
             setHandOpen(false);
           }}
         />
+
+        {/* Height */}
+        <View className="mt-3">
+          <LabeledInput
+            isRTL={isRTL}
+            label={t("height (cm)")}
+            value={height.toString()}
+            onChangeText={(text) => setHeight(Number(text))}
+            placeholder={height.toString()}
+            containerClass="flex-1"
+            inputMode="numeric"
+          />
+        </View>
 
         <View className="py-10 px-6">
           <CustomButton

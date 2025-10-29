@@ -23,6 +23,7 @@ type Props = {
   keyboardType?: KeyboardKinds;
   containerClass?: string;
   isRTL: boolean;
+  inputMode?: "text" | "numeric";
 };
 
 export default function LabeledInput({
@@ -33,6 +34,7 @@ export default function LabeledInput({
   keyboardType = "default",
   containerClass = "",
   isRTL,
+  inputMode = "text",
 }: Props) {
   return (
     <View className={`flex-1 ${containerClass}`}>
@@ -45,6 +47,7 @@ export default function LabeledInput({
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
           keyboardType={keyboardType}
+          inputMode={inputMode}
         />
       </View>
     </View>
