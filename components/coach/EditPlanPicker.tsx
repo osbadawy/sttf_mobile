@@ -1,9 +1,7 @@
-import { ActivityIcon, AnalyticsIcon, NutritionIcon } from "@/components/icons";
+import { ActivityIcon, BodyIcon, NutritionIcon } from "@/components/icons";
 import { router, type RelativePathString } from "expo-router";
 import { cloneElement, memo, ReactElement } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-
-type PlanPath = "/plan/meals" | "/plan/workout" | "/plan/body";
 
 interface Props {
   playerIds?: string[];
@@ -16,7 +14,9 @@ interface Props {
 interface NavItem {
   label: string;
   icon: ReactElement; // raw element
-  path: PlanPath;
+  path: RelativePathString;
+  params: Record<string, any>;
+  disabled: boolean;
 }
 
 const EditPlanPicker = memo(function EditPlanPicker({
@@ -25,20 +25,46 @@ const EditPlanPicker = memo(function EditPlanPicker({
   className = "",
   insetBottom = 0,
 }: Props) {
-  const disabled = playerIds.length === 0;
-
   const items: NavItem[] = [
-    { label: "Meals", icon: <NutritionIcon />, path: "/plan/meal" },
-    { label: "Workout", icon: <ActivityIcon />, path: "/plan/workout" },
-    { label: "Body", icon: <AnalyticsIcon />, path: "/plan/body" },
+    {
+      label: "Meals",
+      icon: <NutritionIcon />,
+      path: "/plan/meal" as RelativePathString,
+      params: { players: encodeURIComponent(JSON.stringify(playerIds)) },
+      disabled: playerIds.length === 0,
+    },
+    {
+      label: "Workout",
+      icon: <ActivityIcon />,
+      path: "/plan/workout" as RelativePathString,
+      params: { players: encodeURIComponent(JSON.stringify(playerIds)) },
+      disabled: playerIds.length === 0,
+    },
+    {
+      label: "Body",
+      icon: <BodyIcon />,
+      path: "/player/body/BodyData" as RelativePathString,
+      params: {
+        player: encodeURIComponent(
+          JSON.stringify({
+            firebase_id: playerIds[0],
+          }),
+        ),
+      },
+      disabled: playerIds.length !== 1,
+    },
   ];
 
-  const go = (path: PlanPath): void => {
+  const go = (
+    path: RelativePathString,
+    disabled: boolean,
+    params: Record<string, any>,
+  ): void => {
     if (disabled) return;
     const q = encodeURIComponent(JSON.stringify(playerIds));
     router.push({
-      pathname: path as RelativePathString,
-      params: { players: q },
+      pathname: path,
+      params,
     });
   };
 
@@ -57,7 +83,7 @@ const EditPlanPicker = memo(function EditPlanPicker({
     if (supportsClassName) {
       const iconWithClass = icon as ReactElement<{ className?: string }>;
       tintedIcon = cloneElement(iconWithClass, {
-        className: disabled ? "text-neutral-300" : "text-black",
+        className: def.disabled ? "text-neutral-300" : "text-black",
       });
     }
 
@@ -65,13 +91,13 @@ const EditPlanPicker = memo(function EditPlanPicker({
       <TouchableOpacity
         className="flex-1 items-center justify-center"
         activeOpacity={0.7}
-        disabled={disabled}
-        onPress={() => go(path)}
-        style={{ opacity: disabled ? 0.35 : 1 }}
+        disabled={def.disabled}
+        onPress={() => go(path, def.disabled, def.params)}
+        style={{ opacity: def.disabled ? 0.35 : 1 }}
       >
         <View>{tintedIcon}</View>
         <Text
-          className={`mt-1 text-sm ${disabled ? "text-neutral-300" : "text-black"}`}
+          className={`mt-1 text-sm ${def.disabled ? "text-neutral-300" : "text-black"}`}
         >
           {label}
         </Text>

@@ -10,7 +10,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { clearBodyCompositionLatestCache } from "@/hooks/useBodyCompositionLatest";
 import { clearBodyCompositionsCache } from "@/hooks/useBodyCompositions";
 import Constants from "expo-constants";
-import { RelativePathString, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   Alert,
@@ -35,7 +35,7 @@ export default function BodyData() {
   const { user } = useAuth();
   const { player } = useLocalSearchParams();
   const playerData = JSON.parse((player as string) || "{}");
-
+  console.log({ playerData });
   // date state
   const [date, setDate] = useState<Date>(new Date());
   const [dateOpen, setDateOpen] = useState(false);
@@ -78,6 +78,8 @@ export default function BodyData() {
       );
 
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error({ errorData });
         Alert.alert("Error", "Failed to submit body data");
         return;
       }
@@ -86,7 +88,7 @@ export default function BodyData() {
       clearBodyCompositionLatestCache();
       clearBodyCompositionsCache();
 
-      router.replace(`/player/body` as RelativePathString);
+      router.back();
     } catch (error) {
       Alert.alert("Error", "Failed to submit body data");
     } finally {
@@ -111,7 +113,7 @@ export default function BodyData() {
     >
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", android: undefined })}
-        style={{ flex: 1 }}
+        style={{ flex: 1, paddingBottom: 30 }}
       >
         <View className="flex-1 px-4 pt-4 pb-4">
           {/* Date selector (top) */}

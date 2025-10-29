@@ -83,7 +83,6 @@ export default function Settings() {
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       setName(data.display_name || userName || "");
       setNationalityCode(data.nationality || "SA");
       setDob(

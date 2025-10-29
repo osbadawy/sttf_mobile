@@ -76,8 +76,8 @@ export default function PlayerCard({
             </View>
 
             {/* Image + straight white fade */}
-            {p.photo_url ? (
-              <View className="items-end relative">
+            <View className="items-end relative">
+              {p.photo_url ? (
                 <Image
                   source={{
                     uri: p.photo_url,
@@ -93,21 +93,31 @@ export default function PlayerCard({
                   }}
                   resizeMode="cover"
                 />
-                <LinearGradient
-                  colors={["transparent", "white"]}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
+              ) : (
+                <View
                   style={{
-                    position: "absolute",
-                    bottom: -5,
-                    height: R * 0.35,
                     width: R,
+                    height: R,
+                    borderRadius: R / 2,
+                    transform: [
+                      { translateX: offsetX },
+                      { translateY: offsetY },
+                    ],
                   }}
                 />
-              </View>
-            ) : (
-              <View style={{ height: 8 }} />
-            )}
+              )}
+              <LinearGradient
+                colors={["transparent", "white"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={{
+                  position: "absolute",
+                  bottom: -5,
+                  height: R * 0.35,
+                  width: R,
+                }}
+              />
+            </View>
           </View>
 
           {/* --- READINESS BAR --- */}

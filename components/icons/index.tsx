@@ -4,6 +4,7 @@ import ActivityPageBg from "./ActivityPageBg";
 import AnalyticsIcon from "./Analytics";
 import Arrow from "./Arrow";
 import ArrowBig from "./ArrowBig";
+import BodyIcon from "./BodyIcon";
 import CheckIcon from "./Check";
 import { GreenCheckIcon } from "./CheckGreen";
 import ClockIcon from "./Clock";
@@ -34,6 +35,7 @@ export {
   AnalyticsIcon,
   Arrow,
   ArrowBig,
+  BodyIcon,
   CheckIcon,
   ClockIcon,
   ClockInvertedIcon,
