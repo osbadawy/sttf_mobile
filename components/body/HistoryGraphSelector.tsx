@@ -42,7 +42,7 @@ export default function HistoryGraphSelector({
   };
 
   return (
-    <View className="px-4 bg-white rounded-xl">
+    <View className="px-4 py-4 bg-white rounded-xl">
       {/* Segmented control */}
       <View
         className={[

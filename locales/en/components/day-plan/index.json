@@ -1,0 +1,22 @@
+{
+  "meal": "Meal",
+  "activity": "Activity",
+  "assessment": "Assessment",
+
+  "foodInformation": "Food Information",
+  "takePicture": "Take a picture of your meal",
+
+  "selfAssessment": "Self Assessment",
+  "selfAssessmentActivity": "Select how you feel after the workout.",
+  "selfAssessmentMeal": "How satisfied are you with this meal?",
+  "selfAssessmentTiredness": "How do you feel this morning?",
+  "selfAssessmentReadiness": "How do you feel at the end of the day?",
+
+  "sliderLeft": "Tired",
+  "sliderRight": "Energetic!",
+
+  "points": "Points",
+  "startTime": "Start Time",
+  "calories": "Calories",
+  "complete": "Complete"
+}

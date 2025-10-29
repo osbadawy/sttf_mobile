@@ -1,5 +1,5 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { formatDuration } from "@/utils/activities";
+import { formatDuration } from "@/utils/dateTimeHelpers";
 import { RelativePathString, router, usePathname } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Arrow } from "../icons";

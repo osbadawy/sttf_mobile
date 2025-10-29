@@ -15,6 +15,7 @@ import arCoachDashboard from "../locales/ar/components/coach/dashboard.json";
 import arHeartSection from "../locales/ar/components/dashboard/HeartSection.json";
 import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json";
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
+import arDayPlan from "../locales/ar/components/day-plan/index.json";
 import arHeart from "../locales/ar/components/heart/index.json";
 import arNutritionList from "../locales/ar/components/nutrition/nutritionList.json";
 import arPlanMeal from "../locales/ar/components/plan/meal.json";
@@ -41,6 +42,7 @@ import enCoachDashboard from "../locales/en/components/coach/dashboard.json";
 import enHeartSection from "../locales/en/components/dashboard/HeartSection.json";
 import enSleepSection from "../locales/en/components/dashboard/SleepSection.json";
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
+import enDayPlan from "../locales/en/components/day-plan/index.json";
 import enHeart from "../locales/en/components/heart/index.json";
 import enNutritionList from "../locales/en/components/nutrition/nutritionList.json";
 import enPlanMeal from "../locales/en/components/plan/meal.json";
@@ -65,6 +67,7 @@ export const resources = {
     activities: enActivities,
     error: enError,
     components: {
+      dayPlan: enDayPlan,
       plan: {
         workout: enPlanWorkout,
         meal: enPlanMeal,
@@ -110,6 +113,7 @@ export const resources = {
     activities: arActivities,
     error: arError,
     components: {
+      dayPlan: arDayPlan,
       plan: {
         workout: arPlanWorkout,
         meal: arPlanMeal,

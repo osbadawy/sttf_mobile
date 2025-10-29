@@ -35,7 +35,7 @@ export default function Body() {
         disableFutureDates: false,
         useDateState: dateState,
       }}
-      showNav={false}
+      showNav={true}
     >
       <View className="py-4">
         <BodyStats stats={statsData} />

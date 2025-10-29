@@ -20,6 +20,7 @@ import NutritionDataInput, {
   NutritionData,
 } from "@/components/nutrition/NutritionDataInput";
 import { useAuth } from "@/contexts/AuthContext";
+import { uploadToFirebase } from "@/utils/uploadToFirebase";
 import Constants from "expo-constants";
 import { router } from "expo-router";
 
@@ -57,6 +58,7 @@ export default function ManualInputDesign() {
   const [nutrition, setNutrition] = useState<NutritionData>({});
 
   const canConfirm = Boolean(imageUri && mealName.trim() && whenValue);
+  const [disabled, setDisabled] = useState<boolean>(false);
   const { user } = useAuth();
 
   const handleAddPicture = async () => {
@@ -88,11 +90,28 @@ export default function ManualInputDesign() {
 
   const handleConfirm = async () => {
     if (!canConfirm) return;
+    setDisabled(true);
     try {
       if (!user) {
         Alert.alert("Error", "User not found");
         return;
       }
+
+      let uploadedImageUrl: string | null = null;
+      if (imageUri) {
+        try {
+          uploadedImageUrl = await uploadToFirebase({
+            folderName: "sttf/nutrition",
+            id: user.uid,
+            includeDate: true,
+            imageUri: imageUri,
+          });
+        } catch (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          throw new Error("Failed to upload image");
+        }
+      }
+
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal`;
 
       const body: any = {
@@ -108,7 +127,7 @@ export default function ManualInputDesign() {
         amount: nutrition.amount,
         amount_unit: nutrition.amount_unit,
         completion: {
-          image_uri: imageUri,
+          img_url: uploadedImageUrl,
           is_completed: true,
         },
       };
@@ -125,11 +144,12 @@ export default function ManualInputDesign() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log({ data: JSON.stringify(data, null, 2) });
         router.replace("/player/nutrition/NutritionDashboard");
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setDisabled(false);
     }
   };
 
@@ -300,7 +320,7 @@ export default function ManualInputDesign() {
             </View>
 
             {/* Confirm button (kept simple) */}
-            <View className="px-4 pb-6 bg-[#F3F6EE]">
+            <View className="px-4 py-6 bg-[#F3F6EE]">
               <CustomButton
                 title={t("confirm")}
                 onPress={handleConfirm}

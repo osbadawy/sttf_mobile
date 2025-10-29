@@ -6,7 +6,7 @@ import { StrainSectionLine } from "@/components/wellbeing/StrainSection";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
-import { formatDate, formatDuration } from "@/utils/activities";
+import { formatDate, formatDuration } from "@/utils/dateTimeHelpers";
 import {
   RelativePathString,
   useLocalSearchParams,
