@@ -1,15 +1,19 @@
 // app/player/body/[player_id]/body-data.tsx (or wherever you want it)
 // If you prefer a different path, keep the component export as default.
 
+import CustomButton, { ButtonColor } from "@/components/Button";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import DateField from "@/components/settings/DateField";
 import DatePickerModal from "@/components/settings/DatePickerModal";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import Constants from "expo-constants";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   Text,
   TextInput,
   View,
@@ -24,8 +28,11 @@ const formatDateDDMMYYYY = (d: Date): string => {
 };
 
 export default function BodyData() {
-  const { t, isRTL } = useLocalization("components.plan.meal");
+  const { t, isRTL } = useLocalization("components.body");
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
+  const { player } = useLocalSearchParams();
+  const playerData = JSON.parse((player as string) || "{}");
 
   // date state
   const [date, setDate] = useState<Date>(new Date());
@@ -33,22 +40,52 @@ export default function BodyData() {
 
   // inputs
   const [weight, setWeight] = useState<string>("");
-  const [bmi, setBmi] = useState<string>("");
   const [fat, setFat] = useState<string>("");
   const [muscle, setMuscle] = useState<string>("");
 
   const dateLabel = useMemo(() => formatDateDDMMYYYY(date), [date]);
+  const [disableConfirm, setDisableConfirm] = useState(false);
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     // TODO: call backend with parsed numbers
-    const payload = {
-      date: date.toISOString(),
-      weightKg: Number(weight),
-      bmi: Number(bmi),
-      fatPct: Number(fat),
-      musclePct: Number(muscle),
-    };
-    console.log("Submitting Body Data:", payload);
+    if (!user) {
+      Alert.alert("Error", "User not found");
+      return;
+    }
+
+    try {
+      setDisableConfirm(true);
+      const payload = {
+        day: date,
+        firebase_id: playerData.firebase_id || user.uid,
+        weight_kg: Number(weight),
+        body_fat_percentage: Number(fat),
+        muscle_mass_percentage: Number(muscle),
+      };
+      console.log({ payload });
+      const response = await fetch(
+        `${Constants.expoConfig?.extra?.BACKEND_URL}/body-composition`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${await user.getIdToken()}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      if (!response.ok) {
+        Alert.alert("Error", "Failed to submit body data");
+        return;
+      }
+
+      router.replace(`/player/body` as RelativePathString);
+    } catch (error) {
+      Alert.alert("Error", "Failed to submit body data");
+    } finally {
+      setDisableConfirm(false);
+    }
   };
 
   // shared card style
@@ -58,7 +95,7 @@ export default function BodyData() {
   return (
     <ParallaxScrollView
       headerProps={{
-        title: "Body Data",
+        title: t("body"),
         showBackButton: true,
         showBGImage: false,
         showCalendarIcon: false,
@@ -107,21 +144,9 @@ export default function BodyData() {
               </View>
 
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">BMI</Text>
-                <TextInput
-                  value={bmi}
-                  onChangeText={setBmi}
-                  keyboardType="decimal-pad"
-                  placeholder="BMI"
-                  placeholderTextColor="#A3A3A3"
-                  className="text-lg font-semibold text-black"
-                />
-              </View>
-            </View>
-
-            <View className="flex-row gap-3">
-              <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">Fat %</Text>
+                <Text className="mb-2 text-xs text-neutral-500">
+                  {t("fat %")}
+                </Text>
                 <TextInput
                   value={fat}
                   onChangeText={setFat}
@@ -133,7 +158,9 @@ export default function BodyData() {
               </View>
 
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">Muscle %</Text>
+                <Text className="mb-2 text-xs text-neutral-500">
+                  {t("muscle %")}
+                </Text>
                 <TextInput
                   value={muscle}
                   onChangeText={setMuscle}
@@ -148,17 +175,12 @@ export default function BodyData() {
         </View>
 
         {/* Sticky confirm button */}
-        <View
-          style={{ paddingBottom: Math.max(insets.bottom, 16) }}
-          className="px-4 pt-2"
-        >
-          <Pressable
-            onPress={onConfirm}
-            className="h-12 w-full items-center justify-center rounded-xl bg-emerald-700"
-          >
-            <Text className="text-white text-base font-semibold">Confirm</Text>
-          </Pressable>
-        </View>
+        <CustomButton
+          title="Confirm"
+          onPress={onConfirm}
+          disabled={disableConfirm}
+          color={ButtonColor.primary}
+        />
       </KeyboardAvoidingView>
     </ParallaxScrollView>
   );

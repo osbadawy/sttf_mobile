@@ -1,0 +1,13 @@
+{
+  "bmi": "BMI",
+  "fat %": "Fat %",
+  "muscle %": "Muscle %",
+  "weight": "Weight",
+  "add measurements": "Add Measurements",
+  "confirm": "Confirm",
+  "error": "Error",
+  "success": "Success",
+  "failed to submit body data": "Failed to submit body data",
+  "body data submitted successfully": "Body data submitted successfully",
+  "user not found": "User not found"
+}

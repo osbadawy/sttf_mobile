@@ -1,4 +1,5 @@
 // components/body/BodyStats.tsx
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 
 type StatCardProps = {
@@ -11,6 +12,7 @@ type BodyStatsProps = {
 };
 
 function StatCard({ label, value }: StatCardProps) {
+  const { t } = useLocalization("components.body");
   // Add % only for Fat % and Muscle %
   const displayValue =
     label.toLowerCase().includes("fat") ||
@@ -20,7 +22,7 @@ function StatCard({ label, value }: StatCardProps) {
 
   return (
     <View className="flex-1 rounded-3xl bg-white border border-neutral-200 px-4 py-5 shadow-sm">
-      <Text className="text-md text-neutral-500 mb-8">{label}</Text>
+      <Text className="text-md text-neutral-500 mb-8">{t(label)}</Text>
       <Text className="text-2xl font-semibold text-black">{displayValue}</Text>
     </View>
   );
