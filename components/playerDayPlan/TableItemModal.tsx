@@ -3,7 +3,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { PlannedActivity } from "@/schemas/PlannedActivity";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import { PlayerSelfAssessment } from "@/schemas/PlayerSelfAssessment";
-import { formatTime } from "@/utils/activities";
+import { formatTime } from "@/utils/dateTimeHelpers";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -58,6 +58,8 @@ export interface TableItemModalContentProps {
   type: "meal" | "activity" | "assessment";
   category: string;
   data: PlannedActivity | GetMealsResponse | PlayerSelfAssessment | null;
+  isComplete: boolean;
+  isFutureEvent: boolean;
 }
 
 interface TableItemModalProps {
@@ -72,7 +74,7 @@ export default function TableItemModal({
   onRefetch,
 }: TableItemModalProps) {
   if (!content) return null;
-  const { type, category, data } = content;
+  const { type, category, data, isComplete, isFutureEvent } = content;
   const [score, setScore] = useState(0);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -110,6 +112,8 @@ export default function TableItemModal({
       imageUrl,
       onClose,
       onRefetch,
+      isComplete,
+      isFutureEvent,
     });
   } else if (type === "assessment") {
     modalContent = AssessmentModalContent({
@@ -174,14 +178,16 @@ export default function TableItemModal({
             </TouchableOpacity>
           </View>
 
-          <View className="flex-row items-center pb-6" style={{ gap: 12 }}>
+          <View className="flex-row items-center" style={{ gap: 12 }}>
             {icon}
             <Text className="text-2xl effra-semibold">{title}</Text>
           </View>
 
-          {contentElement}
+          <View className="pt-0 pb-4">
+            {contentElement}
+          </View>
 
-          {selfAssessmentText && (
+          {selfAssessmentText && !isComplete && !isFutureEvent && (
             <View>
               <View
                 className="w-full border-b border-gray-300"
@@ -227,7 +233,11 @@ export default function TableItemModal({
             />
             <InfoCard
               title={t("startTime")}
-              value={startTime ? formatTime(startTime) : "--"}
+              value={
+                startTime
+                  ? formatTime({ date: startTime, includeSeconds: false })
+                  : "--"
+              }
               icon={<ClockIcon />}
             />
             {calories && (
@@ -239,32 +249,34 @@ export default function TableItemModal({
             )}
           </View>
 
-          <TouchableOpacity
-            className="rounded-[8px] px-4 py-4 items-center justify-center flex-row"
-            style={{
-              shadowColor: "#000",
-              shadowOpacity: isButtonDisabled ? 0 : 0.06,
-              shadowRadius: 10,
-              shadowOffset: { width: 0, height: 6 },
-              elevation: isButtonDisabled ? 0 : 3,
-              backgroundColor: isButtonDisabled ? "#D1D5DB" : color,
-              gap: 12,
-              opacity: isButtonDisabled ? 0.6 : 1,
-            }}
-            onPress={handleComplete}
-            disabled={isSubmitting || isButtonDisabled}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <>
-                <Text className="text-white text-lg effra-regular">
-                  {t("complete")}
-                </Text>
-                <ArrowBig stroke={isButtonDisabled ? "#D1D5DB" : color} />
-              </>
-            )}
-          </TouchableOpacity>
+          {!isFutureEvent && !isComplete && (
+            <TouchableOpacity
+              className="rounded-[8px] px-4 py-4 items-center justify-center flex-row"
+              style={{
+                shadowColor: "#000",
+                shadowOpacity: isButtonDisabled ? 0 : 0.06,
+                shadowRadius: 10,
+                shadowOffset: { width: 0, height: 6 },
+                elevation: isButtonDisabled ? 0 : 3,
+                backgroundColor: isButtonDisabled ? "#D1D5DB" : color,
+                gap: 12,
+                opacity: isButtonDisabled ? 0.6 : 1,
+              }}
+              onPress={handleComplete}
+              disabled={isSubmitting || isButtonDisabled}
+            >
+              {isSubmitting ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <Text className="text-white text-lg effra-regular">
+                    {t("complete")}
+                  </Text>
+                  <ArrowBig stroke={isButtonDisabled ? "#D1D5DB" : color} />
+                </>
+              )}
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </Modal>

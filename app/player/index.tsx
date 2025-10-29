@@ -8,6 +8,7 @@ import TableItemModal, {
 } from "@/components/playerDayPlan/TableItemModal";
 import { usePlayerDay } from "@/hooks/usePlayerDay";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { getSecondsInDay } from "@/utils/dateTimeHelpers";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
@@ -73,13 +74,9 @@ export default function PlayerIndexPage() {
       if (itemY !== undefined) {
         // Position the item 100 pixels above the bottom of the viewport
         const targetOffset = Math.max(0, itemY - tableHeight + 200);
-        console.log({ itemY, tableHeight, targetOffset });
 
         if (!animated) {
           setScrollOffset(targetOffset);
-          console.log(
-            `Scrolling to item ${id} at position ${itemY}, offset: ${targetOffset}`,
-          );
           return;
         }
 
@@ -235,31 +232,38 @@ export default function PlayerIndexPage() {
               paddingBottom: 100,
             }}
           >
-            {data.map((item, idx) => (
-              <TableItem
-                onPress={() => {
-                  setShowModal(true);
-                  setModalContent({
-                    type: item.type as TableItemType,
-                    category: item.category,
-                    data: item.data,
-                  });
-                }}
-                key={idx}
-                type={item.type as TableItemType}
-                contentContainer={contentContainer}
-                scrollY={scrollY}
-                refCallback={(fn: () => void) => registerMeasure(idx, fn)}
-                parentHeight={tableHeight}
-                parentWidth={viewportWidth}
-                isComplete={item.isCompleted}
-                category={item.category}
-                data={item.data}
-                onPositionMeasured={(y: number) =>
-                  handleItemPositionMeasured(idx, y)
-                }
-              />
-            ))}
+            {data.map((item, idx) => {
+              const isFutureEvent =
+                getSecondsInDay(item.time) > getSecondsInDay(new Date());
+              return (
+                <TableItem
+                  onPress={() => {
+                    setShowModal(true);
+                    setModalContent({
+                      type: item.type as TableItemType,
+                      category: item.category,
+                      data: item.data,
+                      isComplete: item.isCompleted,
+                      isFutureEvent: isFutureEvent,
+                    });
+                  }}
+                  key={idx}
+                  type={item.type as TableItemType}
+                  contentContainer={contentContainer}
+                  scrollY={scrollY}
+                  refCallback={(fn: () => void) => registerMeasure(idx, fn)}
+                  parentHeight={tableHeight}
+                  parentWidth={viewportWidth}
+                  isComplete={item.isCompleted}
+                  category={item.category}
+                  data={item.data}
+                  onPositionMeasured={(y: number) =>
+                    handleItemPositionMeasured(idx, y)
+                  }
+                  isFutureEvent={isFutureEvent}
+                />
+              );
+            })}
           </View>
         </ScrollView>
         <Nav />

@@ -20,6 +20,7 @@ interface TableItemProps {
   category?: string;
   data: PlannedActivity | GetMealsResponse | PlayerSelfAssessment | null;
   onPress: () => void;
+  isFutureEvent?: boolean;
 }
 
 export default function TableItem({
@@ -34,6 +35,7 @@ export default function TableItem({
   isComplete = false,
   category,
   onPress,
+  isFutureEvent = false,
 }: TableItemProps) {
   const [itemView, setItemView] = useState<View | null>(null);
   const [basePosition, setBasePosition] = useState({ x: 0, y: 0 });
@@ -185,6 +187,7 @@ export default function TableItem({
           type={type}
           disabled={disabled}
           isComplete={isComplete}
+          isFutureEvent={isFutureEvent}
         />
         <View
           style={{

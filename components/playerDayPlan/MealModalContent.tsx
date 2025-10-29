@@ -17,6 +17,8 @@ interface MealModalContentProps {
   imageUrl: string | null;
   onClose: () => void;
   onRefetch: () => void;
+  isComplete: boolean;
+  isFutureEvent: boolean;
 }
 
 export default function MealModalContent({
@@ -27,6 +29,8 @@ export default function MealModalContent({
   imageUrl,
   onClose,
   onRefetch,
+  isComplete,
+  isFutureEvent,
 }: MealModalContentProps) {
   const { t: tMeal } = useLocalization("components.nutrition.nutritionList");
   const { t } = useLocalization("components.dayPlan");
@@ -44,8 +48,8 @@ export default function MealModalContent({
     ? `${meal.amount} ${meal.amount_unit == "Na" ? "" : meal.amount_unit}`
     : "";
 
-  const completions = meal.players_assigned[0].completions;
   let start = meal.start;
+  const completions = meal.players_assigned[0].completions;
   if (completions && completions.length > 0) {
     start = completions[0].createdAt;
   }
@@ -144,19 +148,21 @@ export default function MealModalContent({
           fats={meal.fat}
         />
 
-        <View
-          className="flex-row items-center justify-center pt-5"
-          style={{ gap: 20 }}
-        >
-          <Text className="text-base effra-regular">{t("takePicture")}</Text>
-          <CameraInput
-            onImageCapture={(photoUri) => {
-              if (onImageCapture) {
-                onImageCapture(photoUri);
-              }
-            }}
-          />
-        </View>
+        {!isComplete && !isFutureEvent && (
+          <View
+            className="flex-row items-center justify-center pt-5"
+            style={{ gap: 20 }}
+          >
+            <Text className="text-base effra-regular">{t("takePicture")}</Text>
+            <CameraInput
+              onImageCapture={(photoUri) => {
+                if (onImageCapture) {
+                  onImageCapture(photoUri);
+                }
+              }}
+            />
+          </View>
+        )}
 
         <View
           className="w-full border-b border-gray-300"

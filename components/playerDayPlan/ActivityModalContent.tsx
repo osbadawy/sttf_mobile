@@ -43,7 +43,7 @@ export default function ActivityModalContent({
   let start = activity.start;
   const completions = activity.players_assigned[0].completions;
   if (completions && completions.length > 0) {
-    start = completions[0].created_at;
+    start = completions[0].createdAt;
   }
 
   const handleComplete = async () => {

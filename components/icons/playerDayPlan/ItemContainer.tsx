@@ -12,12 +12,14 @@ interface ItemContainerProps {
   type: TableItemType;
   disabled?: boolean;
   isComplete?: boolean;
+  isFutureEvent?: boolean;
 }
 export default function ItemContainer({
   svgProps,
   type,
   disabled = false,
   isComplete = false,
+  isFutureEvent = false,
 }: ItemContainerProps) {
   const colors = {
     activity: {
@@ -42,11 +44,14 @@ export default function ItemContainer({
     },
   };
 
-  const color1 = disabled ? colors.disabled.color1 : colors[type].color1;
-  const color2 = disabled ? colors.disabled.color2 : colors[type].color2;
-  const shadowColor = disabled
-    ? colors.disabled.shadowColor
-    : colors[type].shadowColor;
+  const color1 =
+    disabled || isFutureEvent ? colors.disabled.color1 : colors[type].color1;
+  const color2 =
+    disabled || isFutureEvent ? colors.disabled.color2 : colors[type].color2;
+  const shadowColor =
+    disabled || isFutureEvent
+      ? colors.disabled.shadowColor
+      : colors[type].shadowColor;
 
   return (
     <Svg
