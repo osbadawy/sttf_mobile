@@ -1,6 +1,6 @@
 import colors from "@/colors.js";
 import Slider from "@react-native-community/slider";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import {
   HappyFaceIcon,
   NeutralFaceIcon,
@@ -14,6 +14,9 @@ interface SliderProps {
   onChange: (value: number) => void;
   leftLabel: string;
   rightLabel: string;
+  showNumbersRow?: boolean;
+  maximumTrackTintColor?: string;
+  showSlider?: boolean;
 }
 
 export default function CustomSlider({
@@ -21,6 +24,9 @@ export default function CustomSlider({
   onChange,
   leftLabel,
   rightLabel,
+  showNumbersRow = true,
+  maximumTrackTintColor = "#E5F5F5",
+  showSlider = true,
 }: SliderProps) {
   const iconColors = [
     colors.red,
@@ -40,7 +46,7 @@ export default function CustomSlider({
 
   // Calculate which icon is closest to the current value
   const getClosestIconIndex = () => {
-    const iconPositions = [1, 3, 5, 7, 9]; // Positions for each icon (1-2, 3-4, 5-6, 7-8, 9-10)
+    const iconPositions = [1, 2, 3, 4, 5]; // Positions for each icon (1-5)
     let closestIndex = 0;
     let minDistance = Math.abs(value - iconPositions[0]);
 
@@ -67,44 +73,52 @@ export default function CustomSlider({
           const iconFill = isActive ? iconColors[index] : "#B0B8B7";
 
           return (
-            <View key={index} className="items-center justify-center">
+            <TouchableOpacity
+              key={index}
+              className="items-center justify-center"
+              onPress={() => onChange(index + 1)}
+              activeOpacity={0.7}
+            >
               <View style={{ transform: [{ scale }] }}>
                 <IconComponent fill={iconFill} />
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
 
-      {/* Numbers Row */}
-      <View className="flex-row justify-between items-center px-4">
-        {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-          <Text
-            key={num}
-            className={"font-inter-regular text-base"}
-            style={{
-              color: num === Math.round(value) ? activeColor : "#B0B8B7",
-            }}
-          >
-            {num}
-          </Text>
-        ))}
-      </View>
+      {showNumbersRow && (
+        <View className="flex-row justify-between items-center px-4">
+          {Array.from({ length: 5 }, (_, i) => i + 1).map((num) => (
+            <Text
+              key={num}
+              className={"font-inter-regular text-base"}
+              style={{
+                color: num === Math.round(value) ? activeColor : "#B0B8B7",
+              }}
+            >
+              {num}
+            </Text>
+          ))}
+        </View>
+      )}
 
       {/* Slider */}
-      <View className="mb-3 h-10 justify-center">
-        <Slider
-          className="w-full h-10"
-          minimumValue={1}
-          maximumValue={10}
-          step={1}
-          value={value}
-          onValueChange={onChange}
-          minimumTrackTintColor={activeColor}
-          maximumTrackTintColor="#E5F5F5"
-          thumbTintColor={activeColor}
-        />
-      </View>
+      {showSlider && (
+        <View className="mb-3 h-10 justify-center">
+          <Slider
+            className="w-full h-10"
+            minimumValue={1}
+            maximumValue={5}
+            step={1}
+            value={value}
+            onValueChange={onChange}
+            minimumTrackTintColor={activeColor}
+            maximumTrackTintColor={maximumTrackTintColor}
+            thumbTintColor={activeColor}
+          />
+        </View>
+      )}
 
       {/* Labels Row */}
       <View className="flex-row justify-between items-center px-4">

@@ -19,6 +19,7 @@ import HomeIcon from "./Home";
 import NutritionIcon from "./Nutrition";
 import PerformanceIcon from "./Performance";
 import ProfilePictureDefaultIcon from "./ProfilePictureDefault";
+import SelfAssessmentIcon from "./SelfAssessmentIcon";
 import SleepIcon from "./Sleep";
 import StrainIcon from "./Strain";
 import StressIcon from "./Stress";
@@ -48,6 +49,7 @@ export {
   NutritionIcon,
   PerformanceIcon,
   ProfilePictureDefaultIcon,
+  SelfAssessmentIcon,
   SleepIcon,
   StrainIcon,
   StressIcon,

@@ -2,7 +2,7 @@ import colors from "@/colors";
 import Card from "@/components/Card";
 import HeartLine2 from "@/components/icons/HeartLine2";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { formatDuration } from "@/utils/activities";
+import { formatDuration } from "@/utils/dateTimeHelpers";
 import { useState } from "react";
 import { Text, View } from "react-native";
 

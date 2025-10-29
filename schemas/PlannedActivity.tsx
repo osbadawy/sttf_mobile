@@ -50,8 +50,8 @@ export interface PlannedActivity {
   is_custom: boolean;
   notes?: string;
   start: Date;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
   players_assigned: PlannedActivityAssignment[];
   recurrence_patterns: PlannedActivityRecurrence[];
 }
