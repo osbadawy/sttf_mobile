@@ -1,0 +1,21 @@
+{
+    "body data": "بيانات الجسم",
+    "add measurements": "إضافة القياسات",
+    "fat": "الدهون",
+    "muscle": "العضلة",
+    "severely underweight":"نقص شديد في الوزن" , 
+    "moderately underweight": "نقص الوزن المعتدل",
+    "slightly underweight": "نقص طفيف في الوزن", 
+    "healthy":"صحي" ,
+    "slightly obese": "زيادة طفيفة في الوزن",
+    "moderately obese": "زيادة الوزن بشكل معتدل",
+    "severely obese": "زيادة الوزن بشكل خطير",
+    "history": "التاريخ",
+    "graph": "رسم بياني",
+    "weight": "الوزن",
+    "body data - log" :"بيانات الجسم - السجل",
+    "edit": "تحرير",
+    "confirm": "تأكيد",
+    "muscle%": "% عضلة",
+    "fat%": "% الدهون"
+} 

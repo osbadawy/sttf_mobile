@@ -13,10 +13,10 @@
   "selfAssessmentReadiness": "كيف تشعر في نهاية اليوم؟",
 
   "sliderLeft": "متعب",
-  "sliderRight": "مستعد!",
+  "sliderRight": "!مستعد",
 
   "points": "نقاط",
   "startTime": "وقت البدء",
   "calories": "سعرات حرارية",
-  "complete": "إكمال"
+  "complete": "كامل"
 }

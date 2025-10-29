@@ -22,7 +22,7 @@ const formatDateDDMMYYYY = (d: Date): string => {
 };
 
 export default function BodyData() {
-  const { t, isRTL } = useLocalization("components.plan.meal");
+  const { t, isRTL } = useLocalization("components.body.body");
   const insets = useSafeAreaInsets();
 
   // read incoming params (optional)
@@ -114,7 +114,7 @@ export default function BodyData() {
           <View className="gap-3">
             <View className="flex-row gap-3">
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">Kg</Text>
+                <Text className="mb-2 text-xs text-neutral-500">{t("weight")}</Text>
                 <TextInput
                   value={weight}
                   onChangeText={setWeight}
@@ -140,24 +140,24 @@ export default function BodyData() {
 
             <View className="flex-row gap-3">
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">Fat %</Text>
+                <Text className="mb-2 text-xs text-neutral-500">{t("fat")} %</Text>
                 <TextInput
                   value={fat}
                   onChangeText={setFat}
                   keyboardType="decimal-pad"
-                  placeholder="Fat %"
+                  placeholder={t("fat%")}
                   placeholderTextColor="#A3A3A3"
                   className="text-lg font-semibold text-black"
                 />
               </View>
 
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">Muscle %</Text>
+                <Text className="mb-2 text-xs text-neutral-500">{t("muscle")} %</Text>
                 <TextInput
                   value={muscle}
                   onChangeText={setMuscle}
                   keyboardType="decimal-pad"
-                  placeholder="Muscle %"
+                  placeholder={t("muscle%")}
                   placeholderTextColor="#A3A3A3"
                   className="text-lg font-semibold text-black"
                 />
@@ -175,7 +175,7 @@ export default function BodyData() {
             onPress={onConfirm}
             className="h-12 w-full items-center justify-center rounded-xl bg-emerald-700"
           >
-            <Text className="text-white text-base font-semibold">Confirm</Text>
+            <Text className="text-white text-base font-semibold">{t("confirm")}</Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>

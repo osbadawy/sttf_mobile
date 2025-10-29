@@ -9,7 +9,7 @@ import { useState } from "react";
 import { View } from "react-native";
 
 export default function Body() {
-  const { t } = useLocalization("components.plan.meal");
+  const { t } = useLocalization("components.body.body");
   const dateState = useState(new Date());
 
   const { player_id, date, player } = useLocalSearchParams<{
@@ -27,7 +27,7 @@ export default function Body() {
   return (
     <ParallaxScrollView
       headerProps={{
-        title: t("body"),
+        title: t("body data"),
         showBackButton: true,
         showBGImage: false,
         showCalendarIcon: true,
@@ -47,7 +47,7 @@ export default function Body() {
       <View className="py-4">
         <View className="mt-10 mb-6 mx-10">
           <CustomButton
-            title="Add Measurements"
+            title={t("add measurements")}
             onPress={() =>
               router.push({
                 pathname:

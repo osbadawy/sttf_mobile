@@ -1,3 +1,4 @@
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
@@ -44,12 +45,13 @@ function StatCell({
 }
 
 export default function RenderHistory() {
+  const { t } = useLocalization("components.body.body");
   const rows = mockData;
   const { player_id } = useLocalSearchParams<{ player_id: string }>();
 
   return (
     <View className="w-full px-4 py-6">
-      <Text className="mb-3 text-xl font-semibold text-black">Body Data - Log</Text>
+      <Text className="mb-3 text-xl font-semibold text-black">{t("body data - log")}</Text>
       <View className="h-px bg-neutral-200 mb-2" />
 
       {rows.map((row, idx) => (
@@ -73,16 +75,16 @@ export default function RenderHistory() {
                 })
               }
             >
-              <Text className="text-emerald-700 underline">Edit</Text>
+              <Text className="text-emerald-700 underline">{t("edit")}</Text>
             </Pressable>
           </View>
 
           {/* Values row */}
           <View className="flex-row gap-4 py-1">
-            <StatCell value={row.weightKg} label="Weight" suffix="Kg" />
+            <StatCell value={row.weightKg} label={t("weight")} suffix="Kg" />
             <StatCell value={row.bmi} label="BMI" />
-            <StatCell value={row.fatPct} label="Fat %" suffix="%" />
-            <StatCell value={row.musclePct} label="Muscle %" suffix="%" />
+            <StatCell value={row.fatPct} label={t("fat")} suffix="%" />
+            <StatCell value={row.musclePct} label={t("muscle")}  suffix="%" />
           </View>
 
           {idx < rows.length - 1 && <View className="h-px bg-neutral-200 mt-4" />}
