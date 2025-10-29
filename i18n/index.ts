@@ -104,9 +104,9 @@ export const resources = {
       Settings: {
         settings: enSettings,
       },
-      body:{
+      body: {
         body: enBody,
-      }
+      },
     },
   },
   ar: {
@@ -153,9 +153,9 @@ export const resources = {
       Settings: {
         settings: arSettings,
       },
-      body:{
+      body: {
         body: arBody,
-      }
+      },
     },
   },
 };

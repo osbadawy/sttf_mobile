@@ -54,7 +54,13 @@ export default function BodyData() {
     if (params?.bmi != null) setBmi(String(params.bmi));
     if (params?.fatPct != null) setFat(String(params.fatPct));
     if (params?.musclePct != null) setMuscle(String(params.musclePct));
-  }, [params?.dateISO, params?.weightKg, params?.bmi, params?.fatPct, params?.musclePct]);
+  }, [
+    params?.dateISO,
+    params?.weightKg,
+    params?.bmi,
+    params?.fatPct,
+    params?.musclePct,
+  ]);
 
   const dateLabel = useMemo(() => formatDateDDMMYYYY(date), [date]);
 
@@ -114,7 +120,9 @@ export default function BodyData() {
           <View className="gap-3">
             <View className="flex-row gap-3">
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">{t("weight")}</Text>
+                <Text className="mb-2 text-xs text-neutral-500">
+                  {t("weight")}
+                </Text>
                 <TextInput
                   value={weight}
                   onChangeText={setWeight}
@@ -140,7 +148,9 @@ export default function BodyData() {
 
             <View className="flex-row gap-3">
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">{t("fat")} %</Text>
+                <Text className="mb-2 text-xs text-neutral-500">
+                  {t("fat")} %
+                </Text>
                 <TextInput
                   value={fat}
                   onChangeText={setFat}
@@ -152,7 +162,9 @@ export default function BodyData() {
               </View>
 
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">{t("muscle")} %</Text>
+                <Text className="mb-2 text-xs text-neutral-500">
+                  {t("muscle")} %
+                </Text>
                 <TextInput
                   value={muscle}
                   onChangeText={setMuscle}
@@ -175,7 +187,9 @@ export default function BodyData() {
             onPress={onConfirm}
             className="h-12 w-full items-center justify-center rounded-xl bg-emerald-700"
           >
-            <Text className="text-white text-base font-semibold">{t("confirm")}</Text>
+            <Text className="text-white text-base font-semibold">
+              {t("confirm")}
+            </Text>
           </Pressable>
         </View>
       </KeyboardAvoidingView>

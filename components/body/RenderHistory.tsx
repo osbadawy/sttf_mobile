@@ -11,9 +11,27 @@ type HistoryRow = {
 };
 
 const mockData: HistoryRow[] = [
-  { dateISO: "2025-09-02", weightKg: 82, bmi: 20.5, fatPct: 12.5, musclePct: 82.5 },
-  { dateISO: "2025-09-01", weightKg: 82, bmi: 20.5, fatPct: 12.5, musclePct: 82.5 },
-  { dateISO: "2025-08-31", weightKg: 81, bmi: 20.4, fatPct: 12.3, musclePct: 81.8 },
+  {
+    dateISO: "2025-09-02",
+    weightKg: 82,
+    bmi: 20.5,
+    fatPct: 12.5,
+    musclePct: 82.5,
+  },
+  {
+    dateISO: "2025-09-01",
+    weightKg: 82,
+    bmi: 20.5,
+    fatPct: 12.5,
+    musclePct: 82.5,
+  },
+  {
+    dateISO: "2025-08-31",
+    weightKg: 81,
+    bmi: 20.4,
+    fatPct: 12.3,
+    musclePct: 81.8,
+  },
 ];
 
 const formatDate = (iso: string) => {
@@ -51,19 +69,24 @@ export default function RenderHistory() {
 
   return (
     <View className="w-full px-4 py-6">
-      <Text className="mb-3 text-xl font-semibold text-black">{t("body data - log")}</Text>
+      <Text className="mb-3 text-xl font-semibold text-black">
+        {t("body data - log")}
+      </Text>
       <View className="h-px bg-neutral-200 mb-2" />
 
       {rows.map((row, idx) => (
         <View key={row.dateISO}>
           {/* Date + Edit */}
           <View className="flex-row items-center justify-between py-3">
-            <Text className="text-xs text-neutral-500">{formatDate(row.dateISO)}</Text>
+            <Text className="text-xs text-neutral-500">
+              {formatDate(row.dateISO)}
+            </Text>
 
             <Pressable
               onPress={() =>
                 router.push({
-                  pathname: "/player/body/[player_id]/BodyData" as RelativePathString,
+                  pathname:
+                    "/player/body/[player_id]/BodyData" as RelativePathString,
                   params: {
                     player_id: String(player_id ?? ""),
                     dateISO: row.dateISO,
@@ -84,10 +107,12 @@ export default function RenderHistory() {
             <StatCell value={row.weightKg} label={t("weight")} suffix="Kg" />
             <StatCell value={row.bmi} label="BMI" />
             <StatCell value={row.fatPct} label={t("fat")} suffix="%" />
-            <StatCell value={row.musclePct} label={t("muscle")}  suffix="%" />
+            <StatCell value={row.musclePct} label={t("muscle")} suffix="%" />
           </View>
 
-          {idx < rows.length - 1 && <View className="h-px bg-neutral-200 mt-4" />}
+          {idx < rows.length - 1 && (
+            <View className="h-px bg-neutral-200 mt-4" />
+          )}
         </View>
       ))}
     </View>
