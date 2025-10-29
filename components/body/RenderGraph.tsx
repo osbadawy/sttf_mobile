@@ -1,8 +1,10 @@
 // components/body/RenderGraph.tsx
 import MetricsLineChart from "@/components/body/MetricsLineChart";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 
 export default function RenderGraph() {
+  const { t } = useLocalization("components.body.body");
   const weightData = [26, 37.5, 76.8, 87.2, 28.4, 56.9, 98.1, 56.6];
   const BMIData = [26, 37.5, 22, 16, 24, 31, 25, 23];
   const FatData = [66, 37.5, 22, 16, 44, 91, 75, 23];
@@ -11,7 +13,7 @@ export default function RenderGraph() {
     <View className="px-2">
       {/* WEIGHT SECTION */}
       <View className="py-2">
-        <Text className="font-bold text-lg">Weight</Text>
+        <Text className="font-bold text-lg">{t("weight")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -39,7 +41,7 @@ export default function RenderGraph() {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">Fat%</Text>
+        <Text className="font-semibold text-lg">{t("fat")}%</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -53,7 +55,7 @@ export default function RenderGraph() {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">Muscle%</Text>
+        <Text className="font-semibold text-lg">{t("muscle")}%</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart

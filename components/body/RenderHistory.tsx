@@ -1,13 +1,13 @@
-// components/body/RenderHistory.tsx
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 type HistoryRow = {
-  dateISO: string; // e.g., "2025-09-02"
-  weightKg: number; // e.g., 82
-  bmi: number; // e.g., 20.5
-  fatPct: number; // e.g., 12.5
-  musclePct: number; // e.g., 82.5
+  dateISO: string;
+  weightKg: number;
+  bmi: number;
+  fatPct: number;
+  musclePct: number;
 };
 
 const mockData: HistoryRow[] = [
@@ -36,7 +36,7 @@ const mockData: HistoryRow[] = [
 
 const formatDate = (iso: string) => {
   const d = new Date(iso);
-  const wd = d.toLocaleDateString(undefined, { weekday: "short" }); // e.g., Tue
+  const wd = d.toLocaleDateString(undefined, { weekday: "short" });
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   return `${wd}, ${dd}.${mm}`;
@@ -63,52 +63,53 @@ function StatCell({
 }
 
 export default function RenderHistory() {
-  // TODO: replace mockData with fetched data from backend
+  const { t } = useLocalization("components.body.body");
   const rows = mockData;
-  const { player_id, date, player } = useLocalSearchParams<{
-    player_id: string;
-    date?: string;
-    player?: string;
-  }>();
+  const { player_id } = useLocalSearchParams<{ player_id: string }>();
 
   return (
     <View className="w-full px-4 py-6">
       <Text className="mb-3 text-xl font-semibold text-black">
-        Body Data - Log
+        {t("body data - log")}
       </Text>
       <View className="h-px bg-neutral-200 mb-2" />
 
       {rows.map((row, idx) => (
         <View key={row.dateISO}>
-          {/* Header line with date + Edit */}
+          {/* Date + Edit */}
           <View className="flex-row items-center justify-between py-3">
             <Text className="text-xs text-neutral-500">
               {formatDate(row.dateISO)}
             </Text>
+
             <Pressable
               onPress={() =>
                 router.push({
                   pathname:
                     "/player/body/[player_id]/BodyData" as RelativePathString,
                   params: {
-                    player_id: String(player_id),
+                    player_id: String(player_id ?? ""),
+                    dateISO: row.dateISO,
+                    weightKg: String(row.weightKg),
+                    bmi: String(row.bmi),
+                    fatPct: String(row.fatPct),
+                    musclePct: String(row.musclePct),
                   },
                 })
               }
             >
-              <Text className="text-emerald-700 underline">Edit</Text>
+              <Text className="text-emerald-700 underline">{t("edit")}</Text>
             </Pressable>
           </View>
 
-          {/* 4-column stat row */}
+          {/* Values row */}
           <View className="flex-row gap-4 py-1">
-            <StatCell value={row.weightKg} label="Weight" suffix="Kg" />
+            <StatCell value={row.weightKg} label={t("weight")} suffix="Kg" />
             <StatCell value={row.bmi} label="BMI" />
-            <StatCell value={row.fatPct} label="Fat %" suffix="%" />
-            <StatCell value={row.musclePct} label="Muscle %" suffix="%" />
+            <StatCell value={row.fatPct} label={t("fat")} suffix="%" />
+            <StatCell value={row.musclePct} label={t("muscle")} suffix="%" />
           </View>
 
-          {/* Separator (skip after last) */}
           {idx < rows.length - 1 && (
             <View className="h-px bg-neutral-200 mt-4" />
           )}
