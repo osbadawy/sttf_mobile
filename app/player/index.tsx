@@ -35,7 +35,9 @@ export default function PlayerIndexPage() {
   });
 
   const oldestIncompleteItemIndex =
-    data.length - [...data].findIndex((item) => !item.isCompleted);
+    data.length - [...data].reverse().findIndex((item) => !item.isCompleted);
+
+  console.log({ oldestIncompleteItemIndex });
 
   const tableHeight = viewportHeight * 0.7;
 
@@ -229,7 +231,7 @@ export default function PlayerIndexPage() {
               alignItems: "center",
               justifyContent: "center",
               paddingTop: tableHeight / 2,
-              paddingBottom: 100,
+              // paddingBottom: 100,
             }}
           >
             {data.map((item, idx) => {

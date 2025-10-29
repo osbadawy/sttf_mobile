@@ -106,7 +106,6 @@ export default function MealLogPage() {
         throw new Error(`Failed to confirm meal: ${errorData.message}`);
       }
       const data = await response.json();
-      console.log({ data: JSON.stringify(data, null, 2) });
       await refetch();
     } catch (error) {
       console.error(error);

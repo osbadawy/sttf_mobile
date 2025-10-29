@@ -130,7 +130,6 @@ export async function uploadToFirebase(
 
     // Get and return the download URL
     const downloadUrl = await getDownloadURL(storageRef);
-    console.log(`Image uploaded to Firebase Storage: ${downloadUrl}`);
 
     return downloadUrl;
   } catch (error: any) {

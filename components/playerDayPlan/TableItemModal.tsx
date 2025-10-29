@@ -73,13 +73,14 @@ export default function TableItemModal({
   onClose,
   onRefetch,
 }: TableItemModalProps) {
-  if (!content) return null;
-  const { type, category, data, isComplete, isFutureEvent } = content;
   const [score, setScore] = useState(0);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useLocalization("components.dayPlan");
   const { user } = useAuth();
+
+  if (!content) return null;
+  const { type, category, data, isComplete, isFutureEvent } = content;
 
   let modalContent = {
     subtitle: "",
