@@ -325,7 +325,7 @@ export default function ManualInputDesign() {
                 title={t("confirm")}
                 onPress={handleConfirm}
                 disabled={!canConfirm}
-                color={canConfirm ? ButtonColor.primary : ButtonColor.white}
+                color={canConfirm ? ButtonColor.primary : ButtonColor.disabled}
               />
             </View>
           </View>

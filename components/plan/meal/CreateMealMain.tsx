@@ -415,7 +415,7 @@ export default function CreateMealMain({
       <CustomButton
         title={editingMeal ? t("save") : t("add")}
         onPress={handleSave}
-        color={isButtonDisabled ? ButtonColor.white : ButtonColor.primary}
+        color={isButtonDisabled ? ButtonColor.disabled : ButtonColor.primary}
         disabled={isButtonDisabled}
       />
     </View>

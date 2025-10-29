@@ -57,7 +57,7 @@ export default function Body() {
                 },
               })
             }
-            color={ButtonColor.white}
+            color={ButtonColor.disabled}
             size={ButtonSize.sm}
           />
         </View>

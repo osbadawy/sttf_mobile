@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 export enum ButtonColor {
   primary = "bg-primary",
   red = "bg-red",
-  white = "bg-white border border-primary",
+  disabled = "bg-white border border-primary",
 }
 
 export enum ButtonSize {
@@ -33,7 +33,7 @@ export default function CustomButton({
     size === ButtonSize.sm ? "text-base" : "text-2xl effra-regular";
 
   const textColorClass =
-    color === ButtonColor.white ? "text-black" : "text-white";
+    color === ButtonColor.disabled ? "text-black" : "text-white";
   return (
     <TouchableOpacity
       onPress={onPress}

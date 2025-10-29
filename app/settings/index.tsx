@@ -47,6 +47,7 @@ export default function Settings() {
   const { user, logout } = useAuth(); // ✅ get logout and user from context
 
   const { data, loading, error } = useUser();
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   // --- form state ---
   const [name, setName] = useState<string>("");
@@ -106,6 +107,7 @@ export default function Settings() {
       return;
     }
     try {
+      setDisabled(true);
       let uploadedImageUrl: string | null = null;
 
       if (localAvatarUri) {
@@ -145,7 +147,6 @@ export default function Settings() {
 
       const responseData = await response.json();
       console.log("User updated successfully:", responseData);
-      Alert.alert(t("success"), t("settings saved successfully"));
       setUserName(responseData.display_name || name);
       setProfilePicture(responseData.avatar_url || profilePicture || null);
     } catch (err) {
@@ -153,6 +154,8 @@ export default function Settings() {
         err instanceof Error ? err.message : "Failed to update user settings";
       console.error("Error updating user:", err);
       Alert.alert(t("error"), errorMessage);
+    } finally {
+      setDisabled(false);
     }
   };
 
@@ -316,6 +319,7 @@ export default function Settings() {
             title={t("save")}
             onPress={handleSave}
             color={ButtonColor.primary}
+            disabled={disabled}
           />
         </View>
       </View>

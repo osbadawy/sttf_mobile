@@ -40,7 +40,7 @@ export default function DeletionConfirmation({
           <CustomButton
             title={t("back")}
             onPress={onClose}
-            color={ButtonColor.white}
+            color={ButtonColor.disabled}
             size={ButtonSize.sm}
           />
           <CustomButton
