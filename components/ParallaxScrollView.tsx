@@ -31,7 +31,7 @@ export default function ParallaxScrollView({
       >
         {headerProps && <Header {...headerProps} />}
         <View
-          className="flex-1 pt-16 px-4 gap-4 overflow-hidden"
+          className="flex-1 pt-10 px-4 gap-4 overflow-hidden"
           style={{ paddingBottom: showNav ? 100 : 16 }}
         >
           {children}
