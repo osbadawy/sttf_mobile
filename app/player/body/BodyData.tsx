@@ -1,24 +1,15 @@
-// app/player/body/[player_id]/body-data.tsx (or wherever you want it)
-// If you prefer a different path, keep the component export as default.
-
-import CustomButton, { ButtonColor } from "@/components/Button";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import DateField from "@/components/settings/DateField";
 import DatePickerModal from "@/components/settings/DatePickerModal";
-import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { clearBodyCompositionLatestCache } from "@/hooks/useBodyCompositionLatest";
-import { clearBodyCompositionsCache } from "@/hooks/useBodyCompositions";
-import Constants from "expo-constants";
-import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Text,
   TextInput,
-  View,
+  View
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -30,73 +21,61 @@ const formatDateDDMMYYYY = (d: Date): string => {
 };
 
 export default function BodyData() {
-  const { t, isRTL } = useLocalization("components.body");
+  const { t, isRTL } = useLocalization("components.body.body");
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
-  const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
-  console.log({ playerData });
-  // date state
+
+  // read incoming params (optional)
+  const params = useLocalSearchParams<{
+    player_id?: string;
+    dateISO?: string;
+    weightKg?: string;
+    bmi?: string;
+    fatPct?: string;
+    musclePct?: string;
+  }>();
+
+  // local state
   const [date, setDate] = useState<Date>(new Date());
   const [dateOpen, setDateOpen] = useState(false);
 
-  // inputs
   const [weight, setWeight] = useState<string>("");
   const [fat, setFat] = useState<string>("");
   const [muscle, setMuscle] = useState<string>("");
+
+  // hydrate from params (if provided)
+  useEffect(() => {
+    if (params?.dateISO) {
+      const d = new Date(params.dateISO as string);
+      if (!isNaN(d.getTime())) setDate(d);
+    }
+    if (params?.weightKg != null) setWeight(String(params.weightKg));
+    if (params?.bmi != null) setBmi(String(params.bmi));
+    if (params?.fatPct != null) setFat(String(params.fatPct));
+    if (params?.musclePct != null) setMuscle(String(params.musclePct));
+  }, [
+    params?.dateISO,
+    params?.weightKg,
+    params?.bmi,
+    params?.fatPct,
+    params?.musclePct,
+  ]);
 
   const dateLabel = useMemo(() => formatDateDDMMYYYY(date), [date]);
   const [disableConfirm, setDisableConfirm] = useState(false);
 
   const onConfirm = async () => {
     // TODO: call backend with parsed numbers
-    if (!user) {
-      Alert.alert("Error", "User not found");
-      return;
-    }
-
-    try {
-      setDisableConfirm(true);
-      const payload = {
-        day: date,
-        firebase_id: playerData.firebase_id || user.uid,
-        weight_kg: Number(weight),
-        body_fat_percentage: Number(fat),
-        muscle_mass_percentage: Number(muscle),
-      };
-      console.log({ payload });
-      const response = await fetch(
-        `${Constants.expoConfig?.extra?.BACKEND_URL}/body-composition`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${await user.getIdToken()}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        },
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error({ errorData });
-        Alert.alert("Error", "Failed to submit body data");
-        return;
-      }
-
-      // Clear caches to trigger refetch on the body page
-      clearBodyCompositionLatestCache();
-      clearBodyCompositionsCache();
-
-      router.back();
-    } catch (error) {
-      Alert.alert("Error", "Failed to submit body data");
-    } finally {
-      setDisableConfirm(false);
-    }
+    const payload = {
+      playerId: params.player_id ?? null,
+      date: date.toISOString(),
+      weightKg: Number(weight),
+      bmi: Number(bmi),
+      fatPct: Number(fat),
+      musclePct: Number(muscle),
+    };
+    console.log("Submitting Body Data:", payload);
   };
 
-  // shared card style
   const cardClass =
     "flex-1 rounded-2xl bg-white border border-neutral-200 px-4 py-3 shadow-sm";
 
@@ -116,7 +95,7 @@ export default function BodyData() {
         style={{ flex: 1, paddingBottom: 30 }}
       >
         <View className="flex-1 px-4 pt-4 pb-4">
-          {/* Date selector (top) */}
+          {/* Date selector */}
           <View className="mb-5">
             <DateField
               label=""
@@ -136,11 +115,13 @@ export default function BodyData() {
             />
           </View>
 
-          {/* Inputs grid: 2 x 2 */}
+          {/* Inputs grid */}
           <View className="gap-3">
             <View className="flex-row gap-3">
               <View className={cardClass}>
-                <Text className="mb-2 text-xs text-neutral-500">Kg</Text>
+                <Text className="mb-2 text-xs text-neutral-500">
+                  {t("weight")}
+                </Text>
                 <TextInput
                   value={weight}
                   onChangeText={setWeight}
@@ -152,14 +133,28 @@ export default function BodyData() {
               </View>
 
               <View className={cardClass}>
+                <Text className="mb-2 text-xs text-neutral-500">BMI</Text>
+                <TextInput
+                  value={bmi}
+                  onChangeText={setBmi}
+                  keyboardType="decimal-pad"
+                  placeholder="BMI"
+                  placeholderTextColor="#A3A3A3"
+                  className="text-lg font-semibold text-black"
+                />
+              </View>
+            </View>
+
+            <View className="flex-row gap-3">
+              <View className={cardClass}>
                 <Text className="mb-2 text-xs text-neutral-500">
-                  {t("fat %")}
+                  {t("fat")} %
                 </Text>
                 <TextInput
                   value={fat}
                   onChangeText={setFat}
                   keyboardType="decimal-pad"
-                  placeholder="Fat %"
+                  placeholder={t("fat%")}
                   placeholderTextColor="#A3A3A3"
                   className="text-lg font-semibold text-black"
                 />
@@ -167,13 +162,13 @@ export default function BodyData() {
 
               <View className={cardClass}>
                 <Text className="mb-2 text-xs text-neutral-500">
-                  {t("muscle %")}
+                  {t("muscle")} %
                 </Text>
                 <TextInput
                   value={muscle}
                   onChangeText={setMuscle}
                   keyboardType="decimal-pad"
-                  placeholder="Muscle %"
+                  placeholder={t("muscle%")}
                   placeholderTextColor="#A3A3A3"
                   className="text-lg font-semibold text-black"
                 />
@@ -182,13 +177,20 @@ export default function BodyData() {
           </View>
         </View>
 
-        {/* Sticky confirm button */}
-        <CustomButton
-          title="Confirm"
-          onPress={onConfirm}
-          disabled={disableConfirm}
-          color={ButtonColor.primary}
-        />
+        {/* Sticky confirm */}
+        <View
+          style={{ paddingBottom: Math.max(insets.bottom, 16) }}
+          className="px-4 pt-2"
+        >
+          <Pressable
+            onPress={onConfirm}
+            className="h-12 w-full items-center justify-center rounded-xl bg-emerald-700"
+          >
+            <Text className="text-white text-base font-semibold">
+              {t("confirm")}
+            </Text>
+          </Pressable>
+        </View>
       </KeyboardAvoidingView>
     </ParallaxScrollView>
   );

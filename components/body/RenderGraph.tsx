@@ -1,6 +1,7 @@
 // components/body/RenderGraph.tsx
 import { BodyCompositionData } from "@/components/body/HistoryGraphSelector";
 import MetricsLineChart from "@/components/body/MetricsLineChart";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 
 type Props = {
@@ -25,7 +26,7 @@ export default function RenderGraph({ bodyCompositions }: Props) {
     <View className="px-2">
       {/* WEIGHT SECTION */}
       <View className="py-2">
-        <Text className="font-bold text-lg">Weight</Text>
+        <Text className="font-bold text-lg">{t("weight")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -53,7 +54,7 @@ export default function RenderGraph({ bodyCompositions }: Props) {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">Fat%</Text>
+        <Text className="font-semibold text-lg">{t("fat")}%</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -67,7 +68,7 @@ export default function RenderGraph({ bodyCompositions }: Props) {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">Muscle%</Text>
+        <Text className="font-semibold text-lg">{t("muscle")}%</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart

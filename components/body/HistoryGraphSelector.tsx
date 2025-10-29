@@ -1,6 +1,7 @@
 // components/body/HistoryGraphSelector.tsx
 import RenderGraph from "@/components/body/RenderGraph";
 import RenderHistory from "@/components/body/RenderHistory";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
@@ -26,6 +27,7 @@ export default function HistoryGraphSelector({
   isRTL = false,
   bodyCompositions,
 }: Props) {
+  const { t } = useLocalization("components.body.body");
   const [active, setActive] = useState<"history" | "graph">(initialTab);
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
 
@@ -55,7 +57,7 @@ export default function HistoryGraphSelector({
   };
 
   return (
-    <View className="px-4 bg-white rounded-xl">
+    <View className="px-4 py-4 bg-white rounded-xl">
       {/* Segmented control */}
       <View
         className={[
@@ -64,8 +66,8 @@ export default function HistoryGraphSelector({
         ].join(" ")}
       >
         <View className={`${rowDir} gap-2 bg-neutral-100 rounded-full `}>
-          <Seg id="history" label="History" />
-          <Seg id="graph" label="Graph" />
+          <Seg id="history" label={t("history")} />
+          <Seg id="graph" label={t("graph")} />
         </View>
       </View>
 

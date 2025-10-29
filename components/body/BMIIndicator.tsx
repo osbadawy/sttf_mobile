@@ -1,4 +1,3 @@
-// components/body/BMIIndicator.tsx
 import { useMemo } from "react";
 import { Text, View } from "react-native";
 
@@ -22,13 +21,13 @@ export default function BMIIndicator({ bmi, weightKg, heightCm }: Props) {
 
   // Define exact numeric boundaries to align perfectly with colors visually
   const segments = [
-    { label: "Severely Underweight", color: RED, min: 10, max: 14 },
-    { label: "Moderately Underweight", color: ORANGE, min: 14, max: 16 },
-    { label: "Slightly Underweight", color: YELLOW, min: 16, max: 18.5 },
-    { label: "Healthy", color: TEAL, min: 18.5, max: 25 },
-    { label: "Slightly Obese", color: YELLOW, min: 25, max: 30 },
-    { label: "Moderately Obese", color: ORANGE, min: 30, max: 35 },
-    { label: "Severely Obese", color: RED, min: 35, max: 40 },
+    { label: t("severely underweight"), color: RED, min: 10, max: 14 },
+    { label: t("moderately underweight"), color: ORANGE, min: 14, max: 16 },
+    { label: t("slightly underweight"), color: YELLOW, min: 16, max: 18.5 },
+    { label: t("healthy"), color: TEAL, min: 18.5, max: 25 },
+    { label: t("slightly obese"), color: YELLOW, min: 25, max: 30 },
+    { label: t("moderately obese"), color: ORANGE, min: 30, max: 35 },
+    { label: t("severely obese"), color: RED, min: 35, max: 40 },
   ];
 
   // Compute bar widths based on the actual numeric span of each segment
