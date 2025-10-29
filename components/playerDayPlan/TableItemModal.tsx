@@ -141,6 +141,21 @@ export default function TableItemModal({
     setIsSubmitting(false);
   };
 
+  // Determine if the Complete button should be disabled
+  const isButtonDisabled = (() => {
+    if (type === "activity") {
+      // Activity requires a score > 0
+      return score === 0;
+    } else if (type === "meal") {
+      // Meal requires an image
+      return imageUrl === null;
+    } else if (type === "assessment") {
+      // Assessment requires a score > 0
+      return score === 0;
+    }
+    return false;
+  })();
+
   return (
     <Modal
       onClose={onClose}
@@ -228,15 +243,16 @@ export default function TableItemModal({
             className="rounded-[8px] px-4 py-4 items-center justify-center flex-row"
             style={{
               shadowColor: "#000",
-              shadowOpacity: 0.06,
+              shadowOpacity: isButtonDisabled ? 0 : 0.06,
               shadowRadius: 10,
               shadowOffset: { width: 0, height: 6 },
-              elevation: 3,
-              backgroundColor: color,
+              elevation: isButtonDisabled ? 0 : 3,
+              backgroundColor: isButtonDisabled ? "#D1D5DB" : color,
               gap: 12,
+              opacity: isButtonDisabled ? 0.6 : 1,
             }}
             onPress={handleComplete}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isButtonDisabled}
           >
             {isSubmitting ? (
               <ActivityIndicator color="white" />
@@ -245,7 +261,7 @@ export default function TableItemModal({
                 <Text className="text-white text-lg effra-regular">
                   {t("complete")}
                 </Text>
-                <ArrowBig stroke={color} />
+                <ArrowBig stroke={isButtonDisabled ? "#D1D5DB" : color} />
               </>
             )}
           </TouchableOpacity>

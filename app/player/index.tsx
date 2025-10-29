@@ -232,6 +232,7 @@ export default function PlayerIndexPage() {
               alignItems: "center",
               justifyContent: "center",
               paddingTop: tableHeight / 2,
+              paddingBottom: 100,
             }}
           >
             {data.map((item, idx) => (

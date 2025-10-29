@@ -1,6 +1,7 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
+import { uploadToFirebase } from "@/utils/uploadToFirebase";
 import Constants from "expo-constants";
 import { User } from "firebase/auth";
 import { Alert, Text, View } from "react-native";
@@ -56,15 +57,36 @@ export default function MealModalContent({
     }
 
     try {
+      let uploadedImageUrl: string | null = null;
+
+      // Upload image to Firebase Storage if imageUrl exists
+      if (imageUrl) {
+        try {
+          uploadedImageUrl = await uploadToFirebase({
+            folderName: "sttf/nutrition",
+            id: user.uid,
+            includeDate: true,
+            imageUri: imageUrl,
+          });
+        } catch (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          Alert.alert(
+            "Warning",
+            "Failed to upload image, but continuing with meal completion.",
+          );
+          return false;
+        }
+      }
+
       const token = await user.getIdToken();
       const backendUrl = Constants.expoConfig?.extra?.BACKEND_URL;
       const url = `${backendUrl}/meal/complete`;
       const body = {
         id: meal.id,
-        // img_url: imageUrl,
+        img_url: uploadedImageUrl,
       };
 
-      const response = await fetch(url, {
+      const apiResponse = await fetch(url, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,11 +95,11 @@ export default function MealModalContent({
         body: JSON.stringify(body),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json();
         console.error("API Error:", {
-          status: response.status,
-          statusText: response.statusText,
+          status: apiResponse.status,
+          statusText: apiResponse.statusText,
           error: errorData,
         });
         throw new Error(`Failed to complete meal: ${errorData.message}`);
