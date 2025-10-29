@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 interface UsePlannedMealsProps {
   users_assigned?: string[];
   day: Date;
+  onlyMatchSelectedPlayers?: boolean;
 }
 
 interface UsePlannedMealsReturn {
@@ -29,6 +30,7 @@ const dataCache = new ExpiringCache<GetMealsResponse[]>(1);
 export function usePlannedMeals({
   users_assigned,
   day,
+  onlyMatchSelectedPlayers,
 }: UsePlannedMealsProps): UsePlannedMealsReturn {
   const { user } = useAuth();
   const [meals, setMeals] = useState<GetMealsResponse[]>([]);
@@ -55,15 +57,14 @@ export function usePlannedMeals({
     setError(null);
 
     try {
-      const params = new URLSearchParams();
-
-      // Add day parameter
-      params.append("day", day.toISOString());
-
-      // Add multiple users_assigned parameters
-      assignedUsers.forEach((userId) => {
-        params.append("users_assigned", userId);
+      const params = new URLSearchParams({
+        day: day.toISOString(),
+        users_assigned: assignedUsers.join(","),
       });
+
+      if (onlyMatchSelectedPlayers) {
+        params.append("onlyMatchSelectedPlayers", true.toString());
+      }
 
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/meal?${params}`;
 

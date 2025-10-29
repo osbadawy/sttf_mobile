@@ -6,8 +6,10 @@ import {
 import NutritionCard from "@/components/dashboard/NutritionCard";
 import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useWhoopData } from "@/hooks/useWhoopData";
+import { getMealSummary } from "@/utils/meal";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator } from "react-native";
@@ -24,6 +26,18 @@ export default function Dashboard() {
     firebaseId: playerData.firebase_id,
     date: date,
   });
+
+  const {
+    meals,
+    loading: mealLoading,
+    error: mealError,
+  } = usePlannedMeals({
+    users_assigned: playerData.firebase_id && [playerData.firebase_id],
+    day: date,
+    onlyMatchSelectedPlayers: true,
+  });
+
+  const { calories, totalCalories } = getMealSummary(meals);
 
   return (
     <ParallaxScrollView
@@ -50,7 +64,7 @@ export default function Dashboard() {
         max={metrics.heart.max}
         resting={metrics.heart.resting}
       />
-      <NutritionCard />
+      <NutritionCard calories={calories} totalCalories={totalCalories} />
     </ParallaxScrollView>
   );
 }

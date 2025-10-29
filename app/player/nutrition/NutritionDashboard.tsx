@@ -10,6 +10,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
+import { getMealSummary } from "@/utils/meal";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
@@ -28,38 +29,19 @@ export default function NutritionDashboard() {
   const { meals, loading, error } = usePlannedMeals({
     users_assigned: [firebaseId],
     day: date,
+    onlyMatchSelectedPlayers: true,
   });
 
-  const completedEntries = meals.filter((meal) => {
-    const assinedEntry = meal.players_assigned.find(
-      (player) => player.assigned_to_user.firebase_id === firebaseId,
-    );
-    return assinedEntry && assinedEntry.completions.length > 0;
-  });
-
-  const calories = Math.round(
-    completedEntries.reduce((acc, meal) => acc + meal.kilojoule / 4.184, 0),
-  );
-  const carbs = Math.round(
-    completedEntries.reduce((acc, meal) => acc + meal.carbohydrates, 0),
-  );
-  const protein = Math.round(
-    completedEntries.reduce((acc, meal) => acc + meal.protein, 0),
-  );
-  const fats = Math.round(
-    completedEntries.reduce((acc, meal) => acc + meal.fat, 0),
-  );
-
-  const totalCalories = Math.round(
-    meals.reduce((acc, meal) => acc + meal.kilojoule / 4.184, 0),
-  );
-  const totalCarbs = Math.round(
-    meals.reduce((acc, meal) => acc + meal.carbohydrates, 0),
-  );
-  const totalProteins = Math.round(
-    meals.reduce((acc, meal) => acc + meal.protein, 0),
-  );
-  const totalFats = Math.round(meals.reduce((acc, meal) => acc + meal.fat, 0));
+  const {
+    calories,
+    carbs,
+    protein,
+    fats,
+    totalCalories,
+    totalCarbs,
+    totalProteins,
+    totalFats,
+  } = getMealSummary(meals);
 
   return (
     <ParallaxScrollView
@@ -129,7 +111,7 @@ export default function NutritionDashboard() {
           </View>
         </View>
         <View className="mt-10 mb-6">
-          <MealLog />
+          <MealLog firebase_id={playerData.firebase_id} />
         </View>
       </View>
     </ParallaxScrollView>

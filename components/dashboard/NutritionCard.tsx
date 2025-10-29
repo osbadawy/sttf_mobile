@@ -8,14 +8,16 @@ import {
 } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
-export default function NutritionCard() {
+export default function NutritionCard({
+  calories,
+  totalCalories,
+}: {
+  calories: number;
+  totalCalories: number;
+}) {
   const { t } = useLocalization("components.nutrition.nutritionList");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
-
-  // Placeholder data (can be props in the future)
-  const consumed = 924;
-  const goal = 2802;
 
   return (
     <View className="bg-white mt-20 rounded-2xl p-5 shadow-md overflow-hidden relative">
@@ -33,7 +35,7 @@ export default function NutritionCard() {
       </View>
 
       {/* Calories + Progress (extracted) */}
-      <NutritionProgress consumed={consumed} goal={goal} unit="Kcal" />
+      <NutritionProgress consumed={calories} goal={totalCalories} unit="Kcal" />
 
       {/* Text + Button */}
       <View className="flex-row items-center justify-between mt-6 mb-40">
