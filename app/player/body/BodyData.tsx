@@ -7,6 +7,8 @@ import DateField from "@/components/settings/DateField";
 import DatePickerModal from "@/components/settings/DatePickerModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { clearBodyCompositionLatestCache } from "@/hooks/useBodyCompositionLatest";
+import { clearBodyCompositionsCache } from "@/hooks/useBodyCompositions";
 import Constants from "expo-constants";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
@@ -79,6 +81,10 @@ export default function BodyData() {
         Alert.alert("Error", "Failed to submit body data");
         return;
       }
+
+      // Clear caches to trigger refetch on the body page
+      clearBodyCompositionLatestCache();
+      clearBodyCompositionsCache();
 
       router.replace(`/player/body` as RelativePathString);
     } catch (error) {

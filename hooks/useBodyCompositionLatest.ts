@@ -8,7 +8,7 @@ export interface BodyComposition {
   firebase_id: string;
   weight?: number;
   body_fat_percentage?: number;
-  muscle_mass?: number;
+  muscle_mass_percentage?: number;
   measurement_date: string;
   [key: string]: any;
 }
@@ -27,6 +27,11 @@ interface UseBodyCompositionLatestReturn {
 
 // Cache to store fetched data by firebase_id (expires after 1 minute)
 const dataCache = new ExpiringCache<BodyComposition | null>(1);
+
+// Export a function to clear the cache from outside the hook
+export function clearBodyCompositionLatestCache() {
+  dataCache.clear();
+}
 
 export function useBodyCompositionLatest({
   firebase_id,
@@ -47,7 +52,8 @@ export function useBodyCompositionLatest({
     // Check cache first
     const cacheKey = `${playerId}`;
     const cachedData = dataCache.get(cacheKey);
-    if (cachedData !== undefined) {
+    // Only use cache if we have actual data (not null or undefined)
+    if (cachedData !== undefined && cachedData !== null) {
       setData(cachedData);
       return;
     }
@@ -57,7 +63,6 @@ export function useBodyCompositionLatest({
 
     try {
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/body-composition/latest/${playerId}`;
-
       const response = await fetch(url, {
         method: "GET",
         headers: {

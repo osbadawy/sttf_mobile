@@ -3,18 +3,13 @@ import { useMemo } from "react";
 import { Text, View } from "react-native";
 
 type Props = {
-  bmi: number;
-  heightCm: number;
+  bmi?: number;
+  weightKg?: number;
+  heightCm?: number;
 };
 
-export default function BMIIndicator({ bmi, heightCm }: Props) {
+export default function BMIIndicator({ bmi, weightKg, heightCm }: Props) {
   // ---- derived weight display ----
-  const weightKg = useMemo(() => {
-    const h = Math.max(0.5, heightCm / 100);
-    const w = bmi * h * h;
-    return Math.round(w);
-  }, [bmi, heightCm]);
-
   // ---- scale ----
   const LOWER = 10;
   const UPPER = 40;

@@ -1,4 +1,5 @@
 // components/body/RenderHistory.tsx
+import { BodyCompositionData } from "@/components/body/HistoryGraphSelector";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
@@ -9,30 +10,6 @@ type HistoryRow = {
   fatPct: number; // e.g., 12.5
   musclePct: number; // e.g., 82.5
 };
-
-const mockData: HistoryRow[] = [
-  {
-    dateISO: "2025-09-02",
-    weightKg: 82,
-    bmi: 20.5,
-    fatPct: 12.5,
-    musclePct: 82.5,
-  },
-  {
-    dateISO: "2025-09-01",
-    weightKg: 82,
-    bmi: 20.5,
-    fatPct: 12.5,
-    musclePct: 82.5,
-  },
-  {
-    dateISO: "2025-08-31",
-    weightKg: 81,
-    bmi: 20.4,
-    fatPct: 12.3,
-    musclePct: 81.8,
-  },
-];
 
 const formatDate = (iso: string) => {
   const d = new Date(iso);
@@ -62,14 +39,25 @@ function StatCell({
   );
 }
 
-export default function RenderHistory() {
-  // TODO: replace mockData with fetched data from backend
-  const rows = mockData;
+type Props = {
+  bodyCompositions: BodyCompositionData[];
+};
+
+export default function RenderHistory({ bodyCompositions }: Props) {
   const { player_id, date, player } = useLocalSearchParams<{
     player_id: string;
     date?: string;
     player?: string;
   }>();
+
+  // Transform API data to HistoryRow format
+  const rows: HistoryRow[] = bodyCompositions.map((item) => ({
+    dateISO: item.day || item.measurement_date || "",
+    weightKg: parseFloat(String(item.weight_kg || 0)),
+    bmi: parseFloat(String(item.bmi || 0)),
+    fatPct: parseFloat(String(item.body_fat_percentage || 0)),
+    musclePct: parseFloat(String(item.muscle_mass_percentage || 0)),
+  }));
 
   return (
     <View className="w-full px-4 py-6">

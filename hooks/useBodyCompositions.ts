@@ -29,6 +29,11 @@ interface UseBodyCompositionsReturn {
 // Cache to store fetched data by firebase_id and limit (expires after 1 minute)
 const dataCache = new ExpiringCache<BodyComposition[]>(1);
 
+// Export a function to clear the cache from outside the hook
+export function clearBodyCompositionsCache() {
+  dataCache.clear();
+}
+
 export function useBodyCompositions({
   firebase_id,
   limit = 10,
@@ -63,7 +68,6 @@ export function useBodyCompositions({
       params.append("limit", limit.toString());
 
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/body-composition?${params}`;
-
       const response = await fetch(url, {
         method: "GET",
         headers: {

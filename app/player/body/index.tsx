@@ -28,12 +28,13 @@ export default function Body() {
   } = useBodyCompositions({ firebase_id: playerData.firebase_id, limit: 10 });
 
   const statsData = [
-    { label: "bmi", value: "20.4" },
-    { label: "fat %", value: "12.3" },
-    { label: "muscle %", value: "81.1" },
+    { label: "bmi", value: latestBodyComposition?.bmi || 0 },
+    { label: "fat %", value: latestBodyComposition?.body_fat_percentage || 0 },
+    {
+      label: "muscle %",
+      value: latestBodyComposition?.muscle_mass_percentage || 0,
+    },
   ];
-
-  console.log({ latestBodyComposition, bodyCompositions });
 
   return (
     <ParallaxScrollView
@@ -41,8 +42,8 @@ export default function Body() {
         title: t("body"),
         showBackButton: true,
         showBGImage: false,
-        showCalendarIcon: true,
-        showDateSelector: true,
+        showCalendarIcon: false,
+        showDateSelector: false,
         disableFutureDates: false,
         useDateState: dateState,
       }}
@@ -56,7 +57,11 @@ export default function Body() {
         <BodyStats stats={statsData} />
       </View>
       <View className="py-4">
-        <BMIIndicator bmi={34.4} heightCm={182} />
+        <BMIIndicator
+          bmi={latestBodyComposition?.bmi}
+          weightKg={latestBodyComposition?.weight_kg}
+          heightCm={latestBodyComposition?.height_cm}
+        />
       </View>
 
       <View className="py-4">
@@ -65,8 +70,7 @@ export default function Body() {
             title={t("add measurements")}
             onPress={() =>
               router.push({
-                pathname:
-                  "/player/body/[player_id]/BodyData" as RelativePathString,
+                pathname: "/player/body/BodyData" as RelativePathString,
                 params: {
                   player: player,
                 },
@@ -79,7 +83,10 @@ export default function Body() {
       </View>
 
       <View className="mt-8 mb-10">
-        <HistoryGraphSelector initialTab="history" />
+        <HistoryGraphSelector
+          initialTab="history"
+          bodyCompositions={bodyCompositions || []}
+        />
       </View>
     </ParallaxScrollView>
   );

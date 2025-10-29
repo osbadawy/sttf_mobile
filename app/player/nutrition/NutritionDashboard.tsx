@@ -96,7 +96,7 @@ export default function NutritionDashboard() {
               title="Working title"
               onPress={() =>
                 router.push({
-                  pathname: "/player/body/[player_id]" as RelativePathString,
+                  pathname: "/player/body" as RelativePathString,
                   params: {
                     player_id: String(playerData.id),
                     date: date.toISOString(),

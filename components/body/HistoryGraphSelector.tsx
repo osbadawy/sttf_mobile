@@ -4,14 +4,27 @@ import RenderHistory from "@/components/body/RenderHistory";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
+export type BodyCompositionData = {
+  id: string;
+  bmi?: string | number;
+  body_fat_percentage?: string | number;
+  muscle_mass_percentage?: string | number;
+  weight_kg?: string | number;
+  day?: string;
+  measurement_date?: string;
+  [key: string]: any;
+};
+
 type Props = {
   initialTab?: "history" | "graph";
   isRTL?: boolean;
+  bodyCompositions: BodyCompositionData[];
 };
 
 export default function HistoryGraphSelector({
   initialTab = "history",
   isRTL = false,
+  bodyCompositions,
 }: Props) {
   const [active, setActive] = useState<"history" | "graph">(initialTab);
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
@@ -58,7 +71,11 @@ export default function HistoryGraphSelector({
 
       {/* Conditional rendering */}
       <View className="mt-2">
-        {active === "history" ? <RenderHistory /> : <RenderGraph />}
+        {active === "history" ? (
+          <RenderHistory bodyCompositions={bodyCompositions} />
+        ) : (
+          <RenderGraph bodyCompositions={bodyCompositions} />
+        )}
       </View>
     </View>
   );
