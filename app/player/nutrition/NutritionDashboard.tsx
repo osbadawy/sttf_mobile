@@ -10,6 +10,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
+import { useBodyCompositionLatest } from "@/hooks/useBodyCompositionLatest";
 import { getMealSummary } from "@/utils/meal";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -30,6 +31,10 @@ export default function NutritionDashboard() {
     users_assigned: [firebaseId],
     day: date,
     onlyMatchSelectedPlayers: true,
+  });
+
+  const { data: bodyComposition } = useBodyCompositionLatest({
+    firebase_id: playerData.firebase_id,
   });
 
   const {
@@ -86,14 +91,14 @@ export default function NutritionDashboard() {
         </View>
         <View className="mt-10">
           <BodyMetricsCard
-            weightKg={83.2}
-            bmi={20.5}
-            fatPercent={12.2}
-            musclePercent={35.6}
+            weightKg={bodyComposition?.weight_kg || 0}
+            bmi={bodyComposition?.bmi || 0}
+            fatPercent={bodyComposition?.body_fat_percentage || 0}
+            musclePercent={bodyComposition?.muscle_mass_percentage || 0}
           />
-          <View className="mt-10 mb-6">
+          <View className="mt-4 mb-6 self-start">
             <CustomButton
-              title="Working title"
+              title={t("body composition")}
               onPress={() =>
                 router.push({
                   pathname: "/player/body" as RelativePathString,

@@ -52,7 +52,7 @@ export default function BodyMetricsCard({
 }: BodyMetricsProps) {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
 
-  const fmt1 = (n: number) => n.toFixed(1);
+  const fmt1 = (n: number) => (n ? n.toFixed(1) : "--");
 
   return (
     <View className="px-4">

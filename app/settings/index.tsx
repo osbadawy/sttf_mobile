@@ -1,5 +1,6 @@
 import CustomButton, { ButtonColor } from "@/components/Button";
 import LogOutIcon from "@/components/icons/settings/LogOutIcon";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import {
   buildNationalityLabelMap,
@@ -199,6 +200,7 @@ export default function Settings() {
   // ------- RTL helpers -------
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
   const textDir = isRTL ? "text-right" : "text-left";
+  const selfDir = isRTL ? "self-end" : "self-start";
   const padInlineStart = isRTL ? "pr-4" : "pl-4";
 
   return (
@@ -229,12 +231,14 @@ export default function Settings() {
         </View>
 
         <Pressable
-          className={`mt-3 w-12 ${padInlineStart} ${textDir}`}
+          className={`mt-3 ${padInlineStart} ${textDir} ${selfDir}`}
           onPress={handlePickImage}
         >
           <Text className="text-[#0E7A3E] underline">{t("edit")}</Text>
         </Pressable>
       </View>
+
+      <LanguageSwitcher />
 
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
 
