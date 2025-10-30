@@ -27,9 +27,9 @@ export default function HistoryGraphSelector({
   isRTL = false,
   bodyCompositions,
 }: Props) {
-  const { t } = useLocalization("components.body.body");
   const [active, setActive] = useState<"history" | "graph">(initialTab);
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
+  const { t } = useLocalization("components.body");
 
   const Seg = ({ id, label }: { id: "history" | "graph"; label: string }) => {
     const selected = active === id;
@@ -57,7 +57,7 @@ export default function HistoryGraphSelector({
   };
 
   return (
-    <View className="px-4 py-4 bg-white rounded-xl">
+    <View className="px-4 bg-white rounded-xl">
       {/* Segmented control */}
       <View
         className={[

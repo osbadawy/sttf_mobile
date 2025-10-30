@@ -29,9 +29,9 @@ export default function Body() {
 
   const statsData = [
     { label: "bmi", value: latestBodyComposition?.bmi || 0 },
-    { label: "fat %", value: latestBodyComposition?.body_fat_percentage || 0 },
+    { label: "fat%", value: latestBodyComposition?.body_fat_percentage || 0 },
     {
-      label: "muscle %",
+      label: "muscle%",
       value: latestBodyComposition?.muscle_mass_percentage || 0,
     },
   ];
@@ -39,7 +39,7 @@ export default function Body() {
   return (
     <ParallaxScrollView
       headerProps={{
-        title: t("body"),
+        title: t("body data"),
         showBackButton: true,
         showBGImage: false,
         showCalendarIcon: false,
@@ -47,7 +47,7 @@ export default function Body() {
         disableFutureDates: false,
         useDateState: dateState,
       }}
-      showNav={false}
+      showNav={true}
       error={Boolean(latestBodyCompositionError || bodyCompositionsError)}
     >
       {(latestBodyCompositionLoading || bodyCompositionsLoading) && (

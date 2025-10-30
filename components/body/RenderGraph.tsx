@@ -9,6 +9,7 @@ type Props = {
 };
 
 export default function RenderGraph({ bodyCompositions }: Props) {
+  const { t } = useLocalization("components.body");
   // Transform API data to chart format (reverse to show oldest to newest)
   const reversedData = [...bodyCompositions].reverse();
 
@@ -40,7 +41,7 @@ export default function RenderGraph({ bodyCompositions }: Props) {
 
       {/* BMI SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">BMI</Text>
+        <Text className="font-semibold text-lg">{t("bmi")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -54,7 +55,7 @@ export default function RenderGraph({ bodyCompositions }: Props) {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">{t("fat")}%</Text>
+        <Text className="font-semibold text-lg">{t("fat%")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -68,7 +69,7 @@ export default function RenderGraph({ bodyCompositions }: Props) {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">{t("muscle")}%</Text>
+        <Text className="font-semibold text-lg">{t("muscle%")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
