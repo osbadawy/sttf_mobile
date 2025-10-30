@@ -40,11 +40,12 @@ function formatDateLabel(date: number): string {
   return `${wd}, ${dt}`;
 }
 
-export default function MealLog() {
+export default function MealLog({ firebase_id }: { firebase_id?: string }) {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   const { data, dataRange, loading, error, fetchAdditionalData } =
     usePlayerMealLogs({
       initialDaysBack: 14,
+      user_id: firebase_id,
     });
 
   const handleLoadMore = () => {

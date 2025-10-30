@@ -414,7 +414,7 @@ export default function CreateWorkoutMain({
       <CustomButton
         title={editingActivity ? t("save") : t("add")}
         onPress={onPressAdd}
-        color={isButtonDisabled ? ButtonColor.white : ButtonColor.primary}
+        color={isButtonDisabled ? ButtonColor.disabled : ButtonColor.primary}
         disabled={isButtonDisabled}
       />
     </View>

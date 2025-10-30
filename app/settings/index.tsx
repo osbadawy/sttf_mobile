@@ -1,4 +1,6 @@
+import CustomButton, { ButtonColor } from "@/components/Button";
 import LogOutIcon from "@/components/icons/settings/LogOutIcon";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import {
   buildNationalityLabelMap,
@@ -15,11 +17,21 @@ import SettingsRow from "@/components/settings/SettingsRow";
 import type { Option, PlayHand } from "@/components/settings/types";
 import { useAuth } from "@/contexts/AuthContext"; // ✅ use the hook, not auth
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { useUser } from "@/hooks/useUser";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { uploadToFirebase } from "@/utils/uploadToFirebase";
+import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { RelativePathString, router } from "expo-router";
-import { useMemo, useState } from "react";
-import { Alert, Image, Pressable, Text, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 
 /** Simple formatter: DD.MM.YYYY */
 const formatDateDDMMYYYY = (d: Date): string => {
@@ -31,15 +43,19 @@ const formatDateDDMMYYYY = (d: Date): string => {
 
 export default function Settings() {
   const { t, isRTL } = useLocalization("components.Settings.settings");
-  const { userName, profilePicture } = useUserProfile();
-  const { logout } = useAuth(); // ✅ get logout from context
+  const { userName, setUserName, setProfilePicture, profilePicture } =
+    useUserProfile();
+  const { user, logout } = useAuth(); // ✅ get logout and user from context
+
+  const { data, loading, error } = useUser();
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   // --- form state ---
-  const [firstName, setFirstName] = useState<string>("Joseph");
-  const [lastName, setLastName] = useState<string>("Kaspari");
+  const [name, setName] = useState<string>("");
   const [nationalityCode, setNationalityCode] = useState<string>("SA");
-  const [dob, setDob] = useState<Date>(new Date(2001, 8, 19));
+  const [dob, setDob] = useState<Date>(new Date(2000, 1, 1));
   const [hand, setHand] = useState<PlayHand>("right");
+  const [height, setHeight] = useState<number>(180);
 
   // --- modal state ---
   const [nationalityOpen, setNationalityOpen] = useState<boolean>(false);
@@ -66,12 +82,83 @@ export default function Settings() {
     { label: t("left hand"), value: "left" },
   ];
 
+  useEffect(() => {
+    if (data) {
+      setName(data.display_name || userName || "");
+      setNationalityCode(data.nationality || "SA");
+      setDob(
+        data.birth_date ? new Date(data.birth_date) : new Date(2000, 1, 1),
+      );
+      setHand(data.player_stats?.dominant_hand || "right");
+      setHeight(data.player_stats?.height_cm || 180);
+    }
+  }, [data]);
+
   // ✅ Use context logout (handles Firebase signOut + redirect)
   const onLogout = async (): Promise<void> => {
     try {
       await logout();
     } catch (error) {
       console.error("Error signing out:", error);
+    }
+  };
+
+  const handleSave = async (): Promise<void> => {
+    if (!user) {
+      Alert.alert(t("error"), t("user not found"));
+      return;
+    }
+    try {
+      setDisabled(true);
+      let uploadedImageUrl: string | null = null;
+
+      if (localAvatarUri) {
+        uploadedImageUrl = await uploadToFirebase({
+          folderName: "sttf/avatar",
+          id: user.uid,
+          includeDate: false,
+          imageUri: localAvatarUri,
+        });
+      }
+
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/user`;
+
+      const requestBody = {
+        display_name: name,
+        nationality: nationalityCode,
+        birth_date: dob.toISOString(),
+        dominant_hand: hand,
+        height_cm: height,
+        avatar_url: uploadedImageUrl,
+      };
+
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${await user.getIdToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`,
+        );
+      }
+
+      const responseData = await response.json();
+      console.log("User updated successfully:", responseData);
+      setUserName(responseData.display_name || name);
+      setProfilePicture(responseData.avatar_url || profilePicture || null);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update user settings";
+      console.error("Error updating user:", err);
+      Alert.alert(t("error"), errorMessage);
+    } finally {
+      setDisabled(false);
     }
   };
 
@@ -108,19 +195,12 @@ export default function Settings() {
     if (!asset?.uri) return;
 
     setLocalAvatarUri(asset.uri);
-    console.log("Selected image for upload:", {
-      uri: asset.uri,
-      width: asset.width,
-      height: asset.height,
-      fileName: asset.fileName,
-      mimeType: asset.mimeType,
-      fileSize: asset.fileSize,
-    });
   };
 
   // ------- RTL helpers -------
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
   const textDir = isRTL ? "text-right" : "text-left";
+  const selfDir = isRTL ? "self-end" : "self-start";
   const padInlineStart = isRTL ? "pr-4" : "pl-4";
 
   return (
@@ -133,9 +213,10 @@ export default function Settings() {
         showBackButton: true,
       }}
       showNav={false}
+      error={!!error}
     >
       {/* PROFILE HEADER */}
-      <View className="px-4 pt-4">
+      <View className="px-4">
         <View className={`${rowDir} items-center gap-3`}>
           <Image
             source={imageSource}
@@ -144,65 +225,36 @@ export default function Settings() {
           />
           <View className="flex-1">
             <Text className={`text-lg font-semibold text-black ${textDir}`}>
-              {userName || `${firstName} ${lastName}`}
+              {userName}
             </Text>
           </View>
         </View>
 
         <Pressable
-          className={`mt-3 w-12 ${padInlineStart} ${textDir}`}
+          className={`mt-3 ${padInlineStart} ${textDir} ${selfDir}`}
           onPress={handlePickImage}
         >
           <Text className="text-[#0E7A3E] underline">{t("edit")}</Text>
         </Pressable>
       </View>
 
+      <LanguageSwitcher />
+
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
       {/* ACCOUNT SECTION */}
       <View className="mt-5 px-4">
         <SectionHeader title={t("account")} isRTL={isRTL} />
 
-        {/* Row: First / Last Name */}
-        <View className={`mt-3 ${rowDir} gap-3`}>
-          {isRTL ? (
-            <>
-              <LabeledInput
-                isRTL={isRTL}
-                label={t("last name")}
-                value={lastName}
-                onChangeText={setLastName}
-                placeholder="Last name"
-                containerClass="flex-1"
-              />
-              <LabeledInput
-                isRTL={isRTL}
-                label={t("first name")}
-                value={firstName}
-                onChangeText={setFirstName}
-                placeholder="First name"
-                containerClass="flex-1"
-              />
-            </>
-          ) : (
-            <>
-              <LabeledInput
-                isRTL={isRTL}
-                label={t("first name")}
-                value={firstName}
-                onChangeText={setFirstName}
-                placeholder="First name"
-                containerClass="flex-1"
-              />
-              <LabeledInput
-                isRTL={isRTL}
-                label={t("last name")}
-                value={lastName}
-                onChangeText={setLastName}
-                placeholder="Last name"
-                containerClass="flex-1"
-              />
-            </>
-          )}
-        </View>
+        {/* Row: Name */}
+        <LabeledInput
+          isRTL={isRTL}
+          label={t("name")}
+          value={name}
+          onChangeText={setName}
+          placeholder={name}
+          containerClass="flex-1"
+        />
 
         {/* Nationality */}
         <SelectField
@@ -259,6 +311,28 @@ export default function Settings() {
             setHandOpen(false);
           }}
         />
+
+        {/* Height */}
+        <View className="mt-3">
+          <LabeledInput
+            isRTL={isRTL}
+            label={t("height (cm)")}
+            value={height.toString()}
+            onChangeText={(text) => setHeight(Number(text))}
+            placeholder={height.toString()}
+            containerClass="flex-1"
+            inputMode="numeric"
+          />
+        </View>
+
+        <View className="py-10 px-6">
+          <CustomButton
+            title={t("save")}
+            onPress={handleSave}
+            color={ButtonColor.primary}
+            disabled={disabled}
+          />
+        </View>
       </View>
 
       {/* SETTINGS MENU */}
@@ -296,7 +370,7 @@ export default function Settings() {
         {/* Logout row mirrors icon/text sides */}
         <Pressable
           onPress={onLogout}
-          className={`${rowDir} items-center justify-between px-4 py-4`}
+          className={`${rowDir} items-center justify-between px-4 py-4 mb-5`}
         >
           <Text className={`text-[#E53935] ${textDir}`}>{t("log out")}</Text>
           <LogOutIcon />

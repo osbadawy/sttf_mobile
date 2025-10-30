@@ -60,7 +60,6 @@ export default function ActivityModalContent({
         id: activity.id,
         self_assessment_score: score / 5,
       };
-      console.log(body);
 
       const response = await fetch(url, {
         method: "POST",

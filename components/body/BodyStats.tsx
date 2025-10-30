@@ -12,18 +12,12 @@ type BodyStatsProps = {
 };
 
 function StatCard({ label, value }: StatCardProps) {
-  const { t } = useLocalization("components.body.body");
-  // Add % only for Fat % and Muscle %
-  const displayValue =
-    label.toLowerCase().includes(t("fat")) ||
-    label.toLowerCase().includes(t("muscle"))
-      ? `${value}%`
-      : `${value}`;
+  const { t } = useLocalization("components.body");
 
   return (
     <View className="flex-1 rounded-3xl bg-white border border-neutral-200 px-4 py-5 shadow-sm">
-      <Text className="text-md text-neutral-500 mb-8">{label}</Text>
-      <Text className="text-2xl font-semibold text-black">{displayValue}</Text>
+      <Text className="text-md text-neutral-500 mb-8">{t(label)}</Text>
+      <Text className="text-2xl font-semibold text-black">{value}</Text>
     </View>
   );
 }

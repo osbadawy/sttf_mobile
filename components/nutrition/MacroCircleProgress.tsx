@@ -231,12 +231,9 @@ export default function MacroCircleProgress({
       }}
     >
       <Svg width={size} height={size}>
-        {/* --- z-index via render order ---
-            back (carbs) -> middle (protein) -> top (fats) */}
-        {renderCategory(seg.centers[2], carbsColor, pCarbs)} {/* carbs back */}
-        {renderCategory(seg.centers[0], proteinColor, pProtein)}{" "}
-        {/* protein middle */}
-        {renderCategory(seg.centers[1], fatsColor, pFats)} {/* fats top */}
+        {renderCategory(seg.centers[2], carbsColor, pCarbs)}
+        {renderCategory(seg.centers[0], proteinColor, pProtein)}
+        {renderCategory(seg.centers[1], fatsColor, pFats)}
       </Svg>
 
       {/* Center percentage */}

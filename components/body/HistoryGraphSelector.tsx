@@ -5,18 +5,31 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
+export type BodyCompositionData = {
+  id: string;
+  bmi?: string | number;
+  body_fat_percentage?: string | number;
+  muscle_mass_percentage?: string | number;
+  weight_kg?: string | number;
+  day?: string;
+  measurement_date?: string;
+  [key: string]: any;
+};
+
 type Props = {
   initialTab?: "history" | "graph";
   isRTL?: boolean;
+  bodyCompositions: BodyCompositionData[];
 };
 
 export default function HistoryGraphSelector({
   initialTab = "history",
   isRTL = false,
+  bodyCompositions,
 }: Props) {
-  const { t } = useLocalization("components.body.body");
   const [active, setActive] = useState<"history" | "graph">(initialTab);
   const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
+  const { t } = useLocalization("components.body");
 
   const Seg = ({ id, label }: { id: "history" | "graph"; label: string }) => {
     const selected = active === id;
@@ -44,7 +57,7 @@ export default function HistoryGraphSelector({
   };
 
   return (
-    <View className="px-4 py-4 bg-white rounded-xl">
+    <View className="px-4 bg-white rounded-xl">
       {/* Segmented control */}
       <View
         className={[
@@ -60,7 +73,11 @@ export default function HistoryGraphSelector({
 
       {/* Conditional rendering */}
       <View className="mt-2">
-        {active === "history" ? <RenderHistory /> : <RenderGraph />}
+        {active === "history" ? (
+          <RenderHistory bodyCompositions={bodyCompositions} />
+        ) : (
+          <RenderGraph bodyCompositions={bodyCompositions} />
+        )}
       </View>
     </View>
   );

@@ -4,6 +4,7 @@
   "edit": "Edit",
   "first name": "First Name",
   "last name": "Last Name",
+  "name": "Name",
   "nationality": "Nationality",
   "select nationality": "Select Nationality",
   "date of birth": "Date of Birth",
@@ -20,5 +21,10 @@
   "confirm password": "Cofirm Password",
   "enter new password": "Enter new password",
   "Re-enter new password": "Re-enter new password",
-  "done": "Done"
+  "done": "Done",
+  "save": "Save",
+  "error": "Error",
+  "success": "Success",
+  "settings saved successfully": "Settings saved successfully",
+  "height (cm)": "Height (cm)"
 }

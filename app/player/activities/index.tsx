@@ -218,7 +218,7 @@ export default function ActivitiesPage() {
                   fetchAdditionalData(newStartDate, newEndDate);
                 }
               }}
-              color={ButtonColor.white}
+              color={ButtonColor.disabled}
               size={ButtonSize.sm}
             />
           </View>

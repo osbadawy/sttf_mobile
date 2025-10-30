@@ -1,14 +1,28 @@
 // components/body/RenderGraph.tsx
+import { BodyCompositionData } from "@/components/body/HistoryGraphSelector";
 import MetricsLineChart from "@/components/body/MetricsLineChart";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Text, View } from "react-native";
 
-export default function RenderGraph() {
-  const { t } = useLocalization("components.body.body");
-  const weightData = [26, 37.5, 76.8, 87.2, 28.4, 56.9, 98.1, 56.6];
-  const BMIData = [26, 37.5, 22, 16, 24, 31, 25, 23];
-  const FatData = [66, 37.5, 22, 16, 44, 91, 75, 23];
-  const MuscleData = [66, 37.5, 22, 16, 44, 91, 75, 23];
+type Props = {
+  bodyCompositions: BodyCompositionData[];
+};
+
+export default function RenderGraph({ bodyCompositions }: Props) {
+  const { t } = useLocalization("components.body");
+  // Transform API data to chart format (reverse to show oldest to newest)
+  const reversedData = [...bodyCompositions].reverse();
+
+  const weightData = reversedData.map((item) =>
+    parseFloat(String(item.weight_kg || 0)),
+  );
+  const BMIData = reversedData.map((item) => parseFloat(String(item.bmi || 0)));
+  const FatData = reversedData.map((item) =>
+    parseFloat(String(item.body_fat_percentage || 0)),
+  );
+  const MuscleData = reversedData.map((item) =>
+    parseFloat(String(item.muscle_mass_percentage || 0)),
+  );
   return (
     <View className="px-2">
       {/* WEIGHT SECTION */}
@@ -18,7 +32,7 @@ export default function RenderGraph() {
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
           type="Weight"
-          data={BMIData}
+          data={weightData}
           width={330}
           height={180}
           style={{ marginHorizontal: 16 }}
@@ -27,12 +41,12 @@ export default function RenderGraph() {
 
       {/* BMI SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">BMI</Text>
+        <Text className="font-semibold text-lg">{t("bmi")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
           type="BMI"
-          data={weightData}
+          data={BMIData}
           width={330}
           height={180}
           style={{ marginHorizontal: 16 }}
@@ -41,7 +55,7 @@ export default function RenderGraph() {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">{t("fat")}%</Text>
+        <Text className="font-semibold text-lg">{t("fat%")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart
@@ -55,7 +69,7 @@ export default function RenderGraph() {
 
       {/* Fat% SECTION */}
       <View className="py-2">
-        <Text className="font-semibold text-lg">{t("muscle")}%</Text>
+        <Text className="font-semibold text-lg">{t("muscle%")}</Text>
       </View>
       <View className="py-8 items-center justify-center">
         <MetricsLineChart

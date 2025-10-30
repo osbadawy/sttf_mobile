@@ -4,7 +4,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import PlayerSelector from "@/components/PlayerSelector";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { useMultiPlayerActivities } from "@/hooks/activities";
+import { usePlayerActivities } from "@/hooks/activities";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
@@ -12,24 +12,24 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 function getAvgHrSectionData(
-  activities: Record<number, any[]>,
+  activities: Record<string, any[]>,
   metrics: MultiDayWhoopMetrics,
 ) {
   //sort by key
   const sortedActivities = Object.entries(activities).sort(
-    (a, b) => Number(a[0]) - Number(b[0]), // ascending order
+    (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(), // ascending order
   );
-
   const formattedActivities = [];
 
   for (const sortedActivity of sortedActivities) {
-    if (
-      sortedActivity[1] &&
-      sortedActivity[1][0].workout &&
-      sortedActivity[1][0].workout.score
-    ) {
-      const started_at = sortedActivity[1][0].started_at;
-      const ended_at = sortedActivity[1][0].ended_at;
+    if (sortedActivity[1] && sortedActivity[1][0].score) {
+      const started_at = sortedActivity[1][0].start;
+      const started_at_12_hours_later = new Date(started_at);
+      started_at_12_hours_later.setHours(
+        started_at_12_hours_later.getHours() + 12,
+      );
+      const ended_at =
+        sortedActivity[1][0].end || started_at_12_hours_later.toISOString();
       const middle =
         new Date(started_at).getTime() +
         (new Date(ended_at).getTime() - new Date(started_at).getTime()) / 2;
@@ -38,7 +38,7 @@ function getAvgHrSectionData(
 
       formattedActivities.push({
         date: date,
-        avg: sortedActivity[1][0].workout.score.average_heart_rate,
+        avg: sortedActivity[1][0].score.average_heart_rate,
         hrv: hrv || 0,
       });
     }
@@ -90,7 +90,7 @@ export default function HeartPage() {
   const {
     primaryData: primaryPlayerActivities,
     selectedPlayerData: selectedPlayerActivities,
-  } = useMultiPlayerActivities({
+  } = usePlayerActivities({
     primaryFirebaseId: playerData.firebase_id || user?.uid,
     selectedPlayerFirebaseId: selectedPlayer?.firebase_id,
     initialDaysBack: 14,
@@ -105,6 +105,7 @@ export default function HeartPage() {
     primaryPlayerActivities,
     primaryMetrics,
   );
+
   const p2AvgHrSectionData = getAvgHrSectionData(
     selectedPlayerActivities,
     selectedPlayerMetrics,
