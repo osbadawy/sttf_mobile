@@ -9,13 +9,17 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
+import { useMemo } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function SleepSection({ sleep }: { sleep: Sleep }) {
   const { t, isRTL } = useLocalization("components.dashboard.sleepSection");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const milliToHoursAndMins = (milli: number) => {
     const hours = Math.floor(milli / 3600000);

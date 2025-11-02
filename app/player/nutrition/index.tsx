@@ -9,7 +9,7 @@ import { uploadToFirebase } from "@/utils/uploadToFirebase";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -29,7 +29,10 @@ export default function MealLogPage() {
   const [manualPressed, setManualPressed] = useState(false);
 
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
   const isCoachViewing = Object.keys(playerData).length > 0;
 
   const dateState = useState(new Date());
@@ -37,9 +40,14 @@ export default function MealLogPage() {
 
   const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 
-  const { meals, loading, error, refetch } = usePlannedMeals({
-    users_assigned:
+  const usersAssigned = useMemo(
+    () =>
       Object.keys(playerData).length > 0 ? [playerData.firebase_id] : undefined,
+    [playerData],
+  );
+
+  const { meals, loading, error, refetch } = usePlannedMeals({
+    users_assigned: usersAssigned,
     day: date,
   });
 
@@ -124,7 +132,7 @@ export default function MealLogPage() {
         useDateState: dateState,
         disableFutureDates: false,
       }}
-      error={!!error}
+      error={Boolean(error)}
     >
       <View className="p-5">
         <View className="mt-4 flex-row items-center justify-between">

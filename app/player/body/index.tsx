@@ -7,14 +7,17 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { useBodyCompositionLatest } from "@/hooks/useBodyCompositionLatest";
 import { useBodyCompositions } from "@/hooks/useBodyCompositions";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 export default function Body() {
   const { t } = useLocalization("components.body");
   const dateState = useState(new Date());
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const {
     data: latestBodyComposition,

@@ -9,7 +9,7 @@ import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
 import { MultiDayWhoopMetrics } from "@/schemas/whoop";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function getAvgHrSectionData(
   activities: Record<string, any[]>,
@@ -70,7 +70,10 @@ export default function HeartPage() {
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
 
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const { players } = useAllPlayers();
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);

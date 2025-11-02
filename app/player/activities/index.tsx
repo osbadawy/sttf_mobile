@@ -18,7 +18,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { getUniqueActivityTypes } from "@/utils/activities";
 import { formatDate } from "@/utils/dateTimeHelpers";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function ActivitiesPage() {
@@ -29,7 +29,10 @@ export default function ActivitiesPage() {
   );
 
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
   const isCoachViewing = Object.keys(playerData).length > 0;
 
   const { userName, profilePicture, access } = useUserProfile();

@@ -31,7 +31,10 @@ export default function BodyData() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
   console.log({ playerData });
   // date state
   const [date, setDate] = useState<Date>(new Date());

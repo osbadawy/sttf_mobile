@@ -13,13 +13,16 @@ import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { useBodyCompositionLatest } from "@/hooks/useBodyCompositionLatest";
 import { getMealSummary } from "@/utils/meal";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { View } from "react-native";
 
 export default function NutritionDashboard() {
   const { t } = useLocalization("components.nutrition.nutritionList");
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const { user } = useAuth();
   const firebaseId = user?.uid || playerData.firebase_id;
@@ -27,15 +30,22 @@ export default function NutritionDashboard() {
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
 
-  const { meals, loading, error } = usePlannedMeals({
-    users_assigned: [firebaseId],
+  const usersAssigned = useMemo(() => [firebaseId], [firebaseId]);
+
+  const {
+    meals,
+    loading,
+    error: mealsError,
+  } = usePlannedMeals({
+    users_assigned: usersAssigned,
     day: date,
     onlyMatchSelectedPlayers: true,
   });
 
-  const { data: bodyComposition } = useBodyCompositionLatest({
-    firebase_id: playerData.firebase_id,
-  });
+  const { data: bodyComposition, error: bodyCompositionError } =
+    useBodyCompositionLatest({
+      firebase_id: playerData.firebase_id,
+    });
 
   const {
     calories,
@@ -58,6 +68,7 @@ export default function NutritionDashboard() {
         showCalendarIcon: true,
         useDateState: dateState,
       }}
+      error={!!mealsError || !!bodyCompositionError}
     >
       <View className="p-2">
         {/* Macro summary cards */}

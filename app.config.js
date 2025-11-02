@@ -3,7 +3,7 @@ import "dotenv/config";
 export default {
   expo: {
     owner: "osbadawy",
-    name: "sttf_mobile",
+    name: "sttf",
     slug: "sttf_mobile",
     version: "1.0.0",
     orientation: "portrait",
@@ -11,7 +11,10 @@ export default {
     scheme: "sttfmobile",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    ios: { supportsTablet: true },
+    ios: {
+      bundleIdentifier: "sa.gov.sttf.mobile",
+      supportsTablet: true,
+    },
 
     android: {
       package: "sa.gov.sttf.mobile", // 👈 ADD THIS (choose your final ID)
@@ -77,10 +80,16 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/icon.png",
           imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#F8F9F2",
+          dark: {
+            backgroundColor: "#F8F9F2",
+          },
+          light: {
+            backgroundColor: "#F8F9F2",
+          },
         },
       ],
       [
