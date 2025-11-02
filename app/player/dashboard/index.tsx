@@ -11,13 +11,16 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { useWhoopData } from "@/hooks/useWhoopData";
 import { getMealSummary } from "@/utils/meal";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ActivityIndicator } from "react-native";
 
 export default function Dashboard() {
   const { userName, profilePicture, access } = useUserProfile();
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
@@ -27,12 +30,17 @@ export default function Dashboard() {
     date: date,
   });
 
+  const usersAssigned = useMemo(
+    () => (playerData.firebase_id ? [playerData.firebase_id] : undefined),
+    [playerData.firebase_id],
+  );
+
   const {
     meals,
     loading: mealLoading,
     error: mealError,
   } = usePlannedMeals({
-    users_assigned: playerData.firebase_id && [playerData.firebase_id],
+    users_assigned: usersAssigned,
     day: date,
     onlyMatchSelectedPlayers: true,
   });

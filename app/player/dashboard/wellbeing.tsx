@@ -10,12 +10,15 @@ import { useAllPlayers } from "@/hooks/useAllPlayers";
 import { useMultiPlayerWhoopData } from "@/hooks/useMultiDayWhoopData";
 import { getAvgValue } from "@/utils/data";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function WellbeingPage() {
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const { players } = useAllPlayers();
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);

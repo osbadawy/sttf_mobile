@@ -13,13 +13,16 @@ import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { useBodyCompositionLatest } from "@/hooks/useBodyCompositionLatest";
 import { getMealSummary } from "@/utils/meal";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { View } from "react-native";
 
 export default function NutritionDashboard() {
   const { t } = useLocalization("components.nutrition.nutritionList");
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   const { user } = useAuth();
   const firebaseId = user?.uid || playerData.firebase_id;
@@ -27,12 +30,14 @@ export default function NutritionDashboard() {
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
 
+  const usersAssigned = useMemo(() => [firebaseId], [firebaseId]);
+
   const {
     meals,
     loading,
     error: mealsError,
   } = usePlannedMeals({
-    users_assigned: [firebaseId],
+    users_assigned: usersAssigned,
     day: date,
     onlyMatchSelectedPlayers: true,
   });

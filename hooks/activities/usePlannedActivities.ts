@@ -98,7 +98,7 @@ export function usePlannedActivities({
     } finally {
       setLoading(false);
     }
-  }, [user, day]);
+  }, [user, users_assigned, day]);
 
   const refetch = useCallback(async () => {
     // Clear the specific cache key before refetching

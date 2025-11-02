@@ -13,7 +13,7 @@ import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Player from "@/schemas/Player";
 import Constants from "expo-constants";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 type MealType = "breakfast" | "lunch" | "snack" | "dinner";
@@ -23,9 +23,13 @@ export default function MealPlan() {
   const { players } = useAllPlayers();
 
   let localSearchParams = useLocalSearchParams();
-  const originalSelectedPlayers = localSearchParams.players
-    ? JSON.parse(localSearchParams.players as string)
-    : [];
+  const originalSelectedPlayers = useMemo(
+    () =>
+      localSearchParams.players
+        ? JSON.parse(localSearchParams.players as string)
+        : [],
+    [localSearchParams.players],
+  );
 
   const [selectedPlayers, setSelectedPlayers] = useState(
     originalSelectedPlayers,

@@ -58,6 +58,7 @@ export default function LoginPage() {
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
+          textContentType="emailAddress"
         />
 
         {/* Password */}
@@ -68,6 +69,7 @@ export default function LoginPage() {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          textContentType="password"
         />
 
         {/* Error message */}

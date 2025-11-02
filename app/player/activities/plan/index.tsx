@@ -8,7 +8,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 export default function PlayerPlannedActivitiesPage() {
@@ -25,18 +25,24 @@ export default function PlayerPlannedActivitiesPage() {
   const isToday = date.toDateString() === today.toDateString();
 
   const { player } = useLocalSearchParams();
-  const playerData = JSON.parse((player as string) || "{}");
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
   const isCoachViewing = Object.keys(playerData).length > 0;
 
   const { t: tActivityTypes } = useLocalization(
     "components.activities.activityTypes",
   );
 
+  const usersAssigned = useMemo(
+    () => (playerData.firebase_id ? [playerData.firebase_id] : undefined),
+    [playerData.firebase_id],
+  );
+
   const { activities, loading, error } = usePlannedActivities({
     day: date,
-    users_assigned: playerData.firebase_id
-      ? [playerData.firebase_id]
-      : undefined,
+    users_assigned: usersAssigned,
   });
 
   const { user } = useAuth();
