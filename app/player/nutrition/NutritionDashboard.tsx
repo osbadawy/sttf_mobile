@@ -27,15 +27,20 @@ export default function NutritionDashboard() {
   const dateState = useState(new Date());
   const [date, setDate] = dateState;
 
-  const { meals, loading, error } = usePlannedMeals({
+  const {
+    meals,
+    loading,
+    error: mealsError,
+  } = usePlannedMeals({
     users_assigned: [firebaseId],
     day: date,
     onlyMatchSelectedPlayers: true,
   });
 
-  const { data: bodyComposition } = useBodyCompositionLatest({
-    firebase_id: playerData.firebase_id,
-  });
+  const { data: bodyComposition, error: bodyCompositionError } =
+    useBodyCompositionLatest({
+      firebase_id: playerData.firebase_id,
+    });
 
   const {
     calories,
@@ -58,6 +63,7 @@ export default function NutritionDashboard() {
         showCalendarIcon: true,
         useDateState: dateState,
       }}
+      error={!!mealsError || !!bodyCompositionError}
     >
       <View className="p-2">
         {/* Macro summary cards */}

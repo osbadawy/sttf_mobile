@@ -49,9 +49,11 @@ export default function Dashboard() {
         showDateSelector: true,
         useDateState: useDateState,
       }}
-      error={Boolean(error)}
+      error={Boolean(error) || Boolean(mealError)}
     >
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
+      {(loading || mealLoading) && (
+        <ActivityIndicator size="large" color="#0000ff" />
+      )}
       <WellbeingSection
         performance={metrics.basic.performance}
         strain={metrics.basic.strain}
