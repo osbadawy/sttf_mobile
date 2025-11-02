@@ -2,6 +2,7 @@ import "dotenv/config";
 
 export default {
   expo: {
+    owner: "osbadawy",
     name: "sttf_mobile",
     slug: "sttf_mobile",
     version: "1.0.0",
@@ -10,15 +11,15 @@ export default {
     scheme: "sttfmobile",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    ios: {
-      supportsTablet: true,
-    },
+    ios: { supportsTablet: true },
+
     android: {
+      package: "sa.gov.sttf.mobile", // 👈 ADD THIS (choose your final ID)
+      edgeToEdgeEnabled: true,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
-      edgeToEdgeEnabled: true,
     },
     web: {
       bundler: "metro",
@@ -27,12 +28,7 @@ export default {
     },
     plugins: [
       "expo-router",
-      [
-        "expo-web-browser",
-        {
-          experimentalLauncherActivity: true,
-        },
-      ],
+      ["expo-web-browser", { experimentalLauncherActivity: true }],
       [
         "expo-font",
         {
@@ -96,10 +92,12 @@ export default {
         },
       ],
     ],
-    experiments: {
-      typedRoutes: true,
-    },
+    experiments: { typedRoutes: true },
     extra: {
+      eas: {
+        projectId: "f1ae3239-085e-418d-af02-464e188f3567",
+      },
+
       FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
       FIREBASE_PROJECT_ID: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
