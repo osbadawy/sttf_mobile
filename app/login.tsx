@@ -77,7 +77,14 @@ export default function LoginPage() {
         {error ? <Text className="text-red-500 mb-2">{error}</Text> : null}
 
         {/* Forgot password */}
-        <TouchableOpacity onPress={() => Alert.alert("Forgot password", "Please contact an admin or support@covelant.com")}>
+        <TouchableOpacity
+          onPress={() =>
+            Alert.alert(
+              "Forgot password",
+              "Please contact an admin or support@covelant.com",
+            )
+          }
+        >
           <Text className="text-white underline mt-1 mb-7">
             {t("forgotPassword")}
           </Text>

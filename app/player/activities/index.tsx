@@ -40,11 +40,17 @@ export default function ActivitiesPage() {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
-  const { data, hasWorkoutsBefore, dataRange, fetchAdditionalData, error, loading } =
-    usePlayerActivities({
-      user_id: playerData.firebase_id || user?.uid || undefined,
-      initialDaysBack: 14,
-    });
+  const {
+    data,
+    hasWorkoutsBefore,
+    dataRange,
+    fetchAdditionalData,
+    error,
+    loading,
+  } = usePlayerActivities({
+    user_id: playerData.firebase_id || user?.uid || undefined,
+    initialDaysBack: 14,
+  });
 
   const orderedData = Object.entries(data).sort(
     (a, b) => Number(b[0]) - Number(a[0]),
@@ -212,7 +218,9 @@ export default function ActivitiesPage() {
 
           {hasWorkoutsBefore && (
             <View className="w-full items-center justify-center">
-              {loading && <ActivityIndicator size="small" color={colors.primary} />}
+              {loading && (
+                <ActivityIndicator size="small" color={colors.primary} />
+              )}
               <CustomButton
                 title="Load More"
                 onPress={() => {
