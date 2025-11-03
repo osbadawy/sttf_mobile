@@ -1,27 +1,51 @@
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import CustomButton, { ButtonColor } from "@/components/Button";
+import { BigLogo } from "@/components/icons";
+import { useLocalization } from "@/contexts/LocalizationContext";
+import { useAuthFlow } from "@/hooks/useAuthFlow";
+import { useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 
 export default function Index() {
-  const { user } = useAuth();
-  const { access } = useUserProfile();
-  const router = useRouter();
+  // Hook handles all authentication, profile setting, and routing logic
+  const { loading, error, logout } = useAuthFlow();
+  const { t } = useLocalization("error");
+  const [disabled, setDisabled] = useState<boolean>(false);
+  // Show loading while authentication and routing is in progress
 
-  useEffect(() => {
-    // Redirect based on auth state
-    if (user) {
-      router.replace(`/whoop-login` as any);
-    } else {
-      router.replace("/login");
+  const handleLogout = async () => {
+    try {
+      setDisabled(true);
+      await logout();
+      setDisabled(false);
+    } catch (error) {
+      setDisabled(false);
+      console.error("Error logging out:", error);
     }
-  }, [user, access]);
-
-  // Show loading while redirecting
+  };
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 16,
+        padding: 16,
+      }}
+    >
+      <BigLogo />
+      {loading && <ActivityIndicator size="large" />}
+      {error && (
+        <>
+          <Text style={{ color: "red" }}>{t("unauthorizedMessage")}</Text>
+
+          <CustomButton
+            title={t("logout")}
+            onPress={handleLogout}
+            color={ButtonColor.red}
+            disabled={disabled}
+          />
+        </>
+      )}
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import { getValue, storeValue } from "@/utils/storage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UserProfile {
   userName: string;
@@ -22,32 +22,32 @@ export const useUserProfile = (): UserProfile => {
   const [access, setAccessState] = useState<Access>("player");
 
   // Wrapper functions that update both state and storage
-  const setUserName = async (userName: string) => {
+  const setUserName = useCallback(async (userName: string) => {
     setUserNameState(userName);
     try {
       await storeValue("userName", userName);
     } catch (error) {
       console.error("Error storing userName:", error);
     }
-  };
+  }, []);
 
-  const setProfilePicture = async (profilePicture: string) => {
+  const setProfilePicture = useCallback(async (profilePicture: string) => {
     setProfilePictureState(profilePicture);
     try {
       await storeValue("profile_picture", profilePicture);
     } catch (error) {
       console.error("Error storing profile_picture:", error);
     }
-  };
+  }, []);
 
-  const setAccess = async (access: Access) => {
+  const setAccess = useCallback(async (access: Access) => {
     setAccessState(access);
     try {
       await storeValue("access", access);
     } catch (error) {
       console.error("Error storing access:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const loadUserProfile = async () => {

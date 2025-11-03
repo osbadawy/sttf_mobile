@@ -1,3 +1,5 @@
 {
-  "reloadMessage": "Loading Error - Reload"
+  "reloadMessage": "Loading Error - Reload",
+  "unauthorizedMessage": "Error Logging In. This is a closed application. Please contact an administrator for access.",
+  "logout": "Logout"
 }
