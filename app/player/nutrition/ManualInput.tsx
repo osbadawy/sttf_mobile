@@ -1,4 +1,4 @@
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import Header from "@/components/Header";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 
+import colors from "@/colors";
 import CustomButton, { ButtonColor } from "@/components/Button";
 import NutritionDataInput, {
   NutritionData,
@@ -23,6 +24,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { uploadToFirebase } from "@/utils/uploadToFirebase";
 import Constants from "expo-constants";
 import { router } from "expo-router";
+import { ActivityIndicator } from "react-native";
 
 const shadow = Platform.select({
   ios: {
@@ -157,28 +159,25 @@ export default function ManualInputDesign() {
     val ? t(WHEN_I18N_KEY[val]) : t("when"); // header label
 
   return (
-    <ParallaxScrollView
-      headerProps={{
-        title: t("AddMealtitle"),
-        showBackButton: true,
-        showDateSelector: false,
-        showBGImage: false,
-        showCalendarIcon: false,
-      }}
-      showNav={false}
-      backgroundColor="#F3F6EE"
-    >
+    <View className="flex-1" style={{ backgroundColor: "#F3F6EE" }}>
+      <Header
+        title={t("AddMealtitle")}
+        showBackButton={true}
+        showDateSelector={false}
+        showBGImage={false}
+        showCalendarIcon={false}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-        className="flex-1"
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View className="flex-1 bg-[#E6E6E6] justify-between">
+          <View className="flex-1 bg-[#E6E6E6]">
             {/* Header block */}
             <View
               className="py-10 px-4"
@@ -226,7 +225,7 @@ export default function ManualInputDesign() {
             </View>
 
             {/* Content area */}
-            <View className="flex-1 px-4 pt-5 bg-[#F3F6EE]">
+            <View className="flex-1 px-4 pt-5 pb-6 bg-[#F3F6EE]">
               {/* Name input (localized placeholder) */}
               <View
                 className="w-full rounded-xl bg-white border border-[#E8E8E8] mb-3"
@@ -321,6 +320,7 @@ export default function ManualInputDesign() {
 
             {/* Confirm button (kept simple) */}
             <View className="px-4 py-6 bg-[#F3F6EE]">
+              {disabled && <ActivityIndicator size="large" color={colors.primary} />}
               <CustomButton
                 title={t("confirm")}
                 onPress={handleConfirm}
@@ -331,6 +331,6 @@ export default function ManualInputDesign() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ParallaxScrollView>
+    </View>
   );
 }

@@ -50,7 +50,7 @@ export default function Dashboard() {
   return (
     <ParallaxScrollView
       headerProps={{
-        name: (playerData.display_name as string) || userName || access,
+        name: (playerData.display_name as string) || userName || access || "Player",
         profilePicture:
           (playerData.profile_picture as string) || profilePicture,
         color: HeaderColor.BG,
