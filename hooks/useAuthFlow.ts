@@ -30,10 +30,13 @@ export function useAuthFlow() {
 
     try {
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/whoop/auth`;
+      // Force token refresh to ensure it's valid
+      const token = await user.getIdToken(true);
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${await user.getIdToken()}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
