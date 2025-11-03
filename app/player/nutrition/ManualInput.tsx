@@ -320,7 +320,9 @@ export default function ManualInputDesign() {
 
             {/* Confirm button (kept simple) */}
             <View className="px-4 py-6 bg-[#F3F6EE]">
-              {disabled && <ActivityIndicator size="large" color={colors.primary} />}
+              {disabled && (
+                <ActivityIndicator size="large" color={colors.primary} />
+              )}
               <CustomButton
                 title={t("confirm")}
                 onPress={handleConfirm}

@@ -58,7 +58,10 @@ export const useUserProfile = (): UserProfile => {
         const storedProfilePicture = await getValue("profile_picture", "");
         setProfilePictureState(storedProfilePicture);
 
-        const storedAccess = await getValue<Access | undefined>("access", undefined);
+        const storedAccess = await getValue<Access | undefined>(
+          "access",
+          undefined,
+        );
         setAccessState(storedAccess);
       } catch (error) {
         console.error("Error loading user profile from storage:", error);
