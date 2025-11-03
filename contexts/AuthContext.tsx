@@ -10,7 +10,7 @@ import {
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextType {
-  user: User | null;
+  user: User | null | undefined;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null | undefined>(undefined);
 
   // 🔄 Keep user state in sync with Firebase auth
   useEffect(() => {

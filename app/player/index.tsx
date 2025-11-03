@@ -160,7 +160,7 @@ export default function PlayerIndexPage() {
       style={{ flex: 1 }}
     >
       <Header
-        name={userName || access}
+        name={userName || access || "Player"}
         profilePicture={profilePicture}
         showDateSelector={false}
         showBackButton={false}

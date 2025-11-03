@@ -22,6 +22,10 @@ interface UsePlayerActivitiesReturn {
   dataRange: DataRange;
   loading: boolean;
   error: string | null;
+  hasWorkoutsBefore: boolean;
+  hasWorkoutsAfter: boolean;
+  selectedPlayerHasWorkoutsBefore: boolean;
+  selectedPlayerHasWorkoutsAfter: boolean;
   fetchAdditionalData: (startDate: Date, endDate: Date) => Promise<void>;
   refetch: () => Promise<void>;
 }
@@ -44,6 +48,12 @@ export const usePlayerActivities = ({
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasWorkoutsBefore, setHasWorkoutsBefore] = useState(false);
+  const [hasWorkoutsAfter, setHasWorkoutsAfter] = useState(false);
+  const [selectedPlayerHasWorkoutsBefore, setSelectedPlayerHasWorkoutsBefore] =
+    useState(false);
+  const [selectedPlayerHasWorkoutsAfter, setSelectedPlayerHasWorkoutsAfter] =
+    useState(false);
 
   const fetchPlayerData = async (
     firebaseId: string,
@@ -55,7 +65,7 @@ export const usePlayerActivities = ({
     if (!user || !firebaseId) return;
 
     try {
-      if (isInitial) setLoading(true);
+      setLoading(true);
       setError(null);
 
       const params = new URLSearchParams({
@@ -76,10 +86,17 @@ export const usePlayerActivities = ({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const responseData = await response.json();
-      const separatedData = seperateDataByDay(responseData);
+      const {
+        workouts,
+        hasWorkoutsBefore: hasBefore,
+        hasWorkoutsAfter: hasAfter,
+      } = await response.json();
+      const separatedData = seperateDataByDay(workouts);
 
       if (isSelectedPlayer) {
+        setSelectedPlayerHasWorkoutsBefore(hasBefore);
+        setSelectedPlayerHasWorkoutsAfter(hasAfter);
+
         if (isInitial) {
           setSelectedPlayerData(separatedData);
         } else {
@@ -90,6 +107,9 @@ export const usePlayerActivities = ({
           }));
         }
       } else {
+        setHasWorkoutsBefore(hasBefore);
+        setHasWorkoutsAfter(hasAfter);
+
         if (isInitial) {
           setPrimaryData(separatedData);
           setData(separatedData); // Keep backward compatibility
@@ -124,7 +144,7 @@ export const usePlayerActivities = ({
       console.error("Error fetching data:", err);
       setError(errorMessage);
     } finally {
-      if (isInitial) setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -206,6 +226,10 @@ export const usePlayerActivities = ({
     dataRange,
     loading,
     error,
+    hasWorkoutsBefore,
+    hasWorkoutsAfter,
+    selectedPlayerHasWorkoutsBefore,
+    selectedPlayerHasWorkoutsAfter,
     fetchAdditionalData,
     refetch,
   };

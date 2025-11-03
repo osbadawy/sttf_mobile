@@ -1,27 +1,84 @@
+import CustomButton, { ButtonColor } from "@/components/Button";
+import { BigLogo } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useLocalization } from "@/contexts/LocalizationContext";
+import { useAuthFlow } from "@/hooks/useAuthFlow";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 
 export default function Index() {
   const { user } = useAuth();
-  const { access } = useUserProfile();
   const router = useRouter();
+  const { t } = useLocalization("error");
+  const [disabled, setDisabled] = useState<boolean>(false);
 
+  // Redirect to login if not authenticated
   useEffect(() => {
-    // Redirect based on auth state
-    if (user) {
-      router.replace(`/whoop-login` as any);
-    } else {
+    if (user === null) {
       router.replace("/login");
     }
-  }, [user, access]);
+  }, [user, router]);
 
-  // Show loading while redirecting
+  // Hook handles all authentication, profile setting, and routing logic
+  const { loading, error, logout } = useAuthFlow();
+
+  const handleLogout = async () => {
+    try {
+      setDisabled(true);
+      await logout();
+      setDisabled(false);
+    } catch (error) {
+      setDisabled(false);
+      console.error("Error logging out:", error);
+    }
+  };
+
+  // Show loading while checking auth state
+  if (user === undefined) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BigLogo />
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  // If no user, show nothing (will redirect to login)
+  if (!user) {
+    return null;
+  }
+
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 16,
+        padding: 16,
+      }}
+    >
+      <BigLogo />
+      {loading && <ActivityIndicator size="large" />}
+      {error && (
+        <>
+          <Text style={{ color: "red" }}>{t("unauthorizedMessage")}</Text>
+
+          <CustomButton
+            title={t("logout")}
+            onPress={handleLogout}
+            color={ButtonColor.red}
+            disabled={disabled}
+          />
+        </>
+      )}
     </View>
   );
 }

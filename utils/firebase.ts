@@ -1,6 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeAuth } from "firebase/auth";
+// @ts-expect-error Firebase types issue - function exists at runtime
+import { getReactNativePersistence } from "@firebase/auth/dist/rn/index.js";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -12,5 +15,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+
+// Initialize auth with React Native persistence
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
 export const storage = getStorage(app);
