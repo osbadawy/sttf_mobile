@@ -1,16 +1,27 @@
 import CustomButton, { ButtonColor } from "@/components/Button";
 import { BigLogo } from "@/components/icons";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useAuthFlow } from "@/hooks/useAuthFlow";
-import { useState } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
 export default function Index() {
-  // Hook handles all authentication, profile setting, and routing logic
-  const { loading, error, logout } = useAuthFlow();
+  const { user } = useAuth();
+  const router = useRouter();
   const { t } = useLocalization("error");
   const [disabled, setDisabled] = useState<boolean>(false);
-  // Show loading while authentication and routing is in progress
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (user === null) {
+      router.replace("/login");
+    }
+  }, [user, router]);
+
+  // Hook handles all authentication, profile setting, and routing logic
+  const { loading, error, logout } = useAuthFlow();
 
   const handleLogout = async () => {
     try {
@@ -22,6 +33,28 @@ export default function Index() {
       console.error("Error logging out:", error);
     }
   };
+
+  // Show loading while checking auth state
+  if (user === undefined) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BigLogo />
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  // If no user, show nothing (will redirect to login)
+  if (!user) {
+    return null;
+  }
+
   return (
     <View
       style={{

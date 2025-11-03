@@ -1,7 +1,7 @@
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import "@/global.css";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -10,6 +10,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import "@/i18n"; // Initialize i18n
 import * as Sentry from "@sentry/react-native";
 import Constants from "expo-constants";
+import { useEffect } from "react";
 
 Sentry.init({
   dsn: Constants.expoConfig?.extra?.SENTRY_DSN,
@@ -25,17 +26,47 @@ Sentry.init({
 function AppNavigator() {
   const { user } = useAuth();
   const { access } = useUserProfile();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Don't redirect during initial auth check
+    if (user === undefined) return;
+
+    // Public routes that don't require authentication
+    const publicRoutes = ["/login", "/"];
+    const isPublicRoute = publicRoutes.includes(pathname);
+
+    // If user is not logged in and trying to access protected routes
+    if (!user && !isPublicRoute) {
+      router.replace("/");
+      return;
+    }
+
+    // Role-based access control: Only coaches can access /coach routes
+    // Don't enforce role check if:
+    // - access is undefined (still loading from storage)
+    // - we're on index page (useAuthFlow handles routing based on role)
+    if (
+      user &&
+      pathname.startsWith("/coach") &&
+      pathname !== "/" &&
+      access !== undefined &&
+      access !== "coach"
+    ) {
+      router.replace("/");
+    }
+  }, [user, access, pathname, router]);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {user ? (
-        <Stack.Screen
-          name={access ? `${access}/dashboard` : "player/dashboard"}
-          options={{ headerShown: false }}
-        />
-      ) : (
-        <Stack.Screen name="login" />
-      )}
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="whoop-login" options={{ headerShown: false }} />
+      <Stack.Screen name="player" options={{ headerShown: false }} />
+      <Stack.Screen name="coach" options={{ headerShown: false }} />
+      <Stack.Screen name="settings" options={{ headerShown: false }} />
+      <Stack.Screen name="plan" options={{ headerShown: false }} />
     </Stack>
   );
 }

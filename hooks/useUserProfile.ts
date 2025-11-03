@@ -6,7 +6,7 @@ interface UserProfile {
   setUserName: (userName: string) => Promise<void>;
   profilePicture: string;
   setProfilePicture: (profilePicture: string) => Promise<void>;
-  access: Access;
+  access: Access | undefined;
   setAccess: (access: Access) => Promise<void>;
 }
 
@@ -19,7 +19,7 @@ export type Access = "player" | "coach" | "nutritionist" | "admin";
 export const useUserProfile = (): UserProfile => {
   const [userName, setUserNameState] = useState<string>("");
   const [profilePicture, setProfilePictureState] = useState<string>("");
-  const [access, setAccessState] = useState<Access>("player");
+  const [access, setAccessState] = useState<Access | undefined>(undefined);
 
   // Wrapper functions that update both state and storage
   const setUserName = useCallback(async (userName: string) => {
@@ -58,7 +58,7 @@ export const useUserProfile = (): UserProfile => {
         const storedProfilePicture = await getValue("profile_picture", "");
         setProfilePictureState(storedProfilePicture);
 
-        const storedAccess: Access = await getValue("access", "player");
+        const storedAccess = await getValue<Access | undefined>("access", undefined);
         setAccessState(storedAccess);
       } catch (error) {
         console.error("Error loading user profile from storage:", error);

@@ -21,7 +21,6 @@ export function useAuthFlow() {
 
   const fetchAuthData = useCallback(async () => {
     if (!user) {
-      setError("User not authenticated");
       return;
     }
 
@@ -74,9 +73,8 @@ export function useAuthFlow() {
 
   // Handle routing based on authentication state and data
   useEffect(() => {
-    // If no user, redirect to login
+    // If no user, don't proceed (auth guard in _layout.tsx handles redirect)
     if (!user) {
-      router.replace("/login");
       return;
     }
 
@@ -100,7 +98,7 @@ export function useAuthFlow() {
     }
 
     if (data.access === "player" && data.whoop_user) {
-      router.push("player/dashboard" as RelativePathString);
+      router.push("player/" as RelativePathString);
     } else {
       router.push("whoop-login" as RelativePathString);
     }
