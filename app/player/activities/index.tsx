@@ -19,7 +19,7 @@ import { getUniqueActivityTypes } from "@/utils/activities";
 import { formatDate } from "@/utils/dateTimeHelpers";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 export default function ActivitiesPage() {
   const { user } = useAuth();
@@ -40,13 +40,12 @@ export default function ActivitiesPage() {
   const useDateState = useState(new Date());
   const [date, setDate] = useDateState;
 
-  const { data, hasWorkoutsBefore, dataRange, fetchAdditionalData, error } =
+  const { data, hasWorkoutsBefore, dataRange, fetchAdditionalData, error, loading } =
     usePlayerActivities({
       user_id: playerData.firebase_id || user?.uid || undefined,
       initialDaysBack: 14,
     });
 
-  const categories = ["technical", "strength", "recovery"];
   const orderedData = Object.entries(data).sort(
     (a, b) => Number(b[0]) - Number(a[0]),
   );
@@ -181,6 +180,8 @@ export default function ActivitiesPage() {
             </TouchableOpacity>
           </View>
 
+          {loading && <ActivityIndicator size="large" color={colors.primary} />}
+
           {orderedData.map((_data, index) => {
             const day = _data[1];
             if (
@@ -211,6 +212,7 @@ export default function ActivitiesPage() {
 
           {hasWorkoutsBefore && (
             <View className="w-full items-center justify-center">
+              {loading && <ActivityIndicator size="small" color={colors.primary} />}
               <CustomButton
                 title="Load More"
                 onPress={() => {

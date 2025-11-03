@@ -65,7 +65,7 @@ export const usePlayerActivities = ({
     if (!user || !firebaseId) return;
 
     try {
-      if (isInitial) setLoading(true);
+      setLoading(true);
       setError(null);
 
       const params = new URLSearchParams({
@@ -144,7 +144,7 @@ export const usePlayerActivities = ({
       console.error("Error fetching data:", err);
       setError(errorMessage);
     } finally {
-      if (isInitial) setLoading(false);
+      setLoading(false);
     }
   };
 
