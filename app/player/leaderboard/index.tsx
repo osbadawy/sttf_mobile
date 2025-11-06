@@ -1,14 +1,17 @@
 // app/player/leaderboard.tsx (or wherever your screen lives)
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useMemo } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 import PodiumCard from "@/components/leaderboard/PodiumCard";
 import RankRow from "@/components/leaderboard/RankRow";
 import { splitTopRest } from "@/components/leaderboard/SplitTopRest";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { DATA } from "@/utils/leaderboardData";
 
 export default function Leaderboard() {
+  const { t } = useLocalization("components.leaderboard.leaderboard");
+  
   // placeholders — wire the real state as needed
   const playerData = {} as any;
   const profilePicture = undefined as any;
@@ -23,7 +26,7 @@ export default function Leaderboard() {
   return (
     <ParallaxScrollView
       headerProps={{
-        title: "leaderboard",
+        title: t('leaderboard'),
         profilePicture: (playerData?.profile_picture as string) || profilePicture,
         color: HeaderColor.BG,
         showDateSelector: false,
@@ -35,11 +38,10 @@ export default function Leaderboard() {
       showNav={false}
       error={Boolean(error) || Boolean(mealError)}
     >
-      <ScrollView className="px-4 pt-2" contentContainerStyle={{ paddingBottom: 24 }}>
         {/* Period pill (static) */}
         <View className="mb-6 items-center">
           <TouchableOpacity className="rounded-full border border-neutral-300 px-4 py-1.5">
-            <Text className="text-neutral-700">This week’s top players</Text>
+            <Text className="text-neutral-700">{t('this week')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -81,7 +83,6 @@ export default function Leaderboard() {
             <RankRow key={p.id} p={p} index={idx + 3} />
           ))}
         </View>
-      </ScrollView>
     </ParallaxScrollView>
   );
 }

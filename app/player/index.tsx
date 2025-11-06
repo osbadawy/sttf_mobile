@@ -173,8 +173,8 @@ export default function PlayerIndexPage() {
         activeOpacity={0.8}
         className="
           flex-row items-center justify-center
-          rounded-full bg-white px-4 py-2
-          shadow-md
+          rounded-xl bg-white px-4 py-2
+          shadow-md mx-20 mt-4
           border border-neutral-200
         "
       >

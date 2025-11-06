@@ -18,6 +18,7 @@ import arSleepSection from "../locales/ar/components/dashboard/SleepSection.json
 import arWellbeingSection from "../locales/ar/components/dashboard/WellbeingSection.json";
 import arDayPlan from "../locales/ar/components/day-plan/index.json";
 import arHeart from "../locales/ar/components/heart/index.json";
+import arLeaderboard from "../locales/ar/components/leaderboard/leaderboard.json";
 import arNutritionList from "../locales/ar/components/nutrition/nutritionList.json";
 import arPlanMeal from "../locales/ar/components/plan/meal.json";
 import arPlanWorkout from "../locales/ar/components/plan/workout.json";
@@ -46,6 +47,7 @@ import enSleepSection from "../locales/en/components/dashboard/SleepSection.json
 import enWellbeingSection from "../locales/en/components/dashboard/WellbeingSection.json";
 import enDayPlan from "../locales/en/components/day-plan/index.json";
 import enHeart from "../locales/en/components/heart/index.json";
+import enLeaderboard from "../locales/en/components/leaderboard/leaderboard.json";
 import enNutritionList from "../locales/en/components/nutrition/nutritionList.json";
 import enPlanMeal from "../locales/en/components/plan/meal.json";
 import enPlanWorkout from "../locales/en/components/plan/workout.json";
@@ -105,6 +107,9 @@ export const resources = {
       Settings: {
         settings: enSettings,
       },
+      leaderboard:{
+        leaderboard: enLeaderboard,
+      },
     },
   },
   ar: {
@@ -151,6 +156,9 @@ export const resources = {
       },
       Settings: {
         settings: arSettings,
+      },
+      leaderboard:{
+        leaderboard: arLeaderboard,
       },
     },
   },
