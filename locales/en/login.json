@@ -8,5 +8,12 @@
   "newPassword": "New Password",
   "confirmPassword": "Confirm Password",
   "whoopTitle": "Connect to Whoop",
-  "Connect": "Connect"
+  "Connect": "Connect",
+  "instructions": "Please enter your email to recieve an email with the reset instructions",
+  "send": "Send",
+  "cancel": "Cancel",
+  "close": "Close",
+  "emailSentTitle": "Email Sent!",
+  "emailSentMessage": "An email has been sent to you. Please check your inbox, sometimes you may have to look in your spam folder",
+  "sending": "Sending..."
 }
