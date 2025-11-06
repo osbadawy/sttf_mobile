@@ -1,4 +1,5 @@
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import CoachAssessmentModal from "@/components/coach/CoachAssessmentModal";
 import ManageDoneButton from "@/components/coach/DoneButton";
 import EditPlanPicker from "@/components/coach/EditPlanPicker";
 import EmptyCoachDashboard from "@/components/coach/EmptyCoachDashboard";
@@ -23,6 +24,18 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+export function redirectToPlayerPage(
+  firebase_id: string,
+  display_name: string,
+  profile_picture: string,
+) {
+  const path = "/player/dashboard";
+  const params = {
+    player: JSON.stringify({ firebase_id, display_name, profile_picture }),
+  };
+  router.push({ pathname: path as RelativePathString, params });
+}
+
 export default function Dashboard() {
   const { t } = useLocalization("components.coach.coachDashboard");
   const { userName, profilePicture } = useUserProfile();
@@ -30,6 +43,14 @@ export default function Dashboard() {
   const [managing, setManaging] = useState(false);
   const insets = useSafeAreaInsets();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const [showAssessmentModal, setShowAssessmentModal] = useState(false);
+  const [assessmentModalPlayer, setAssessmentModalPlayer] = useState<{
+    id: string;
+    profilePicture: string;
+    display_name: string;
+  } | null>(null);
+
   // sort/comparator
   const { sortBy, order, setSortBy, setOrder, comparator, reset } =
     usePlayerSort();
@@ -43,6 +64,7 @@ export default function Dashboard() {
     coachAssessments,
     loading: assessmentsLoading,
     error: assessmentsError,
+    refetch: refetchAssessments,
   } = useAllCoachAssessments();
 
   // leave space in scroll content so it doesn't hide behind the floating bar
@@ -50,19 +72,6 @@ export default function Dashboard() {
     () => (managing ? insets.bottom + 110 : 24),
     [managing, insets.bottom],
   );
-
-  // Existing redirect (normal mode)
-  const redirectToPlayer = (player: CoachDashboardPlayer) => {
-    const firebase_id = player.id!;
-    const display_name = player.display_name;
-    const profile_picture = player.photo_url;
-
-    const path = "/player/dashboard";
-    const params = {
-      player: JSON.stringify({ firebase_id, display_name, profile_picture }),
-    };
-    router.push({ pathname: path as RelativePathString, params });
-  };
 
   // Unified press handler for cards
   const handleCardPress = (player: CoachDashboardPlayer) => {
@@ -76,8 +85,22 @@ export default function Dashboard() {
       return;
     }
 
+    // Assessment modal
+    const assessmentAlreadyMade = coachAssessments.some(
+      (a) => a.firebase_id === id,
+    );
+    if (!assessmentAlreadyMade) {
+      setShowAssessmentModal(true);
+      setAssessmentModalPlayer({
+        id,
+        profilePicture: player.photo_url || "",
+        display_name: player.display_name || "",
+      });
+      return;
+    }
+
     // normal behavior → redirect
-    redirectToPlayer(player);
+    redirectToPlayerPage(id, player.display_name || "", player.photo_url || "");
   };
 
   return (
@@ -195,6 +218,19 @@ export default function Dashboard() {
               ? `Edit Plan • ${selectedIds.length} selected`
               : "Edit Plan"
           }
+        />
+      )}
+
+      {showAssessmentModal && assessmentModalPlayer && (
+        <CoachAssessmentModal
+          id={assessmentModalPlayer.id}
+          profilePicture={assessmentModalPlayer.profilePicture}
+          display_name={assessmentModalPlayer.display_name}
+          onClose={() => {
+            setShowAssessmentModal(false);
+            setAssessmentModalPlayer(null);
+          }}
+          refetch={refetchAssessments}
         />
       )}
     </View>

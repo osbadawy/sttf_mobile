@@ -2,7 +2,7 @@ import PlayerCard, {
   CoachDashboardPlayer,
 } from "@/components/coach/PlayerCard";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { CoachAssessmentForPlayer } from "@/hooks/useAllCoachAssessments";
+import { PlayerWithCoachAssessment } from "@/hooks/useAllCoachAssessments";
 import React from "react";
 import { Text, View } from "react-native";
 
@@ -14,7 +14,7 @@ type Props = {
   onPlayerPress?: (p: CoachDashboardPlayer) => void;
   selectMode?: boolean; // <-- NEW
   selectedIds?: string[]; // <-- NEW
-  coachAssessments?: CoachAssessmentForPlayer[];
+  coachAssessments?: PlayerWithCoachAssessment[];
 };
 
 export default function PlayerSection({

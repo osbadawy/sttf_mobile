@@ -13,5 +13,11 @@
   "manage": "إدارة",
   "done": "الانتهاء",
   "no players in cat": "لا يوجد لاعبين في هذه الفئة.",
-  "readiness": "الاستعداد"
+  "readiness": "الاستعداد",
+  "profile": "الملف الشخصي",
+  "fitnessTitle": "تقييم مستوى اللاعب في اللياقة",
+  "readinessTitle": "تقييم مستوى اللاعب في الاستعداد",
+  "sliderLeft": "سيئ",
+  "sliderRight": "رائع!",
+  "save": "حفظ"
 }

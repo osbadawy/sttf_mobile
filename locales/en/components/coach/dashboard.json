@@ -13,5 +13,11 @@
   "manage": "Manage",
   "done": "Done",
   "no players in cat": "No players in this category.",
-  "readiness": "Readiness"
+  "readiness": "Readiness",
+  "profile": "Profile",
+  "fitnessTitle": "Assess this player’s Fitness Level",
+  "readinessTitle": "Assess this player’s Readiness Level",
+  "sliderLeft": "Bad",
+  "sliderRight": "Amazing!",
+  "save": "Save"
 }
