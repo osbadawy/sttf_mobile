@@ -107,7 +107,7 @@ export const resources = {
       Settings: {
         settings: enSettings,
       },
-      leaderboard:{
+      leaderboard: {
         leaderboard: enLeaderboard,
       },
     },
@@ -157,7 +157,7 @@ export const resources = {
       Settings: {
         settings: arSettings,
       },
-      leaderboard:{
+      leaderboard: {
         leaderboard: arLeaderboard,
       },
     },
