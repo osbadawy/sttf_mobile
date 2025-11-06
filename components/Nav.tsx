@@ -1,5 +1,5 @@
 import NavBarSvg from "@/components/icons/NavBarSvg"; // <-- adjust path to where you saved it
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { Access, useUserProfile } from "@/hooks/useUserProfile";
 import {
   RelativePathString,
   router,
@@ -16,7 +16,7 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
-const homePageHref = (access: string): RelativePathString => {
+const homePageHref = (access: Access): RelativePathString => {
   if (access === "coach") {
     return "/coach/dashboard" as RelativePathString;
   } else if (access === "player") {
@@ -25,7 +25,7 @@ const homePageHref = (access: string): RelativePathString => {
   return "/login" as RelativePathString;
 };
 
-const playerNavItems = (access: string): NavItem[] => [
+const playerNavItems = (access: Access): NavItem[] => [
   { href: homePageHref(access), label: "Home", icon: <HomeIcon /> },
   {
     href: `/player/dashboard` as RelativePathString,
@@ -55,7 +55,7 @@ export default function Nav() {
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
   const { access } = useUserProfile();
-  let navItems: NavItem[] = playerNavItems(access);
+  let navItems: NavItem[] = playerNavItems(access || "player");
 
   // Compute evenly spaced circle centers across the SVG width.
   const midX = SVG_WIDTH / 2;

@@ -2,11 +2,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
+import { Access } from "./useUserProfile";
 
 interface UserData {
   email: string;
   avatar_url: string | null;
-  access: string | null;
+  access: Access | null;
   birth_date: Date | null;
   phone: string | null;
   nationality: string | null;
