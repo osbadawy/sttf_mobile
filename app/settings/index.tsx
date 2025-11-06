@@ -1,7 +1,7 @@
 import CustomButton, { ButtonColor } from "@/components/Button";
 import LogOutIcon from "@/components/icons/settings/LogOutIcon";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import ChangeLanguage from "@/components/settings/ChangeLanguage";
 import {
   buildNationalityLabelMap,
   buildNationalityOptions,
@@ -238,8 +238,6 @@ export default function Settings() {
         </Pressable>
       </View>
 
-      <LanguageSwitcher />
-
       {loading && <ActivityIndicator size="large" color="#0000ff" />}
 
       {/* ACCOUNT SECTION */}
@@ -343,6 +341,15 @@ export default function Settings() {
           </Text>
         </View>
         <View className="h-px bg-neutral-200" />
+
+        <ChangeLanguage
+          isRTL={isRTL}
+          label={t("change language")}
+          onPress={() =>
+            router.push("/settings/change-language" as RelativePathString)
+          }
+        />
+        <Divider />
 
         <SettingsRow
           isRTL={isRTL}
