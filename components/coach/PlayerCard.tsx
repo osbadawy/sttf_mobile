@@ -20,12 +20,14 @@ interface PlayerCardProps {
   onPress?: (p: CoachDashboardPlayer) => void;
   selected?: boolean; // <-- NEW
   selectMode?: boolean; // <-- optional (if you want to adjust affordances)
+  needsAssessment?: boolean;
 }
 
 export default function PlayerCard({
   p,
   onPress,
   selected = false,
+  needsAssessment = false,
 }: PlayerCardProps) {
   const R = 130;
   const offsetX = 26;
@@ -34,22 +36,10 @@ export default function PlayerCard({
   return (
     <TouchableOpacity
       activeOpacity={0.85}
-      className="w-[46%] mb-4"
+      className="w-[46%] mb-4 relative"
       onPress={() => onPress?.(p)}
     >
-      <View className="rounded-2xl bg-white shadow-sm overflow-hidden">
-        {/* light green highlight overlay when selected */}
-        {selected && (
-          <View
-            pointerEvents="none"
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundColor: "rgba(0,140,70,0.10)",
-            }}
-          />
-        )}
-
+      <View className="rounded-2xl bg-white shadow-sm">
         <View className="rounded-2xl p-3">
           {/* --- CLIP ZONE --- */}
           <View className="overflow-hidden" style={{ paddingBottom: 4 }}>
@@ -123,6 +113,28 @@ export default function PlayerCard({
           {/* --- READINESS BAR --- */}
           <ReadinessBar value={p.readiness} />
         </View>
+        {/* light green highlight overlay when selected */}
+        {selected && (
+          <View
+            pointerEvents="none"
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundColor: "rgba(0,140,70,0.10)",
+            }}
+            className="rounded-2xl"
+          />
+        )}
+        {needsAssessment && (
+          <View
+            className="absolute w-[16px] h-[16px] rounded-full bg-yellow"
+            style={{
+              top: -4,
+              right: -4,
+              boxShadow: `0px 0px 12px 1px rgba(250, 187, 0, 0.5)`,
+            }}
+          />
+        )}{" "}
       </View>
     </TouchableOpacity>
   );
