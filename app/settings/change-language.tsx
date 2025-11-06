@@ -39,7 +39,9 @@ export default function ChangeLanguageScreen() {
             <CountryFlag isoCode={isoCode} size={20} />
             <Text className="text-base text-black">{label}</Text>
           </View>
-          {selected ? <Text className="text-emerald-600 text-lg">✓</Text> : null}
+          {selected ? (
+            <Text className="text-emerald-600 text-lg">✓</Text>
+          ) : null}
         </View>
       </TouchableOpacity>
     );
