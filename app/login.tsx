@@ -1,14 +1,15 @@
+import ForgotPasswordModal from "@/components/auth/ForgotPasswordModal";
 import CustomButton, { ButtonColor } from "@/components/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useRouter } from "expo-router";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { useEffect, useState } from "react";
 import {
   Image,
   ImageBackground,
   Text,
   TextInput,
-  Alert,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -18,8 +19,10 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
   const { t, switchLanguage, isRTL } = useLocalization("login");
+  const auth = getAuth();
 
   const handleLogin = async () => {
     try {
@@ -36,6 +39,23 @@ export default function LoginPage() {
       router.replace("/");
     }
   }, [user]);
+
+  const handleSend = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+    } catch (err: unknown) {
+      // Handle common Firebase errors
+      const code = (err as { code?: string }).code ?? "";
+      let message = "Something went wrong. Please try again.";
+      if (code === "auth/invalid-email") message = "Invalid email address.";
+      else if (code === "auth/user-not-found")
+        message = "No user found with this email.";
+      else if (code === "auth/too-many-requests")
+        message = "Too many attempts. Try again later.";
+
+      throw err;
+    }
+  };
 
   return (
     <ImageBackground
@@ -77,18 +97,18 @@ export default function LoginPage() {
         {error ? <Text className="text-red-500 mb-2">{error}</Text> : null}
 
         {/* Forgot password */}
-        <TouchableOpacity
-          onPress={() =>
-            Alert.alert(
-              "Forgot password",
-              "Please contact an admin or support@covelant.com",
-            )
-          }
-        >
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Text className="text-white underline mt-1 mb-7">
             {t("forgotPassword")}
           </Text>
         </TouchableOpacity>
+
+        {/* Forgot Password Modal */}
+        <ForgotPasswordModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSend={handleSend}
+        />
 
         {/* Language Switch */}
         <View className="flex-row justify-between w-1/2 mb-5">
