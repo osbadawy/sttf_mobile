@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 export interface AuthFlowData {
   display_name: string;
   avatar_url: string;
-  access: "player" | "coach";
+  access: Access;
   whoop_user: boolean;
 }
 
