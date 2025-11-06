@@ -2,6 +2,7 @@ import PlayerCard, {
   CoachDashboardPlayer,
 } from "@/components/coach/PlayerCard";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { CoachAssessmentForPlayer } from "@/hooks/useAllCoachAssessments";
 import React from "react";
 import { Text, View } from "react-native";
 
@@ -13,6 +14,7 @@ type Props = {
   onPlayerPress?: (p: CoachDashboardPlayer) => void;
   selectMode?: boolean; // <-- NEW
   selectedIds?: string[]; // <-- NEW
+  coachAssessments?: CoachAssessmentForPlayer[];
 };
 
 export default function PlayerSection({
@@ -23,6 +25,7 @@ export default function PlayerSection({
   onPlayerPress,
   selectMode = false,
   selectedIds = [],
+  coachAssessments = [],
 }: Props) {
   const { t } = useLocalization("components.coach.coachDashboard");
   const sorted = React.useMemo(
@@ -41,6 +44,9 @@ export default function PlayerSection({
         {sorted.map((p) => {
           const id = p.id!;
           const isSelected = selectMode && selectedIds.includes(id);
+          const assessmentAlreadyMade = coachAssessments.some(
+            (a) => a.firebase_id === id,
+          );
           return (
             <PlayerCard
               key={id}
@@ -48,6 +54,7 @@ export default function PlayerSection({
               onPress={onPlayerPress}
               selected={isSelected} // <-- NEW: visual highlight
               selectMode={selectMode} // <-- NEW (if you want to tweak UI in card)
+              needsAssessment={!assessmentAlreadyMade}
             />
           );
         })}

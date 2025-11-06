@@ -8,6 +8,7 @@ import { CoachDashboardPlayer } from "@/components/coach/PlayerCard";
 import PlayerSection from "@/components/coach/PlayerSection";
 import FilterIconLines from "@/components/icons/FilterIcon-lines";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { useAllCoachAssessments } from "@/hooks/useAllCoachAssessments";
 import { useCategorizedPlayers } from "@/hooks/useCategorizedPlayers";
 import { usePlayerSort } from "@/hooks/usePlayerSort";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -37,6 +38,12 @@ export default function Dashboard() {
   const { players, noPlan, noMeal, noWorkout, completed, loading, error } =
     useCategorizedPlayers();
   const isEmpty = players.length === 0;
+
+  const {
+    coachAssessments,
+    loading: assessmentsLoading,
+    error: assessmentsError,
+  } = useAllCoachAssessments();
 
   // leave space in scroll content so it doesn't hide behind the floating bar
   const bottomPad = useMemo(
@@ -83,9 +90,11 @@ export default function Dashboard() {
           showCalendarIcon: false,
         }}
         showNav={false}
-        error={!!error}
+        error={!!error || !!assessmentsError}
       >
-        {loading && <ActivityIndicator size="large" color="#0000ff" />}
+        {(loading || assessmentsLoading) && (
+          <ActivityIndicator size="large" color="#0000ff" />
+        )}
         {/* Filter Modal */}
         <FilterSortModal
           visible={modalOpen}
@@ -137,6 +146,7 @@ export default function Dashboard() {
               onPlayerPress={handleCardPress}
               selectMode={managing}
               selectedIds={selectedIds}
+              coachAssessments={coachAssessments}
             />
             <PlayerSection
               key={`noMeal-${sortBy}-${order}`}
@@ -147,6 +157,7 @@ export default function Dashboard() {
               onPlayerPress={handleCardPress}
               selectMode={managing}
               selectedIds={selectedIds}
+              coachAssessments={coachAssessments}
             />
             <PlayerSection
               key={`noWorkout-${sortBy}-${order}`}
@@ -157,6 +168,7 @@ export default function Dashboard() {
               onPlayerPress={handleCardPress}
               selectMode={managing}
               selectedIds={selectedIds}
+              coachAssessments={coachAssessments}
             />
             <PlayerSection
               key={`completed-${sortBy}-${order}`}
@@ -167,6 +179,7 @@ export default function Dashboard() {
               onPlayerPress={handleCardPress}
               selectMode={managing}
               selectedIds={selectedIds}
+              coachAssessments={coachAssessments}
             />
           </ScrollView>
         )}
