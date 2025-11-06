@@ -10,8 +10,9 @@ import { usePlayerDay } from "@/hooks/usePlayerDay";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { getSecondsInDay } from "@/utils/dateTimeHelpers";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 export default function PlayerIndexPage() {
   const { width: viewportWidth, height: viewportHeight } =
@@ -167,6 +168,20 @@ export default function PlayerIndexPage() {
         showBGImage={false}
         showCalendarIcon={false}
       />
+      <TouchableOpacity ///////////////////////////////////////////////////////// leaderboard button /////////////////////////////////////////////////
+        onPress={() => router.push("./player/leaderboard")}
+        activeOpacity={0.8}
+        className="
+          flex-row items-center justify-center
+          rounded-full bg-white px-4 py-2
+          shadow-md
+          border border-neutral-200
+        "
+      >
+        <Text className="text-[14px] font-medium text-neutral-800">
+          Leaderboard
+        </Text>
+      </TouchableOpacity>
 
       <View
         style={{

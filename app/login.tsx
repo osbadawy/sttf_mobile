@@ -4,11 +4,11 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Image,
   ImageBackground,
   Text,
   TextInput,
-  Alert,
   TouchableOpacity,
   View,
 } from "react-native";
