@@ -12,11 +12,6 @@ import { DATA } from "@/utils/leaderboardData";
 export default function Leaderboard() {
   const { t } = useLocalization("components.leaderboard.leaderboard");
   
-  // placeholders — wire the real state as needed
-  const playerData = {} as any;
-  const profilePicture = undefined as any;
-  const HeaderColor = { BG: "BG" } as any;
-  const useDateState = undefined as any;
   const error = false;
   const mealError = false;
 
@@ -27,10 +22,7 @@ export default function Leaderboard() {
     <ParallaxScrollView
       headerProps={{
         title: t('leaderboard'),
-        profilePicture: (playerData?.profile_picture as string) || profilePicture,
-        color: HeaderColor.BG,
         showDateSelector: false,
-        useDateState,
         showBGImage: false,
         showCalendarIcon: false,
         showBackButton: true,
