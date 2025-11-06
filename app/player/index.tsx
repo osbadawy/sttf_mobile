@@ -12,7 +12,13 @@ import { getSecondsInDay } from "@/utils/dateTimeHelpers";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 
 export default function PlayerIndexPage() {
   const { width: viewportWidth, height: viewportHeight } =

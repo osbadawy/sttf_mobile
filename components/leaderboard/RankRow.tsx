@@ -17,10 +17,14 @@ export default function RankRow({ p, index }: { p: LBPlayer; index: number }) {
       <Text className="w-6 text-center text-neutral-400">{index + 1}</Text>
       <Image source={{ uri: p.avatar }} className="h-8 w-8 rounded-full" />
       <View className="flex-1">
-        <Text className={`text-[15px] ${isYou ? "font-semibold text-emerald-900" : "text-neutral-900"}`}>
+        <Text
+          className={`text-[15px] ${isYou ? "font-semibold text-emerald-900" : "text-neutral-900"}`}
+        >
           {p.name}
         </Text>
-        <Text className="text-black font-inter-thin">{p.score.toLocaleString()}</Text>
+        <Text className="text-black font-inter-thin">
+          {p.score.toLocaleString()}
+        </Text>
       </View>
       <TrendIcon t={p.trend} />
     </View>
