@@ -39,6 +39,7 @@ function normalizeWithMinFraction(durations: number[], minFraction: number) {
   // Step 4: distribute remaining space proportionally
   return raw.map((r) => {
     if (r <= minFraction) return minFraction;
+    if (aboveMinTotal === 0) return minFraction;
     return minFraction + ((r - minFraction) / aboveMinTotal) * remaining;
   });
 }
@@ -99,7 +100,7 @@ export default function AvgHeartRate({
           <Text
             className={`font-inter-semibold text-5xl text-[#424242] ${isRTL ? "text-right" : "text-left"}`}
           >
-            {Math.round(averageHeartRate)}{" "}
+            {Math.round(averageHeartRate) + " "}
             <Text className="font-inter-light text-base text-[#969696]">
               bpm
             </Text>
@@ -112,7 +113,10 @@ export default function AvgHeartRate({
             {durations.map((duration, index) => {
               const normalizedPercentage = normalizedPercentages[index]; // Minimum 5%
               const barWidth = normalizedPercentage * innerWidth - 2;
-              const percentage = Math.round((duration / totalDuration) * 100);
+              const percentage =
+                totalDuration > 0
+                  ? Math.round((duration / totalDuration) * 100)
+                  : 0;
               const textOpacity = 1 - (4 - index) * 0.1;
 
               return (
@@ -138,9 +142,12 @@ export default function AvgHeartRate({
         </View>
       </View>
       <View style={{ gap: 8 }}>
-        {durations.toReversed().map((duration, _i) => {
+        {[...durations].reverse().map((duration, _i) => {
           const index = 4 - _i;
-          const percentage = Math.round((duration / totalDuration) * 100);
+          const percentage =
+            totalDuration > 0
+              ? Math.round((duration / totalDuration) * 100)
+              : 0;
           const barWidth = (percentage / 100) * innerWidth;
           return (
             <Card key={index} className="px-8 py-4" style={{ gap: 4 }}>

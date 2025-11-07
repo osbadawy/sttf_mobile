@@ -3,9 +3,17 @@ import CalorieIcon from "@/components/icons/nutrition/CaloriesIcon";
 import FatIcon from "@/components/icons/nutrition/FatIcon";
 import GrainIcon from "@/components/icons/nutrition/GrainIcon";
 import ProteinIcon from "@/components/icons/nutrition/ProteinIcon";
+import PickerModal from "@/components/settings/PickerModal";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Picker } from "@react-native-picker/picker";
-import { Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import {
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export type NutritionData = {
   carbs?: number;
@@ -71,15 +79,16 @@ export function MetricInput({
 export default function NutritionDataInput({ value, onChange }: Props) {
   const { t } = useLocalization("components.nutrition.nutritionList");
   const safe = value ?? {};
+  const [showUnitPicker, setShowUnitPicker] = useState(false);
 
   const amountUnits = [
-    "Na", // none
-    "g", // grams
-    "mg", // milligrams
-    "ml", // milliliters
-    "l", // liters
-    "oz", // ounces
-    "lbs", // pounds
+    { label: "Na", value: "Na" }, // none
+    { label: "g", value: "g" }, // grams
+    { label: "mg", value: "mg" }, // milligrams
+    { label: "ml", value: "ml" }, // milliliters
+    { label: "l", value: "l" }, // liters
+    { label: "oz", value: "oz" }, // ounces
+    { label: "lbs", value: "lbs" }, // pounds
   ];
 
   return (
@@ -101,21 +110,51 @@ export default function NutritionDataInput({ value, onChange }: Props) {
           />
         </View>
 
-        <View
-          className="bg-white rounded-xl border border-[#E8E8E8] px-2"
-          style={{ width: 120, height: 45 }}
-        >
-          <Picker
-            selectedValue={safe.amount_unit}
-            onValueChange={(v) => onChange({ ...safe, amount_unit: v })}
-            mode="dropdown"
+        {Platform.OS === "android" ? (
+          // Android: Use native Picker directly
+          <View
+            className="bg-white rounded-xl border border-[#E8E8E8] px-2"
+            style={{ width: 120, height: 45 }}
           >
-            {amountUnits.map((unit) => (
-              <Picker.Item key={unit} label={unit} value={unit} />
-            ))}
-          </Picker>
-        </View>
+            <Picker
+              selectedValue={safe.amount_unit || "Na"}
+              onValueChange={(v) => onChange({ ...safe, amount_unit: v })}
+              mode="dialog"
+            >
+              {amountUnits.map((unit) => (
+                <Picker.Item
+                  key={unit.value}
+                  label={unit.label}
+                  value={unit.value}
+                />
+              ))}
+            </Picker>
+          </View>
+        ) : (
+          // iOS: Use TouchableOpacity + Modal
+          <TouchableOpacity
+            className="bg-white rounded-xl border border-[#E8E8E8] px-4 justify-center"
+            style={{ width: 120, height: 45 }}
+            onPress={() => setShowUnitPicker(true)}
+          >
+            <Text className="text-base effra-regular text-center">
+              {safe.amount_unit || "Na"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
+
+      {/* iOS Picker Modal */}
+      {Platform.OS === "ios" && (
+        <PickerModal
+          visible={showUnitPicker}
+          selectedValue={safe.amount_unit || "Na"}
+          items={amountUnits}
+          onChange={(v) => onChange({ ...safe, amount_unit: v as string })}
+          onClose={() => setShowUnitPicker(false)}
+          mode="dialog"
+        />
+      )}
 
       {/* Nutrition Fields */}
       <View className="flex-row gap-4">

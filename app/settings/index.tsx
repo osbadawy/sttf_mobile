@@ -281,8 +281,6 @@ export default function Settings() {
           onPress={() => setDobOpen(true)}
         />
         <DatePickerModal
-          isRTL={isRTL}
-          title={t("select date of birth")}
           visible={dobOpen}
           onClose={() => setDobOpen(false)}
           date={dob}

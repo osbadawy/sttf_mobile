@@ -1,40 +1,45 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import { Modal, Platform, Pressable, Text, View } from "react-native";
 
-type Props = {
-  visible: boolean;
-  date: Date;
-  onChange: (next: Date) => void;
-  onClose: () => void;
-  minimumDate?: Date;
-  maximumDate?: Date;
+type PickerItem = {
+  label: string;
+  value: string | number;
 };
 
-export default function DatePickerModal({
+type Props = {
+  visible: boolean;
+  selectedValue: string | number;
+  items: PickerItem[];
+  onChange: (value: string | number) => void;
+  onClose: () => void;
+  mode?: "dropdown" | "dialog";
+};
+
+export default function PickerModal({
   visible,
-  date,
+  selectedValue,
+  items,
   onChange,
   onClose,
-  minimumDate,
-  maximumDate,
+  mode = "dropdown",
 }: Props) {
-  // Track the selected date internally for iOS
-  const [selectedDate, setSelectedDate] = useState(date);
+  // Track the selected value internally for iOS
+  const [selected, setSelected] = useState(selectedValue);
   const { t } = useLocalization("common");
 
   // Reset internal state when modal opens
   useEffect(() => {
     if (visible) {
-      setSelectedDate(date);
+      setSelected(selectedValue);
     }
-  }, [visible, date]);
+  }, [visible, selectedValue]);
 
   if (!visible) return null;
 
   const handleDone = () => {
-    onChange(selectedDate);
+    onChange(selected);
     onClose();
   };
 
@@ -59,32 +64,35 @@ export default function DatePickerModal({
           }}
         >
           <Text className="mb-3 text-base font-semibold text-black">
-            {t("selectDate")}
+            {t("selectOption")}
           </Text>
 
           <View className="items-center">
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display={Platform.select({ ios: "spinner", android: "calendar" })}
-              maximumDate={maximumDate}
-              minimumDate={minimumDate}
-              onChange={(event, newDate) => {
+            <Picker
+              selectedValue={selected}
+              onValueChange={(value) => {
                 if (Platform.OS === "android") {
-                  if (event.type === "set" && newDate) {
-                    onChange(newDate);
-                  }
+                  onChange(value);
                   onClose();
                 } else {
                   // iOS: update internal state as user scrolls
-                  if (newDate) setSelectedDate(newDate);
+                  setSelected(value);
                 }
               }}
-              themeVariant={Platform.OS === "ios" ? "light" : undefined}
-            />
+              mode={mode}
+              style={{ width: "100%" }}
+            >
+              {items.map((item) => (
+                <Picker.Item
+                  key={item.value}
+                  label={item.label}
+                  value={item.value}
+                />
+              ))}
+            </Picker>
           </View>
 
-          {/* iOS explicit Done; on Android we already close in onChange */}
+          {/* iOS explicit Done; on Android we already close in onValueChange */}
           {Platform.OS === "ios" && (
             <View className="mt-4 flex-row justify-end">
               <Pressable

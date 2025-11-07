@@ -1,6 +1,5 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
@@ -13,6 +12,7 @@ import {
   ProfilePictureDefaultIcon,
 } from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
+import DatePickerModal from "./settings/DatePickerModal";
 
 export enum HeaderColor {
   BG,
@@ -33,6 +33,7 @@ export interface HeaderProps {
   showDateSelector?: boolean;
   showBackButton?: boolean;
   customBackPath?: RelativePathString;
+  customBackParams?: Record<string, string>;
   color?: HeaderColor;
   notification?: HeaderNotification;
   useDateState?: [Date, (date: Date) => void];
@@ -49,6 +50,7 @@ export default function Header({
   showDateSelector,
   showBackButton = false,
   customBackPath,
+  customBackParams,
   color = HeaderColor.BG,
   notification,
   useDateState = [new Date(), () => {}],
@@ -81,15 +83,16 @@ export default function Header({
     );
   }
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
+  const handleDateChange = (selectedDate: Date) => {
+    setDate(selectedDate);
   };
 
   const showDatePickerModal = () => {
     setShowDatePicker(true);
+  };
+
+  const closeDatePicker = () => {
+    setShowDatePicker(false);
   };
 
   const ParentContainer = ({ children }: { children: React.ReactNode }) => {
@@ -124,7 +127,7 @@ export default function Header({
           ? t("today")
           : date.toLocaleDateString(`${isRTL ? "ar" : "en-US"}`, {
               weekday: "short",
-            })}{" "}
+            }) + " "}
         {date
           .toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" })
           .replace("/", ".")}
@@ -142,8 +145,7 @@ export default function Header({
               top: -50,
               left: -50,
               zIndex: 50,
-              filter: "blur(4px)",
-              opacity: color === HeaderColor.primary ? 1 : 0.4,
+              opacity: color === HeaderColor.primary ? 0.6 : 0.3,
             },
           }}
         />
@@ -157,7 +159,10 @@ export default function Header({
               className="flex mx-4 items-center justify-center"
               onPress={() => {
                 if (customBackPath) {
-                  router.push(customBackPath as RelativePathString);
+                  router.push({
+                    pathname: customBackPath as RelativePathString,
+                    params: customBackParams,
+                  });
                 } else {
                   router.back();
                 }
@@ -275,14 +280,13 @@ export default function Header({
           </TouchableOpacity>
         </View>
       )}
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
+      <DatePickerModal
+        visible={showDatePicker}
+        date={date}
+        onChange={handleDateChange}
+        onClose={closeDatePicker}
+        maximumDate={disableFutureDates ? new Date() : undefined}
+      />
     </ParentContainer>
   );
 }

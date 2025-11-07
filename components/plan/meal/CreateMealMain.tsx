@@ -384,7 +384,7 @@ export default function CreateMealMain({
       <View className="bg-[#F8F9F2] rounded-2xl mb-6 py-4" style={{ gap: 8 }}>
         {/* Meal Name */}
         <View
-          className="bg-white rounded-xl border border-[#E8E8E8] px-4"
+          className="bg-white rounded-xl border border-[#E8E8E8] px-4 h-[48px]"
           style={{ flex: 1 }}
         >
           <TextInput

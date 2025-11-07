@@ -38,7 +38,7 @@ export default function Leaderboard() {
       <View className="mb-6 flex-row items-end justify-center">
         {data[1] && (
           <PodiumCard
-            rankLabel="1st"
+            rankLabel="2nd"
             name={data[1]!.user.display_name}
             score={data[1]!.points}
             avatar={data[1]!.user.avatar_url}
@@ -46,7 +46,7 @@ export default function Leaderboard() {
         )}
         {data[0] && (
           <PodiumCard
-            rankLabel="2nd"
+            rankLabel="1st"
             name={data[0]!.user.display_name}
             score={data[0]!.points}
             avatar={data[0]!.user.avatar_url}
