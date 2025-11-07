@@ -2,5 +2,6 @@
   "title": "Your Workouts",
   "complete": "Complete",
   "completed": "Completed",
-  "filter": "Filter"
+  "filter": "Filter",
+  "noActivitiesPlanned": "No activities planned yet."
 }
