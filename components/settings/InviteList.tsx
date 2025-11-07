@@ -17,7 +17,10 @@ export default function InviteList({
           {/* left avatar/pending */}
           <View className="mr-2 h-8 w-8 overflow-hidden rounded-full bg-neutral-200 items-center justify-center">
             {showAvatar ? (
-              <Image source={{ uri: item.avatarUrl! }} style={{ width: "100%", height: "100%" }} />
+              <Image
+                source={{ uri: item.avatarUrl! }}
+                style={{ width: "100%", height: "100%" }}
+              />
             ) : (
               <Image
                 source={require("@/assets/images/pending.png")}

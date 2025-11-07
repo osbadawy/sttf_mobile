@@ -36,7 +36,9 @@ export default function ManagePlayers() {
   // simulate backend delete
   useEffect(() => {
     if (deletedEmails.length === 0) return;
-    deletedEmails.forEach((e) => console.log("[DELETE USER REQUEST] email=", e));
+    deletedEmails.forEach((e) =>
+      console.log("[DELETE USER REQUEST] email=", e),
+    );
     setDeletedEmails([]);
   }, [deletedEmails]);
 
@@ -57,7 +59,7 @@ export default function ManagePlayers() {
 
   const existingEmails = useMemo(
     () => new Set(invites.map((i) => i.email.toLowerCase())),
-    [invites]
+    [invites],
   );
 
   return (

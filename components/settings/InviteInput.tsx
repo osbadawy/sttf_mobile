@@ -46,7 +46,10 @@ export default function InviteInput({
       } else if (code === "auth/weak-password") {
         Alert.alert("Weak password", "The configured password is too weak.");
       } else {
-        Alert.alert("Signup failed", "Could not create the user. Please try again.");
+        Alert.alert(
+          "Signup failed",
+          "Could not create the user. Please try again.",
+        );
       }
     } finally {
       setSubmitting(false);
@@ -68,7 +71,9 @@ export default function InviteInput({
         disabled={!canAdd}
         onPress={handleAdd}
         className={`ml-2 flex-row items-center rounded-lg border px-3 py-2 ${
-          canAdd ? "border-emerald-600 bg-white" : "border-neutral-300 bg-neutral-100"
+          canAdd
+            ? "border-emerald-600 bg-white"
+            : "border-neutral-300 bg-neutral-100"
         }`}
         activeOpacity={0.8}
       >
@@ -79,11 +84,16 @@ export default function InviteInput({
         >
           {submitting ? "Adding..." : "Add"}
         </Text>
-        <Text className={canAdd ? "text-[16px] text-emerald-700" : "text-[16px] text-neutral-400"}>
+        <Text
+          className={
+            canAdd
+              ? "text-[16px] text-emerald-700"
+              : "text-[16px] text-neutral-400"
+          }
+        >
           +
         </Text>
       </TouchableOpacity>
     </View>
   );
 }
-
