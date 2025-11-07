@@ -1,36 +1,45 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from "react";
 import { Modal, Platform, Pressable, Text, View } from "react-native";
 
-type Props = {
-  visible: boolean;
-  time: Date;
-  onChange: (next: Date) => void;
-  onClose: () => void;
+type PickerItem = {
+  label: string;
+  value: string | number;
 };
 
-export default function TimePickerModal({
+type Props = {
+  visible: boolean;
+  selectedValue: string | number;
+  items: PickerItem[];
+  onChange: (value: string | number) => void;
+  onClose: () => void;
+  mode?: "dropdown" | "dialog";
+};
+
+export default function PickerModal({
   visible,
-  time,
+  selectedValue,
+  items,
   onChange,
   onClose,
+  mode = "dropdown",
 }: Props) {
-  // Track the selected time internally for iOS
-  const [selectedTime, setSelectedTime] = useState(time);
+  // Track the selected value internally for iOS
+  const [selected, setSelected] = useState(selectedValue);
   const { t } = useLocalization("common");
 
   // Reset internal state when modal opens
   useEffect(() => {
     if (visible) {
-      setSelectedTime(time);
+      setSelected(selectedValue);
     }
-  }, [visible, time]);
+  }, [visible, selectedValue]);
 
   if (!visible) return null;
 
   const handleDone = () => {
-    onChange(selectedTime);
+    onChange(selected);
     onClose();
   };
 
@@ -55,31 +64,35 @@ export default function TimePickerModal({
           }}
         >
           <Text className="mb-3 text-base font-semibold text-black">
-            {t("selectTime")}
+            {t("selectOption")}
           </Text>
 
           <View className="items-center">
-            <DateTimePicker
-              value={selectedTime}
-              mode="time"
-              is24Hour={true}
-              display={Platform.select({ ios: "spinner", android: "default" })}
-              onChange={(event, newTime) => {
+            <Picker
+              selectedValue={selected}
+              onValueChange={(value) => {
                 if (Platform.OS === "android") {
-                  if (event.type === "set" && newTime) {
-                    onChange(newTime);
-                  }
+                  onChange(value);
                   onClose();
                 } else {
                   // iOS: update internal state as user scrolls
-                  if (newTime) setSelectedTime(newTime);
+                  setSelected(value);
                 }
               }}
-              themeVariant={Platform.OS === "ios" ? "light" : undefined}
-            />
+              mode={mode}
+              style={{ width: "100%" }}
+            >
+              {items.map((item) => (
+                <Picker.Item
+                  key={item.value}
+                  label={item.label}
+                  value={item.value}
+                />
+              ))}
+            </Picker>
           </View>
 
-          {/* iOS explicit Done; on Android we already close in onChange */}
+          {/* iOS explicit Done; on Android we already close in onValueChange */}
           {Platform.OS === "ios" && (
             <View className="mt-4 flex-row justify-end">
               <Pressable

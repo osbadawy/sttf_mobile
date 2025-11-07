@@ -282,7 +282,6 @@ export default function Header({
         onChange={handleDateChange}
         onClose={closeDatePicker}
         maximumDate={disableFutureDates ? new Date() : undefined}
-        isRTL={isRTL}
       />
     </ParentContainer>
   );

@@ -73,7 +73,6 @@ export default function DateSelector({
         date={value || new Date()}
         onChange={handleDateChange}
         onClose={() => setShowPicker(false)}
-        isRTL={false}
       />
     </View>
   );

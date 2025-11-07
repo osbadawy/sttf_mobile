@@ -131,7 +131,6 @@ export default function BodyData() {
               onChange={(d) => setDate(d)}
               maximumDate={new Date()}
               minimumDate={new Date(1900, 0, 1)}
-              isRTL={isRTL}
             />
           </View>
 

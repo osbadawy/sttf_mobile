@@ -49,7 +49,6 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
 
       {/* TimePickerModal */}
       <TimePickerModal
-        title="Select Time"
         visible={showPicker}
         time={currentTime}
         onChange={handleTimeChange}
