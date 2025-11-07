@@ -8,10 +8,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
 import { formatDate, formatDuration } from "@/utils/dateTimeHelpers";
-import {
-  useLocalSearchParams,
-  usePathname
-} from "expo-router";
+import { useLocalSearchParams, usePathname } from "expo-router";
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 
@@ -21,7 +18,7 @@ export default function ViewActivityPage() {
   const playerActivityIdString = Array.isArray(playerActivityId)
     ? playerActivityId[0]
     : playerActivityId;
-  
+
   const playerData = useMemo(
     () => JSON.parse((player as string) || "{}"),
     [player],
@@ -59,7 +56,7 @@ export default function ViewActivityPage() {
 
   // Safety check: if no activity and there's an error, show error state
   if (!activity && (error || activityError)) {
-    console.error('Failed to load activity:', { error, activityError });
+    console.error("Failed to load activity:", { error, activityError });
   }
 
   const strainToday = activity?.score?.strain;
@@ -68,15 +65,19 @@ export default function ViewActivityPage() {
   let strain14DaysCount = 0;
   try {
     for (const activity of Object.values(activities14Days || {}).flat()) {
-      if (activity?.score?.strain && typeof activity.score.strain === 'number') {
+      if (
+        activity?.score?.strain &&
+        typeof activity.score.strain === "number"
+      ) {
         strain14Days += activity.score.strain;
         strain14DaysCount++;
       }
     }
   } catch (e) {
-    console.error('Error calculating 14-day strain:', e);
+    console.error("Error calculating 14-day strain:", e);
   }
-  strain14Days = strain14DaysCount > 0 ? strain14Days / strain14DaysCount : undefined;
+  strain14Days =
+    strain14DaysCount > 0 ? strain14Days / strain14DaysCount : undefined;
 
   const textClassNameSmall = "font-inter-light text-base pb-2";
   const textClassNameLarge = "font-inter-regular text-2xl pb-2";
@@ -86,8 +87,12 @@ export default function ViewActivityPage() {
   return (
     <ParallaxScrollView
       headerProps={{
-        title: activity?.sport_name ? tActivityTypes(activity.sport_name) : "--",
-        customDescription: activity?.start ? formatDate(new Date(activity.start)) : "--",
+        title: activity?.sport_name
+          ? tActivityTypes(activity.sport_name)
+          : "--",
+        customDescription: activity?.start
+          ? formatDate(new Date(activity.start))
+          : "--",
         useDateState: useDateState,
         showCalendarIcon: false,
         showBackButton: true,

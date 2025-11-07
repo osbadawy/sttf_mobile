@@ -113,7 +113,10 @@ export default function AvgHeartRate({
             {durations.map((duration, index) => {
               const normalizedPercentage = normalizedPercentages[index]; // Minimum 5%
               const barWidth = normalizedPercentage * innerWidth - 2;
-              const percentage = totalDuration > 0 ? Math.round((duration / totalDuration) * 100) : 0;
+              const percentage =
+                totalDuration > 0
+                  ? Math.round((duration / totalDuration) * 100)
+                  : 0;
               const textOpacity = 1 - (4 - index) * 0.1;
 
               return (
@@ -141,7 +144,10 @@ export default function AvgHeartRate({
       <View style={{ gap: 8 }}>
         {[...durations].reverse().map((duration, _i) => {
           const index = 4 - _i;
-          const percentage = totalDuration > 0 ? Math.round((duration / totalDuration) * 100) : 0;
+          const percentage =
+            totalDuration > 0
+              ? Math.round((duration / totalDuration) * 100)
+              : 0;
           const barWidth = (percentage / 100) * innerWidth;
           return (
             <Card key={index} className="px-8 py-4" style={{ gap: 4 }}>

@@ -110,29 +110,29 @@ export function StrainSectionLine({
             padding={{ left: 0, right: 0, top: 0, bottom: 0 }}
             domain={{ x: [0, 1], y: [0, 100] }}
           >
-          <VictoryStack>
-            <VictoryBar
-              data={[{ x: 1, y: strainScale.low * 100 }]}
-              style={{ data: { fill: colors.strainLow } }}
-              barWidth={16}
-            />
-            <VictoryBar
-              data={[{ x: 1, y: strainScale.moderate * 100 }]}
-              style={{ data: { fill: colors.strainModerate } }}
-              barWidth={16}
-            />
-            <VictoryBar
-              data={[{ x: 1, y: strainScale.high * 100 }]}
-              style={{ data: { fill: colors.strainHigh } }}
-              barWidth={16}
-            />
-            <VictoryBar
-              data={[{ x: 1, y: strainScale.all_out * 100 }]}
-              style={{ data: { fill: colors.strainAllOut } }}
-              barWidth={16}
-            />
-          </VictoryStack>
-        </VictoryChart>
+            <VictoryStack>
+              <VictoryBar
+                data={[{ x: 1, y: strainScale.low * 100 }]}
+                style={{ data: { fill: colors.strainLow } }}
+                barWidth={16}
+              />
+              <VictoryBar
+                data={[{ x: 1, y: strainScale.moderate * 100 }]}
+                style={{ data: { fill: colors.strainModerate } }}
+                barWidth={16}
+              />
+              <VictoryBar
+                data={[{ x: 1, y: strainScale.high * 100 }]}
+                style={{ data: { fill: colors.strainHigh } }}
+                barWidth={16}
+              />
+              <VictoryBar
+                data={[{ x: 1, y: strainScale.all_out * 100 }]}
+                style={{ data: { fill: colors.strainAllOut } }}
+                barWidth={16}
+              />
+            </VictoryStack>
+          </VictoryChart>
         )}
         {containerWidth > 0 && !secondaryExists && p1StrainToday && (
           <StrainMarker

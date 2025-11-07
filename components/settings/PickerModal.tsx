@@ -53,7 +53,7 @@ export default function PickerModal({
       <View className="bg-transparent w-screen h-screen absolute bottom-0">
         {/* Backdrop without close functionality */}
         <View className="flex-1 bg-black/30" />
-        
+
         {/* Content Sheet */}
         <View
           className="absolute bottom-0 w-screen px-12 pt-2 pb-12 bg-white"

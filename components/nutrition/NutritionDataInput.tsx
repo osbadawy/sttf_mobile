@@ -7,7 +7,13 @@ import PickerModal from "@/components/settings/PickerModal";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { Picker } from "@react-native-picker/picker";
 import { useState } from "react";
-import { Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export type NutritionData = {
   carbs?: number;
@@ -116,7 +122,11 @@ export default function NutritionDataInput({ value, onChange }: Props) {
               mode="dialog"
             >
               {amountUnits.map((unit) => (
-                <Picker.Item key={unit.value} label={unit.label} value={unit.value} />
+                <Picker.Item
+                  key={unit.value}
+                  label={unit.label}
+                  value={unit.value}
+                />
               ))}
             </Picker>
           </View>
