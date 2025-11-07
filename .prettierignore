@@ -1,0 +1,35 @@
+# Build outputs
+build/
+dist/
+.expo/
+.expo-shared/
+web-build/
+
+# Platform-specific
+android/
+ios/
+
+# Dependencies
+node_modules/
+
+# Cache
+.cache/
+*.cache
+
+# Logs
+*.log
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+.git/
+.DS_Store
+*.bundle
+

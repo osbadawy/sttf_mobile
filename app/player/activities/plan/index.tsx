@@ -6,6 +6,7 @@ import SelectionModal from "@/components/SelectionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlannedActivities } from "@/hooks/activities/usePlannedActivities";
+import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
@@ -182,6 +183,16 @@ export default function PlayerPlannedActivitiesPage() {
                 </LinearGradient>
               );
             })}
+
+        {!loading && activities.length === 0 && (
+          // Empty state when there are no activities at all
+          <View className="items-center justify-center py-10">
+            <Ionicons name="barbell-outline" size={28} color="#94a3b8" />
+            <Text className="mt-2 text-slate-500">
+              {t("noActivitiesPlanned")}
+            </Text>
+          </View>
+        )}
       </ParallaxScrollView>
 
       {showFilterDropdown && (
