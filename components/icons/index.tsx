@@ -12,6 +12,7 @@ import ClockIcon from "./Clock";
 import ClockInvertedIcon from "./ClockInverted";
 import ExclamationMark from "./ExclamationMark";
 import FilterIcon from "./FilterIcon";
+import GroupIcon from "./Group";
 import HeaderBgIcon from "./HeaderBgIcon";
 import HeartBg from "./HeartBg";
 import HeartLine1 from "./HeartLine1";
@@ -44,6 +45,7 @@ export {
   ExclamationMark,
   FilterIcon,
   GreenCheckIcon,
+  GroupIcon,
   HeaderBgIcon,
   HeartBg,
   HeartLine1,

@@ -4,7 +4,9 @@ import Constants from "expo-constants";
 import { useCallback, useEffect, useState } from "react";
 import { Access } from "./useUserProfile";
 
-interface UserData {
+export interface UserData {
+  id: string;
+  firebase_id: string;
   email: string;
   avatar_url: string | null;
   access: Access | null;

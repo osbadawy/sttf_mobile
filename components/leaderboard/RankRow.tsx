@@ -1,10 +1,21 @@
 // features/leaderboard/components/RankRow.tsx
-import type { LBPlayer } from "@/utils/leaderboardTypes";
+import ProfilePictureDefaultIcon from "@/components/icons/ProfilePictureDefault";
+import type { LeaderboardEntry } from "@/hooks/useLeaderboard";
 import { Image, Text, View } from "react-native";
 import TrendIcon from "./TrendIcon";
 
-export default function RankRow({ p, index }: { p: LBPlayer; index: number }) {
-  const isYou = Boolean(p.isYou);
+interface RankRowProps {
+  entry: LeaderboardEntry;
+  isYou: boolean;
+}
+
+export default function RankRow({ entry, isYou }: RankRowProps) {
+  let trend: "up" | "down" | "same" = "same";
+  if (entry.rank < entry.lastWeekRank) {
+    trend = "up";
+  } else if (entry.rank > entry.lastWeekRank) {
+    trend = "down";
+  }
 
   // do Query check for rank here
   return (
@@ -14,19 +25,28 @@ export default function RankRow({ p, index }: { p: LBPlayer; index: number }) {
       }`}
       style={{ gap: 10 }}
     >
-      <Text className="w-6 text-center text-neutral-400">{index + 1}</Text>
-      <Image source={{ uri: p.avatar }} className="h-8 w-8 rounded-full" />
+      <Text className="w-6 text-center text-neutral-400">{entry.rank}</Text>
+      {entry.user.avatar_url ? (
+        <Image
+          source={{ uri: entry.user.avatar_url }}
+          className="h-8 w-8 rounded-full"
+        />
+      ) : (
+        <View className="h-8 w-8 rounded-full bg-neutral-200 items-center justify-center">
+          <ProfilePictureDefaultIcon />
+        </View>
+      )}
       <View className="flex-1">
         <Text
           className={`text-[15px] ${isYou ? "font-semibold text-emerald-900" : "text-neutral-900"}`}
         >
-          {p.name}
+          {entry.user.display_name ?? "Anonymous Player"}
         </Text>
         <Text className="text-black font-inter-thin">
-          {p.score.toLocaleString()}
+          {entry.points.toLocaleString()}
         </Text>
       </View>
-      <TrendIcon t={p.trend} />
+      <TrendIcon t={trend} />
     </View>
   );
 }
