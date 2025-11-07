@@ -102,13 +102,14 @@ export function StrainSectionLine({
           setContainerWidth(width);
         }}
       >
-        <VictoryChart
-          horizontal
-          height={4}
-          width={containerWidth}
-          padding={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          domain={{ x: [0, 1], y: [0, 100] }}
-        >
+        {containerWidth > 0 && (
+          <VictoryChart
+            horizontal
+            height={4}
+            width={containerWidth}
+            padding={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            domain={{ x: [0, 1], y: [0, 100] }}
+          >
           <VictoryStack>
             <VictoryBar
               data={[{ x: 1, y: strainScale.low * 100 }]}
@@ -132,27 +133,28 @@ export function StrainSectionLine({
             />
           </VictoryStack>
         </VictoryChart>
-        {!secondaryExists && p1StrainToday && (
+        )}
+        {containerWidth > 0 && !secondaryExists && p1StrainToday && (
           <StrainMarker
             left={getPositionOnLine(p1StrainToday, 8)}
             marker={defaultMarker}
           />
         )}
-        {!secondaryExists && p1AvgStrain && (
+        {containerWidth > 0 && !secondaryExists && p1AvgStrain && (
           <StrainMarker
             left={getPositionOnLine(p1AvgStrain, 1)}
             marker={defaultSecondaryMarker}
           />
         )}
 
-        {secondaryExists && (
+        {containerWidth > 0 && secondaryExists && (
           <StrainMarker
             left={getPositionOnLine(p1StrainToday || 0, 10)}
             marker={p1ComparisonMarker}
             scale={selectedPlayer === 0 ? 1 : 0.75}
           />
         )}
-        {secondaryExists && (
+        {containerWidth > 0 && secondaryExists && (
           <StrainMarker
             left={getPositionOnLine(p2StrainToday || 0, 10)}
             marker={p2ComparisonMarker}
@@ -227,7 +229,7 @@ export default function StrainSection({
       <View className="flex-row justify-between">
         <Text>
           <Text className="font-inter-semibold text-3xl">
-            {strainToday ? strainToday + " " : "-- "}
+            {strainToday ? `${strainToday} ` : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#4B4B4B]">
             {todaysDate}
@@ -235,7 +237,7 @@ export default function StrainSection({
         </Text>
         <Text>
           <Text className="font-inter-semibold text-3xl text-[#757575]">
-            {avgStrain ? avgStrain + " " : "-- "}
+            {avgStrain ? `${avgStrain} ` : "-- "}
           </Text>
           <Text className="font-inter-light text-xs text-[#969696]">
             {tStats("14DayAvg")}

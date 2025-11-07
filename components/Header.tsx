@@ -127,7 +127,7 @@ export default function Header({
           ? t("today")
           : date.toLocaleDateString(`${isRTL ? "ar" : "en-US"}`, {
               weekday: "short",
-            })}{" "}
+            }) + " "}
         {date
           .toLocaleDateString("en-US", { day: "2-digit", month: "2-digit" })
           .replace("/", ".")}
@@ -145,8 +145,7 @@ export default function Header({
               top: -50,
               left: -50,
               zIndex: 50,
-              filter: "blur(4px)",
-              opacity: color === HeaderColor.primary ? 1 : 0.4,
+              opacity: color === HeaderColor.primary ? 0.6 : 0.3,
             },
           }}
         />

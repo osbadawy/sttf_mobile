@@ -3,6 +3,7 @@ import WorkoutPointsCircle from "@/components/activities/FeelingCircle";
 import { StrainIcon } from "@/components/icons";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { StrainSectionLine } from "@/components/wellbeing/StrainSection";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
@@ -11,14 +12,20 @@ import {
   useLocalSearchParams,
   usePathname
 } from "expo-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 
 export default function ViewActivityPage() {
-  const { playerActivityId } = useLocalSearchParams();
+  const { user } = useAuth();
+  const { playerActivityId, player } = useLocalSearchParams();
   const playerActivityIdString = Array.isArray(playerActivityId)
     ? playerActivityId[0]
     : playerActivityId;
+  
+  const playerData = useMemo(
+    () => JSON.parse((player as string) || "{}"),
+    [player],
+  );
 
   let pathname = usePathname();
   pathname = pathname.split("/").slice(0, -1).join("/");
@@ -34,6 +41,7 @@ export default function ViewActivityPage() {
     loading,
     error,
   } = usePlayerActivities({
+    user_id: playerData.firebase_id || user?.uid || undefined,
     initialDaysBack: 14,
   });
 
@@ -49,17 +57,26 @@ export default function ViewActivityPage() {
     return <View />;
   }
 
+  // Safety check: if no activity and there's an error, show error state
+  if (!activity && (error || activityError)) {
+    console.error('Failed to load activity:', { error, activityError });
+  }
+
   const strainToday = activity?.score?.strain;
 
   let strain14Days: number | undefined = 0;
   let strain14DaysCount = 0;
-  for (const activity of Object.values(activities14Days).flat()) {
-    if (activity?.score?.strain) {
-      strain14Days += activity?.score?.strain;
-      strain14DaysCount++;
+  try {
+    for (const activity of Object.values(activities14Days || {}).flat()) {
+      if (activity?.score?.strain && typeof activity.score.strain === 'number') {
+        strain14Days += activity.score.strain;
+        strain14DaysCount++;
+      }
     }
+  } catch (e) {
+    console.error('Error calculating 14-day strain:', e);
   }
-  strain14Days = strain14Days / strain14DaysCount;
+  strain14Days = strain14DaysCount > 0 ? strain14Days / strain14DaysCount : undefined;
 
   const textClassNameSmall = "font-inter-light text-base pb-2";
   const textClassNameLarge = "font-inter-regular text-2xl pb-2";
@@ -69,8 +86,8 @@ export default function ViewActivityPage() {
   return (
     <ParallaxScrollView
       headerProps={{
-        title: activity ? tActivityTypes(activity.sport_name) : "--",
-        customDescription: activity ? formatDate(activity.start) : "--",
+        title: activity?.sport_name ? tActivityTypes(activity.sport_name) : "--",
+        customDescription: activity?.start ? formatDate(new Date(activity.start)) : "--",
         useDateState: useDateState,
         showCalendarIcon: false,
         showBackButton: true,
@@ -109,12 +126,12 @@ export default function ViewActivityPage() {
 
       {activity?.score && (
         <AvgHeartRate
-          averageHeartRate={activity?.score?.average_heart_rate}
-          zone1Milli={activity?.score?.zoneDurations?.zone_one_milli}
-          zone2Milli={activity?.score?.zoneDurations?.zone_two_milli}
-          zone3Milli={activity?.score?.zoneDurations?.zone_three_milli}
-          zone4Milli={activity?.score?.zoneDurations?.zone_four_milli}
-          zone5Milli={activity?.score?.zoneDurations?.zone_five_milli}
+          averageHeartRate={activity?.score?.average_heart_rate || 0}
+          zone1Milli={activity?.score?.zoneDurations?.zone_one_milli || 0}
+          zone2Milli={activity?.score?.zoneDurations?.zone_two_milli || 0}
+          zone3Milli={activity?.score?.zoneDurations?.zone_three_milli || 0}
+          zone4Milli={activity?.score?.zoneDurations?.zone_four_milli || 0}
+          zone5Milli={activity?.score?.zoneDurations?.zone_five_milli || 0}
         />
       )}
 

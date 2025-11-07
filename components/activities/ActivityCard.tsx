@@ -35,7 +35,7 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
       </View>
       <View className="flex-1 pl-4">
         <Text className="text-base effra-medium">
-          {tActivityTypes(activity.sport_name.split("_")[0])}{" "}
+          {tActivityTypes(activity.sport_name.split("_")[0]) + " "}
         </Text>
         <Text className="text-base effra-light">{duration}</Text>
       </View>

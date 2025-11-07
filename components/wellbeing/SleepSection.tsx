@@ -59,36 +59,36 @@ export default function SleepSection({
     p1StageSummary.total_slow_wave_sleep_time_milli +
     p1StageSummary.total_light_sleep_time_milli +
     p1StageSummary.total_awake_time_milli;
-  const p1_remPercent = Math.round(
+  const p1_remPercent = p1_total > 0 ? Math.round(
     (p1StageSummary.total_rem_sleep_time_milli / p1_total) * 100,
-  );
-  const p1_swsPercent = Math.round(
+  ) : 0;
+  const p1_swsPercent = p1_total > 0 ? Math.round(
     (p1StageSummary.total_slow_wave_sleep_time_milli / p1_total) * 100,
-  );
-  const p1_lightPercent = Math.round(
+  ) : 0;
+  const p1_lightPercent = p1_total > 0 ? Math.round(
     (p1StageSummary.total_light_sleep_time_milli / p1_total) * 100,
-  );
-  const p1_awakePercent = Math.round(
+  ) : 0;
+  const p1_awakePercent = p1_total > 0 ? Math.round(
     (p1StageSummary.total_awake_time_milli / p1_total) * 100,
-  );
+  ) : 0;
 
   const p2_total =
     p2StageSummary.total_rem_sleep_time_milli +
     p2StageSummary.total_slow_wave_sleep_time_milli +
     p2StageSummary.total_light_sleep_time_milli +
     p2StageSummary.total_awake_time_milli;
-  const p2_remPercent = Math.round(
+  const p2_remPercent = p2_total > 0 ? Math.round(
     (p2StageSummary.total_rem_sleep_time_milli / p2_total) * 100,
-  );
-  const p2_swsPercent = Math.round(
+  ) : 0;
+  const p2_swsPercent = p2_total > 0 ? Math.round(
     (p2StageSummary.total_slow_wave_sleep_time_milli / p2_total) * 100,
-  );
-  const p2_lightPercent = Math.round(
+  ) : 0;
+  const p2_lightPercent = p2_total > 0 ? Math.round(
     (p2StageSummary.total_light_sleep_time_milli / p2_total) * 100,
-  );
-  const p2_awakePercent = Math.round(
+  ) : 0;
+  const p2_awakePercent = p2_total > 0 ? Math.round(
     (p2StageSummary.total_awake_time_milli / p2_total) * 100,
-  );
+  ) : 0;
 
   // Data for the pie chart
   const p1Data = [
@@ -197,7 +197,7 @@ export default function SleepSection({
                     className="font-inter-medium text-base"
                     style={{ color: item.color }}
                   >
-                    {item.y}%{" "}
+                    {item.y + "% "}
                   </Text>
                   <Text
                     className="font-inter-light text-xs"

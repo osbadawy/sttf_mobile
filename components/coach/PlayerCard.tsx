@@ -134,7 +134,7 @@ export default function PlayerCard({
               boxShadow: `0px 0px 12px 1px rgba(250, 187, 0, 0.5)`,
             }}
           />
-        )}{" "}
+        )}
       </View>
     </TouchableOpacity>
   );

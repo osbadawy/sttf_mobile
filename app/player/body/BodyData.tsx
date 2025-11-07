@@ -35,7 +35,6 @@ export default function BodyData() {
     () => JSON.parse((player as string) || "{}"),
     [player],
   );
-  console.log({ playerData });
   // date state
   const [date, setDate] = useState<Date>(new Date());
   const [dateOpen, setDateOpen] = useState(false);
@@ -64,7 +63,6 @@ export default function BodyData() {
         body_fat_percentage: Number(fat),
         muscle_mass_percentage: Number(muscle),
       };
-      console.log({ payload });
       const response = await fetch(
         `${Constants.expoConfig?.extra?.BACKEND_URL}/body-composition`,
         {

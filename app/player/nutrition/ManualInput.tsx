@@ -306,7 +306,7 @@ export default function ManualInputDesign() {
                 className="flex-row items-center justify-center my-2"
               >
                 <Text className="text-base text-neutral-700">
-                  {t("add macro")}{" "}
+                  {t("add macro") + " "}
                   <Text className="text-neutral-500">
                     {dataOpen ? "▾" : "▸"}
                   </Text>
