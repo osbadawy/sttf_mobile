@@ -1,22 +1,18 @@
 // app/player/leaderboard.tsx (or wherever your screen lives)
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { useMemo } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 import PodiumCard from "@/components/leaderboard/PodiumCard";
 import RankRow from "@/components/leaderboard/RankRow";
-import { splitTopRest } from "@/components/leaderboard/SplitTopRest";
+import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { DATA } from "@/utils/leaderboardData";
+import { useLeaderboard } from "@/hooks/useLeaderboard";
 
 export default function Leaderboard() {
   const { t } = useLocalization("components.leaderboard.leaderboard");
 
-  const error = false;
-  const mealError = false;
-
-  const { top3, rest } = useMemo(() => splitTopRest(DATA), []);
-  const podium = [top3[1] ?? null, top3[0] ?? null, top3[2] ?? null];
+  const { data, loading, error } = useLeaderboard();
+  const { user } = useAuth();
 
   return (
     <ParallaxScrollView
@@ -28,9 +24,10 @@ export default function Leaderboard() {
         showBackButton: true,
       }}
       showNav={false}
-      error={Boolean(error) || Boolean(mealError)}
+      error={Boolean(error)}
     >
       {/* Period pill (static) */}
+      {loading && <ActivityIndicator size="large" color="#0000ff" />}
       <View className="mb-6 items-center">
         <TouchableOpacity className="rounded-full border border-neutral-300 px-4 py-1.5">
           <Text className="text-neutral-700">{t("this week")}</Text>
@@ -39,29 +36,30 @@ export default function Leaderboard() {
 
       {/* Podium (2nd — 1st — 3rd) */}
       <View className="mb-6 flex-row items-end justify-center">
-        {podium[0] && (
-          <PodiumCard
-            rankLabel="2nd"
-            name={podium[0]!.name}
-            score={podium[0]!.score}
-            avatar={podium[0]!.avatar}
-          />
-        )}
-        {podium[1] && (
+        {data[1] && (
           <PodiumCard
             rankLabel="1st"
-            name={podium[1]!.name}
-            score={podium[1]!.score}
-            avatar={podium[1]!.avatar}
+            name={data[1]!.user.display_name}
+            score={data[1]!.points}
+            avatar={data[1]!.user.avatar_url}
+          />
+        )}
+        {data[0] && (
+          <PodiumCard
+            rankLabel="2nd"
+            name={data[0]!.user.display_name}
+            score={data[0]!.points}
+            avatar={data[0]!.user.avatar_url}
             emphasized
           />
         )}
-        {podium[2] && (
+
+        {data[2] && (
           <PodiumCard
             rankLabel="3rd"
-            name={podium[2]!.name}
-            score={podium[2]!.score}
-            avatar={podium[2]!.avatar}
+            name={data[2]!.user.display_name}
+            score={data[2]!.points}
+            avatar={data[2]!.user.avatar_url}
           />
         )}
       </View>
@@ -71,8 +69,12 @@ export default function Leaderboard() {
 
       {/* Ranked list (the rest) */}
       <View className="mt-2">
-        {rest.map((p, idx) => (
-          <RankRow key={p.id} p={p} index={idx + 3} />
+        {data.slice(3).map((p, idx) => (
+          <RankRow
+            key={p.user.firebase_id}
+            entry={p}
+            isYou={p.user.firebase_id === user?.uid}
+          />
         ))}
       </View>
     </ParallaxScrollView>
