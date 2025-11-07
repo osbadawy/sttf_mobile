@@ -1,6 +1,6 @@
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Platform, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import TimePickerModal from "./settings/TimePickerModal";
 
 interface TimePickerProps {
   value: Date | null;
@@ -15,11 +15,8 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
   const hours = value ? currentTime.getHours() : 0;
   const minutes = value ? currentTime.getMinutes() : 0;
 
-  const handleTimeChange = (event: any, selectedDate?: Date) => {
-    setShowPicker(Platform.OS === "ios");
-    if (selectedDate) {
-      onChange(selectedDate);
-    }
+  const handleTimeChange = (selectedDate: Date) => {
+    onChange(selectedDate);
   };
 
   return (
@@ -50,16 +47,14 @@ export default function TimePicker({ value, onChange }: TimePickerProps) {
         </View>
       </TouchableOpacity>
 
-      {/* DateTimePicker */}
-      {showPicker && (
-        <DateTimePicker
-          value={currentTime}
-          mode="time"
-          is24Hour={true}
-          display={Platform.OS === "ios" ? "spinner" : "default"}
-          onChange={handleTimeChange}
-        />
-      )}
+      {/* TimePickerModal */}
+      <TimePickerModal
+        title="Select Time"
+        visible={showPicker}
+        time={currentTime}
+        onChange={handleTimeChange}
+        onClose={() => setShowPicker(false)}
+      />
     </View>
   );
 }

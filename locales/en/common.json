@@ -1,4 +1,7 @@
 {
   "today": "Today",
-  "clear": "Clear"
+  "clear": "Clear",
+  "selectDate": "Select Date",
+  "selectTime": "Select Time",
+  "done": "Done"
 }

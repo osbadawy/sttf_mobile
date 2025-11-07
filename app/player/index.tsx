@@ -47,7 +47,7 @@ export default function PlayerIndexPage() {
 
   const oldestIncompleteItemIndex =
     data.length - [...data].reverse().findIndex((item) => !item.isCompleted);
-  const tableHeight = viewportHeight * 0.7;
+  const tableHeight = viewportHeight * 0.6;
 
   // Refs for TableItem measurement functions
   const itemMeasureRefs = useRef<(() => void)[]>([]);

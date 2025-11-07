@@ -1,42 +1,38 @@
-import { useLocalization } from "@/contexts/LocalizationContext";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 import { Modal, Platform, Pressable, Text, View } from "react-native";
 
 type Props = {
+  title: string;
   visible: boolean;
-  date: Date;
+  time: Date;
   onChange: (next: Date) => void;
   onClose: () => void;
-  minimumDate?: Date;
-  maximumDate?: Date;
-  isRTL: boolean;
+  isRTL?: boolean;
 };
 
-export default function DatePickerModal({
+export default function TimePickerModal({
+  title,
   visible,
-  date,
+  time,
   onChange,
   onClose,
-  minimumDate,
-  maximumDate,
-  isRTL,
+  isRTL = false,
 }: Props) {
-  // Track the selected date internally for iOS
-  const [selectedDate, setSelectedDate] = useState(date);
-  const { t } = useLocalization("common");
+  // Track the selected time internally for iOS
+  const [selectedTime, setSelectedTime] = useState(time);
 
   // Reset internal state when modal opens
   useEffect(() => {
     if (visible) {
-      setSelectedDate(date);
+      setSelectedTime(time);
     }
-  }, [visible, date]);
+  }, [visible, time]);
 
   if (!visible) return null;
 
   const handleDone = () => {
-    onChange(selectedDate);
+    onChange(selectedTime);
     onClose();
   };
 
@@ -61,25 +57,24 @@ export default function DatePickerModal({
           }}
         >
           <Text className="mb-3 text-base font-semibold text-black">
-            {t("selectDate")}
+            {title}
           </Text>
 
           <View className="items-center">
             <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display={Platform.select({ ios: "spinner", android: "calendar" })}
-              maximumDate={maximumDate}
-              minimumDate={minimumDate}
-              onChange={(event, newDate) => {
+              value={selectedTime}
+              mode="time"
+              is24Hour={true}
+              display={Platform.select({ ios: "spinner", android: "default" })}
+              onChange={(event, newTime) => {
                 if (Platform.OS === "android") {
-                  if (event.type === "set" && newDate) {
-                    onChange(newDate);
+                  if (event.type === "set" && newTime) {
+                    onChange(newTime);
                   }
                   onClose();
                 } else {
                   // iOS: update internal state as user scrolls
-                  if (newDate) setSelectedDate(newDate);
+                  if (newTime) setSelectedTime(newTime);
                 }
               }}
               themeVariant={Platform.OS === "ios" ? "light" : undefined}
@@ -93,7 +88,7 @@ export default function DatePickerModal({
                 className="rounded-xl bg-neutral-900 px-4 py-2"
                 onPress={handleDone}
               >
-                <Text className="text-white">{t("done")}</Text>
+                <Text className="text-white">Done</Text>
               </Pressable>
             </View>
           )}
@@ -102,3 +97,4 @@ export default function DatePickerModal({
     </Modal>
   );
 }
+

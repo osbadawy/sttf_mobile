@@ -32,6 +32,11 @@ export default function PointAndRank({
         end={{ x: 1, y: 0 }}
         className="flex-row items-center justify-start px-[10px] h-[36px]"
         style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingHorizontal: 10,
+          height: 36,
           borderRadius: 8,
           boxShadow: "0px 2px 2px 0px rgba(0, 0, 0, 0.24)",
         }}
@@ -47,6 +52,11 @@ export default function PointAndRank({
         end={{ x: 1, y: 0 }}
         className="flex-row items-center justify-start px-[10px] h-[36px]"
         style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingHorizontal: 10,
+          height: 36,
           borderRadius: 8,
           boxShadow: "0px 2px 2px 0px rgba(0, 0, 0, 0.24)",
         }}

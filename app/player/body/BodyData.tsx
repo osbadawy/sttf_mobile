@@ -125,7 +125,6 @@ export default function BodyData() {
               isRTL={isRTL}
             />
             <DatePickerModal
-              title="Select Date"
               visible={dateOpen}
               onClose={() => setDateOpen(false)}
               date={date}

@@ -1,6 +1,5 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
@@ -13,6 +12,7 @@ import {
   ProfilePictureDefaultIcon,
 } from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
+import DatePickerModal from "./settings/DatePickerModal";
 
 export enum HeaderColor {
   BG,
@@ -81,15 +81,16 @@ export default function Header({
     );
   }
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
+  const handleDateChange = (selectedDate: Date) => {
+    setDate(selectedDate);
   };
 
   const showDatePickerModal = () => {
     setShowDatePicker(true);
+  };
+
+  const closeDatePicker = () => {
+    setShowDatePicker(false);
   };
 
   const ParentContainer = ({ children }: { children: React.ReactNode }) => {
@@ -275,14 +276,14 @@ export default function Header({
           </TouchableOpacity>
         </View>
       )}
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
+      <DatePickerModal
+        visible={showDatePicker}
+        date={date}
+        onChange={handleDateChange}
+        onClose={closeDatePicker}
+        maximumDate={disableFutureDates ? new Date() : undefined}
+        isRTL={isRTL}
+      />
     </ParentContainer>
   );
 }

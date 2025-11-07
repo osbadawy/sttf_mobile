@@ -1,4 +1,7 @@
 {
   "today": "اليوم",
-  "clear": "امسح"
+  "clear": "امسح",
+  "selectDate": "اختر التاريخ",
+  "selectTime": "اختر الوقت",
+  "done": "تم"
 }
