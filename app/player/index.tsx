@@ -2,23 +2,19 @@ import Header from "@/components/Header";
 import TableBg from "@/components/icons/playerDayPlan/TableBg";
 import TrophyIcon from "@/components/icons/playerDayPlan/TrophyIcon";
 import Nav from "@/components/Nav";
+import PointAndRank from "@/components/playerDayPlan/PointAndRank";
 import TableItem, { TableItemType } from "@/components/playerDayPlan/TableItem";
 import TableItemModal, {
   TableItemModalContentProps,
 } from "@/components/playerDayPlan/TableItemModal";
+import { useAuth } from "@/contexts/AuthContext";
+import { LeaderboardEntry, useLeaderboard } from "@/hooks/useLeaderboard";
 import { usePlayerDay } from "@/hooks/usePlayerDay";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { getSecondsInDay } from "@/utils/dateTimeHelpers";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
 
 export default function PlayerIndexPage() {
   const { width: viewportWidth, height: viewportHeight } =
@@ -36,10 +32,18 @@ export default function PlayerIndexPage() {
     useState<TableItemModalContentProps | null>(null);
 
   const { userName, profilePicture, access } = useUserProfile();
-
   const { data, error, loading, refetch } = usePlayerDay({
     day: new Date(),
   });
+  const { user } = useAuth();
+  const {
+    data: leaderboardData,
+    loading: leaderboardLoading,
+    error: leaderboardError,
+  } = useLeaderboard();
+  const leaderboardEntry: LeaderboardEntry | null =
+    leaderboardData.find((entry) => entry.user.firebase_id === user?.uid) ??
+    null;
 
   const oldestIncompleteItemIndex =
     data.length - [...data].reverse().findIndex((item) => !item.isCompleted);
@@ -174,6 +178,9 @@ export default function PlayerIndexPage() {
         showBGImage={false}
         showCalendarIcon={false}
       />
+      <View className="px-8 pt-[22px]">
+        <PointAndRank entry={leaderboardEntry} />
+      </View>
 
       <View
         style={{
@@ -200,21 +207,6 @@ export default function PlayerIndexPage() {
           }}
         />
       </View>
-      <TouchableOpacity ///////////////////////////////////////////////////////// leaderboard button /////////////////////////////////////////////////
-        onPress={() => router.push("./player/leaderboard")}
-        activeOpacity={0.8}
-        className="
-          flex-row items-center justify-center
-          rounded-xl bg-white px-4 py-2
-          shadow-md mx-20 mt-4
-          border border-neutral-200
-        "
-      >
-        <Text className="text-[14px] font-medium text-neutral-800">
-          Leaderboard
-        </Text>
-      </TouchableOpacity>
-
       <View
         style={{
           position: "absolute",

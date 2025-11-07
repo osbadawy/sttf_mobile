@@ -12,9 +12,9 @@ interface RankRowProps {
 export default function RankRow({ entry, isYou }: RankRowProps) {
   let trend: "up" | "down" | "same" = "same";
   if (entry.rank < entry.lastWeekRank) {
-    trend = "down";
-  } else if (entry.rank > entry.lastWeekRank) {
     trend = "up";
+  } else if (entry.rank > entry.lastWeekRank) {
+    trend = "down";
   }
 
   // do Query check for rank here
