@@ -33,6 +33,7 @@ export interface HeaderProps {
   showDateSelector?: boolean;
   showBackButton?: boolean;
   customBackPath?: RelativePathString;
+  customBackParams?: Record<string, string>;
   color?: HeaderColor;
   notification?: HeaderNotification;
   useDateState?: [Date, (date: Date) => void];
@@ -49,6 +50,7 @@ export default function Header({
   showDateSelector,
   showBackButton = false,
   customBackPath,
+  customBackParams,
   color = HeaderColor.BG,
   notification,
   useDateState = [new Date(), () => {}],
@@ -158,7 +160,10 @@ export default function Header({
               className="flex mx-4 items-center justify-center"
               onPress={() => {
                 if (customBackPath) {
-                  router.push(customBackPath as RelativePathString);
+                  router.push({
+                    pathname: customBackPath as RelativePathString,
+                    params: customBackParams,
+                  });
                 } else {
                   router.back();
                 }

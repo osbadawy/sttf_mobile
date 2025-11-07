@@ -8,9 +8,8 @@ import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useSinglePlayerActivity } from "@/hooks/activities/useSinglePlayerActivity";
 import { formatDate, formatDuration } from "@/utils/dateTimeHelpers";
 import {
-  RelativePathString,
   useLocalSearchParams,
-  usePathname,
+  usePathname
 } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
@@ -75,7 +74,6 @@ export default function ViewActivityPage() {
         useDateState: useDateState,
         showCalendarIcon: false,
         showBackButton: true,
-        customBackPath: `${pathname}` as RelativePathString,
       }}
       error={Boolean(error) || Boolean(activityError)}
     >
