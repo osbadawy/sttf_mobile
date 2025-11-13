@@ -27,5 +27,14 @@
   "success": "نجح",
   "settings saved successfully": "تم حفظ الإعدادات بنجاح",
   "height (cm)": "الطول (سم)",
-  "change language": "تغيير اللغة"
+  "change language": "تغيير اللغة",
+  "add players": "إضافة لاعبين",
+  "your players": "لاعبيك",
+  "player email address": "البريد الإلكتروني للاعب",
+  "add": "إضافة",
+  "adding": "جاري الإضافة...",
+  "remove player confirmation": "هل أنت متأكد أنك تريد إزالة هذا اللاعب؟",
+  "action irreversible": "هذا الإجراء لا رجعة فيه",
+  "back": "رجوع",
+  "remove": "إزالة"
 }

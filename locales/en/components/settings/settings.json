@@ -27,5 +27,14 @@
   "success": "Success",
   "settings saved successfully": "Settings saved successfully",
   "height (cm)": "Height (cm)",
-  "change language": "Change Language"
+  "change language": "Change Language",
+  "add players": "Add Players",
+  "your players": "Your players",
+  "player email address": "Player email address",
+  "add": "Add",
+  "adding": "Adding...",
+  "remove player confirmation": "Are you sure you want to remove this player?",
+  "action irreversible": "This action is irreversable",
+  "back": "Back",
+  "remove": "Remove"
 }

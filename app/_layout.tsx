@@ -52,7 +52,7 @@ function AppNavigator() {
       pathname.startsWith("/coach") &&
       pathname !== "/" &&
       access !== undefined &&
-      access !== "coach"
+      access == "player"
     ) {
       router.replace("/");
     }

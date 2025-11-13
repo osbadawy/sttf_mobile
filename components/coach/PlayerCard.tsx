@@ -6,6 +6,7 @@ import CountryFlag from "react-native-country-flag";
 
 export type CoachDashboardPlayer = {
   id: string;
+  email?: string;
   age?: number;
   readiness: number;
   meal: boolean;
@@ -32,6 +33,7 @@ export default function PlayerCard({
   const R = 130;
   const offsetX = 26;
   const offsetY = 28;
+  const email_short = p.email ? p.email.split("@")[0] : "";
 
   return (
     <TouchableOpacity
@@ -47,11 +49,13 @@ export default function PlayerCard({
             <View className="flex-row items-start justify-between">
               <View className="flex-1">
                 <Text className="text-base font-semibold">
-                  {p.display_name}
+                  {p.display_name ?? email_short}
                 </Text>
-                <Text className="text-neutral-600 text-lg mt-0.5">
-                  Age <Text className="font-bold text-gray-700">{p.age}</Text>
-                </Text>
+                {p.age && (
+                  <Text className="text-neutral-600 text-lg mt-0.5">
+                    Age <Text className="font-bold text-gray-700">{p.age}</Text>
+                  </Text>
+                )}
               </View>
 
               {p.nationality ? (

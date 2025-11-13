@@ -1,6 +1,6 @@
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { useLocalization } from "@/contexts/LocalizationContext";
 import { useMemo, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function InviteInput({
   onAdd,
@@ -9,6 +9,7 @@ export default function InviteInput({
   onAdd: (email: string) => void;
   existingEmails: Set<string>;
 }) {
+  const { t } = useLocalization("components.Settings.settings");
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -25,32 +26,13 @@ export default function InviteInput({
     if (!canAdd) return;
 
     const targetEmail = email.trim();
-    const auth = getAuth();
-    const fixedPassword = "sttf-20!";
 
     try {
       setSubmitting(true);
-      await createUserWithEmailAndPassword(auth, targetEmail, fixedPassword);
-      // success → add to UI list
       onAdd(targetEmail);
       setEmail("");
     } catch (err: unknown) {
-      const code = (err as { code?: string }).code ?? "";
-
-      if (code === "auth/email-already-in-use") {
-        // user exists → still add to list
-        onAdd(targetEmail);
-        setEmail("");
-      } else if (code === "auth/invalid-email") {
-        Alert.alert("Invalid email", "Please enter a valid email address.");
-      } else if (code === "auth/weak-password") {
-        Alert.alert("Weak password", "The configured password is too weak.");
-      } else {
-        Alert.alert(
-          "Signup failed",
-          "Could not create the user. Please try again.",
-        );
-      }
+      console.error("Error adding player:", err);
     } finally {
       setSubmitting(false);
     }
@@ -61,7 +43,7 @@ export default function InviteInput({
       <TextInput
         value={email}
         onChangeText={setEmail}
-        placeholder="Player email address"
+        placeholder={t("player email address")}
         keyboardType="email-address"
         autoCapitalize="none"
         editable={!submitting}
@@ -82,7 +64,7 @@ export default function InviteInput({
             canAdd ? "text-emerald-700" : "text-neutral-400"
           }`}
         >
-          {submitting ? "Adding..." : "Add"}
+          {submitting ? t("adding") : t("add")}
         </Text>
         <Text
           className={
