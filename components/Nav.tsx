@@ -17,12 +17,11 @@ interface NavItem {
 }
 
 const homePageHref = (access: Access): RelativePathString => {
-  if (access === "coach") {
-    return "/coach/dashboard" as RelativePathString;
-  } else if (access === "player") {
+  if (access === "player") {
     return "/player" as RelativePathString;
+  } else {
+    return "/coach/dashboard" as RelativePathString;
   }
-  return "/login" as RelativePathString;
 };
 
 const playerNavItems = (access: Access): NavItem[] => [

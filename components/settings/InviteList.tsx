@@ -1,15 +1,15 @@
-import type { PlayerInvite } from "@/app/settings/manage-players";
+import type { Player } from "@/schemas/Player";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function InviteList({
-  invites,
-  onDelete,
+  players,
+  onDeleteClick,
 }: {
-  invites: PlayerInvite[];
-  onDelete: (id: string) => void;
+  players: Player[];
+  onDeleteClick: (id: string) => void;
 }) {
-  const renderItem = ({ item }: { item: PlayerInvite }) => {
-    const showAvatar = item.acceptedInvite && !!item.avatarUrl;
+  const renderItem = ({ item }: { item: Player }) => {
+    const showAvatar = !!item.access && !!item.avatar_url;
 
     return (
       <View className="mb-3 flex-row items-center justify-between">
@@ -18,7 +18,7 @@ export default function InviteList({
           <View className="mr-2 h-8 w-8 overflow-hidden rounded-full bg-neutral-200 items-center justify-center">
             {showAvatar ? (
               <Image
-                source={{ uri: item.avatarUrl! }}
+                source={{ uri: item.avatar_url! }}
                 style={{ width: "100%", height: "100%" }}
               />
             ) : (
@@ -37,7 +37,7 @@ export default function InviteList({
           {/* delete */}
           <TouchableOpacity
             className="ml-3 h-7 w-7 items-center justify-center rounded-full bg-white"
-            onPress={() => onDelete(item.id)}
+            onPress={() => onDeleteClick(item.firebase_id)}
             activeOpacity={0.7}
           >
             <Image
@@ -52,8 +52,8 @@ export default function InviteList({
 
   return (
     <FlatList
-      data={invites}
-      keyExtractor={(item) => item.id}
+      data={players}
+      keyExtractor={(item) => item.firebase_id}
       renderItem={renderItem}
       contentContainerStyle={{ paddingBottom: 16 }}
     />

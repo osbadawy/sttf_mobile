@@ -92,7 +92,7 @@ export function useAuthFlow() {
     console.log({ access: data.access, whoop_user: data.whoop_user });
 
     // Handle routing based on user access level
-    if (data.access === "coach") {
+    if (data.access !== "player") {
       router.push("coach/dashboard" as RelativePathString);
       return;
     }
