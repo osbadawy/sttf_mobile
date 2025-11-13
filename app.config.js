@@ -2,9 +2,9 @@ import "dotenv/config";
 
 export default {
   expo: {
-    owner: "osbadawy",
+    owner: "covelant-sttf",
     name: "sttf",
-    slug: "sttf_mobile",
+    slug: "sttf",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
@@ -104,7 +104,7 @@ export default {
     experiments: { typedRoutes: true },
     extra: {
       eas: {
-        projectId: "f1ae3239-085e-418d-af02-464e188f3567",
+        projectId: "61951a4c-92d5-40b0-bdd4-73a1d43754ea",
       },
 
       FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
