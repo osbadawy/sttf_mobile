@@ -23,13 +23,17 @@ export default function MealPlan() {
   const { players } = useAllPlayers();
 
   let localSearchParams = useLocalSearchParams();
-  const originalSelectedPlayers = useMemo(
-    () =>
-      localSearchParams.players
-        ? JSON.parse(localSearchParams.players as string)
-        : [],
-    [localSearchParams.players],
-  );
+  const originalSelectedPlayers = useMemo(() => {
+    if (!localSearchParams.players) {
+      return [];
+    }
+    try {
+      return JSON.parse(localSearchParams.players as string);
+    } catch (error) {
+      console.error("Error parsing players from params:", error);
+      return [];
+    }
+  }, [localSearchParams.players]);
 
   const [selectedPlayers, setSelectedPlayers] = useState(
     originalSelectedPlayers,
@@ -216,7 +220,7 @@ export default function MealPlan() {
           }}
           allPlayers={players as Player[]}
           originalSelectedPlayers={committedPlayers}
-          user={user}
+          user={user ?? null}
           onMealCreated={handleMealCreated}
           date={date}
           editingMeal={editingMeal}

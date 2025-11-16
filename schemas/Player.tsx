@@ -1,4 +1,4 @@
-export interface Player {
+export default interface Player {
   firebase_id: string;
   email: string;
   avatar_url?: string | null;

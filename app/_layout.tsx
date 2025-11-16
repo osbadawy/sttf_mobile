@@ -59,15 +59,7 @@ function AppNavigator() {
   }, [user, access, pathname, router]);
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="login" options={{ headerShown: false }} />
-      <Stack.Screen name="whoop-login" options={{ headerShown: false }} />
-      <Stack.Screen name="player" options={{ headerShown: false }} />
-      <Stack.Screen name="coach" options={{ headerShown: false }} />
-      <Stack.Screen name="settings" options={{ headerShown: false }} />
-      <Stack.Screen name="plan" options={{ headerShown: false }} />
-    </Stack>
+    <Stack screenOptions={{ headerShown: false }} />
   );
 }
 

@@ -57,9 +57,14 @@ export function usePlannedMeals({
     setError(null);
 
     try {
-      const params = new URLSearchParams({
-        day: day.toISOString(),
-        users_assigned: assignedUsers.join(","),
+      const params = new URLSearchParams();
+
+      // Add day parameter
+      params.append("day", day.toISOString());
+
+      // Add multiple users_assigned parameters
+      assignedUsers.forEach((userId) => {
+        params.append("users_assigned", userId);
       });
 
       if (onlyMatchSelectedPlayers) {
