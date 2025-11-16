@@ -13,7 +13,6 @@ export default function PlayerActivitySelfAssessmentPage() {
   const { t } = useLocalization("components.activities.selfAssessment");
   const [error, setError] = useState<boolean>(false);
 
-
   // Get the planned activities hook to access refetch and clearCache functions
   const { refetch, clearCache } = usePlannedActivities({
     day: new Date((date as string) || new Date()),
@@ -50,7 +49,10 @@ export default function PlayerActivitySelfAssessmentPage() {
       await refetch();
 
       // Use router.replace to ensure the previous page refreshes with new data
-      router.replace({pathname: plannedActivitiesPath as RelativePathString, params});
+      router.replace({
+        pathname: plannedActivitiesPath as RelativePathString,
+        params,
+      });
       setError(false);
     } else {
       const errorData = await response.json();

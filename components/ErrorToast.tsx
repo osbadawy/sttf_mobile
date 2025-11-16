@@ -1,5 +1,10 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { RelativePathString, router, useLocalSearchParams, usePathname } from "expo-router";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import ExclamationMarkIcon from "./icons/ExclamationMark";
 import ReloadIcon from "./icons/Reload";

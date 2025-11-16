@@ -30,7 +30,10 @@ export default function ReadinessSelfAssessmentPage() {
       }),
     });
     if (response.ok) {
-      router.replace({pathname: "player/dashboard" as RelativePathString, params});
+      router.replace({
+        pathname: "player/dashboard" as RelativePathString,
+        params,
+      });
       setError(false);
     } else {
       const errorData = await response.json();

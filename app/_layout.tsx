@@ -58,9 +58,7 @@ function AppNavigator() {
     }
   }, [user, access, pathname, router]);
 
-  return (
-    <Stack screenOptions={{ headerShown: false }} />
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
 
 export default Sentry.wrap(function RootLayout() {

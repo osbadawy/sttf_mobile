@@ -11,4 +11,3 @@ export function redirectToPlayerPage(
   };
   router.push({ pathname: path as RelativePathString, params });
 }
-

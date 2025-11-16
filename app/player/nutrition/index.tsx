@@ -178,7 +178,7 @@ export default function MealLogPage() {
                     const mealAssignment = meal.players_assigned.find(
                       (assignment) =>
                         assignment.assigned_to_user.firebase_id ===
-                          (playerData.firebase_id || user.uid),
+                        (playerData.firebase_id || user.uid),
                     );
                     const isCompleted = Boolean(
                       mealAssignment && mealAssignment.completions.length > 0,

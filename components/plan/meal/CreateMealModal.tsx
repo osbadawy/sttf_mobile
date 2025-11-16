@@ -14,7 +14,7 @@ interface CreateMealModalProps {
   allPlayers: Player[] | undefined;
   originalSelectedPlayers: string[];
   user: User | null;
-  onMealCreated?: () => Promise<void>;
+  onMealCreated?: () => void;
   date: Date;
   editingMeal?: GetMealsResponse | null; // Meal being edited
   onDeleteMeal?: (meal: GetMealsResponse) => void;

@@ -12,7 +12,7 @@ import CustomSwitch from "@/components/Switch";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Constants from "expo-constants";
 import { User } from "firebase/auth";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -32,7 +32,7 @@ interface CreateMealMainProps {
   ) => void;
   onClose: () => void;
   user: User | null;
-  onMealCreated?: () => Promise<void>;
+  onMealCreated?: () => void;
   date: Date;
   onOpenPlayersSelection: () => void;
   editingMeal?: GetMealsResponse | null; // Meal being edited
@@ -82,6 +82,14 @@ export default function CreateMealMain({
       : null,
   );
   const [disabled, setDisabled] = useState<boolean>(false);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const isButtonDisabled =
     disabled ||
@@ -207,31 +215,31 @@ export default function CreateMealMain({
         );
       }
 
-      // Clear cache for recurring dates if this is a recurring meal
-      if (isRecurring && recurranceDays.length > 0) {
-        const startDate = new Date(date);
-        // If no end date specified, clear cache for next 30 days to handle immediate future dates
-        // The cache expires after 1 minute anyway, so this covers the immediate need
-        const endDate =
-          recurranceEndDate ||
-          new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000);
-        clearCacheForRecurringDays(startDate, endDate, recurranceDays, players);
-      }
+      // Notify parent that meal was created (sets flag for refetch on close)
+      // Parent will clear entire cache to handle recurring meals
+      onMealCreated?.();
 
+      // Show success alert
       Alert.alert(
         "Success",
         `Meal ${editingMeal ? "updated" : "created"} successfully`,
       );
-      await onMealCreated?.();
+
+      // Close modal - parent will handle refetch via useEffect
       onClose();
     } catch (error) {
       console.error("Error saving meal", error);
-      Alert.alert(
-        "Error",
-        `Failed to ${editingMeal ? "update" : "create"} meal`,
-      );
+      // Only show error alert if component is still mounted
+      if (isMountedRef.current) {
+        Alert.alert(
+          "Error",
+          `Failed to ${editingMeal ? "update" : "create"} meal`,
+        );
+      }
     } finally {
-      setDisabled(false);
+      if (isMountedRef.current) {
+        setDisabled(false);
+      }
     }
   };
 
