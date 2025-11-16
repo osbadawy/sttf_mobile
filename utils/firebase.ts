@@ -1,9 +1,9 @@
+// @ts-expect-error - Direct path import for React Native, types resolved via tsconfig paths
+import { getReactNativePersistence } from "@firebase/auth/dist/rn/index.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { initializeApp } from "firebase/app";
 import { initializeAuth } from "firebase/auth";
-// @ts-expect-error Firebase types issue - function exists at runtime
-import { getReactNativePersistence } from "@firebase/auth/dist/rn/index.js";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {

@@ -4,11 +4,11 @@ import {
   WellbeingSection,
 } from "@/components/dashboard";
 import NutritionCard from "@/components/dashboard/NutritionCard";
-import { HeaderColor } from "@/components/Header";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { usePlannedMeals } from "@/hooks/meals/usePlannedMeals";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { useWhoopData } from "@/hooks/useWhoopData";
+import { HeaderColor } from "@/schemas/components/HeaderTypes";
 import { getMealSummary } from "@/utils/meal";
 import { useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";

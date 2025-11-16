@@ -13,7 +13,7 @@ import { useAllCoachAssessments } from "@/hooks/useAllCoachAssessments";
 import { useCategorizedPlayers } from "@/hooks/useCategorizedPlayers";
 import { usePlayerSort } from "@/hooks/usePlayerSort";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { router, type RelativePathString } from "expo-router";
+import { redirectToPlayerPage } from "@/utils/coachNavigation";
 import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -23,18 +23,6 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-export function redirectToPlayerPage(
-  firebase_id: string,
-  display_name: string,
-  profile_picture: string,
-) {
-  const path = "/player/dashboard";
-  const params = {
-    player: JSON.stringify({ firebase_id, display_name, profile_picture }),
-  };
-  router.push({ pathname: path as RelativePathString, params });
-}
 
 export default function Dashboard() {
   const { t } = useLocalization("components.coach.coachDashboard");

@@ -1,10 +1,10 @@
-import { redirectToPlayerPage } from "@/app/coach/dashboard";
 import colors from "@/colors.js";
 import Modal from "@/components/Modal";
 import { ArrowBig } from "@/components/icons";
 import ProfilePictureDefaultIcon from "@/components/icons/ProfilePictureDefault";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { redirectToPlayerPage } from "@/utils/coachNavigation";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
