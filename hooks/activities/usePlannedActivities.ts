@@ -42,6 +42,7 @@ export function usePlannedActivities({
 
     // If users_assigned is undefined, set it to [user.uid]
     const assignedUsers = users_assigned || [user.uid];
+    console.log("assignedUsers", assignedUsers);
 
     // Check cache first
     const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;

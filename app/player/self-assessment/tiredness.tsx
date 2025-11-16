@@ -3,12 +3,13 @@ import SelfAssessmentPage, {
 } from "@/components/SelfAssessment";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import Constants from "expo-constants";
-import { RelativePathString, router } from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 export default function TirednessSelfAssessmentPage() {
   const { t } = useLocalization("components.selfAssessment.tiredness");
   const [error, setError] = useState<boolean>(false);
+  const params = useLocalSearchParams();
 
   const onPress = async ({
     value,
@@ -29,7 +30,7 @@ export default function TirednessSelfAssessmentPage() {
       }),
     });
     if (response.ok) {
-      router.replace("player/dashboard" as RelativePathString);
+      router.replace({pathname: "player/dashboard" as RelativePathString, params});
       setError(false);
     } else {
       const errorData = await response.json();

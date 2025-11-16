@@ -32,7 +32,7 @@ interface CreateMealMainProps {
   ) => void;
   onClose: () => void;
   user: User | null;
-  onMealCreated?: () => void;
+  onMealCreated?: () => Promise<void>;
   date: Date;
   onOpenPlayersSelection: () => void;
   editingMeal?: GetMealsResponse | null; // Meal being edited
@@ -222,7 +222,7 @@ export default function CreateMealMain({
         "Success",
         `Meal ${editingMeal ? "updated" : "created"} successfully`,
       );
-      onMealCreated?.();
+      await onMealCreated?.();
       onClose();
     } catch (error) {
       console.error("Error saving meal", error);

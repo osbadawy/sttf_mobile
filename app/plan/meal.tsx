@@ -70,8 +70,8 @@ export default function MealPlan() {
   });
 
   // Handle meal creation success
-  const handleMealCreated = () => {
-    refetch(); // Refetch will clear the specific cache entry and fetch fresh data
+  const handleMealCreated = async () => {
+    await refetch(); // Refetch will clear the specific cache entry and fetch fresh data
   };
   // Handle meal deletion
   const handleDeleteMeal = async () => {
@@ -126,9 +126,11 @@ export default function MealPlan() {
       return {
         type: m,
         meals: meals
-          .filter((meal: GetMealsResponse) => meal.category === m)
+          .filter((meal: GetMealsResponse) => meal && meal.category === m)
           .sort((a: GetMealsResponse, b: GetMealsResponse) => {
-            return new Date(a.start).getTime() - new Date(b.start).getTime();
+            const aTime = a.start ? new Date(a.start).getTime() : 0;
+            const bTime = b.start ? new Date(b.start).getTime() : 0;
+            return aTime - bTime;
           }),
       };
     });

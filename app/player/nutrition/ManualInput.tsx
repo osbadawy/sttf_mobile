@@ -23,7 +23,7 @@ import NutritionDataInput, {
 import { useAuth } from "@/contexts/AuthContext";
 import { uploadToFirebase } from "@/utils/uploadToFirebase";
 import Constants from "expo-constants";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator } from "react-native";
 
 const shadow = Platform.select({
@@ -62,6 +62,8 @@ export default function ManualInputDesign() {
   const canConfirm = Boolean(imageUri && mealName.trim() && whenValue);
   const [disabled, setDisabled] = useState<boolean>(false);
   const { user } = useAuth();
+
+  const params = useLocalSearchParams();
 
   const handleAddPicture = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -146,7 +148,10 @@ export default function ManualInputDesign() {
 
       if (response.ok) {
         const data = await response.json();
-        router.replace("/player/nutrition/NutritionDashboard");
+        router.replace({
+          pathname: "/player/nutrition/NutritionDashboard",
+          params,
+        });
       }
     } catch (error) {
       console.error(error);
