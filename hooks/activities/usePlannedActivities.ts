@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PlannedActivity } from "@/schemas/PlannedActivity";
 import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UsePlannedActivitiesProps {
   users_assigned?: string[];
@@ -34,6 +34,8 @@ export function usePlannedActivities({
   const [activities, setActivities] = useState<PlannedActivity[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+  const requestIdRef = useRef(0);
 
   const fetchPlannedActivities = useCallback(async () => {
     if (!user) {
@@ -43,16 +45,28 @@ export function usePlannedActivities({
     // If users_assigned is undefined, set it to [user.uid]
     const assignedUsers = users_assigned || [user.uid];
 
+    // Normalize date to YYYY-MM-DD string for consistent comparison
+    const dateKey = day.toISOString().split("T")[0];
+    const cacheKey = `activities-${assignedUsers.sort().join(",")}-${dateKey}`;
+
     // Check cache first
-    const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
     const cachedData = dataCache.get(cacheKey);
     if (cachedData) {
-      setActivities(cachedData);
+      if (isMountedRef.current) {
+        setActivities(cachedData);
+        setLoading(false);
+        setError(null);
+      }
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    // Increment request ID for this fetch
+    const currentRequestId = ++requestIdRef.current;
+
+    if (isMountedRef.current) {
+      setLoading(true);
+      setError(null);
+    }
 
     try {
       const params = new URLSearchParams();
@@ -75,6 +89,12 @@ export function usePlannedActivities({
         },
       });
 
+      // Check if this request is still the latest one
+      if (currentRequestId !== requestIdRef.current) {
+        // A newer request has started, ignore this response
+        return;
+      }
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -85,10 +105,19 @@ export function usePlannedActivities({
       const data = await response.json();
       const activitiesData = Array.isArray(data) ? data : [];
 
+      // Double-check this is still the latest request before updating state
+      if (currentRequestId !== requestIdRef.current || !isMountedRef.current) {
+        return;
+      }
+
       // Cache the data
       dataCache.set(cacheKey, activitiesData);
       setActivities(activitiesData);
     } catch (err) {
+      // Only update error if this is still the latest request
+      if (currentRequestId !== requestIdRef.current || !isMountedRef.current) {
+        return;
+      }
       const errorMessage =
         err instanceof Error
           ? err.message
@@ -96,18 +125,28 @@ export function usePlannedActivities({
       console.error("Error fetching planned activities:", err);
       setError(errorMessage);
     } finally {
-      setLoading(false);
+      // Only update loading if this is still the latest request
+      if (currentRequestId === requestIdRef.current && isMountedRef.current) {
+        setLoading(false);
+      }
     }
   }, [user, users_assigned, day]);
 
   const refetch = useCallback(async () => {
+    // Don't refetch if component is unmounted
+    if (!isMountedRef.current) {
+      return;
+    }
     // Clear the specific cache key before refetching
     const assignedUsers = users_assigned || [user?.uid];
     if (assignedUsers.length > 0 && user) {
-      const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
+      const cacheKey = `activities-${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
       dataCache.delete(cacheKey);
     }
-    await fetchPlannedActivities();
+    // Check again before fetching in case component unmounted during cache clear
+    if (isMountedRef.current) {
+      await fetchPlannedActivities();
+    }
   }, [fetchPlannedActivities, users_assigned, day, user]);
 
   const clearCache = useCallback(() => {
@@ -147,7 +186,7 @@ export function usePlannedActivities({
       while (currentDate <= endDate) {
         const dayOfWeek = currentDate.getDay();
         if (targetDays.includes(dayOfWeek)) {
-          const cacheKey = `${sortedUsers}-${currentDate.toISOString().split("T")[0]}`;
+          const cacheKey = `activities-${sortedUsers}-${currentDate.toISOString().split("T")[0]}`;
           dataCache.delete(cacheKey);
         }
         currentDate.setDate(currentDate.getDate() + 1);
@@ -157,7 +196,15 @@ export function usePlannedActivities({
   );
 
   useEffect(() => {
+    isMountedRef.current = true;
+    // Reset request ID when dependencies change to cancel any in-flight requests
+    requestIdRef.current = 0;
     fetchPlannedActivities();
+    return () => {
+      isMountedRef.current = false;
+      // Increment request ID on unmount to invalidate any pending requests
+      requestIdRef.current++;
+    };
   }, [fetchPlannedActivities]);
 
   return {

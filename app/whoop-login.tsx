@@ -18,7 +18,7 @@ export default function WhoopLoginPage() {
       return;
     }
     const accessToken = await user.getIdToken();
-    const redirectURL = Linking.createURL(`/`);
+    const redirectURL = Linking.createURL(`/player`);
     const url = `${Constants.expoConfig?.extra?.API_URL}/whoop/auth/start?access_token=${accessToken}&redirect_url=${redirectURL}`;
 
     await WebBrowser.openAuthSessionAsync(url, redirectURL, {

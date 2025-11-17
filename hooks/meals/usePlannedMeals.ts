@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import ExpiringCache from "@/utils/ExpiringCache";
 import Constants from "expo-constants";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UsePlannedMealsProps {
   users_assigned?: string[];
@@ -36,6 +36,8 @@ export function usePlannedMeals({
   const [meals, setMeals] = useState<GetMealsResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+  const requestIdRef = useRef(0);
 
   const fetchPlannedMeals = useCallback(async () => {
     if (!user) {
@@ -45,21 +47,38 @@ export function usePlannedMeals({
     // If users_assigned is undefined, set it to [user.uid]
     const assignedUsers = users_assigned || [user.uid];
 
+    // Normalize date to YYYY-MM-DD string for consistent comparison
+    const dateKey = day.toISOString().split("T")[0];
+    const cacheKey = `meals-${assignedUsers.sort().join(",")}-${dateKey}`;
+
     // Check cache first
-    const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
     const cachedData = dataCache.get(cacheKey);
     if (cachedData) {
-      setMeals(cachedData);
+      if (isMountedRef.current) {
+        setMeals(cachedData);
+        setLoading(false);
+        setError(null);
+      }
       return;
     }
 
-    setLoading(true);
-    setError(null);
+    // Increment request ID for this fetch
+    const currentRequestId = ++requestIdRef.current;
+
+    if (isMountedRef.current) {
+      setLoading(true);
+      setError(null);
+    }
 
     try {
-      const params = new URLSearchParams({
-        day: day.toISOString(),
-        users_assigned: assignedUsers.join(","),
+      const params = new URLSearchParams();
+
+      // Add day parameter
+      params.append("day", day.toISOString());
+
+      // Add multiple users_assigned parameters
+      assignedUsers.forEach((userId) => {
+        params.append("users_assigned", userId);
       });
 
       if (onlyMatchSelectedPlayers) {
@@ -76,6 +95,12 @@ export function usePlannedMeals({
         },
       });
 
+      // Check if this request is still the latest one
+      if (currentRequestId !== requestIdRef.current) {
+        // A newer request has started, ignore this response
+        return;
+      }
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -86,27 +111,46 @@ export function usePlannedMeals({
       const data = await response.json();
       const mealsData = Array.isArray(data) ? data : [];
 
+      // Double-check this is still the latest request before updating state
+      if (currentRequestId !== requestIdRef.current || !isMountedRef.current) {
+        return;
+      }
+
       // Cache the data
       dataCache.set(cacheKey, mealsData);
       setMeals(mealsData);
     } catch (err) {
+      // Only update error if this is still the latest request
+      if (currentRequestId !== requestIdRef.current || !isMountedRef.current) {
+        return;
+      }
       const errorMessage =
         err instanceof Error ? err.message : "Failed to fetch planned meals";
       console.error("Error fetching planned meals:", err);
       setError(errorMessage);
     } finally {
-      setLoading(false);
+      // Only update loading if this is still the latest request
+      if (currentRequestId === requestIdRef.current && isMountedRef.current) {
+        setLoading(false);
+      }
     }
-  }, [user, users_assigned, day]);
+  }, [user, users_assigned, day, onlyMatchSelectedPlayers]);
 
   const refetch = useCallback(async () => {
+    // Don't refetch if component is unmounted
+    if (!isMountedRef.current) {
+      return;
+    }
     // Clear the specific cache key before refetching
     const assignedUsers = users_assigned || [user?.uid];
     if (assignedUsers.length > 0 && user) {
-      const cacheKey = `${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
+      const cacheKey = `meals-${assignedUsers.sort().join(",")}-${day.toISOString().split("T")[0]}`;
       dataCache.delete(cacheKey);
     }
-    await fetchPlannedMeals();
+    // Check again before fetching in case component unmounted during cache clear
+    if (isMountedRef.current) {
+      await fetchPlannedMeals();
+    }
   }, [fetchPlannedMeals, users_assigned, day, user]);
 
   const clearCache = useCallback(() => {
@@ -146,7 +190,7 @@ export function usePlannedMeals({
       while (currentDate <= endDate) {
         const dayOfWeek = currentDate.getDay();
         if (targetDays.includes(dayOfWeek)) {
-          const cacheKey = `${sortedUsers}-${currentDate.toISOString().split("T")[0]}`;
+          const cacheKey = `meals-${sortedUsers}-${currentDate.toISOString().split("T")[0]}`;
           dataCache.delete(cacheKey);
         }
         currentDate.setDate(currentDate.getDate() + 1);
@@ -156,7 +200,15 @@ export function usePlannedMeals({
   );
 
   useEffect(() => {
+    isMountedRef.current = true;
+    // Reset request ID when dependencies change to cancel any in-flight requests
+    requestIdRef.current = 0;
     fetchPlannedMeals();
+    return () => {
+      isMountedRef.current = false;
+      // Increment request ID on unmount to invalidate any pending requests
+      requestIdRef.current++;
+    };
   }, [fetchPlannedMeals]);
 
   return {

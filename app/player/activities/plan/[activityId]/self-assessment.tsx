@@ -8,7 +8,8 @@ import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 export default function PlayerActivitySelfAssessmentPage() {
-  const { activityId, date } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const { activityId, date } = params;
   const { t } = useLocalization("components.activities.selfAssessment");
   const [error, setError] = useState<boolean>(false);
 
@@ -48,7 +49,10 @@ export default function PlayerActivitySelfAssessmentPage() {
       await refetch();
 
       // Use router.replace to ensure the previous page refreshes with new data
-      router.replace(plannedActivitiesPath as RelativePathString);
+      router.replace({
+        pathname: plannedActivitiesPath as RelativePathString,
+        params,
+      });
       setError(false);
     } else {
       const errorData = await response.json();

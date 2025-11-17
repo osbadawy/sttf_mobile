@@ -13,7 +13,7 @@ import { GetMealsResponse } from "@/schemas/PlannedMeal";
 import Player from "@/schemas/Player";
 import Constants from "expo-constants";
 import { useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 type MealType = "breakfast" | "lunch" | "snack" | "dinner";
@@ -23,13 +23,17 @@ export default function MealPlan() {
   const { players } = useAllPlayers();
 
   let localSearchParams = useLocalSearchParams();
-  const originalSelectedPlayers = useMemo(
-    () =>
-      localSearchParams.players
-        ? JSON.parse(localSearchParams.players as string)
-        : [],
-    [localSearchParams.players],
-  );
+  const originalSelectedPlayers = useMemo(() => {
+    if (!localSearchParams.players) {
+      return [];
+    }
+    try {
+      return JSON.parse(localSearchParams.players as string);
+    } catch (error) {
+      console.error("Error parsing players from params:", error);
+      return [];
+    }
+  }, [localSearchParams.players]);
 
   const [selectedPlayers, setSelectedPlayers] = useState(
     originalSelectedPlayers,
@@ -51,6 +55,8 @@ export default function MealPlan() {
     null,
   );
   const { user } = useAuth();
+  const shouldRefetchOnCloseRef = useRef(false);
+  const isMountedRef = useRef(true);
 
   // Fetch planned meals for the committed players and date
   const {
@@ -65,10 +71,37 @@ export default function MealPlan() {
     day: date,
   });
 
-  // Handle meal creation success
-  const handleMealCreated = () => {
-    refetch(); // Refetch will clear the specific cache entry and fetch fresh data
-  };
+  // Handle meal creation success - set flag instead of calling refetch directly
+  const handleMealCreated = useCallback(() => {
+    shouldRefetchOnCloseRef.current = true;
+  }, []);
+
+  // Track component mount status
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  // Refetch when modal closes if a meal was created
+  useEffect(() => {
+    if (!showCreateMealModal && shouldRefetchOnCloseRef.current) {
+      shouldRefetchOnCloseRef.current = false;
+      // Clear entire cache to handle recurring meals that affect multiple dates
+      clearCache();
+      // Use setTimeout to defer refetch until after modal unmounts completely
+      const timeoutId = setTimeout(() => {
+        // Only refetch if component is still mounted
+        if (isMountedRef.current) {
+          refetch().catch((error) => {
+            console.error("Error refetching meals after modal close:", error);
+          });
+        }
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [showCreateMealModal, refetch, clearCache]);
   // Handle meal deletion
   const handleDeleteMeal = async () => {
     if (!user || !mealToDelete) {
@@ -118,16 +151,22 @@ export default function MealPlan() {
 
   const mealTypes: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
   const organisedMeals: { type: MealType; meals: GetMealsResponse[] }[] =
-    mealTypes.map((m) => {
-      return {
-        type: m,
-        meals: meals
-          .filter((meal: GetMealsResponse) => meal.category === m)
-          .sort((a: GetMealsResponse, b: GetMealsResponse) => {
-            return new Date(a.start).getTime() - new Date(b.start).getTime();
-          }),
-      };
-    });
+    useMemo(
+      () =>
+        mealTypes.map((m) => {
+          return {
+            type: m,
+            meals: (meals || [])
+              .filter((meal: GetMealsResponse) => meal && meal.category === m)
+              .sort((a: GetMealsResponse, b: GetMealsResponse) => {
+                const aTime = a.start ? new Date(a.start).getTime() : 0;
+                const bTime = b.start ? new Date(b.start).getTime() : 0;
+                return aTime - bTime;
+              }),
+          };
+        }),
+      [meals],
+    );
 
   return (
     <>
@@ -213,10 +252,14 @@ export default function MealPlan() {
             setEditingMeal(null);
             setSelectedMealId(null);
             setShowCreateMealModal(false);
+            // Reset refetch flag if modal is closed without creating a meal
+            if (!shouldRefetchOnCloseRef.current) {
+              shouldRefetchOnCloseRef.current = false;
+            }
           }}
           allPlayers={players as Player[]}
           originalSelectedPlayers={committedPlayers}
-          user={user}
+          user={user ?? null}
           onMealCreated={handleMealCreated}
           date={date}
           editingMeal={editingMeal}

@@ -1,5 +1,10 @@
 import { useLocalization } from "@/contexts/LocalizationContext";
-import { RelativePathString, router, usePathname } from "expo-router";
+import {
+  RelativePathString,
+  router,
+  useLocalSearchParams,
+  usePathname,
+} from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import ExclamationMarkIcon from "./icons/ExclamationMark";
 import ReloadIcon from "./icons/Reload";
@@ -7,6 +12,7 @@ import ReloadIcon from "./icons/Reload";
 export default function ErrorToast() {
   const { t } = useLocalization("error");
   const pathname = usePathname() as RelativePathString;
+  const params = useLocalSearchParams();
   return (
     <View
       className="self-center flex-row items-center justify-between bg-heart p-5 rounded-[24px] absolute"
@@ -23,7 +29,7 @@ export default function ErrorToast() {
       <TouchableOpacity
         className="w-[32px] h-[32px] bg-white rounded-full flex items-center justify-center"
         onPress={() => {
-          router.replace(pathname);
+          router.replace({ pathname, params });
         }}
       >
         <ReloadIcon />

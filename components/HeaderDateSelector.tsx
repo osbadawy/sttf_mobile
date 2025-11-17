@@ -1,6 +1,6 @@
+import { HeaderColor } from "@/schemas/components/HeaderTypes";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { HeaderColor } from "./Header";
 import { Arrow } from "./icons";
 
 interface DateSelectorProps {

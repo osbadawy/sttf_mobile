@@ -1,5 +1,6 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { HeaderColor } from "@/schemas/components/HeaderTypes";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
@@ -13,11 +14,6 @@ import {
 } from "./icons";
 import CalendarIcon from "./icons/CalendarIcon";
 import DatePickerModal from "./settings/DatePickerModal";
-
-export enum HeaderColor {
-  BG,
-  primary,
-}
 
 export interface HeaderNotification {
   title: string;

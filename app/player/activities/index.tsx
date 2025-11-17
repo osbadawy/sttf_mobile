@@ -1,7 +1,6 @@
 import colors from "@/colors";
 import ActivityCard from "@/components/activities/ActivityCard";
 import CustomButton, { ButtonColor, ButtonSize } from "@/components/Button";
-import { HeaderColor } from "@/components/Header";
 import {
   ActivityFlameIcon,
   ActivityPageBg,
@@ -15,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { usePlayerActivities } from "@/hooks/activities/usePlayerActivities";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { HeaderColor } from "@/schemas/components/HeaderTypes";
 import { getUniqueActivityTypes } from "@/utils/activities";
 import { formatDate } from "@/utils/dateTimeHelpers";
 import { RelativePathString, router, useLocalSearchParams } from "expo-router";
