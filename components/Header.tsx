@@ -138,8 +138,8 @@ export default function Header({
           svgProps={{
             style: {
               position: "absolute",
-              top: -50,
-              left: -50,
+              top: -70,
+              left: -70,
               zIndex: 50,
               opacity: color === HeaderColor.primary ? 0.6 : 0.3,
             },
