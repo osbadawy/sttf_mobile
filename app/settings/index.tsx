@@ -46,6 +46,7 @@ export default function Settings() {
   const { userName, setUserName, setProfilePicture, profilePicture } =
     useUserProfile();
   const { user, logout } = useAuth(); // ✅ get logout and user from context
+  const [pressed, setPressed] = useState(false);
 
   const { data, loading, error } = useUser();
   const [disabled, setDisabled] = useState<boolean>(false);
@@ -376,6 +377,13 @@ export default function Settings() {
         <Pressable
           onPress={onLogout}
           className={`${rowDir} items-center justify-between px-4 py-4 mb-5`}
+          onPressIn={() => setPressed(true)}
+          onPressOut={() => setPressed(false)}
+          style={{
+            backgroundColor: pressed
+              ? "rgba(221, 82, 82, 0.45)"
+              : "  rgb(245 245 245)",
+          }}
         >
           <Text className={`text-[#E53935] ${textDir}`}>{t("log out")}</Text>
           <LogOutIcon />
