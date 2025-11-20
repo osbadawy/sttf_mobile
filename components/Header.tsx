@@ -4,7 +4,7 @@ import { HeaderColor } from "@/schemas/components/HeaderTypes";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
 import {
   Arrow,
@@ -138,8 +138,8 @@ export default function Header({
           svgProps={{
             style: {
               position: "absolute",
-              top: -50,
-              left: -50,
+              top: -70,
+              left: -70,
               zIndex: 50,
               opacity: color === HeaderColor.primary ? 0.6 : 0.3,
             },
@@ -151,8 +151,8 @@ export default function Header({
           className={`flex justify-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
         >
           {showBackButton && (
-            <TouchableOpacity
-              className="flex mx-4 items-center justify-center"
+            <Pressable
+              className="mx-4 items-center justify-center"
               onPress={() => {
                 if (customBackPath) {
                   router.push({
@@ -163,12 +163,20 @@ export default function Header({
                   router.back();
                 }
               }}
+              hitSlop={14} // extra invisible touch area around the button
+              style={({ pressed }) => ({
+                width: 58, // bigger touch box
+                height: 48,
+                alignItems: "center",
+                justifyContent: "center",
+                transform: [{ scale: pressed ? 0.9 : 1 }], // responsive snap
+              })}
             >
               <Arrow
                 direction={isRTL ? "right" : "left"}
                 stroke={color === HeaderColor.primary ? "white" : "black"}
               />
-            </TouchableOpacity>
+            </Pressable>
           )}
           <View className="flex-1 justify-center">
             {title ? (
@@ -189,41 +197,50 @@ export default function Header({
             ) : (
               <>
                 <View
-                  className={`flex-row items-center ${isRTL ? "flex-row-reverse" : "flex-row"}`}
+                  className={`flex-row items-center ${
+                    isRTL ? "flex-row-reverse" : "flex-row"
+                  }`}
                 >
-                  {profilePicture !== undefined &&
-                    (profilePicture !== "" ? (
-                      <TouchableOpacity
-                        onPress={() => router.push("/settings")}
-                      >
+                  <Pressable
+                    onPress={() => router.push("/settings")}
+                    hitSlop={16} // generous invisible area around the whole block
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      paddingVertical: 6, // increases tap area vertically
+                      paddingHorizontal: 8, // increases tap area horizontally
+                      borderRadius: 999, // makes hit area rounded, feels like a pill
+                    }}
+                  >
+                    {profilePicture !== undefined &&
+                      (profilePicture !== "" ? (
+                        // Avatar with real profile picture
                         <Image
                           source={{ uri: profilePicture }}
                           className="w-[40px] h-[40px] rounded-full mx-4"
                         />
-                      </TouchableOpacity>
-                    ) : (
-                      <View className="w-[40px] h-[40px] rounded-full mx-4 items-center justify-center bg-[#E5E5E5]">
-                        <TouchableOpacity
-                          onPress={() => router.push("/settings")}
-                        >
+                      ) : (
+                        // Default avatar
+                        <View className="w-[40px] h-[40px] rounded-full mx-4 items-center justify-center bg-[#E5E5E5]">
                           <ProfilePictureDefaultIcon />
-                        </TouchableOpacity>
-                      </View>
-                    ))}
-                  <View>
-                    <Text
-                      className={`effra-medium text-2xl text-start ${textColor}`}
-                    >
-                      {name}
-                    </Text>
-                    {customDescription ? (
-                      <Text className="font-inter-light text-xs text-start">
-                        {customDescription}
+                        </View>
+                      ))}
+
+                    <View>
+                      <Text
+                        className={`effra-medium text-2xl text-start ${textColor}`}
+                      >
+                        {name}
                       </Text>
-                    ) : (
-                      <DateText className="text-start" />
-                    )}
-                  </View>
+                      {customDescription ? (
+                        <Text className="font-inter-light text-xs text-start">
+                          {customDescription}
+                        </Text>
+                      ) : (
+                        <DateText className="text-start" />
+                      )}
+                    </View>
+                  </Pressable>
                 </View>
               </>
             )}

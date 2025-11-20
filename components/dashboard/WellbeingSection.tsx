@@ -13,7 +13,7 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -21,7 +21,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -101,9 +101,9 @@ export default function WellbeingSection({
   const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
+  const [pressed, setPressed] = useState(false);
 
   const windowWidth = Dimensions.get("window").width;
-  // Create animated values for each progress circle
   const performanceRef = useRef(new Animated.Value(0)).current;
   const strainRef = useRef(new Animated.Value(0)).current;
   const stressRef = useRef(new Animated.Value(0)).current;
@@ -111,7 +111,6 @@ export default function WellbeingSection({
   const center = windowWidth / 2;
 
   useEffect(() => {
-    // Start animations with a slight delay between each circle
     const animateProgress = () => {
       Animated.parallel([
         Animated.timing(performanceRef, {
@@ -132,11 +131,9 @@ export default function WellbeingSection({
       ]).start();
     };
 
-    // Start animation after a short delay
     const timer = setTimeout(animateProgress, 300);
-
     return () => clearTimeout(timer);
-  }, [performance, strain, stress]);
+  }, [performance, strain, stress, animationDuration]);
 
   return (
     <TouchableOpacity
@@ -144,12 +141,16 @@ export default function WellbeingSection({
       onPress={() =>
         router.push({
           pathname: `${pathname}/wellbeing` as RelativePathString,
-          params: {
-            player,
-          },
+          params: { player },
         })
       }
-      activeOpacity={1}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      activeOpacity={1} // keep full control
+      style={{
+        transform: [{ scale: pressed ? 0.97 : 1 }],
+        opacity: pressed ? 0.85 : 1, // quick highlight flash
+      }}
     >
       <View className="w-full">
         <TitleWithIcon
@@ -160,7 +161,38 @@ export default function WellbeingSection({
         />
       </View>
       <Svg width={windowWidth} height={440}>
-        {/* Background Circles */}
+        {/* --- GRADIENT DEFS (added) --- */}
+        <Defs>
+          <LinearGradient
+            id="outerShadowGradient"
+            x1="0"
+            y1="1"
+            x2="0"
+            y2="0"
+            gradientUnits="objectBoundingBox"
+          >
+            <Stop offset="0" stopColor="rgba(242, 242, 242, 0.9)" />
+            <Stop offset="1" stopColor="rgba(223, 223, 223, 0.15)" />
+          </LinearGradient>
+        </Defs>
+
+        <Defs>
+          <LinearGradient
+            id="innerShadowGradient"
+            x1="0"
+            y1="1"
+            x2="0"
+            y2="0"
+            gradientUnits="objectBoundingBox"
+          >
+            <Stop offset="1" stopColor="rgba(242, 242, 242, 0.9)" />
+            <Stop offset="0" stopColor="rgba(223, 223, 223, 0.15)" />
+          </LinearGradient>
+        </Defs>
+
+        {/* ---------- STATIC RINGS WITH INNER + OUTER SHADOW ---------- */}
+
+        {/* OUTER RING */}
         <Circle
           cx={center}
           cy="200"
@@ -169,6 +201,28 @@ export default function WellbeingSection({
           strokeWidth={STROKE_WIDTH}
           fill="none"
         />
+
+        {/* inner shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - STROKE_WIDTH / 2}
+          stroke="url(#innerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
+
+        {/* outer gradient shadow (UPDATED HERE) */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS + STROKE_WIDTH / 2}
+          stroke="url(#outerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
+
+        {/* --- MIDDLE RING --- */}
         <Circle
           cx={center}
           cy="200"
@@ -177,6 +231,28 @@ export default function WellbeingSection({
           strokeWidth={STROKE_WIDTH}
           fill="none"
         />
+
+        {/* inner shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 28 - STROKE_WIDTH / 2}
+          stroke="url(#innerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
+
+        {/* outer gradient shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 28 + STROKE_WIDTH / 2}
+          stroke="url(#outerShadowGradient)"
+          strokeWidth={1}
+          fill="none"
+        />
+
+        {/* --- INNER RING --- */}
         <Circle
           cx={center}
           cy="200"
@@ -186,6 +262,27 @@ export default function WellbeingSection({
           fill="none"
         />
 
+        {/* inner shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 56 - STROKE_WIDTH / 2}
+          stroke="url(#innerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
+
+        {/* outer gradient shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 56 + STROKE_WIDTH / 2}
+          stroke="url(#outerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
+
+        {/* --- YOUR DASH RINGS (unchanged) --- */}
         <Circle
           cx={center}
           cy="200"
@@ -193,7 +290,6 @@ export default function WellbeingSection({
           stroke="#797979"
           strokeWidth={1}
           fill="none"
-          // dashes
           strokeDasharray={8}
         />
 
@@ -206,13 +302,12 @@ export default function WellbeingSection({
               stroke="#797979"
               strokeWidth={1}
               fill="none"
-              // dashes
               strokeDasharray={8}
             />
           </Svg>
         </View>
 
-        {/* Foreground Progress - Animated */}
+        {/* --- YOUR FOREGROUND ANIMATED RINGS (unchanged) --- */}
         <ProgressCircle
           color={colors.performance}
           radiusOffset={0}
@@ -232,7 +327,7 @@ export default function WellbeingSection({
           cx={center}
         />
       </Svg>
-
+      ;
       <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
         <ProgressLabel
           label={t("performance")}
