@@ -22,7 +22,7 @@ export default function ParallaxScrollView({
     : undefined;
 
   return (
-    <View className="flex-1" style={bgStyle}>
+    <View className="flex-1 pt-6" style={bgStyle}>
       {error && <ErrorToast />}
       <ScrollView
         scrollEventThrottle={16}

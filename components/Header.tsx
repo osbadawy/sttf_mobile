@@ -20,7 +20,7 @@ export interface HeaderNotification {
   message: string;
   path: RelativePathString;
   icon?: React.ReactNode;
-}
+} 
 
 export interface HeaderProps {
   title?: string;

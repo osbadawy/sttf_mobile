@@ -1,3 +1,4 @@
+import DateSelectorBubble from "@/components/icons/DateSelectorBubble";
 import { HeaderColor } from "@/schemas/components/HeaderTypes";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -77,6 +78,7 @@ export default function HeaderDateSelector({
       displayedWeekStart.setHours(0, 0, 0, 0)
     );
   };
+
   return (
     <View className={`flex-row items-center justify-between py-4 `}>
       {/* Previous week arrow */}
@@ -100,44 +102,56 @@ export default function HeaderDateSelector({
             <View key={index} className="items-center">
               {/* Day label */}
               <Text
-                className={`effra-light text-base ${textColor} mb-3`}
-                style={{ opacity: isDisabled ? 0.3 : 0.8 }}
+                className={`effra-light text-base ${textColor} mb-3 z-10 ${isSelected ? 'text-white' : ''}`}
+                style={{ opacity: isDisabled ? 0.3 : 0.8, } }
               >
                 {dayLabels[index]}
               </Text>
 
-              {/* Date circle */}
-              <TouchableOpacity
-                onPress={() => handleDatePress(date)}
-                disabled={isDisabled}
-                className={`w-10 h-10 rounded-full items-center justify-center ${
-                  isSelected
-                    ? "bg-primaryVeryDark shadow-lg"
-                    : isDisabled
-                      ? "bg-gray-300"
-                      : "bg-white"
-                }`}
-                style={{
-                  shadowColor: isSelected ? "#000" : "transparent",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: isSelected ? 0.25 : 0,
-                  shadowRadius: isSelected ? 4 : 0,
-                  elevation: isSelected ? 4 : 0,
-                }}
-              >
-                <Text
-                  className={`effra-redular text-base ${
+              {/* Date bubble + circle */}
+              <View className="items-center justify-center">
+                {isSelected && (
+                  // Bubble behind the date + number
+                  <View className="absolute -top-10 mb-6">
+                    <DateSelectorBubble />
+                  </View>
+                )}
+
+                <TouchableOpacity
+                  onPress={() => handleDatePress(date)}
+                  disabled={isDisabled}
+                  className={`w-10 h-10 rounded-full items-center justify-center ${
                     isSelected
-                      ? "text-white"
+                      ? "bg-transparent" // let the bubble show
                       : isDisabled
-                        ? "text-gray-500"
-                        : "text-black"
+                        ? "bg-gray-300"
+                        : "bg-white"
                   }`}
-                  style={{ opacity: isSelected ? 1 : isDisabled ? 0.5 : 0.6 }}
+                  style={{
+                    shadowColor:
+                      isSelected || isDisabled ? "transparent" : "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: isSelected || isDisabled ? 0 : 0.25,
+                    shadowRadius: isSelected || isDisabled ? 0 : 4,
+                    elevation: isSelected || isDisabled ? 0 : 4,
+                  }}
                 >
-                  {dayNumber}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    className={`effra-redular text-base ${
+                      isSelected
+                        ? "text-white"
+                        : isDisabled
+                          ? "text-gray-500"
+                          : "text-black"
+                    }`}
+                    style={{
+                      opacity: isSelected ? 1 : isDisabled ? 0.5 : 0.6,
+                    }}
+                  >
+                    {dayNumber}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           );
         })}
