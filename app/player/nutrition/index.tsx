@@ -27,6 +27,7 @@ const UI_MEAL_LABELS = ["Breakfast", "Lunch", "Dinner", "Snacks"] as const;
 export default function MealLogPage() {
   const { t, isRTL } = useLocalization("components.nutrition.nutritionList");
   const [manualPressed, setManualPressed] = useState(false);
+  const [pressed, setPressed] = useState(false);
 
   const { player } = useLocalSearchParams();
   const playerData = useMemo(
@@ -150,6 +151,11 @@ export default function MealLogPage() {
                 },
               })
             }
+            onPressIn={() => setPressed(true)}
+            onPressOut={() => setPressed(false)}
+            style={{
+              transform: [{ scale: pressed ? 0.92 : 1 }],
+            }}
           >
             <Text
               className={`text-base font-normal text-primary underline ${titleAlign}`}

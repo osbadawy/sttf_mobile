@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export enum ButtonColor {
@@ -31,16 +32,19 @@ export default function CustomButton({
   const sizeClass = size === ButtonSize.sm ? "px-6 py-3" : "px-16 py-4";
   const textSizeClass =
     size === ButtonSize.sm ? "text-base" : "text-2xl effra-regular";
+  const [pressed, setPressed] = useState(false);
 
   const textColorClass =
     color === ButtonColor.disabled ? "text-black" : "text-white";
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.6}
+      activeOpacity={1}
       className={`flex-row items-center ${icon ? "justify-between" : "justify-center"} ${disabled ? "bg-gray-300" : color} ${sizeClass}`}
-      style={{ borderRadius: 8 }}
+      style={{ borderRadius: 8, transform: [{ scale: pressed ? 0.97 : 1 }] }}
       disabled={disabled}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
     >
       <Text className={`${textColorClass} text-center ${textSizeClass}`}>
         {title}

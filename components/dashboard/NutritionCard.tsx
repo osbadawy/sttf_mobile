@@ -1,10 +1,6 @@
 import NutritionProgress from "@/components/nutrition/NutritionProgress";
 import { useLocalization } from "@/contexts/LocalizationContext";
-import {
-  RelativePathString,
-  router,
-  useLocalSearchParams
-} from "expo-router";
+import { RelativePathString, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
@@ -53,7 +49,10 @@ export default function NutritionCard({
           activeOpacity={1}
           onPressIn={() => setPressed(true)}
           onPressOut={() => setPressed(false)}
-          style={{ zIndex: 10,  backgroundColor: pressed ? "rgba(0, 140, 70, 0.8)" : "#008C46", }}
+          style={{
+            zIndex: 10,
+            backgroundColor: pressed ? "rgba(0, 140, 70, 0.8)" : "#008C46",
+          }}
         >
           <Text className="text-white font-medium text-center">
             {t("view meal plan")}
