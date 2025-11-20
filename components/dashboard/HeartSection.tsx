@@ -8,6 +8,7 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface HeartSectionProps {
@@ -24,6 +25,7 @@ export default function HeartSection({
   const { t, isRTL } = useLocalization("components.dashboard.heartSection");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
+  const [pressed, setPressed] = useState(false);
 
   return (
     <TouchableOpacity
@@ -37,6 +39,11 @@ export default function HeartSection({
         })
       }
       activeOpacity={1}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      style={{
+        transform: [{ scale: pressed ? 0.97 : 1 }],
+      }}
     >
       <TitleWithIcon
         title={t("title")}

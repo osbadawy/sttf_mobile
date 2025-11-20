@@ -9,13 +9,14 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 
 export default function SleepSection({ sleep }: { sleep: Sleep }) {
   const { t, isRTL } = useLocalization("components.dashboard.sleepSection");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
+  const [pressed, setPressed] = useState(false);
   const playerData = useMemo(
     () => JSON.parse((player as string) || "{}"),
     [player],
@@ -31,17 +32,26 @@ export default function SleepSection({ sleep }: { sleep: Sleep }) {
   const sleepNeeded = milliToHoursAndMins(sleep.neededMilli);
 
   return (
-    <Card className="bg-white w-full px-6 pt-6 pb-9 rounded-3xl">
+    <Card
+      className="w-full px-6 pt-6 pb-9 rounded-3xl"
+      style={{
+        transform: [{ scale: pressed ? 0.97 : 1 }],
+        backgroundColor: pressed ? "rgba(247, 247, 247, 1)" : "white",
+      }}
+    >
       <TouchableOpacity
         onPress={() =>
           router.push({
             pathname: `${pathname}/wellbeing` as RelativePathString,
-            params: {
-              player,
-            },
+            params: { player },
           })
         }
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
         activeOpacity={1}
+        style={{
+          backgroundColor: pressed ? "rgba(247, 247, 247, 0.2)" : "white",
+        }}
       >
         <TitleWithIcon
           title={t("title")}

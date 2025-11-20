@@ -13,7 +13,7 @@ import {
   useLocalSearchParams,
   usePathname,
 } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -98,10 +98,10 @@ export default function WellbeingSection({
   strain: number;
   animationDuration: number;
 }) {
-  const { t, isRTL } =
-    useLocalization("components.dashboard.wellbeingSection");
+  const { t, isRTL } = useLocalization("components.dashboard.wellbeingSection");
   const pathname = usePathname();
   const { player } = useLocalSearchParams();
+  const [pressed, setPressed] = useState(false);
 
   const windowWidth = Dimensions.get("window").width;
   const performanceRef = useRef(new Animated.Value(0)).current;
@@ -144,7 +144,13 @@ export default function WellbeingSection({
           params: { player },
         })
       }
-      activeOpacity={1}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      activeOpacity={1} // keep full control
+      style={{
+        transform: [{ scale: pressed ? 0.97 : 1 }],
+        opacity: pressed ? 0.85 : 1, // quick highlight flash
+      }}
     >
       <View className="w-full">
         <TitleWithIcon
@@ -154,175 +160,174 @@ export default function WellbeingSection({
           isRTL={isRTL}
         />
       </View>
+      <Svg width={windowWidth} height={440}>
+        {/* --- GRADIENT DEFS (added) --- */}
+        <Defs>
+          <LinearGradient
+            id="outerShadowGradient"
+            x1="0"
+            y1="1"
+            x2="0"
+            y2="0"
+            gradientUnits="objectBoundingBox"
+          >
+            <Stop offset="0" stopColor="rgba(242, 242, 242, 0.9)" />
+            <Stop offset="1" stopColor="rgba(223, 223, 223, 0.15)" />
+          </LinearGradient>
+        </Defs>
 
-<Svg width={windowWidth} height={440}>
-  {/* --- GRADIENT DEFS (added) --- */}
-  <Defs>
-    <LinearGradient
-      id="outerShadowGradient"
-      x1="0"
-      y1="1"
-      x2="0"
-      y2="0"
-      gradientUnits="objectBoundingBox"
-    >
-      <Stop offset="0" stopColor="rgba(242, 242, 242, 0.9)" />
-      <Stop offset="1" stopColor="rgba(223, 223, 223, 0.15)" />
-    </LinearGradient>
-  </Defs>
+        <Defs>
+          <LinearGradient
+            id="innerShadowGradient"
+            x1="0"
+            y1="1"
+            x2="0"
+            y2="0"
+            gradientUnits="objectBoundingBox"
+          >
+            <Stop offset="1" stopColor="rgba(242, 242, 242, 0.9)" />
+            <Stop offset="0" stopColor="rgba(223, 223, 223, 0.15)" />
+          </LinearGradient>
+        </Defs>
 
-    <Defs>
-    <LinearGradient
-      id="innerShadowGradient"
-      x1="0"
-      y1="1"
-      x2="0"
-      y2="0"
-      gradientUnits="objectBoundingBox"
-    >
-      <Stop offset="1" stopColor="rgba(242, 242, 242, 0.9)" />
-      <Stop offset="0" stopColor="rgba(223, 223, 223, 0.15)" />
-    </LinearGradient>
-  </Defs>
+        {/* ---------- STATIC RINGS WITH INNER + OUTER SHADOW ---------- */}
 
-  {/* ---------- STATIC RINGS WITH INNER + OUTER SHADOW ---------- */}
+        {/* OUTER RING */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS}
+          stroke={colors.performanceLight}
+          strokeWidth={STROKE_WIDTH}
+          fill="none"
+        />
 
-  {/* OUTER RING */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS}
-    stroke={colors.performanceLight}
-    strokeWidth={STROKE_WIDTH}
-    fill="none"
-  />
+        {/* inner shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - STROKE_WIDTH / 2}
+          stroke="url(#innerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
 
-  {/* inner shadow */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - STROKE_WIDTH / 2}
-    stroke="url(#innerShadowGradient)"
-    strokeWidth={2}
-    fill="none"
-  />
+        {/* outer gradient shadow (UPDATED HERE) */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS + STROKE_WIDTH / 2}
+          stroke="url(#outerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
 
-  {/* outer gradient shadow (UPDATED HERE) */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS + STROKE_WIDTH / 2}
-    stroke="url(#outerShadowGradient)"
-    strokeWidth={2}
-    fill="none"
-  />
+        {/* --- MIDDLE RING --- */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 28}
+          stroke={colors.strainLight}
+          strokeWidth={STROKE_WIDTH}
+          fill="none"
+        />
 
-  {/* --- MIDDLE RING --- */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - 28}
-    stroke={colors.strainLight}
-    strokeWidth={STROKE_WIDTH}
-    fill="none"
-  />
+        {/* inner shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 28 - STROKE_WIDTH / 2}
+          stroke="url(#innerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
 
-  {/* inner shadow */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - 28 - STROKE_WIDTH / 2}
-    stroke="url(#innerShadowGradient)"
-    strokeWidth={2}
-    fill="none"
-  />
+        {/* outer gradient shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 28 + STROKE_WIDTH / 2}
+          stroke="url(#outerShadowGradient)"
+          strokeWidth={1}
+          fill="none"
+        />
 
-  {/* outer gradient shadow */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - 28 + STROKE_WIDTH / 2}
-    stroke="url(#outerShadowGradient)"
-    strokeWidth={1}
-    fill="none"
-  />
+        {/* --- INNER RING --- */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 56}
+          stroke={colors.stressLight}
+          strokeWidth={STROKE_WIDTH}
+          fill="none"
+        />
 
-  {/* --- INNER RING --- */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - 56}
-    stroke={colors.stressLight}
-    strokeWidth={STROKE_WIDTH}
-    fill="none"
-  />
+        {/* inner shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 56 - STROKE_WIDTH / 2}
+          stroke="url(#innerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
 
-  {/* inner shadow */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - 56 - STROKE_WIDTH / 2}
-    stroke="url(#innerShadowGradient)"
-    strokeWidth={2}
-    fill="none"
-  />
+        {/* outer gradient shadow */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={CIRCLE_RADIUS - 56 + STROKE_WIDTH / 2}
+          stroke="url(#outerShadowGradient)"
+          strokeWidth={2}
+          fill="none"
+        />
 
-  {/* outer gradient shadow */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={CIRCLE_RADIUS - 56 + STROKE_WIDTH / 2}
-    stroke="url(#outerShadowGradient)"
-    strokeWidth={2}
-    fill="none"
-  />
+        {/* --- YOUR DASH RINGS (unchanged) --- */}
+        <Circle
+          cx={center}
+          cy="200"
+          r={143}
+          stroke="#797979"
+          strokeWidth={1}
+          fill="none"
+          strokeDasharray={8}
+        />
 
-  {/* --- YOUR DASH RINGS (unchanged) --- */}
-  <Circle
-    cx={center}
-    cy="200"
-    r={143}
-    stroke="#797979"
-    strokeWidth={1}
-    fill="none"
-    strokeDasharray={8}
-  />
+        <View style={{ position: "absolute", zIndex: -1 }}>
+          <Svg width={windowWidth} height={600}>
+            <Circle
+              cx={center}
+              cy="200"
+              r={300}
+              stroke="#797979"
+              strokeWidth={1}
+              fill="none"
+              strokeDasharray={8}
+            />
+          </Svg>
+        </View>
 
-  <View style={{ position: "absolute", zIndex: -1 }}>
-    <Svg width={windowWidth} height={600}>
-      <Circle
-        cx={center}
-        cy="200"
-        r={300}
-        stroke="#797979"
-        strokeWidth={1}
-        fill="none"
-        strokeDasharray={8}
-      />
-    </Svg>
-  </View>
-
-  {/* --- YOUR FOREGROUND ANIMATED RINGS (unchanged) --- */}
-  <ProgressCircle
-    color={colors.performance}
-    radiusOffset={0}
-    animatedValue={performanceRef}
-    cx={center}
-  />
-  <ProgressCircle
-    color={colors.strain}
-    radiusOffset={28}
-    animatedValue={strainRef}
-    cx={center}
-  />
-  <ProgressCircle
-    color={colors.stress}
-    radiusOffset={56}
-    animatedValue={stressRef}
-    cx={center}
-  />
-</Svg>;
-
+        {/* --- YOUR FOREGROUND ANIMATED RINGS (unchanged) --- */}
+        <ProgressCircle
+          color={colors.performance}
+          radiusOffset={0}
+          animatedValue={performanceRef}
+          cx={center}
+        />
+        <ProgressCircle
+          color={colors.strain}
+          radiusOffset={28}
+          animatedValue={strainRef}
+          cx={center}
+        />
+        <ProgressCircle
+          color={colors.stress}
+          radiusOffset={56}
+          animatedValue={stressRef}
+          cx={center}
+        />
+      </Svg>
+      ;
       <View className="flex-row justify-between w-full items-center mt-5 absolute top-[360px]">
         <ProgressLabel
           label={t("performance")}

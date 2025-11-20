@@ -10,12 +10,7 @@ const DateSelectorBubble: React.FC<NavGlassBlurProps> = ({
   width = 336,
   height = 102,
 }) => (
-  <Svg
-    width={56}
-    height={82}
-    viewBox="0 0 56 82"
-    fill="none"
-  >
+  <Svg width={56} height={82} viewBox="0 0 56 82" fill="none">
     <G filter="url(#filter0_d_1837_682)">
       <Circle cx={28} cy={50} r={20} fill="#024F25" />
     </G>

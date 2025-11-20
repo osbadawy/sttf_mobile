@@ -102,8 +102,8 @@ export default function HeaderDateSelector({
             <View key={index} className="items-center">
               {/* Day label */}
               <Text
-                className={`effra-light text-base ${textColor} mb-3 z-10 ${isSelected ? 'text-white' : ''}`}
-                style={{ opacity: isDisabled ? 0.3 : 0.8, } }
+                className={`effra-light text-base ${textColor} mb-3 z-10 ${isSelected ? "text-white" : ""}`}
+                style={{ opacity: isDisabled ? 0.3 : 0.8 }}
               >
                 {dayLabels[index]}
               </Text>
