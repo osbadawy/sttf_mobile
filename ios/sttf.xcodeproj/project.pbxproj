@@ -436,7 +436,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "sa.gov.sttf.mobile";
-				PRODUCT_NAME = "sttf";
+				PRODUCT_NAME = "STTF";
 				SWIFT_OBJC_BRIDGING_HEADER = "sttf/sttf-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -465,7 +465,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "sa.gov.sttf.mobile";
-				PRODUCT_NAME = "sttf";
+				PRODUCT_NAME = "STTF";
 				SWIFT_OBJC_BRIDGING_HEADER = "sttf/sttf-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
