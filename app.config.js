@@ -14,6 +14,12 @@ export default {
     ios: {
       bundleIdentifier: "sa.gov.sttf.mobile",
       supportsTablet: true,
+      infoPlist: {
+        NSCameraUsageDescription:
+          "Take photos of your meals to confirm them with your nutritionist and keep track of your eating habits.",
+        NSPhotoLibraryUsageDescription:
+          "The app uses your photo library access to allow you to choose a profile picture and to save or select photos of your meals for meal tracking and sharing with your nutritionist.",
+      },
     },
 
     android: {
@@ -98,6 +104,14 @@ export default {
           url: "https://sentry.io/",
           project: "react-native",
           organization: "covelant",
+        },
+      ],
+      [
+        "expo-image-picker",
+        {
+          cameraPermission: "Take photos of your meals to confirm them with your nutritionist and keep track of your eating habits.",
+          photosPermission:
+            "The app uses your photo library access to allow you to choose a profile picture and to save or select photos of your meals for meal tracking and sharing with your nutritionist.",
         },
       ],
     ],
