@@ -3,7 +3,7 @@ import "dotenv/config";
 export default {
   expo: {
     owner: "covelant-sttf",
-    name: "sttf",
+    name: "STTF",
     slug: "sttf",
     version: "1.0.0",
     orientation: "portrait",
