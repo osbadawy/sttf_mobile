@@ -115,7 +115,7 @@ export default function PlayerCard({
           </View>
 
           {/* --- READINESS BAR --- */}
-          <ReadinessBar value={p.readiness * 100} />
+          <ReadinessBar value={Math.round(p.readiness * 100)} />
         </View>
         {/* light green highlight overlay when selected */}
         {selected && (
