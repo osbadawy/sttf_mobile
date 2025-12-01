@@ -5,9 +5,11 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 export default function InviteInput({
   onAdd,
   existingEmails,
+  type,
 }: {
   onAdd: (email: string) => void;
   existingEmails: Set<string>;
+  type: "player" | "coach";
 }) {
   const { t } = useLocalization("components.Settings.settings");
   const [email, setEmail] = useState("");
@@ -43,7 +45,11 @@ export default function InviteInput({
       <TextInput
         value={email}
         onChangeText={setEmail}
-        placeholder={t("player email address")}
+        placeholder={
+          type === "player"
+            ? t("player email address")
+            : t("coach email address")
+        }
         keyboardType="email-address"
         autoCapitalize="none"
         editable={!submitting}

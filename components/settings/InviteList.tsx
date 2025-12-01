@@ -1,11 +1,12 @@
-import type { Player } from "@/schemas/Player";
+import type Coach from "@/schemas/Coach";
+import type Player from "@/schemas/Player";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function InviteList({
-  players,
+  users: users,
   onDeleteClick,
 }: {
-  players: Player[];
+  users: Player[] | Coach[];
   onDeleteClick: (id: string) => void;
 }) {
   const renderItem = ({ item }: { item: Player }) => {
@@ -52,7 +53,7 @@ export default function InviteList({
 
   return (
     <FlatList
-      data={players}
+      data={users}
       keyExtractor={(item) => item.firebase_id}
       renderItem={renderItem}
       contentContainerStyle={{ paddingBottom: 16 }}

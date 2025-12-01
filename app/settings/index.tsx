@@ -360,9 +360,9 @@ export default function Settings() {
         <Divider />
         <SettingsRow
           isRTL={isRTL}
-          label={t("manage players")}
+          label={t("manage users")}
           onPress={() =>
-            router.push("/settings/manage-players" as RelativePathString)
+            router.push("/settings/manage-users" as RelativePathString)
           }
         />
         <Divider />
