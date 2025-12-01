@@ -1,10 +1,18 @@
 import colors from "@/colors";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { HeaderColor } from "@/schemas/components/HeaderTypes";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Platform,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
 import {
   Arrow,
@@ -293,13 +301,32 @@ export default function Header({
           </TouchableOpacity>
         </View>
       )}
-      <DatePickerModal
-        visible={showDatePicker}
-        date={date}
-        onChange={handleDateChange}
-        onClose={closeDatePicker}
-        maximumDate={disableFutureDates ? new Date() : undefined}
-      />
+      {/* iOS: Use DatePickerModal */}
+      {Platform.OS === "ios" && (
+        <DatePickerModal
+          visible={showDatePicker}
+          date={date}
+          onChange={handleDateChange}
+          onClose={closeDatePicker}
+          maximumDate={disableFutureDates ? new Date() : undefined}
+        />
+      )}
+
+      {/* Android: Use DateTimePicker directly */}
+      {Platform.OS === "android" && showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          maximumDate={disableFutureDates ? new Date() : undefined}
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(false);
+            if (event.type === "set" && selectedDate) {
+              handleDateChange(selectedDate);
+            }
+          }}
+        />
+      )}
     </ParentContainer>
   );
 }
