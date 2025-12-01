@@ -14,32 +14,40 @@ export default function PlayerSelector({
   onSelectPlayer,
   ignorePlayerFirebaseId,
 }: PlayerSelectorProps) {
+  const defaultAvatar = require("../assets/images/logo.png"); // << fallback image
+
   function PlayerSelectorPlaceholderIcon() {
-    return <View className="w-[32px] h-[32px] rounded-full bg-[#D9D9D9]" />;
+    return (
+      <Image
+        source={defaultAvatar}
+        className="w-[32px] h-[32px] rounded-full "
+      />
+    );
   }
 
   const playerNames = players
     .map((player) => {
-      let icon = <PlayerSelectorPlaceholderIcon />;
-      if (player.avatar_url) {
-        icon = (
-          <Image
-            source={{ uri: player.avatar_url }}
-            className="w-[32px] h-[32px] rounded-full"
-          />
-        );
-      }
+      const icon = player.avatar_url ? (
+        <Image
+          source={{ uri: player.avatar_url }}
+          className="w-[32px] h-[32px] rounded-full"
+        />
+      ) : (
+        <Image
+          source={defaultAvatar}
+          className="w-[32px] h-[32px] rounded-full"
+        />
+      );
 
       return {
         value: player.firebase_id,
         name: player.display_name,
-        icon: icon,
+        icon,
       };
     })
     .filter((player) => player.value !== ignorePlayerFirebaseId);
 
   const handlePlayerSelect = (item: any) => {
-    // Find the full player object from the original players array
     const fullPlayer = players.find(
       (player) => player.firebase_id === item.value,
     );
@@ -61,7 +69,10 @@ export default function PlayerSelector({
                     className="w-[32px] h-[32px] rounded-full"
                   />
                 ) : (
-                  <PlayerSelectorPlaceholderIcon />
+                  <Image
+                    source={defaultAvatar}
+                    className="w-[32px] h-[32px] rounded-full"
+                  />
                 ),
               }
             : undefined
