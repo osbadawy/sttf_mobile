@@ -60,4 +60,3 @@ export default function CustomSelector<T = string>({
     </View>
   );
 }
-

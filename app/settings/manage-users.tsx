@@ -7,18 +7,28 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useAllCoaches } from "@/hooks/useAllCoaches";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import Constants from "expo-constants";
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 
-
 export default function ManagePlayers() {
   const { t, isRTL } = useLocalization("components.Settings.settings");
   const { user } = useAuth();
+  const { access } = useUserProfile();
+  const isAdmin = access === "admin";
   const { players, loading, error, refetch } = useAllPlayers();
-  const {coaches, loading: coachesLoading, error: coachesError, refetch: coachesRefetch} = useAllCoaches();
+  const {
+    coaches,
+    loading: coachesLoading,
+    error: coachesError,
+    refetch: coachesRefetch,
+  } = useAllCoaches(isAdmin);
   const [playerToDelete, setPlayerToDelete] = useState<string | null>(null);
   const [active, setActive] = useState<"players" | "coaches">("players");
+
+  // Force active to "players" for coaches
+  const effectiveActive = isAdmin ? active : "players";
 
   const addInvite = async (email: string) => {
     if (!user) {
@@ -27,7 +37,11 @@ export default function ManagePlayers() {
     }
 
     try {
-      const endpoint = active === "players" ? "/user/player/create" : "/user/coach/create";
+      // Coaches can only add players, admins can add both
+      const endpoint =
+        effectiveActive === "players"
+          ? "/user/player/create"
+          : "/user/coach/create";
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}${endpoint}`;
       const token = await user.getIdToken();
 
@@ -44,17 +58,19 @@ export default function ManagePlayers() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to create ${active.slice(0, -1)}: ${response.status}`);
+        throw new Error(
+          `Failed to create ${effectiveActive.slice(0, -1)}: ${response.status}`,
+        );
       }
 
       // Refetch the appropriate list
-      if (active === "players") {
+      if (effectiveActive === "players") {
         await refetch();
       } else {
         await coachesRefetch();
       }
     } catch (err) {
-      console.error(`Error creating ${active.slice(0, -1)}:`, err);
+      console.error(`Error creating ${effectiveActive.slice(0, -1)}:`, err);
       // Optionally show an error toast or alert to the user
     }
   };
@@ -76,17 +92,19 @@ export default function ManagePlayers() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to delete ${active.slice(0, -1)}: ${response.status}`);
+        throw new Error(
+          `Failed to delete ${effectiveActive.slice(0, -1)}: ${response.status}`,
+        );
       }
 
       // Refetch the appropriate list
-      if (active === "players") {
+      if (effectiveActive === "players") {
         await refetch();
       } else {
         await coachesRefetch();
       }
     } catch (err) {
-      console.error(`Error deleting ${active.slice(0, -1)}:`, err);
+      console.error(`Error deleting ${effectiveActive.slice(0, -1)}:`, err);
       // Optionally show an error toast or alert to the user
     }
   };
@@ -99,9 +117,9 @@ export default function ManagePlayers() {
   };
 
   const existingEmails = useMemo(() => {
-    const userList = active === "players" ? players : coaches;
+    const userList = effectiveActive === "players" ? players : coaches;
     return new Set(userList.map((u) => u.email.toLowerCase()));
-  }, [players, coaches, active]);
+  }, [players, coaches, effectiveActive]);
 
   return (
     <>
@@ -114,17 +132,19 @@ export default function ManagePlayers() {
           showBackButton: true,
         }}
         showNav={false}
-        error={!!error || !!coachesError}
+        error={!!error || (isAdmin && !!coachesError)}
       >
-        <CustomSelector
-          options={[
-            { id: "players", label: t("players") },
-            { id: "coaches", label: t("coaches") },
-          ]}
-          value={active}
-          onChange={(value) => setActive(value as "players" | "coaches")}
-          isRTL={isRTL}
-        />
+        {isAdmin && (
+          <CustomSelector
+            options={[
+              { id: "players", label: t("players") },
+              { id: "coaches", label: t("coaches") },
+            ]}
+            value={active}
+            onChange={(value) => setActive(value as "players" | "coaches")}
+            isRTL={isRTL}
+          />
+        )}
         <View className="px-4 pt-2 pb-6">
           {/* Add Users */}
           <Text className="mb-2 text-[13px] font-semibold text-neutral-600">
@@ -135,7 +155,7 @@ export default function ManagePlayers() {
           <InviteInput onAdd={addInvite} existingEmails={existingEmails} />
 
           {/* Conditional List Rendering */}
-          {active === "players" ? (
+          {effectiveActive === "players" ? (
             <>
               <Text className="mb-2 mt-2 text-[13px] font-semibold text-neutral-600">
                 {t("your players")}

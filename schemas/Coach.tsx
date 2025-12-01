@@ -8,4 +8,3 @@ export default interface Coach {
   nationality?: string | null;
   display_name?: string | null;
 }
-
