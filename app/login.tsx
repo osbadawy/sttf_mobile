@@ -29,7 +29,19 @@ export default function LoginPage() {
       setError("");
       await login(email, password);
     } catch (err: any) {
-      setError(err.message);
+      const code = (err as { code?: string }).code ?? "";
+      let message = "Something went wrong. Please try again.";
+      if (code === "auth/invalid-email") {
+        message = "Invalid email or password address.";
+        setError(message);
+      } else if (code === "auth/user-not-found") {
+        message = "No user found with this email.";
+        setError(message);
+      } else if (code === "auth/too-many-requests") {
+        message = "Too many attempts. Try again later.";
+        setError(message);
+      }
+      throw err;
     }
   };
 
@@ -47,7 +59,8 @@ export default function LoginPage() {
       // Handle common Firebase errors
       const code = (err as { code?: string }).code ?? "";
       let message = "Something went wrong. Please try again.";
-      if (code === "auth/invalid-email") message = "Invalid email address.";
+      if (code === "auth/invalid-email")
+        message = "Invalid email or password address.";
       else if (code === "auth/user-not-found")
         message = "No user found with this email.";
       else if (code === "auth/too-many-requests")
@@ -84,7 +97,7 @@ export default function LoginPage() {
 
         {/* Password */}
         <TextInput
-          className={`w-[90%] bg-white rounded-xl px-4 py-3 my-2 text-base ${isRTL ? "text-right" : "text-left"}`}
+          className={`w-[90%] bg-white rounded-xl text-black px-4 py-3 my-2 text-base ${isRTL ? "text-right" : "text-left"}`}
           placeholder={t("password")}
           placeholderTextColor="#888"
           value={password}
@@ -94,7 +107,7 @@ export default function LoginPage() {
         />
 
         {/* Error message */}
-        {error ? <Text className="text-red-500 mb-2">{error}</Text> : null}
+        {error ? <Text className="mb-2 text-red">{error}</Text> : null}
 
         {/* Forgot password */}
         <TouchableOpacity onPress={() => setModalVisible(true)}>
