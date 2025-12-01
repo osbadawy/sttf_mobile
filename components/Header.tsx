@@ -5,7 +5,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
 import { RelativePathString, router } from "expo-router";
 import { useState } from "react";
-import { Image, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Platform,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import HeaderDateSelector from "./HeaderDateSelector";
 import {
   Arrow,
