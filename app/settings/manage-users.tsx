@@ -1,19 +1,24 @@
+import CustomSelector from "@/components/CustomSelector";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import InviteInput from "@/components/settings/InviteInput";
 import InviteList from "@/components/settings/InviteList";
 import PlayerDeletionModal from "@/components/settings/PlayerDeletionModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
+import { useAllCoaches } from "@/hooks/useAllCoaches";
 import { useAllPlayers } from "@/hooks/useAllPlayers";
 import Constants from "expo-constants";
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 
+
 export default function ManagePlayers() {
-  const { t } = useLocalization("components.Settings.settings");
+  const { t, isRTL } = useLocalization("components.Settings.settings");
   const { user } = useAuth();
   const { players, loading, error, refetch } = useAllPlayers();
+  const {coaches, loading: coachesLoading, error: coachesError, refetch: coachesRefetch} = useAllCoaches();
   const [playerToDelete, setPlayerToDelete] = useState<string | null>(null);
+  const [active, setActive] = useState<"players" | "coaches">("players");
 
   const addInvite = async (email: string) => {
     if (!user) {
@@ -22,7 +27,8 @@ export default function ManagePlayers() {
     }
 
     try {
-      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/user/player/create`;
+      const endpoint = active === "players" ? "/user/player/create" : "/user/coach/create";
+      const url = `${Constants.expoConfig?.extra?.BACKEND_URL}${endpoint}`;
       const token = await user.getIdToken();
 
       const response = await fetch(url, {
@@ -38,13 +44,17 @@ export default function ManagePlayers() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to create player: ${response.status}`);
+        throw new Error(`Failed to create ${active.slice(0, -1)}: ${response.status}`);
       }
 
-      // Refetch players to update the list
-      await refetch();
+      // Refetch the appropriate list
+      if (active === "players") {
+        await refetch();
+      } else {
+        await coachesRefetch();
+      }
     } catch (err) {
-      console.error("Error creating player:", err);
+      console.error(`Error creating ${active.slice(0, -1)}:`, err);
       // Optionally show an error toast or alert to the user
     }
   };
@@ -66,13 +76,17 @@ export default function ManagePlayers() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to delete player: ${response.status}`);
+        throw new Error(`Failed to delete ${active.slice(0, -1)}: ${response.status}`);
       }
 
-      // Refetch players to update the list
-      await refetch();
+      // Refetch the appropriate list
+      if (active === "players") {
+        await refetch();
+      } else {
+        await coachesRefetch();
+      }
     } catch (err) {
-      console.error("Error deleting player:", err);
+      console.error(`Error deleting ${active.slice(0, -1)}:`, err);
       // Optionally show an error toast or alert to the user
     }
   };
@@ -84,10 +98,10 @@ export default function ManagePlayers() {
     }
   };
 
-  const existingEmails = useMemo(
-    () => new Set(players.map((p) => p.email.toLowerCase())),
-    [players],
-  );
+  const existingEmails = useMemo(() => {
+    const userList = active === "players" ? players : coaches;
+    return new Set(userList.map((u) => u.email.toLowerCase()));
+  }, [players, coaches, active]);
 
   return (
     <>
@@ -95,15 +109,24 @@ export default function ManagePlayers() {
         headerProps={{
           showDateSelector: false,
           showCalendarIcon: false,
-          title: t("manage players"),
+          title: t("manage users"),
           showBGImage: false,
           showBackButton: true,
         }}
         showNav={false}
-        error={!!error}
+        error={!!error || !!coachesError}
       >
+        <CustomSelector
+          options={[
+            { id: "players", label: t("players") },
+            { id: "coaches", label: t("coaches") },
+          ]}
+          value={active}
+          onChange={(value) => setActive(value as "players" | "coaches")}
+          isRTL={isRTL}
+        />
         <View className="px-4 pt-2 pb-6">
-          {/* Add Players */}
+          {/* Add Users */}
           <Text className="mb-2 text-[13px] font-semibold text-neutral-600">
             {t("add players")}
           </Text>
@@ -111,13 +134,24 @@ export default function ManagePlayers() {
 
           <InviteInput onAdd={addInvite} existingEmails={existingEmails} />
 
-          {/* List */}
-          <Text className="mb-2 mt-2 text-[13px] font-semibold text-neutral-600">
-            {t("your players")}
-          </Text>
-          <View className="mb-4 h-[1px] w-full bg-neutral-200" />
-
-          <InviteList players={players} onDeleteClick={setPlayerToDelete} />
+          {/* Conditional List Rendering */}
+          {active === "players" ? (
+            <>
+              <Text className="mb-2 mt-2 text-[13px] font-semibold text-neutral-600">
+                {t("your players")}
+              </Text>
+              <View className="mb-4 h-[1px] w-full bg-neutral-200" />
+              <InviteList users={players} onDeleteClick={setPlayerToDelete} />
+            </>
+          ) : (
+            <>
+              <Text className="mb-2 mt-2 text-[13px] font-semibold text-neutral-600">
+                {t("your coaches")}
+              </Text>
+              <View className="mb-4 h-[1px] w-full bg-neutral-200" />
+              <InviteList users={coaches} onDeleteClick={setPlayerToDelete} />
+            </>
+          )}
         </View>
       </ParallaxScrollView>
 

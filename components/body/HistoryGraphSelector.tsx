@@ -1,9 +1,10 @@
 // components/body/HistoryGraphSelector.tsx
 import RenderGraph from "@/components/body/RenderGraph";
 import RenderHistory from "@/components/body/RenderHistory";
+import CustomSelector from "@/components/CustomSelector";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { View } from "react-native";
 
 export type BodyCompositionData = {
   id: string;
@@ -28,47 +29,21 @@ export default function HistoryGraphSelector({
   bodyCompositions,
 }: Props) {
   const [active, setActive] = useState<"history" | "graph">(initialTab);
-  const rowDir = isRTL ? "flex-row-reverse" : "flex-row";
   const { t } = useLocalization("components.body");
-
-  const Seg = ({ id, label }: { id: "history" | "graph"; label: string }) => {
-    const selected = active === id;
-    return (
-      <Pressable
-        onPress={() => setActive(id)}
-        className={[
-          "px-5 py-2 rounded-full",
-          selected
-            ? "bg-white border border-emerald-600"
-            : "bg-neutral-100 border border-transparent",
-        ].join(" ")}
-        accessibilityRole="button"
-        accessibilityState={{ selected }}
-      >
-        <Text
-          className={
-            selected ? "text-black font-medium" : "text-neutral-500 font-medium"
-          }
-        >
-          {label}
-        </Text>
-      </Pressable>
-    );
-  };
 
   return (
     <View className="px-4 bg-white rounded-xl">
       {/* Segmented control */}
-      <View
-        className={[
-          "self-center mb-4 rounded-full p-1 border border-neutral-200/60 bg-white/70",
-          "shadow-sm shadow-black/5",
-        ].join(" ")}
-      >
-        <View className={`${rowDir} gap-2 bg-neutral-100 rounded-full `}>
-          <Seg id="history" label={t("history")} />
-          <Seg id="graph" label={t("graph")} />
-        </View>
+      <View className="mb-4">
+        <CustomSelector
+          options={[
+            { id: "history", label: t("history") },
+            { id: "graph", label: t("graph") },
+          ]}
+          value={active}
+          onChange={setActive}
+          isRTL={isRTL}
+        />
       </View>
 
       {/* Conditional rendering */}
