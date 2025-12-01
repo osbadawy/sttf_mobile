@@ -397,13 +397,15 @@ export default function Settings() {
           }
         />
         <Divider />
-        {access !== "player" && <SettingsRow
-          isRTL={isRTL}
-          label={t("manage users")}
-          onPress={() =>
-            router.push("/settings/manage-users" as RelativePathString)
-          }
-        />}
+        {access !== "player" && (
+          <SettingsRow
+            isRTL={isRTL}
+            label={t("manage users")}
+            onPress={() =>
+              router.push("/settings/manage-users" as RelativePathString)
+            }
+          />
+        )}
         <Divider />
         <SettingsRow
           isRTL={isRTL}
