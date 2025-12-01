@@ -39,5 +39,8 @@
   "remove player confirmation": "هل أنت متأكد أنك تريد إزالة هذا اللاعب؟",
   "action irreversible": "هذا الإجراء لا رجعة فيه",
   "back": "رجوع",
-  "remove": "إزالة"
+  "remove": "إزالة",
+  "add coaches": "إضافة مدربين",
+  "coach email address": "البريد الإلكتروني للمدرب",
+  "remove coach confirmation": "هل أنت متأكد أنك تريد إزالة هذا المدرب؟"
 }

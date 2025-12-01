@@ -8,12 +8,14 @@ interface PlayerDeletionModalProps {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  type: "player" | "coach";
 }
 
 export default function PlayerDeletionModal({
   visible,
   onClose,
   onConfirm,
+  type,
 }: PlayerDeletionModalProps) {
   const { t } = useLocalization("components.Settings.settings");
 
@@ -38,7 +40,9 @@ export default function PlayerDeletionModal({
 
         {/* Title */}
         <Text className="text-center text-xl font-medium px-8">
-          {t("remove player confirmation")}
+          {type === "player"
+            ? t("remove player confirmation")
+            : t("remove coach confirmation")}
         </Text>
 
         {/* Warning text */}

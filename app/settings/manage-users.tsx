@@ -148,11 +148,15 @@ export default function ManagePlayers() {
         <View className="px-4 pt-2 pb-6">
           {/* Add Users */}
           <Text className="mb-2 text-[13px] font-semibold text-neutral-600">
-            {t("add players")}
+            {active === "players" ? t("add players") : t("add coaches")}
           </Text>
           <View className="mb-3 h-[1px] w-full bg-neutral-200" />
 
-          <InviteInput onAdd={addInvite} existingEmails={existingEmails} />
+          <InviteInput
+            onAdd={addInvite}
+            existingEmails={existingEmails}
+            type={active === "players" ? "player" : "coach"}
+          />
 
           {/* Conditional List Rendering */}
           {effectiveActive === "players" ? (
@@ -179,6 +183,7 @@ export default function ManagePlayers() {
         visible={!!playerToDelete}
         onClose={() => setPlayerToDelete(null)}
         onConfirm={handleConfirmDelete}
+        type={active === "players" ? "player" : "coach"}
       />
     </>
   );
