@@ -20,6 +20,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { useUser } from "@/hooks/useUser";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { uploadToFirebase } from "@/utils/uploadToFirebase";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { RelativePathString, router } from "expo-router";
@@ -28,6 +29,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Platform,
   Pressable,
   Text,
   View,
@@ -281,14 +283,34 @@ export default function Settings() {
           valueLabel={formatDateDDMMYYYY(dob)}
           onPress={() => setDobOpen(true)}
         />
-        <DatePickerModal
-          visible={dobOpen}
-          onClose={() => setDobOpen(false)}
-          date={dob}
-          onChange={setDob}
-          maximumDate={new Date()}
-          minimumDate={new Date(1900, 0, 1)}
-        />
+        {/* iOS: Use DatePickerModal */}
+        {Platform.OS === "ios" && (
+          <DatePickerModal
+            visible={dobOpen}
+            onClose={() => setDobOpen(false)}
+            date={dob}
+            onChange={setDob}
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
+          />
+        )}
+
+        {/* Android: Use DateTimePicker directly */}
+        {Platform.OS === "android" && dobOpen && (
+          <DateTimePicker
+            value={dob}
+            mode="date"
+            display="default"
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
+            onChange={(event, selectedDate) => {
+              setDobOpen(false);
+              if (event.type === "set" && selectedDate) {
+                setDob(selectedDate);
+              }
+            }}
+          />
+        )}
 
         {/* Play Hand */}
         <SelectField
