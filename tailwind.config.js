@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import colors from "./colors.js";
 
+
 export default {
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
@@ -119,3 +120,5 @@ export default {
   },
   plugins: [],
 };
+
+

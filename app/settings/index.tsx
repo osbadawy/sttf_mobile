@@ -20,6 +20,7 @@ import { useLocalization } from "@/contexts/LocalizationContext";
 import { useUser } from "@/hooks/useUser";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { uploadToFirebase } from "@/utils/uploadToFirebase";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Constants from "expo-constants";
 import * as ImagePicker from "expo-image-picker";
 import { RelativePathString, router } from "expo-router";
@@ -28,6 +29,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Platform,
   Pressable,
   Text,
   View,
@@ -43,7 +45,7 @@ const formatDateDDMMYYYY = (d: Date): string => {
 
 export default function Settings() {
   const { t, isRTL } = useLocalization("components.Settings.settings");
-  const { userName, setUserName, setProfilePicture, profilePicture } =
+  const { userName, setUserName, setProfilePicture, profilePicture, access } =
     useUserProfile();
   const { user, logout } = useAuth(); // ✅ get logout and user from context
   const [pressed, setPressed] = useState(false);
@@ -124,14 +126,25 @@ export default function Settings() {
 
       const url = `${Constants.expoConfig?.extra?.BACKEND_URL}/user`;
 
-      const requestBody = {
+      const requestBody: {
+        display_name: string;
+        nationality: string;
+        birth_date: string;
+        dominant_hand?: string;
+        height_cm?: number;
+        avatar_url: string | null;
+      } = {
         display_name: name,
         nationality: nationalityCode,
         birth_date: dob.toISOString(),
-        dominant_hand: hand,
-        height_cm: Number(height),
         avatar_url: uploadedImageUrl,
       };
+
+      // Only include player-specific fields if user is a player
+      if (access === "player") {
+        requestBody.dominant_hand = hand;
+        requestBody.height_cm = Number(height);
+      }
 
       const response = await fetch(url, {
         method: "PATCH",
@@ -281,46 +294,72 @@ export default function Settings() {
           valueLabel={formatDateDDMMYYYY(dob)}
           onPress={() => setDobOpen(true)}
         />
-        <DatePickerModal
-          visible={dobOpen}
-          onClose={() => setDobOpen(false)}
-          date={dob}
-          onChange={setDob}
-          maximumDate={new Date()}
-          minimumDate={new Date(1900, 0, 1)}
-        />
-
-        {/* Play Hand */}
-        <SelectField
-          isRTL={isRTL}
-          label={t("dominant hand")}
-          valueLabel={hand === "right" ? t("right hand") : t("left hand")}
-          onPress={() => setHandOpen(true)}
-        />
-        <SelectModal
-          isRTL={isRTL}
-          title={t("select dominant hand")}
-          visible={handOpen}
-          onClose={() => setHandOpen(false)}
-          options={handOptions}
-          onSelect={(opt) => {
-            setHand(opt.value as PlayHand);
-            setHandOpen(false);
-          }}
-        />
-
-        {/* Height */}
-        <View className="mt-3">
-          <LabeledInput
-            isRTL={isRTL}
-            label={t("height (cm)")}
-            value={height}
-            onChangeText={setHeight}
-            placeholder={height}
-            containerClass="flex-1"
-            inputMode="numeric"
+        {/* iOS: Use DatePickerModal */}
+        {Platform.OS === "ios" && (
+          <DatePickerModal
+            visible={dobOpen}
+            onClose={() => setDobOpen(false)}
+            date={dob}
+            onChange={setDob}
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
           />
-        </View>
+        )}
+
+        {/* Android: Use DateTimePicker directly */}
+        {Platform.OS === "android" && dobOpen && (
+          <DateTimePicker
+            value={dob}
+            mode="date"
+            display="default"
+            maximumDate={new Date()}
+            minimumDate={new Date(1900, 0, 1)}
+            onChange={(event, selectedDate) => {
+              setDobOpen(false);
+              if (event.type === "set" && selectedDate) {
+                setDob(selectedDate);
+              }
+            }}
+          />
+        )}
+
+        {/* Play Hand - Only show for players */}
+        {access === "player" && (
+          <>
+            <SelectField
+              isRTL={isRTL}
+              label={t("dominant hand")}
+              valueLabel={hand === "right" ? t("right hand") : t("left hand")}
+              onPress={() => setHandOpen(true)}
+            />
+            <SelectModal
+              isRTL={isRTL}
+              title={t("select dominant hand")}
+              visible={handOpen}
+              onClose={() => setHandOpen(false)}
+              options={handOptions}
+              onSelect={(opt) => {
+                setHand(opt.value as PlayHand);
+                setHandOpen(false);
+              }}
+            />
+          </>
+        )}
+
+        {/* Height - Only show for players */}
+        {access === "player" && (
+          <View className="mt-3">
+            <LabeledInput
+              isRTL={isRTL}
+              label={t("height (cm)")}
+              value={height}
+              onChangeText={setHeight}
+              placeholder={height}
+              containerClass="flex-1"
+              inputMode="numeric"
+            />
+          </View>
+        )}
 
         <View className="py-10 px-6">
           <CustomButton
@@ -358,13 +397,15 @@ export default function Settings() {
           }
         />
         <Divider />
-        <SettingsRow
-          isRTL={isRTL}
-          label={t("manage users")}
-          onPress={() =>
-            router.push("/settings/manage-users" as RelativePathString)
-          }
-        />
+        {access !== "player" && (
+          <SettingsRow
+            isRTL={isRTL}
+            label={t("manage users")}
+            onPress={() =>
+              router.push("/settings/manage-users" as RelativePathString)
+            }
+          />
+        )}
         <Divider />
         <SettingsRow
           isRTL={isRTL}

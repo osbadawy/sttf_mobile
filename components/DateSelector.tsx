@@ -1,5 +1,6 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import { ClockInvertedIcon } from "./icons";
 import DatePickerModal from "./settings/DatePickerModal";
 
@@ -36,6 +37,8 @@ export default function DateSelector({
     }
   };
 
+  const isIOS = Platform.OS === "ios";
+
   return (
     <View>
       {/* Date Display */}
@@ -67,13 +70,30 @@ export default function DateSelector({
         </Text>
       </TouchableOpacity>
 
-      {/* DatePickerModal */}
-      <DatePickerModal
-        visible={showPicker}
-        date={value || new Date()}
-        onChange={handleDateChange}
-        onClose={() => setShowPicker(false)}
-      />
+      {/* iOS: Use DatePickerModal */}
+      {isIOS && (
+        <DatePickerModal
+          visible={showPicker}
+          date={value || new Date()}
+          onChange={handleDateChange}
+          onClose={() => setShowPicker(false)}
+        />
+      )}
+
+      {/* Android: Use DateTimePicker directly */}
+      {!isIOS && showPicker && (
+        <DateTimePicker
+          value={value || new Date()}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            setShowPicker(false);
+            if (event.type === "set" && selectedDate) {
+              handleDateChange(selectedDate);
+            }
+          }}
+        />
+      )}
     </View>
   );
 }
