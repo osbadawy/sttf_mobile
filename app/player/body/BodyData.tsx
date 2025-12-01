@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLocalization } from "@/contexts/LocalizationContext";
 import { clearBodyCompositionLatestCache } from "@/hooks/useBodyCompositionLatest";
 import { clearBodyCompositionsCache } from "@/hooks/useBodyCompositions";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import Constants from "expo-constants";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
@@ -122,14 +123,34 @@ export default function BodyData() {
               onPress={() => setDateOpen(true)}
               isRTL={isRTL}
             />
-            <DatePickerModal
-              visible={dateOpen}
-              onClose={() => setDateOpen(false)}
-              date={date}
-              onChange={(d) => setDate(d)}
-              maximumDate={new Date()}
-              minimumDate={new Date(1900, 0, 1)}
-            />
+            {/* iOS: Use DatePickerModal */}
+            {Platform.OS === "ios" && (
+              <DatePickerModal
+                visible={dateOpen}
+                onClose={() => setDateOpen(false)}
+                date={date}
+                onChange={(d) => setDate(d)}
+                maximumDate={new Date()}
+                minimumDate={new Date(1900, 0, 1)}
+              />
+            )}
+
+            {/* Android: Use DateTimePicker directly */}
+            {Platform.OS === "android" && dateOpen && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                maximumDate={new Date()}
+                minimumDate={new Date(1900, 0, 1)}
+                onChange={(event, selectedDate) => {
+                  setDateOpen(false);
+                  if (event.type === "set" && selectedDate) {
+                    setDate(selectedDate);
+                  }
+                }}
+              />
+            )}
           </View>
 
           {/* Inputs grid: 2 x 2 */}
